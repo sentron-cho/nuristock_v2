@@ -23,17 +23,18 @@ export default [
   { ignores: ['dist'] }, // 'dist' 디렉토리는 ESLint 검사를 무시
   {
     files: ['**/*.{js,jsx}'], // ESLint가 검사할 파일 확장자 설정
-    languageOptions: {
-      ecmaVersion: 2020, // ECMAScript 2020 지원
-      globals: globals.browser, // 브라우저 전역 변수 허용
-      parserOptions: {
-        ecmaVersion: 'latest', // 최신 ECMAScript 버전 지원
-        ecmaFeatures: { jsx: true }, // JSX 지원
-        sourceType: 'module', // ECMAScript 모듈 사용
-      },
+    parser: '@typescript-eslint/parser',
+    parserOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      ecmaFeatures: { jsx: true },
+      project: './tsconfig.json',
     },
     settings: {
       react: { version: '18.3' }, // React 버전 감지
+      'import/resolver': {
+        typescript: {}, // tsconfig.json 기반 import 경로 확인
+      },
     },
     plugins: {
       react, // React ESLint 플러그인
