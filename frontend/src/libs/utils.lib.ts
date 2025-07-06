@@ -1,3 +1,5 @@
+import { EID } from "src/types/default.config";
+
 export enum COST {
 	EUK = '억',
 	MAN = '만',
@@ -8,6 +10,8 @@ export enum COST {
 // export const withoutCommas = (v?: string) => {
 //   return v?.toString()?.replace(/,/gi, '');
 // }
+
+export const valueOfPlusMinus = (a: number = 0, b: number = 0) => { return a === b ? EID.NONE : a < b ? EID.MINUS : EID.PLUS; };
 
 export const withCommas = (v?: number | string, isRemove?: boolean) => {
 	if (isRemove) {
@@ -24,7 +28,7 @@ export const toNumber = (v?: string) => {
 };
 
 export const toCost = (v?: number | string) => {
-	return `${withCommas(v)}${COST.WON}`;
+	return `${withCommas(v)} ${COST.WON}`;
 };
 
 export const toShortCost = (v?: number | string) => {

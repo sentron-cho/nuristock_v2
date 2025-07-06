@@ -30,8 +30,10 @@ const StyledFlex = styled('div', {
     },
     gap: {
       0: { gap: '0px' },
+      2: { gap: '2px' },
       4: { gap: '4px' },
       8: { gap: '8px' },
+      10: { gap: '10px' },
       12: { gap: '12px' },
       16: { gap: '16px' },
       20: { gap: '20px' },

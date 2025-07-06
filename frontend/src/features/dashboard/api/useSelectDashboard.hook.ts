@@ -21,14 +21,24 @@ export interface DashboardResponse {
 	showyn: UseYn;
 	utime: string;
 	ctime: string;
+	stime?: string;
+	sise?: number;
+	updown?: string;
+	erate?: number;
+	ecost?: string;
+}
+
+export interface StockSiseResponse {
+	kcount: number;
+	kprice: number;
+	stime?: string;
+	sise: number;
 }
 
 export const useSelectDashboard = () => {
-	return useQuery<unknown, Error, string[]>({
+	return useQuery<unknown, Error, DashboardResponse[]>({
 		queryKey: ['dashboard-s01'],
-		queryFn: () => ({
-			data: data,
-		}),
+		queryFn: () => data,
 	});
 
 	// return useQuery<{ data: DashboardResponse[] }, Error, string[]>({
