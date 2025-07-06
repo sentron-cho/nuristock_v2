@@ -4,4 +4,5 @@ const ProfitPage = () => {
   return <PageContainer>ProfitPage</PageContainer>;
 };
 
+ProfitPage.displayName = 'ProfitPage';
 export default ProfitPage;

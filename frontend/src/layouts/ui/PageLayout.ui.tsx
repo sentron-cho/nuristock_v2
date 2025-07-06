@@ -3,7 +3,9 @@ import { Outlet } from 'react-router-dom';
 import Header from './Header.ui';
 import { styled } from '@styles/stitches.config';
 
-const StyledLayout = styled('div', {});
+const StyledLayout = styled('div', {
+  height: '100vh',
+});
 
 const PageLayout = ({ children }: { children?: ReactNode }) => {
   return (

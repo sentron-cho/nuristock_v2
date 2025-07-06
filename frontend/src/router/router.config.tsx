@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 
 import PageLayout from '../layouts/ui/PageLayout.ui';
-import DeshboardPage from '../pages/ui/Deshboard.page';
+import DashboardPage from '../pages/ui/Dashboard.page';
 import NotFoundPage from '../pages/ui/NotFound.page';
 import StockPage from '../pages/ui/Stock.page';
 import AboutPage from '../pages/ui/About.page';
@@ -18,7 +18,7 @@ const router = createBrowserRouter([
         index: true,
         element: (
           <PageLayout>
-            <DeshboardPage />
+            <DashboardPage />
           </PageLayout>
         ),
       },

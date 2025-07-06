@@ -29,4 +29,5 @@ const NotFound = () => {
   );
 };
 
+NotFound.displayName = 'NotFound';
 export default NotFound;

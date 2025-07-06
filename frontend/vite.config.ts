@@ -8,7 +8,7 @@ export default defineConfig({
   // plugins: [react(), tsconfigPaths()],
   resolve: {
     alias: [
-      { find: '@', replacement: resolve(__dirname, 'src') },
+      // { find: '@src', replacement: resolve(__dirname, 'src') },
       { find: '@features', replacement: resolve(__dirname, 'src/features') },
       { find: '@styles', replacement: resolve(__dirname, 'src/styles') },
     ],
