@@ -1,7 +1,34 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "baseUrl": ".", // 기본 경로를 현재 프로젝트의 루트로 설정 (상대 경로 대신 별칭 사용 가능)
+    "paths": {
+      "@/*": ["src/*"], // '@' 별칭을 'src' 폴더로 설정 (모듈 경로 참조 시 간단하게 사용 가능)
+      "@page/*": ["src/pages/*"],
+      "@features/*": ["src/features/*"],
+      "@entites/*": ["src/entites/*"],
+      "@styles/*": ["src/styles/*"]
+    },
+    "types": ["vite/client"] // Vite 프로젝트에서 자동 완성 및 타입 정보를 제공 (Vite 관련 타입을 포함)
+  },
+  "include": ["src", "src/custom.d.ts"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

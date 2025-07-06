@@ -1,6 +1,6 @@
 import React, { type JSX } from 'react';
-import { PageContainer } from '../features/PageContainer.ui';
-import { styled } from '../styles/stitches.config';
+import { PageContainer } from '../../features/PageContainer.ui';
+import { styled } from '@styles/stitches.config';
 
 const StyledPage = styled(PageContainer, {
   '& > div': {

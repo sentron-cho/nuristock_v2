@@ -1,4 +1,4 @@
-import { PageContainer } from '../features/PageContainer.ui';
+import { PageContainer } from '../../features/PageContainer.ui';
 
 const SearchPage = () => {
   return <PageContainer>SearchPage</PageContainer>;

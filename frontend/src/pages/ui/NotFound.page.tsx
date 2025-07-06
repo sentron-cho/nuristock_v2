@@ -1,4 +1,4 @@
-import { styled } from '../styles/stitches.config';
+import { styled } from '@styles/stitches.config';
 
 const Container = styled('div', {
   height: '100vh',

@@ -1,4 +1,4 @@
-import { styled } from '../styles/stitches.config';
+import { styled } from '@styles/stitches.config';
 import type { ComponentProps } from 'react';
 import clsx from 'clsx';
 
@@ -52,11 +52,12 @@ const StyledFlex = styled('div', {
 type FlexProps = ComponentProps<typeof StyledFlex> & {
   width?: string | number;
   height?: string | number;
+  flex?: string | number;
 };
 
 // React.forwardRef로 래핑
-const Flex = ({ width = '100%', height, ...props }: FlexProps) => {
-  return <StyledFlex className={clsx('flex')} {...props} css={{ width, height }} />;
+const Flex = ({ width = '100%', height, flex, ...props }: FlexProps) => {
+  return <StyledFlex className={clsx('flex')} {...props} css={{ width, height, flex }} />;
 };
 
 Flex.displayName = 'Flex';

@@ -1,12 +1,13 @@
 import clsx from 'clsx';
-import { styled } from '../styles/stitches.config';
+import { styled } from '@styles/stitches.config';
 import type { ComponentProps } from 'react';
 
 const StyledContainer = styled('div', {
   boxSizing: 'border-box',
-  height: '100vh',
+  // height: '100vh',
   overflow: 'hidden',
   overflowY: 'auto',
+  height: 'calc(100vh - 60px)',
 });
 
 type PageContainerProps = ComponentProps<typeof StyledContainer> & {

@@ -1,4 +1,4 @@
-import { PageContainer } from '../features/PageContainer.ui';
+import { PageContainer } from '../../features/PageContainer.ui';
 
 const ValuePage = () => {
   return <PageContainer>StockPage</PageContainer>;

@@ -1,13 +1,13 @@
 import { createBrowserRouter } from 'react-router-dom';
 
-import PageLayout from '../layouts/PageLayout';
-import DeshboardPage from '../pages/Deshboard.page';
-import NotFoundPage from '../pages/NotFound.page';
-import StockPage from '../pages/Stock.page';
-import AboutPage from '../pages/About.page';
-import ProfitPage from '../pages/Profit.page';
-import SearchPage from '../pages/Search.page';
-import ValuePage from '../pages/Value.page';
+import PageLayout from '../layouts/ui/PageLayout.ui';
+import DeshboardPage from '../pages/ui/Deshboard.page';
+import NotFoundPage from '../pages/ui/NotFound.page';
+import StockPage from '../pages/ui/Stock.page';
+import AboutPage from '../pages/ui/About.page';
+import ProfitPage from '../pages/ui/Profit.page';
+import SearchPage from '../pages/ui/Search.page';
+import ValuePage from '../pages/ui/Value.page';
 
 const router = createBrowserRouter([
   {
