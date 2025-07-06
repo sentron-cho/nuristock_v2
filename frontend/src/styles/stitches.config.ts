@@ -97,11 +97,19 @@ export const { styled, css, globalCss, theme, createTheme, config } = createStit
 			md: '8px',
 			lg: '12px',
 		},
+		sizes: {
+			sm: '640px',
+			md: '768px',
+			lg: '1024px',
+			xl: '1440px',
+			pageWidth: '$xl',
+		}
 	},
 	media: {
 		sm: '(max-width: 640px)',
 		md: '(max-width: 768px)',
 		lg: '(max-width: 1024px)',
+		xl: '(max-width: 1440px)',
 	},
 	utils: {
 		// margin x 축 (mx)

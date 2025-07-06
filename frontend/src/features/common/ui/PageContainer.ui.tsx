@@ -6,11 +6,24 @@ import { SummaryBar, SummaryDataType } from './SummaryBar.ui';
 const StyledContainer = styled('div', {
 	boxSizing: 'border-box',
 	overflow: 'hidden',
-  '.contents-wrap': {
-    padding: '$10',
+
+	'.scroll-view': {
+		padding: '$10',
 		overflow: 'hidden',
 		overflowY: 'auto',
+		// maxWidth: '$pageWidth',
+
+		'.contents-wrap': {
+			maxWidth: '$pageWidth',
+    	margin: 'auto',
+		}
 	},
+
+	'@md': {
+		'.scroll-view': {
+			padding: '$10 $4',
+		}
+	}
 	// height: 'calc(100vh - 60px)',
 });
 
@@ -47,12 +60,12 @@ export const PageContainer = ({
 		>
 			{summaryData && <SummaryBar data={summaryData} height={summaryHeight} />}
 			<div
-				className='contents-wrap'
+				className='scroll-view'
 				style={{
 					height: `calc(100% - ${summaryHeight}px )`,
 				}}
 			>
-				{children}
+				<div className='contents-wrap'>{children}</div>
 			</div>
 		</StyledContainer>
 	);

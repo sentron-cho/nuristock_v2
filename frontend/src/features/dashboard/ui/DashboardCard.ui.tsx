@@ -1,20 +1,24 @@
 import { ST } from 'src/types/kor.lang';
 import { DashboardResponse as DataType, StockSiseResponse as SiseType } from '../api/useSelectDashboard.hook';
-import { toCost, valueOfPlusMinus, withCommas } from 'src/libs/utils.lib';
-import { EID } from 'src/types/default.config';
+import { valueOfPlusMinus, withCommas } from 'src/libs/utils.lib';
 import Card from '@mui/material/Card';
 import clsx from 'clsx';
 import Flex from '@entites/Flex';
 import { styled } from '@styles/stitches.config';
 import Typography from '@mui/material/Typography';
 import { IconButton, IconType } from '@entites/IconButton';
+import { IconLaunch } from '@entites/Icons';
+import { Button } from '@entites/Button';
 
 const StyledCard = styled(Card, {
-	width: '400px',
+	width: '33.33333%',
 	height: '280px',
+	boxShadow: 'unset !important',
+	padding: '$4',
 
 	'.card': {
 		// backgroundColor: '$gray700',
+		borderRadius: '$sm',
 		border: '1px solid $gray500',
 		overflow: 'hidden',
 		height: '100%',
@@ -25,17 +29,17 @@ const StyledCard = styled(Card, {
 		},
 
 		'.head': {
-      height: '40px',
-      borderBottom: '1px solid $gray300',
+			height: '40px',
+			borderBottom: '1px solid $gray300',
 		},
 		'.body': {
-      borderBottom: '1px solid $gray300',
+			borderBottom: '1px solid $gray300',
 			overflow: 'hidden',
-      flex: 1,
-      '.b-item': {
-        borderTop: '1px solid $gray300',
-        paddingTop: '$10'
-      }
+			flex: 1,
+			'.b-item': {
+				borderTop: '1px solid $gray300',
+				paddingTop: '$10',
+			},
 		},
 		'.foot': {
 			height: '40px',
@@ -43,10 +47,17 @@ const StyledCard = styled(Card, {
 
 		'.plus': {
 			color: '$plus',
-    },
-    '.minus': {
+		},
+		'.minus': {
 			color: '$minus',
 		},
+	},
+
+	'@lg': {
+		width: '50%',
+	},
+	'@md': {
+		width: '100%',
 	},
 });
 
@@ -57,7 +68,7 @@ export const DashboardCard = ({
 }: {
 	data: DataType;
 	siseData?: SiseType;
-	onClick?: (eid: string, item?: DataType) => void;
+	onClick?: (eid?: string, item?: DataType) => void;
 }) => {
 	console.log({ data, siseData });
 
@@ -65,8 +76,7 @@ export const DashboardCard = ({
 		onClick?.(eid, data);
 	};
 
-	const onClickButton = (eid: string, e: React.MouseEvent) => {
-		e.stopPropagation();
+	const onClickButton = (eid?: string) => {
 		onClick?.(eid, data);
 	};
 
@@ -150,22 +160,10 @@ export const DashboardCard = ({
 				</Flex>
 				<Flex className={'foot'}>
 					<span className='st-time'>{sise.time}</span>
-					<div className='grp-l'>
-						{/* <Button
-							className='btn-info green xs'
-							icon={'link'}
-							title={ST.DASHBOARD.NAVER}
-							onClick={onClickButton}
-							eid={'naver'}
-						/>
-						<Button
-							className='btn-daum yellow xs'
-							icon={'link'}
-							title={ST.DASHBOARD.DAUM}
-							onClick={onClickButton}
-							eid={'daum'}
-						/> */}
-					</div>
+					<Flex gap={8}>
+						<Button className='naver' eid='naver' icon={<IconLaunch />} size='small' title='Naver' onClick={onClickButton} />
+						<Button className='daum' eid='daum' icon={<IconLaunch />} size='small' title='Daum' onClick={onClickButton} />
+					</Flex>
 					<div className={clsx('grp-r')} onClick={onClickSise}>
 						<span className={clsx('st-value', data.updown)}>
 							{`${withCommas(data.sise)}`}
