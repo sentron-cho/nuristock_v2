@@ -1,4 +1,4 @@
-import { SummaryDataType } from "@features/SummaryBar.ui"
+import { SummaryDataType } from "@features/common/ui/SummaryBar.ui"
 
 export const SummaryData = (): SummaryDataType[] => {
   return [

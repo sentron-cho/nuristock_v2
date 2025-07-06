@@ -1,8 +1,9 @@
-import React, { useMemo, type JSX } from 'react';
-import { PageContainer } from '@features/PageContainer.ui';
+import { useMemo} from 'react';
+import { PageContainer } from '@features/common/ui/PageContainer.ui';
 import { styled } from '@styles/stitches.config';
 // import { StatsForm } from '@features/StatsForm.ui';
-import { SummaryData } from '../model/Dashbord.data';
+import { SummaryData } from '../../features/dashboard/model/Dashbord.data';
+import { useSelectDashboard } from '@features/dashboard/api/useSelectDashboard.hook';
 
 const StyledPage = styled(PageContainer, {
 	'.contents': {
@@ -13,7 +14,10 @@ const StyledPage = styled(PageContainer, {
 const DashboardPage = () => {
 	const summaryData = useMemo(() => {
 		return SummaryData();
-	}, []);
+  }, []);
+  
+  const { data: list } = useSelectDashboard();
+  console.log(list);
 
 	return (
 		<StyledPage summaryData={summaryData}>

@@ -40,6 +40,7 @@ const Header: React.FC = () => {
 				<nav className='nav'>
 					{menu?.map((a) => (
 						<Link
+							key={a.value}
 							to={a.value}
 							className={clsx('link', { active: a.value === pathname })}
 						>
