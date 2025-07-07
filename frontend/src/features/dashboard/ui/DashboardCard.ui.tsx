@@ -1,5 +1,5 @@
 import { ST } from 'src/types/kor.lang';
-import { DashboardResponse as DataType, StockSiseResponse as SiseType } from '../api/useSelectDashboard.hook';
+import { DashboardResponse as DataType, StockSiseResponse as SiseType } from '../api/dashboard.dto';
 import { valueOfPlusMinus, withCommas } from 'src/libs/utils.lib';
 import Card from '@mui/material/Card';
 import clsx from 'clsx';
@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import { IconButton, IconType } from '@entites/IconButton';
 import { IconLaunch } from '@entites/Icons';
 import { Button } from '@entites/Button';
+import { useMemo } from 'react';
 
 const StyledCard = styled(Card, {
 	width: '33.33333%',
@@ -22,25 +23,36 @@ const StyledCard = styled(Card, {
 		border: '1px solid $gray500',
 		overflow: 'hidden',
 		height: '100%',
+		padding: '$4',
 
-		'& > div': {
-			padding: '$4 $10',
-			width: '100%',
+		'.head, .foot, .body': {
+			padding: '0 $4',
+		},
+
+		'.trade-info, .keep-info': {
+			'&.keep-info': {
+				borderTop: '1px solid $gray300',
+			},
+
+			padding: '8px',
 		},
 
 		'.head': {
 			height: '40px',
 			borderBottom: '1px solid $gray300',
 		},
+
 		'.body': {
 			borderBottom: '1px solid $gray300',
 			overflow: 'hidden',
 			flex: 1,
+
 			'.b-item': {
 				borderTop: '1px solid $gray300',
 				paddingTop: '$10',
 			},
 		},
+
 		'.foot': {
 			height: '40px',
 		},
@@ -48,6 +60,7 @@ const StyledCard = styled(Card, {
 		'.plus': {
 			color: '$plus',
 		},
+
 		'.minus': {
 			color: '$minus',
 		},
@@ -61,6 +74,8 @@ const StyledCard = styled(Card, {
 	},
 });
 
+const LONG_TIME_FORMAT_LENGTH = 8;
+
 export const DashboardCard = ({
 	data,
 	siseData,
@@ -70,135 +85,157 @@ export const DashboardCard = ({
 	siseData?: SiseType;
 	onClick?: (eid?: string, item?: DataType) => void;
 }) => {
-	console.log({ data, siseData });
-
-	const onClickCard = (eid: string) => {
+	const handleClick = (eid?: string) => {
 		onClick?.(eid, data);
 	};
 
-	const onClickButton = (eid?: string) => {
-		onClick?.(eid, data);
-	};
+	const sise = useMemo(() => {
+		if (!data.stime) return { total: '', text: '', time: '', price: 0 };
 
-	const makeSise = (item: DataType): { total: string; text: string; time: string; price: number } => {
-		if (item.stime) {
-			const siseTotal = item.kcount * (item?.sise || 0);
-			const sisePercent = `[${((siseTotal / item.kprice) * 100 - 100).toFixed(0)} %]`;
-			const siseText =
-				item.kcount > 0 ? `[${withCommas(item.kcount)} x ${withCommas(item.sise)} ${ST.WON}] ${sisePercent}` : '';
-			const siseTitle = item?.stime && item.stime.length > 8 ? ST.SISE : ST.SISE_END;
-			const siseTime = item?.stime; //&& item?.stime?.length <= 8 ? toStringSymbol(item.stime.substring(4, 4)) : Util.toStringSymbol(item.stime).substr(5, 11);
+		const siseTotal = data.kcount * (data?.sise || 0);
+		const sisePercent = `[${((siseTotal / data.kprice) * 100 - 100).toFixed(0)} %]`;
+		const siseText =
+			data.kcount > 0 ? `[${withCommas(data.kcount)} x ${withCommas(data.sise)} ${ST.WON}] ${sisePercent}` : '';
+		const siseTitle = data.stime.length > LONG_TIME_FORMAT_LENGTH ? ST.SISE : ST.SISE_END;
 
-			return {
-				total: `${withCommas(siseTotal)} ${ST.WON}`,
-				text: siseText,
-				time: `${siseTitle}(${siseTime})`,
-				price: siseTotal,
-			};
+		return {
+			total: `${withCommas(siseTotal)} ${ST.WON}`,
+			text: siseText,
+			time: `${siseTitle}(${data.stime})`,
+			price: siseTotal,
+		};
+	}, [data]);
+
+	const values = useMemo(() => {
+		const buyAvg = data?.ecount ? Math.round(data.sprice / data.ecount) : 0;
+		const buyText = data?.ecount ? `${withCommas(data.ecount)} x ${withCommas(buyAvg)}` : '';
+
+		const sellAvg = data?.ecount ? Math.round(data.eprice / data.ecount) : 0;
+		const sellText = data?.ecount ? `${withCommas(data.ecount)} x ${withCommas(sellAvg)}` : '';
+
+		const keepAvg = data.kcount ? Math.round(data.kprice / data.kcount) : 0;
+		const keepText = data.kcount ? `${withCommas(data.kcount)} x ${withCommas(keepAvg)}` : '';
+
+		const sonic = data.eprice - data.sprice;
+		const sonicText = sonic !== 0 ? `${((data.eprice / data.sprice) * 100 - 100).toFixed(0)}` : '';
+
+		const stype = valueOfPlusMinus(sise.price, data.kprice);
+
+		return {
+			buyAvg, buyText, sellAvg, sellText, keepAvg, keepText, sonic, sonicText, stype
 		}
+	}, [data]);
 
-		return { total: '', text: '', time: '', price: 0 };
-	};
-
-	const buyAvg = Math.round(data.sprice / data.ecount);
-	const buyText = data.ecount > 0 ? `[${withCommas(data.ecount)} x ${withCommas(buyAvg)} ${ST.WON}]` : '';
-	const sellAvg = Math.round(data.eprice / data.ecount);
-	const sellText = data.ecount > 0 ? `[${withCommas(data.ecount)} x ${withCommas(sellAvg)} ${ST.WON}]` : '';
-	const keepAvg = Math.round(data.kprice / data.kcount);
-	const keepText = data.kcount > 0 ? `[${withCommas(data.kcount)} x ${withCommas(keepAvg)} ${ST.WON}]` : '';
-	const sonic = data.eprice - data.sprice;
-	const sonicText = sonic !== 0 ? `[${((data.eprice / data.sprice) * 100 - 100).toFixed(0)} %]` : '';
-	const type = valueOfPlusMinus(sonic);
-	const sise = makeSise(data);
-	const stype = valueOfPlusMinus(sise.price as number, data.kprice);
+	const type = valueOfPlusMinus(values?.sonic);
 	const active = data.kprice > 0;
 	const history = data.sprice || data.kprice;
+	
 	const icon = data.updown === 'down' ? 'arrowdn' : data.updown === 'up' ? 'arrowup' : '';
 
-	const onClickSise = (e: React.MouseEvent) => {
+	const handleSiseClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		onClick?.('sise', data);
 	};
 
 	return (
-		<StyledCard className={clsx({ active }, !history && 'sm', type)}>
-			<Flex className='card' direction={'column'} onClick={() => onClickCard('card')}>
-				<Flex className={'head'} justify={'between'}>
-					<Flex gap={4} className={'left'} flex={1}>
-						<Typography className='title'>{data.name}</Typography>
-						<Typography className='code'>{data.code}</Typography>
+		<StyledCard className={clsx({ active }, type, { sm: !history })}>
+			<Flex className='card' direction='column' onClick={() => handleClick('card')}>
+				<Flex className='head' justify='between'>
+					<Flex gap={4} className='left' flex={1}>
+						<Typography fontWeight={'bold'} className='title'>
+							{data.name}
+						</Typography>
+						<Typography fontWeight={'bold'} className='code'>
+							{data.code}
+						</Typography>
 					</Flex>
-					<Flex gap={4} className='right' width={'fit-contents'}>
-						<IconButton type={IconType.DELETE} onClick={onClick} />
-						<IconButton type={IconType.EDIT} onClick={onClick} />
+					<Flex gap={4} className='right' width='fit-contents'>
+						<IconButton eid='delete' type={IconType.DELETE} onClick={handleClick} />
+						<IconButton eid='edit' type={IconType.EDIT} onClick={handleClick} />
 					</Flex>
 				</Flex>
-				<Flex gap={8} className={'body'} direction={'column'} justify={'start'}>
+
+				<Flex gap={8} className='body' direction='column' justify='start'>
 					{history ? (
-						<>
-							<Flex className='t-item' direction={'column'} align={'start'}>
-								<CoItem title={ST.BUY} text={buyText} value={withCommas(data.sprice)} />
-								<CoItem title={ST.SELL} text={sellText} value={withCommas(data.eprice)} />
-								<CoItem
-									className={valueOfPlusMinus(sonic)}
+						<Flex direction={'column'}>
+							{/* 매수/매도/손익 */}
+							<Flex className='trade-info' direction='column' align='start' gap={4}>
+								<LineFiled title={ST.BUY} text={values?.buyText} value={withCommas(data.sprice)} />
+								<LineFiled title={ST.SELL} text={values?.sellText} value={withCommas(data.eprice)} />
+								<LineFiled
+									className={valueOfPlusMinus(values?.sonic)}
 									title={ST.SONIC}
-									text={sonicText}
-									value={withCommas(sonic)}
+									text={values?.sonicText}
+									suffix={{ text: '%', value: ST.WON }}
+									value={withCommas(values?.sonic)}
 								/>
 							</Flex>
+							{/* 보유/예상/예상수익 */}
 							{active && (
-								<Flex className='b-item' direction={'column'} align={'start'}>
-									<CoItem title={ST.KEEP} text={keepText} value={withCommas(data.kprice)} />
-									<CoItem title={ST.KEEP_SISE} text={sise.text} value={sise.total} type={stype} />
-									<CoItem title={ST.SELL_SISE} value={withCommas(sise.price - data.kprice)} type={stype} />
+								<Flex className='keep-info' direction='column' align='start' gap={4}>
+									<LineFiled title={ST.KEEP} text={values?.keepText} value={withCommas(data.kprice)} />
+									<LineFiled title={ST.KEEP_SISE} text={sise.text} value={sise.total} type={values?.stype} />
+									<LineFiled title={ST.SELL_SISE} value={withCommas(sise.price - data.kprice)} type={values?.stype} />
 								</Flex>
 							)}
-						</>
+						</Flex>
 					) : (
-						<div className={'noitem'}>{ST.DASHBOARD.NO_HISTORY}</div>
+						<div className='noitem'>{ST.DASHBOARD.NO_HISTORY}</div>
 					)}
 				</Flex>
-				<Flex className={'foot'}>
+
+				<Flex className='foot'>
 					<span className='st-time'>{sise.time}</span>
 					<Flex gap={8}>
-						<Button className='naver' eid='naver' icon={<IconLaunch />} size='small' title='Naver' onClick={onClickButton} />
-						<Button className='daum' eid='daum' icon={<IconLaunch />} size='small' title='Daum' onClick={onClickButton} />
+						<Button
+							className='naver'
+							eid='naver'
+							icon={<IconLaunch />}
+							size='small'
+							title='Naver'
+							onClick={handleClick}
+						/>
+						<Button className='daum' eid='daum' icon={<IconLaunch />} size='small' title='Daum' onClick={handleClick} />
 					</Flex>
-					<div className={clsx('grp-r')} onClick={onClickSise}>
+					{data?.sise && <div className='grp-r' onClick={handleSiseClick}>
 						<span className={clsx('st-value', data.updown)}>
-							{`${withCommas(data.sise)}`}
-							{icon && <IconButton type={IconType.DELETE} onClick={onClick} />}
-							{data?.erate !== 0 ? `${withCommas(data.ecost)}` : ''}
+							{withCommas(data.sise)}
+							{icon && <IconButton type={IconType.DELETE} onClick={handleClick} />}
+							{data.erate !== 0 ? `${withCommas(data.ecost)}` : ''}
 						</span>
 						<span className={clsx('st-rate md', data.updown)}>{`(${data.erate}%)`}</span>
-					</div>
+					</div>}
 				</Flex>
 			</Flex>
 		</StyledCard>
 	);
 };
 
-const StyledColItem = styled(Flex, {
+const StyledLineFiled = styled(Flex, {
 	fontSize: '$sm',
 
+	'.MuiTypography-root': {
+		fontSize: '$sm',
+	},
+
 	'.left': {
-		flex: 1,
+		width: '200px',
 	},
 
 	'.right': {
 		textAlign: 'right',
-		width: '140px',
+		flex: 1,
 		fontSize: '$xs',
 	},
 });
 
-export const CoItem = ({
+export const LineFiled = ({
 	title,
 	type,
 	date,
 	value,
 	text,
-	suffix = ST.WON,
+	suffix = { text: ST.WON, value: ST.WON },
 	className,
 }: {
 	title: string;
@@ -206,28 +243,29 @@ export const CoItem = ({
 	date?: string;
 	value?: string | number;
 	text?: string;
-	suffix?: string;
+	suffix?: { text?: string; value?: string };
 	className?: string;
 }) => {
 	return (
-		<StyledColItem className={clsx('col', type, className)} justify={'between'}>
-			<Flex gap={10} className='left'>
-				<Typography fontSize={'small'} className='title'>
-					{title}
-				</Typography>
-				<span className='middle'>
+		<StyledLineFiled className={clsx('col', type, className)} justify={'between'}>
+			<Flex className='left' gap={10} width={120}>
+				<Typography className='title'>{title}</Typography>
+				<Flex className='middle' flex={1}>
 					{text && (
-						<Typography fontSize={'small'} className='text'>
-							{text}
-						</Typography>
+						<Flex>
+							<Typography className='text' fontWeight={'bold'}>
+								{text}
+							</Typography>
+							{suffix?.text && <Typography>{suffix.text}</Typography>}
+						</Flex>
 					)}
-					{date && <Typography fontSize={'small'} className={'date'}>{`[${date}]`}</Typography>}
-				</span>
+					{date && <Typography className={'date'}>{`[${date}]`}</Typography>}
+				</Flex>
 			</Flex>
-			<Flex className='right' gap={2} justify={'end'}>
-				<Typography fontSize={'small'}>{value}</Typography>
-				{suffix && <Typography fontSize={'small'}>{suffix}</Typography>}
+			<Flex className='right' gap={2} justify={'end'} flex={1}>
+				<Typography fontWeight={'bold'}>{value || 0}</Typography>
+				{suffix?.value && <Typography>{suffix.value}</Typography>}
 			</Flex>
-		</StyledColItem>
+		</StyledLineFiled>
 	);
 };

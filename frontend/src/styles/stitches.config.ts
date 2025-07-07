@@ -65,6 +65,13 @@ export const { styled, css, globalCss, theme, createTheme, config } = createStit
 			select: '#f6f8fa',
 			back: '#202020a0',
 		},
+		fontWeights: {
+			thin: '300', // 보조 설명 텍스트
+			regular: '400', // 일반 본문 텍스트
+			medium: '500', // 부제목 또는 강조용
+			semiBold: '600', // 강조된 제목이나 라벨
+			bold: '700', // 메인 제목 또는 숫자 강조
+		},
 		space: {
 			1: '1px',
 			2: '2px',
@@ -103,7 +110,7 @@ export const { styled, css, globalCss, theme, createTheme, config } = createStit
 			lg: '1024px',
 			xl: '1440px',
 			pageWidth: '$xl',
-		}
+		},
 	},
 	media: {
 		sm: '(max-width: 640px)',
