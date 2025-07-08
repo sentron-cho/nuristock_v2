@@ -6,9 +6,10 @@ import { SummaryBar, SummaryDataType } from './SummaryBar.ui';
 const StyledContainer = styled('div', {
 	boxSizing: 'border-box',
 	overflow: 'hidden',
+	position: 'relative',
 
 	'.scroll-view': {
-		padding: '$10',
+		paddingBottom: '$10',
 		overflow: 'hidden',
 		overflowY: 'auto',
 		// maxWidth: '$pageWidth',
@@ -21,7 +22,8 @@ const StyledContainer = styled('div', {
 
 	'@md': {
 		'.scroll-view': {
-			padding: '$10 $4',
+			padding: '0',
+			paddingBottom: '$10',
 		}
 	}
 	// height: 'calc(100vh - 60px)',

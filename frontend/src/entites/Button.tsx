@@ -9,30 +9,36 @@ export interface ButtonProps {
 	eid?: string;
 	icon?: React.ReactNode;
 	iconPosition?: 'start' | 'end';
-  size?: MuiButtonProps['size'];
-  title?: string;
-  className?: string;
+	size?: MuiButtonProps['size'];
+	title?: string;
+	className?: string;
 }
 
 const StyledButton = styled(MuiButton, {
 	minHeight: '20px',
 
 	'&.MuiButton-sizeSmall': {
-		paddingTop: '2px !important',
-		paddingBottom: '2px !important',
-		lineHeight: '24px',
-	}
-})
+		padding: '0px 8px !important',
+		lineHeight: '28px',
+		height: '28px,'
+	},
+
+	'&.MuiButton-sizeMedium': {
+		paddingTop: '0px 8px !important',
+		height: '36px',
+		lineHeight: '36px',
+	},
+});
 
 export const Button = ({
-  type = 'fill',
-  eid,
-  onClick,
-  icon,
-  iconPosition = 'start',
-  size = 'small',
-  title = '',
-  className,
+	type = 'fill',
+	eid,
+	onClick,
+	icon,
+	iconPosition = 'start',
+	size = 'small',
+	title = '',
+	className,
 }: ButtonProps) => {
 	const variant = useMemo(() => {
 		if (type === 'text') return 'text';
@@ -46,7 +52,7 @@ export const Button = ({
 	};
 
 	return (
-    <StyledButton
+		<StyledButton
 			variant={variant as MuiButtonProps['variant']}
 			type='button'
 			size={size}
