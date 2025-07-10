@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
 import { styled } from '@styles/stitches.config';
 // import { StatsForm } from '@features/StatsForm.ui';
@@ -10,6 +10,9 @@ import Flex from '@entites/Flex';
 import { EID } from 'src/types/default.config';
 import { URL } from 'src/types/url.enum';
 import { DashboardTitleBar } from '@features/dashboard/ui/DashboardTitleBar.ui';
+import { FieldValues } from 'react-hook-form';
+import { StockRegisterPopup } from '@features/dashboard/ui/StockRegister.popup';
+import { Alert } from '@features/common/ui/Alert.ui';
 
 const StyledPage = styled(PageContainer, {
 	'.card-list': {
@@ -22,6 +25,8 @@ const DashboardPage = () => {
 	const summaryData = useMemo(() => {
 		return SummaryData();
 	}, []);
+
+	const [popup, setPopup] = useState<{ type: 'append'; item?: FieldValues }>();
 
 	const { data: list } = useSelectDashboard();
 	console.log(list);
@@ -80,21 +85,31 @@ const DashboardPage = () => {
 
 	const onClickTitleBar = () => {
 		console.log('[onClickTitleBar]');
+		setPopup({ type: 'append' });
 	};
 
 	const onChangeTitleBar = (value: string) => {
 		console.log('[onClickTitleBar]', { value });
 	};
 
+	const onCloseAppend = (isOk: boolean) => {
+		console.log('[onClickTitleBar]', { isOk });
+		setPopup(undefined);
+	};
+
 	return (
-		<StyledPage summaryData={summaryData}>
-			<DashboardTitleBar onClick={onClickTitleBar} onSelect={onChangeTitleBar} />
-			<Flex className='card-list'>
-				{list?.map((item) => (
-					<DashboardCard key={item.code} data={item} onClick={onClick} />
-				))}
-			</Flex>
-		</StyledPage>
+		<>
+			<StyledPage summaryData={summaryData}>
+				<DashboardTitleBar onClick={onClickTitleBar} onSelect={onChangeTitleBar} />
+				<Flex className='card-list'>
+					{list?.map((item) => (
+						<DashboardCard key={item.code} data={item} onClick={onClick} />
+					))}
+				</Flex>
+			</StyledPage>
+			{popup?.type === 'append' && <StockRegisterPopup onClose={onCloseAppend} />}
+			{/* {popup?.type === 'append' && <Alert onClose={() => setPopup(undefined)} />} */}
+		</>
 	);
 };
 

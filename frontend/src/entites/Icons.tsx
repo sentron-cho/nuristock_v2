@@ -2,8 +2,10 @@ import IconDelete from '@mui/icons-material/Delete';
 import IconEdit from '@mui/icons-material/EditDocument';
 import IconLaunch from '@mui/icons-material/Launch';
 import IconLink from '@mui/icons-material/Link';
+import IconAdd from '@mui/icons-material/Add';
+import IconClose from '@mui/icons-material/Close';
 
-export { IconDelete, IconEdit, IconLaunch, IconLink };
+export { IconDelete, IconEdit, IconLaunch, IconLink, IconAdd, IconClose};
 
 // export enum IconType {
 // 	DELETE = 'delete',

@@ -1,5 +1,6 @@
 import { Button } from '@entites/Button';
 import Flex from '@entites/Flex';
+import { IconAdd } from '@entites/Icons';
 import { SelectForm } from '@entites/SelectForm';
 import { Title } from '@entites/Title';
 import { styled } from '@styles/stitches.config';
@@ -41,8 +42,15 @@ export const DashboardTitleBar = ({
 	return (
 		<StyledFlex className='dashboard-titl-bar' justify={'between'}>
 			<Title title={'보유종목'} />
-			<SelectForm size='medium' id='select' width={180} options={options} onChange={onSelect} defaultValue='keep-cost' />
-			<Button size='medium' title={'추가'} onClick={onClick} />
+			<SelectForm
+				size='medium'
+				id='select'
+				width={180}
+				options={options}
+				onChange={onSelect}
+				defaultValue='keep-cost'
+			/>
+			<Button size='medium' icon={<IconAdd />} title={'추가'} onClick={onClick} />
 		</StyledFlex>
 	);
 };

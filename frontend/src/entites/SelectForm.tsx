@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
 	InputLabel,
 	MenuItem,
@@ -8,32 +8,37 @@ import {
 	SelectChangeEvent,
 	SelectProps as MuiSelectProps,
 } from '@mui/material';
-import { Controller, Control, FieldValues } from 'react-hook-form';
+import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import { styled } from '@styles/stitches.config';
 
 export type OptionType = { label: string; value: string };
 
+export type SelectOptionType = OptionType;
+
 type SelectFormProps<T extends FieldValues = FieldValues> = SelectProps & {
-	// 1. react-hook-form 방식일 경우
 	name?: keyof T;
-	control?: Control<FieldValues>;
+	formMethod?: UseFormReturn<FieldValues>;
 };
 
 export const SelectForm = <T extends FieldValues = FieldValues>(props: SelectFormProps<T>) => {
-	const isHookFormMode = 'control' in props && 'name' in props;
+	const isHookFormMode = 'control' in props;
+	const id = useMemo(() => (props?.name || props.id) as string, [props?.name, props.id]);
 
 	// react-hook-form 방식
 	if (isHookFormMode) {
 		return (
 			<Controller
-				name={props.name as string}
-				control={props.control}
+				name={id as Path<T>}
+				control={props?.formMethod?.control}
 				// defaultValue={defaultValue}
 				render={({ field, fieldState }) => (
 					<Select
 						{...props}
 						value={field.value ?? ''}
-						onChange={field.onChange}
+						onChange={(value) => {
+							props?.formMethod?.clearErrors(id);
+							field.onChange(value);
+						}}
 						error={!!fieldState.error}
 						message={fieldState.error?.message}
 					/>
@@ -41,26 +46,22 @@ export const SelectForm = <T extends FieldValues = FieldValues>(props: SelectFor
 			/>
 		);
 	} else {
-		return (
-			<Select
-				{...props}
-			/>
-		);
+		return <Select {...props} />;
 	}
 };
 
 const StyledForm = styled(FormControl, {
-  '.MuiOutlinedInput-notchedOutline': {
-    borderColor: 'unset !important',
-    borderWidth: '1px !important'
-  },
-  
-  '.MuiSelect-root > .MuiSelect-select': {
+	'.MuiOutlinedInput-notchedOutline': {
+		borderColor: 'unset !important',
+		borderWidth: '1px !important',
+	},
+
+	'.MuiSelect-root > .MuiSelect-select': {
 		padding: '0 $10',
 		lineHeight: '36px',
 		height: '36px',
-  },
-  
+	},
+
 	'.MuiInputBase-sizeSmall > .MuiSelect-select': {
 		padding: '0 $10',
 		lineHeight: '28px',
@@ -70,7 +71,7 @@ const StyledForm = styled(FormControl, {
 
 interface SelectProps {
 	id: string;
-	options: OptionType[];
+	options: SelectOptionType[];
 
 	value?: string;
 	onChange?: (value: string) => void;
@@ -84,6 +85,8 @@ interface SelectProps {
 	fullWidth?: boolean;
 	disabled?: boolean;
 	size?: MuiSelectProps['size'];
+
+	onClearError?: (id: string) => void;
 }
 
 export const Select: React.FC<SelectProps> = ({
@@ -91,6 +94,7 @@ export const Select: React.FC<SelectProps> = ({
 	value,
 	options,
 	onChange,
+	onClearError,
 	label,
 	placeholder,
 	fullWidth = true,
@@ -101,8 +105,9 @@ export const Select: React.FC<SelectProps> = ({
 	defaultValue,
 	width,
 }) => {
-	const onChangeSelect = (e: SelectChangeEvent<string | number>) => {
+	const handleChange = (e: SelectChangeEvent<string | number>) => {
 		onChange?.(e?.target?.value?.toString());
+		onClearError?.(id);
 	};
 
 	return (
@@ -115,7 +120,7 @@ export const Select: React.FC<SelectProps> = ({
 				id={id}
 				label={label}
 				value={value}
-				onChange={onChangeSelect}
+				onChange={handleChange}
 				displayEmpty={!!placeholder}
 				defaultValue={defaultValue}
 				style={{ width }}

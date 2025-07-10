@@ -3,15 +3,13 @@ import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
 import { useMemo } from 'react';
 
-export interface ButtonProps {
-	type?: 'text' | 'fill' | 'outline';
+export interface ButtonProps extends Omit<MuiButtonProps, 'onClick'> {
+	buttonType?: 'text' | 'fill' | 'outline';
 	onClick?: (eid?: string) => void;
 	eid?: string;
 	icon?: React.ReactNode;
 	iconPosition?: 'start' | 'end';
-	size?: MuiButtonProps['size'];
 	title?: string;
-	className?: string;
 }
 
 const StyledButton = styled(MuiButton, {
@@ -20,7 +18,7 @@ const StyledButton = styled(MuiButton, {
 	'&.MuiButton-sizeSmall': {
 		padding: '0px 8px !important',
 		lineHeight: '28px',
-		height: '28px,'
+		height: '28px,',
 	},
 
 	'&.MuiButton-sizeMedium': {
@@ -31,7 +29,7 @@ const StyledButton = styled(MuiButton, {
 });
 
 export const Button = ({
-	type = 'fill',
+	buttonType = 'fill',
 	eid,
 	onClick,
 	icon,
@@ -39,12 +37,13 @@ export const Button = ({
 	size = 'small',
 	title = '',
 	className,
-}: ButtonProps) => {
+	...props
+}: ButtonProps & MuiButtonProps) => {
 	const variant = useMemo(() => {
-		if (type === 'text') return 'text';
-		else if (type === 'outline') return 'outline';
+		if (buttonType === 'text') return 'text';
+		else if (buttonType === 'outline') return 'outlined';
 		else return 'contained'; // fill
-	}, [type]);
+	}, [buttonType]);
 
 	const onClickButton = (e: React.MouseEvent) => {
 		e.stopPropagation();
@@ -60,6 +59,7 @@ export const Button = ({
 			className={clsx('btn', className)}
 			startIcon={iconPosition === 'start' ? icon : undefined}
 			endIcon={iconPosition === 'end' ? icon : undefined}
+			{...props}
 		>
 			{title}
 		</StyledButton>
