@@ -67,14 +67,20 @@ const StyledForm = styled(FormControl, {
 
 		'.MuiSelect-root > .MuiSelect-select': {
 			padding: '0 $10',
-			lineHeight: '36px',
-			height: '36px',
+			lineHeight: '$formMedium',
+			height: '$formMedium',
 		},
 
 		'.MuiInputBase-sizeSmall > .MuiSelect-select': {
 			padding: '0 $10',
-			lineHeight: '28px',
-			height: '28px',
+			lineHeight: '$formSmall',
+			height: '$formSmall',
+		},
+
+		'.MuiInputBase-sizeLarge > .MuiSelect-select': {
+			padding: '0 $10',
+			lineHeight: '$formLarge',
+			height: '$formLarge',
 		},
 	},
 });

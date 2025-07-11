@@ -5,6 +5,7 @@ import { SelectForm } from '@entites/SelectForm';
 import { Title } from '@entites/Title';
 import { styled } from '@styles/stitches.config';
 import { useMemo } from 'react';
+import { ST } from 'src/types/default.config';
 
 const StyledFlex = styled(Flex, {
 	backgroundColor: '$gray400',
@@ -28,20 +29,19 @@ export const DashboardTitleBar = ({
 	onClick: () => void;
 	onSelect: (value: string) => void;
 }) => {
-	const options = useMemo(
-		() => [
+	const options = useMemo(() => {
+		return [
 			{ label: '보유금액', value: 'keep-cost' },
 			{ label: '예상손익', value: 'sise-sonic' },
 			{ label: '손익금액', value: 'sonic-cost' },
 			{ label: '손익율', value: 'sonic-rate' },
 			{ label: '제목', value: 'title' },
-		],
-		[]
-	);
+		];
+	}, []);
 
 	return (
 		<StyledFlex className='dashboard-titl-bar' justify={'between'}>
-			<Title title={'보유종목'} />
+			<Title title={ST.KEEP_STOCKS} />
 			<SelectForm
 				size='medium'
 				id='select'

@@ -1,9 +1,10 @@
 import { SummaryDataType } from "@features/common/ui/SummaryBar.ui"
+import { ST } from "src/types/default.config"
 
 export const SummaryData = (): SummaryDataType[] => {
   return [
-    {label: '자본', value: '123456789'},
-    {label: '시세매도기', value: '123456789'},
-    {label: '예상손익', value: '123456789'},
+    {label: ST.CAPITAL, value: '123456789'},
+    {label: ST.AT_MARKET_PRICE, value: '123456789'},
+    {label: ST.PROFIT_AND_LOSS, value: '123456789'},
   ]
 }

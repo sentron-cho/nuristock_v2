@@ -59,6 +59,16 @@ const StyledCard = styled(Card, {
 
 			'.foot': {
 				height: '40px',
+
+				'.naver, .daum': {
+					'&.naver': {
+						backgroundColor: '#00c73c',
+					},
+					'&.daum': {
+						backgroundColor: '#fcce00',
+						color: '$black',
+					},
+				},
 			},
 
 			'.plus': {
@@ -67,6 +77,12 @@ const StyledCard = styled(Card, {
 
 			'.minus': {
 				color: '$minus',
+			},
+		},
+
+		'&.active': {
+			'.box': {
+				borderColor: '$gray700',
 			},
 		},
 	},

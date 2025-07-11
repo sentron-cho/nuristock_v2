@@ -10,6 +10,7 @@ export interface ButtonProps extends Omit<MuiButtonProps, 'onClick'> {
 	icon?: React.ReactNode;
 	iconPosition?: 'start' | 'end';
 	title?: string;
+	// size?: 'small' | 'medium' | 'large';
 }
 
 const StyledButton = styled(MuiButton, {
@@ -17,14 +18,20 @@ const StyledButton = styled(MuiButton, {
 
 	'&.MuiButton-sizeSmall': {
 		padding: '0px 8px !important',
-		lineHeight: '28px',
-		height: '28px,',
+		lineHeight: '$formSmall',
+		height: '$formSmall,',
 	},
 
 	'&.MuiButton-sizeMedium': {
 		paddingTop: '0px 8px !important',
-		height: '36px',
-		lineHeight: '36px',
+		height: '$formMedium',
+		lineHeight: '$formMedium',
+	},
+
+	'&.MuiButton-sizeLarge': {
+		paddingTop: '0px 8px !important',
+		height: '$formLarge',
+		lineHeight: '$formLarge',
 	},
 });
 

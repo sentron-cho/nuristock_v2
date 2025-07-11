@@ -107,11 +107,19 @@ export const { styled, css, globalCss, theme, createTheme, config } = createStit
 			lg: '12px',
 		},
 		sizes: {
+			formSmall: '24px',
+			formMedium: '32px',
+			formLarge: '40px',
 			sm: '640px',
 			md: '768px',
 			lg: '1024px',
 			xl: '1440px',
 			pageWidth: '$xl',
+		},
+		lineHeights: {
+			formSmall: '24px',
+			formMedium: '32px',
+			formLarge: '40px',
 		},
 	},
 	media: {
