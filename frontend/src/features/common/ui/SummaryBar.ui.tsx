@@ -2,7 +2,7 @@ import Flex from '@entites/Flex';
 import Typography from '@mui/material/Typography';
 import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
-import { toCost } from 'src/libs/utils.lib';
+import { toCost } from '@shared/libs/utils.lib';
 
 export interface SummaryDataType {
 	label: string;

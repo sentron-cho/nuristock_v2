@@ -1,4 +1,4 @@
-import { EID } from "src/types/default.config";
+import { EID } from "@shared/config/default.config";
 
 export enum COST {
 	EUK = '억',

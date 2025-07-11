@@ -5,7 +5,7 @@ import { SelectForm } from '@entites/SelectForm';
 import { Title } from '@entites/Title';
 import { styled } from '@styles/stitches.config';
 import { useMemo } from 'react';
-import { ST } from 'src/types/default.config';
+import { ST } from '@shared/config/default.config';
 
 const StyledFlex = styled(Flex, {
 	backgroundColor: '$gray400',

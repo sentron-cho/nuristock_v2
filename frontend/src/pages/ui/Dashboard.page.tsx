@@ -7,11 +7,11 @@ import { DashboardResponse as DataType } from '@features/dashboard/api/dashboard
 import { useSelectDashboard } from '@features/dashboard/api/dashboard.api';
 import { DashboardCard } from '@features/dashboard/ui/DashboardCard.ui';
 import Flex from '@entites/Flex';
-import { EID } from 'src/types/default.config';
-import { URL } from 'src/types/url.enum';
 import { DashboardTitleBar } from '@features/dashboard/ui/DashboardTitleBar.ui';
 import { FieldValues } from 'react-hook-form';
 import { StockRegisterPopup } from '@features/dashboard/ui/StockRegister.popup';
+import { URL } from '@shared/config/url.enum';
+import { EID } from '@shared/config/default.config';
 
 const StyledPage = styled(PageContainer, {
 

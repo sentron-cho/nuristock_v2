@@ -1,5 +1,5 @@
 import { SummaryDataType } from "@features/common/ui/SummaryBar.ui"
-import { ST } from "src/types/default.config"
+import { ST } from "@shared/config/default.config"
 
 export const SummaryData = (): SummaryDataType[] => {
   return [
