@@ -1,6 +1,6 @@
 import { DashboardResponse } from './profit.dto';
-import mockData from './mock/profit.list.json';
-import mockDate from './mock/profit.date.json';
+import { mock as mockData } from './mock/profit.list';
+import { mock as mockDate } from './mock/profit.date';
 import { useQuery } from '@tanstack/react-query';
 
 export const useSelectDashboard = () => {

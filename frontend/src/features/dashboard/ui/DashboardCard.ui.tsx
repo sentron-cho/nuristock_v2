@@ -1,5 +1,5 @@
 import { ST } from '@shared/config/kor.lang';
-import { DashboardResponse as DataType, StockSiseResponse as SiseType } from '../api/dashboard.dto';
+import { DashboardItemType as DataType, StockSiseResponse as SiseType } from '../api/dashboard.dto';
 import { valueOfPlusMinus, withCommas } from '@shared/libs/utils.lib';
 import Card from '@mui/material/Card';
 import clsx from 'clsx';

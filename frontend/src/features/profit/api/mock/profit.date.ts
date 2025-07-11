@@ -1,4 +1,4 @@
-{
+export const mock = {
 	"code": 0,
 	"value": [
 		{

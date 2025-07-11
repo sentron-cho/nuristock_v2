@@ -3,7 +3,10 @@ import { PageContainer } from '@features/common/ui/PageContainer.ui';
 import { styled } from '@styles/stitches.config';
 // import { StatsForm } from '@features/StatsForm.ui';
 import { SummaryData } from '../../features/dashboard/config/Dashbord.data';
-import { DashboardResponse as DataType } from '@features/dashboard/api/dashboard.dto';
+import {
+	DashboardItemType as DataType,
+	DashboardResponse as ResponseType,
+} from '@features/dashboard/api/dashboard.dto';
 import { useSelectDashboard } from '@features/dashboard/api/dashboard.api';
 import { DashboardCard } from '@features/dashboard/ui/DashboardCard.ui';
 import Flex from '@entites/Flex';
@@ -28,7 +31,9 @@ const DashboardPage = () => {
 
 	const [popup, setPopup] = useState<{ type: 'append'; item?: FieldValues }>();
 
-	const { data: list } = useSelectDashboard();
+	const { data } = useSelectDashboard();
+
+	const list = useMemo(() => data?.value, [data]);
 	console.log(list);
 
 	const onClick = (eid?: string, item?: DataType) => {

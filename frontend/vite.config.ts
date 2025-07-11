@@ -5,7 +5,7 @@ import { resolve } from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // plugins: [react(), tsconfigPaths()],
+  plugins: [react(), tsconfigPaths()],
   resolve: {
     alias: [
       // { find: '@src', replacement: resolve(__dirname, 'src') },
@@ -13,7 +13,6 @@ export default defineConfig({
       { find: '@styles', replacement: resolve(__dirname, 'src/styles') },
     ],
   },
-  plugins: [react(), tsconfigPaths()],
   // resolve: {
   //   alias: {
   //     '@features': path.resolve(__dirname, 'src/features'),

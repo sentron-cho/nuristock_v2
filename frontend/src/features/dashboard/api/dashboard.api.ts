@@ -1,9 +1,9 @@
 import { DashboardResponse } from './dashboard.dto';
-import mockData from './mock/dashboard.list.json';
+import { mock as mockData } from './mock/dashboard.list';
 import { useQuery } from '@tanstack/react-query';
 
 export const useSelectDashboard = () => {
-	return useQuery<unknown, Error, DashboardResponse[]>({
+	return useQuery<unknown, Error, DashboardResponse>({
 		queryKey: ['DASHARD-R01'],
 		queryFn: () => mockData,
 	});

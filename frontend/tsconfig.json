@@ -1,36 +1,42 @@
 {
-  "compilerOptions": {
-    "composite": true,
-    "noEmit": false,
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ES2020",
-    "skipLibCheck": true,
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    // "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "react-jsx",
+	"compilerOptions": {
+		"outDir": "./dist", // ✅ 빌드 결과물이 생성될 디렉토리
+		"rootDir": "./src", // 입력 파일의 기준 경로
+		"declaration": true, // .d.ts 파일 생성
+		"declarationDir": "./dist/types", // .d.ts 파일만 따로 분리 저장할 수도 있음
+		"sourceMap": true, // 소스맵 생성 (선택)
 
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
+		"composite": true,
+		"noEmit": false,
+		"target": "ES2020",
+		"useDefineForClassFields": true,
+		"lib": ["ES2020", "DOM", "DOM.Iterable"],
+		"module": "ES2020",
+		"skipLibCheck": true,
+		/* Bundler mode */
+		"moduleResolution": "bundler",
+		// "allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"jsx": "react-jsx",
 
-    "baseUrl": ".", // 기본 경로를 현재 프로젝트의 루트로 설정 (상대 경로 대신 별칭 사용 가능)
-    "paths": {
-      // "@src/*": ["src/*"], // '@' 별칭을 'src' 폴더로 설정 (모듈 경로 참조 시 간단하게 사용 가능)
-      "@page/*": ["src/pages/*"],
-      "@features/*": ["src/features/*"],
-      "@entites/*": ["src/entites/*"],
-      "@styles/*": ["src/styles/*"],
-      "@shared/*": ["src/shared/*"]
-    },
-    "types": ["vite/client"] // Vite 프로젝트에서 자동 완성 및 타입 정보를 제공 (Vite 관련 타입을 포함)
-  },
-  "include": ["src", "src/custom.d.ts"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+		/* Linting */
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+
+		"baseUrl": ".", // 기본 경로를 현재 프로젝트의 루트로 설정 (상대 경로 대신 별칭 사용 가능)
+		"paths": {
+			// "@src/*": ["src/*"], // '@' 별칭을 'src' 폴더로 설정 (모듈 경로 참조 시 간단하게 사용 가능)
+			"@page/*": ["src/pages/*"],
+			"@features/*": ["src/features/*"],
+			"@entites/*": ["src/entites/*"],
+			"@styles/*": ["src/styles/*"],
+			"@shared/*": ["src/shared/*"]
+		},
+		"types": ["vite/client"] // Vite 프로젝트에서 자동 완성 및 타입 정보를 제공 (Vite 관련 타입을 포함)
+	},
+	"include": ["src", "src/custom.d.ts"],
+	"references": [{ "path": "./tsconfig.node.json" }]
 }
