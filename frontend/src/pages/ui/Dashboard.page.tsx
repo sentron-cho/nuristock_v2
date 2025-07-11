@@ -12,9 +12,9 @@ import { URL } from 'src/types/url.enum';
 import { DashboardTitleBar } from '@features/dashboard/ui/DashboardTitleBar.ui';
 import { FieldValues } from 'react-hook-form';
 import { StockRegisterPopup } from '@features/dashboard/ui/StockRegister.popup';
-import { Alert } from '@features/common/ui/Alert.ui';
 
 const StyledPage = styled(PageContainer, {
+
 	'.card-list': {
 		flexWrap: 'wrap',
 		gap: '$0',

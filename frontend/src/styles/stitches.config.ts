@@ -58,12 +58,14 @@ export const { styled, css, globalCss, theme, createTheme, config } = createStit
 			lightgray: '#dedede',
 			alphagray: '#a0a0a090',
 			disable: '#5d5d5dbd',
-			up: '#b30202',
-			down: '#2b49c1',
-			plus: '#b30202',
-			minus: '#2b49c1',
+			up: '#D40000',
+			down: '#0066CC',
+			plus: '#D40000',
+			minus: '#0066CC',
 			select: '#f6f8fa',
 			back: '#202020a0',
+
+			bgcolor: '#f5f7fa',
 		},
 		fontWeights: {
 			thin: '300', // 보조 설명 텍스트

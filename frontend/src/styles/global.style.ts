@@ -13,4 +13,14 @@ export const globalStyles = globalCss({
 		overflow: 'hidden',
 		// overflowY: 'auto',
 	},
+
+	'.MuiTooltip-popper': {
+		'.MuiTooltip-tooltip': {
+			backgroundColor: '$black',
+		},
+
+		'.MuiTooltip-arrow': {
+			color: '$black'
+		}
+	}
 });

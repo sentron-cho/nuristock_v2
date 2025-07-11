@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import { styled } from '@styles/stitches.config';
+import clsx from 'clsx';
 
 export type OptionType = { label: string; value: string };
 
@@ -51,21 +52,30 @@ export const SelectForm = <T extends FieldValues = FieldValues>(props: SelectFor
 };
 
 const StyledForm = styled(FormControl, {
-	'.MuiOutlinedInput-notchedOutline': {
-		borderColor: 'unset !important',
-		borderWidth: '1px !important',
-	},
+	'&.select-form': {
+		'&.error': {
+			'.MuiOutlinedInput-notchedOutline': {
+				borderColor: '$red !important',
+				borderWidth: '1px !important',
+			},
+		},
 
-	'.MuiSelect-root > .MuiSelect-select': {
-		padding: '0 $10',
-		lineHeight: '36px',
-		height: '36px',
-	},
+		'.MuiOutlinedInput-notchedOutline': {
+			borderColor: 'unset !important',
+			borderWidth: '1px !important',
+		},
 
-	'.MuiInputBase-sizeSmall > .MuiSelect-select': {
-		padding: '0 $10',
-		lineHeight: '28px',
-		height: '28px',
+		'.MuiSelect-root > .MuiSelect-select': {
+			padding: '0 $10',
+			lineHeight: '36px',
+			height: '36px',
+		},
+
+		'.MuiInputBase-sizeSmall > .MuiSelect-select': {
+			padding: '0 $10',
+			lineHeight: '28px',
+			height: '28px',
+		},
 	},
 });
 
@@ -111,7 +121,13 @@ export const Select: React.FC<SelectProps> = ({
 	};
 
 	return (
-		<StyledForm fullWidth={width ? false : fullWidth} size={size} disabled={disabled} error={error}>
+		<StyledForm
+			className={clsx('select-form', { error })}
+			fullWidth={width ? false : fullWidth}
+			size={size}
+			disabled={disabled}
+			error={error}
+		>
 			{label && <InputLabel id={`label-${id}`}>{label}</InputLabel>}
 
 			<MuiSelect

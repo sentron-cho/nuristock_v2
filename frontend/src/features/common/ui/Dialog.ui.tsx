@@ -10,6 +10,7 @@ import {
 	useMediaQuery,
 	useTheme,
 	IconButton,
+	DialogProps as MuiDialogProps,
 } from '@mui/material';
 import { styled } from '@styles/stitches.config';
 import { PropsWithChildren } from 'react';
@@ -21,16 +22,21 @@ const StyledDialog = styled(MuiDialog, {
 	},
 });
 
+interface DialogProps extends Omit<MuiDialogProps, 'open'> {
+	title?: string;
+	onClose: (isOk: boolean) => void;
+	fullScreen?: boolean;
+	backdrop?: boolean;
+}
+
 export const Dialog = ({
 	title,
 	onClose,
 	fullScreen = true,
 	children,
-}: {
-	title?: string;
-	onClose: (isOk: boolean) => void;
-	fullScreen?: boolean;
-} & PropsWithChildren) => {
+	backdrop = false,
+	...props
+}: DialogProps & PropsWithChildren) => {
 	const theme = useTheme();
 	const isFullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -44,14 +50,23 @@ export const Dialog = ({
 		onClose(false);
 	};
 
+	const handleKeyDown = (e: React.KeyboardEvent) => {
+		if (e.key === 'Enter') {
+			e.preventDefault(); // 기본 폼 제출 방지
+			onOk();
+		}
+	};
+
 	return (
 		<StyledDialog
 			fullScreen={fullScreen && isFullScreen}
-			open
-			onClose={onCancel}
+			onClose={backdrop ? onCancel : undefined}
 			aria-labelledby='dialog-box'
 			maxWidth='xs'
 			fullWidth
+			open={true}
+			onKeyDown={handleKeyDown}
+			{...props}
 		>
 			<DialogTitle title={title} onClose={onCancel} />
 
@@ -70,18 +85,20 @@ export const DialogTitle = ({ title, onClose }: { title?: string; onClose?: () =
 	return (
 		<MuiDialogTitle>
 			{title && <Title title={title} />}
-			{onClose && <IconButton
-				aria-label='close'
-				onClick={onClose}
-				sx={(theme) => ({
-					position: 'absolute',
-					right: 8,
-					top: 8,
-					color: theme.palette.grey[500],
-				})}
-			>
-				<IconClose />
-			</IconButton>}
+			{onClose && (
+				<IconButton
+					aria-label='close'
+					onClick={onClose}
+					sx={(theme) => ({
+						position: 'absolute',
+						right: 8,
+						top: 8,
+						color: theme.palette.grey[500],
+					})}
+				>
+					<IconClose />
+				</IconButton>
+			)}
 		</MuiDialogTitle>
 	);
 };

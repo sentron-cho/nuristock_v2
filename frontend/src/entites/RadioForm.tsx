@@ -3,6 +3,7 @@ import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, FormHelper
 import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import { OptionType } from './SelectForm';
 import { styled } from '@styles/stitches.config';
+import clsx from 'clsx';
 
 export type RadioOptionType = OptionType;
 
@@ -39,7 +40,33 @@ export const RadioForm = <T extends FieldValues = FieldValues>(props: RadioFormP
 	}
 };
 
-const StyledForm = styled(FormControl, {});
+const StyledForm = styled(FormControl, {
+	'&.radio-form': {
+		'&.error': {
+			'.MuiOutlinedInput-notchedOutline': {
+				borderColor: '$red !important',
+				borderWidth: '1px !important',
+			},
+		},
+
+		'.MuiOutlinedInput-notchedOutline': {
+			borderColor: 'unset !important',
+			borderWidth: '1px !important',
+		},
+
+		'.MuiSelect-root > .MuiSelect-select': {
+			padding: '0 $10',
+			lineHeight: '36px',
+			height: '36px',
+		},
+
+		'.MuiInputBase-sizeSmall > .MuiSelect-select': {
+			padding: '0 $10',
+			lineHeight: '28px',
+			height: '28px',
+		},
+	},
+});
 
 interface RadioProps {
 	id: string;
@@ -75,7 +102,12 @@ const RadioBase: React.FC<RadioProps> = ({
 	};
 
 	return (
-		<FormControl component='fieldset' error={error} disabled={disabled}>
+		<StyledForm
+			className={clsx('radio-form', { error })}
+			// component='fieldset'
+			error={error}
+			disabled={disabled}>
+			
 			{label && <FormLabel component='legend'>{label}</FormLabel>}
 
 			<RadioGroup id={id} value={value} onChange={handleChange} row={row} name={id}>
@@ -85,6 +117,6 @@ const RadioBase: React.FC<RadioProps> = ({
 			</RadioGroup>
 
 			{message && <FormHelperText>{message}</FormHelperText>}
-		</FormControl>
+		</StyledForm>
 	);
 };

@@ -2,7 +2,7 @@ import Flex from '@entites/Flex';
 import Typography from '@mui/material/Typography';
 import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
-import { toCost, withCommas } from 'src/libs/utils.lib';
+import { toCost } from 'src/libs/utils.lib';
 
 export interface SummaryDataType {
 	label: string;
@@ -16,6 +16,11 @@ const StyledForm = styled(Flex, {
 	// borderTop: '1px solid $gray800',
 	top: 0,
 	left: 0,
+
+	'.container': {
+		maxWidth: '$pageWidth',
+		margin: 'auto',
+	},
 
 	'.li': {
 		fontWeight: '400',
@@ -34,25 +39,21 @@ const StyledForm = styled(Flex, {
 	},
 });
 
-export const SummaryBar = ({
-	data,
-	height = '60px',
-}: {
-	data?: SummaryDataType[];
-	height?: string | number;
-}) => {
+export const SummaryBar = ({ data, height = '60px' }: { data?: SummaryDataType[]; height?: string | number }) => {
 	return (
 		<StyledForm className={clsx('stats-form')} css={{ height }}>
-			{data?.map((item, index) => {
-				return (
-					<Flex className='li' key={`stats-${index}`}>
-						<Flex className='box' direction={'column'}>
-							<Typography className='title'>{item.label}</Typography>
-							<Typography className='text'>{toCost(item.value)}</Typography>
+			<Flex className='container'>
+				{data?.map((item, index) => {
+					return (
+						<Flex className='li' key={`stats-${index}`}>
+							<Flex className='box' direction={'column'}>
+								<Typography className='title'>{item.label}</Typography>
+								<Typography className='text'>{toCost(item.value)}</Typography>
+							</Flex>
 						</Flex>
-					</Flex>
-				);
-			})}
+					);
+				})}
+			</Flex>
 		</StyledForm>
 	);
 };

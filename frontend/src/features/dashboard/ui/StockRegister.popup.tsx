@@ -24,7 +24,7 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 
 	return (
 		<Dialog title='주식추가' onClose={onClickClose}>
-			<TextFieldForm size='small' id='textInput' formMethod={forms} onClearError={onClearError} />
+			<TextFieldForm size='small' id='textInput' formMethod={forms} onClearError={onClearError} maxLength={10} />
 		</Dialog>
 	);
 };

@@ -1,28 +1,13 @@
-import React, { useMemo } from 'react';
-import { TextField as MuiTextField, FormControl, FormHelperText, TextFieldProps as MuiTextFieldProps } from '@mui/material';
+import React, { useMemo, useState } from 'react';
 import {
-	Controller,
-	FieldValues,
-	Path,
-	UseFormReturn,
-} from 'react-hook-form';
-
-export interface TextFieldProps extends Omit<MuiTextFieldProps, 'onChange'> {
-	id: string;
-	label?: string;
-	placeholder?: string;
-
-	value?: string;
-	onChange?: (value: string) => void;
-
-	error?: boolean;
-	message?: string;
-	disabled?: boolean;
-	multiline?: boolean;
-	rows?: number;
-
-	onClearError?: (id: string) => void;
-};
+	TextField as MuiTextField,
+	FormControl,
+	TextFieldProps as MuiTextFieldProps,
+} from '@mui/material';
+import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
+import { Tooltip } from '@features/common/ui/Tooltip.ui';
+import clsx from 'clsx';
+import { styled } from '@styles/stitches.config';
 
 type TextFieldFormProps<T extends FieldValues = FieldValues> = TextFieldProps & {
 	name?: keyof T;
@@ -39,7 +24,6 @@ export const TextFieldForm = <T extends FieldValues = FieldValues>(props: TextFi
 				name={id}
 				control={props.formMethod?.control}
 				render={({ field, formState }) => {
-					console.log({ formState });
 					return (
 						<TextField
 							{...props}
@@ -48,7 +32,7 @@ export const TextFieldForm = <T extends FieldValues = FieldValues>(props: TextFi
 								props?.formMethod?.clearErrors(id);
 								field.onChange(value);
 							}}
-							error={!!formState?.errors}
+							error={!!formState?.errors[props?.name || props.id]}
 							message={formState?.errors[props?.name || props.id]?.message as string}
 						/>
 					);
@@ -60,6 +44,52 @@ export const TextFieldForm = <T extends FieldValues = FieldValues>(props: TextFi
 	}
 };
 
+const StyledForm = styled(FormControl, {
+	'&.text-field': {
+		'&.error': {
+			'.MuiOutlinedInput-notchedOutline': {
+				borderColor: '$red !important',
+				borderWidth: '1px !important',
+			},
+		},
+
+		'.MuiOutlinedInput-notchedOutline': {
+			borderColor: 'unset !important',
+			borderWidth: '1px !important',
+		},
+
+		'.MuiInputBase-input': {
+			padding: '0 $10',
+			lineHeight: '36px',
+			height: '36px',
+		},
+
+		'.MuiInputBase-sizeSmall > .MuiSelect-select': {
+			padding: '0 $10',
+			lineHeight: '28px',
+			height: '28px',
+		},
+	},
+});
+
+export interface TextFieldProps extends Omit<MuiTextFieldProps, 'onChange'> {
+	id: string;
+	label?: string;
+	placeholder?: string;
+
+	value?: string;
+	onChange?: (value: string) => void;
+
+	error?: boolean;
+	message?: string;
+	disabled?: boolean;
+	multiline?: boolean;
+	rows?: number;
+	maxLength?: number;
+
+	onClearError?: (id: string) => void;
+}
+
 const TextField: React.FC<TextFieldProps> = ({
 	id,
 	value,
@@ -68,24 +98,41 @@ const TextField: React.FC<TextFieldProps> = ({
 	error,
 	message,
 	disabled = false,
+	maxLength,
 	...props
 }) => {
+	const [innerError, setInnerError] = useState<string>();
+
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		onChange?.(e.target.value?.toString());
 		onClearError?.(id);
 	};
 
+	const isError = useMemo(() => error || innerError, [error, innerError])
+
 	return (
-		<FormControl fullWidth error={error} disabled={disabled}>
+		<StyledForm className={clsx('text-field', { error: isError })} fullWidth error={error} disabled={disabled}>
 			<MuiTextField
+				{...props}
 				id={id}
 				onChange={handleChange}
 				value={value}
 				variant='outlined'
 				fullWidth
-				{...props}
+				onBeforeInput={(e) => {
+					const target = e.target as HTMLInputElement;
+
+					if (maxLength && target?.value?.length >= maxLength) {
+						if (target.selectionStart !== target.selectionEnd) return;
+
+						setInnerError(`최대 ${maxLength}자 입력`);
+						setTimeout(() => setInnerError(undefined), 3000);
+						e.preventDefault();
+					}
+				}}
 			/>
-			{message && <FormHelperText>{message}</FormHelperText>}
-		</FormControl>
+			{message && <Tooltip message={message} color={error ? 'error' : 'action'} />}
+			{innerError && <Tooltip message={innerError} color={'error'} />}
+		</StyledForm>
 	);
 };

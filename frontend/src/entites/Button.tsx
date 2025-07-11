@@ -38,7 +38,7 @@ export const Button = ({
 	title = '',
 	className,
 	...props
-}: ButtonProps & MuiButtonProps) => {
+}: ButtonProps) => {
 	const variant = useMemo(() => {
 		if (buttonType === 'text') return 'text';
 		else if (buttonType === 'outline') return 'outlined';

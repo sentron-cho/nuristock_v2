@@ -7,6 +7,7 @@ const StyledContainer = styled('div', {
 	boxSizing: 'border-box',
 	overflow: 'hidden',
 	position: 'relative',
+	backgroundColor: '$bgcolor',
 
 	'.scroll-view': {
 		paddingBottom: '$10',

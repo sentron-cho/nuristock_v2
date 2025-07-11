@@ -17,52 +17,57 @@ const StyledCard = styled(Card, {
 	boxShadow: 'unset !important',
 	padding: '$4',
 
-	'.card': {
-		// backgroundColor: '$gray700',
-		borderRadius: '$sm',
-		border: '1px solid $gray500',
-		overflow: 'hidden',
-		height: '100%',
-		padding: '$4',
+	'&.card': {
+		backgroundColor: 'transparent',
 
-		'.head, .foot, .body': {
-			padding: '0 $4',
-		},
-
-		'.trade-info, .keep-info': {
-			'&.keep-info': {
-				borderTop: '1px solid $gray300',
-			},
-
-			padding: '8px',
-		},
-
-		'.head': {
-			height: '40px',
-			borderBottom: '1px solid $gray300',
-		},
-
-		'.body': {
-			borderBottom: '1px solid $gray300',
+		'.box': {
+			backgroundColor: '$white',
+			borderRadius: '$sm',
+			border: '1px solid rgba(0,0,0,0.05)',
+			boxShadow: 'var(--Paper-shadow);',
 			overflow: 'hidden',
-			flex: 1,
+			height: '100%',
+			padding: '$4',
 
-			'.b-item': {
-				borderTop: '1px solid $gray300',
-				paddingTop: '$10',
+			'.head, .foot, .body': {
+				padding: '0 $4',
 			},
-		},
 
-		'.foot': {
-			height: '40px',
-		},
+			'.trade-info, .keep-info': {
+				'&.keep-info': {
+					borderTop: '1px solid $gray300',
+				},
 
-		'.plus': {
-			color: '$plus',
-		},
+				padding: '8px',
+			},
 
-		'.minus': {
-			color: '$minus',
+			'.head': {
+				height: '40px',
+				borderBottom: '1px solid $gray300',
+			},
+
+			'.body': {
+				borderBottom: '1px solid $gray300',
+				overflow: 'hidden',
+				flex: 1,
+
+				'.b-item': {
+					borderTop: '1px solid $gray300',
+					paddingTop: '$10',
+				},
+			},
+
+			'.foot': {
+				height: '40px',
+			},
+
+			'.plus': {
+				color: '$plus',
+			},
+
+			'.minus': {
+				color: '$minus',
+			},
 		},
 	},
 
@@ -122,14 +127,22 @@ export const DashboardCard = ({
 		const stype = valueOfPlusMinus(sise.price, data.kprice);
 
 		return {
-			buyAvg, buyText, sellAvg, sellText, keepAvg, keepText, sonic, sonicText, stype
-		}
+			buyAvg,
+			buyText,
+			sellAvg,
+			sellText,
+			keepAvg,
+			keepText,
+			sonic,
+			sonicText,
+			stype,
+		};
 	}, [data]);
 
 	const type = valueOfPlusMinus(values?.sonic);
 	const active = data.kprice > 0;
 	const history = data.sprice || data.kprice;
-	
+
 	const icon = data.updown === 'down' ? 'arrowdn' : data.updown === 'up' ? 'arrowup' : '';
 
 	const handleSiseClick = (e: React.MouseEvent) => {
@@ -138,8 +151,8 @@ export const DashboardCard = ({
 	};
 
 	return (
-		<StyledCard className={clsx({ active }, type, { sm: !history })}>
-			<Flex className='card' direction='column' onClick={() => handleClick('card')}>
+		<StyledCard className={clsx('card', { active }, type, { sm: !history })}>
+			<Flex className='box' direction='column' onClick={() => handleClick('card')}>
 				<Flex className='head' justify='between'>
 					<Flex gap={4} className='left' flex={1}>
 						<Typography fontWeight={'bold'} className='title'>
@@ -197,14 +210,16 @@ export const DashboardCard = ({
 						/>
 						<Button className='daum' eid='daum' icon={<IconLaunch />} size='small' title='Daum' onClick={handleClick} />
 					</Flex>
-					{data?.sise && <div className='grp-r' onClick={handleSiseClick}>
-						<span className={clsx('st-value', data.updown)}>
-							{withCommas(data.sise)}
-							{icon && <IconButton type={IconType.DELETE} onClick={handleClick} />}
-							{data.erate !== 0 ? `${withCommas(data.ecost)}` : ''}
-						</span>
-						<span className={clsx('st-rate md', data.updown)}>{`(${data.erate}%)`}</span>
-					</div>}
+					{data?.sise && (
+						<div className='grp-r' onClick={handleSiseClick}>
+							<span className={clsx('st-value', data.updown)}>
+								{withCommas(data.sise)}
+								{icon && <IconButton type={IconType.DELETE} onClick={handleClick} />}
+								{data.erate !== 0 ? `${withCommas(data.ecost)}` : ''}
+							</span>
+							<span className={clsx('st-rate md', data.updown)}>{`(${data.erate}%)`}</span>
+						</div>
+					)}
 				</Flex>
 			</Flex>
 		</StyledCard>
