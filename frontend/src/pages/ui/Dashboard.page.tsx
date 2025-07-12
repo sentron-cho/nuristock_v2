@@ -10,7 +10,7 @@ import {
 import { useSelectDashboard } from '@features/dashboard/api/dashboard.api';
 import { DashboardCard } from '@features/dashboard/ui/DashboardCard.ui';
 import Flex from '@entites/Flex';
-import { DashboardTitleBar } from '@features/dashboard/ui/DashboardTitleBar.ui';
+import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { FieldValues } from 'react-hook-form';
 import { StockRegisterPopup } from '@features/dashboard/ui/StockRegister.popup';
 import { URL } from '@shared/config/url.enum';
@@ -104,7 +104,7 @@ const DashboardPage = () => {
 	return (
 		<>
 			<StyledPage summaryData={summaryData}>
-				<DashboardTitleBar onClick={onClickTitleBar} onSelect={onChangeTitleBar} />
+				<PageTitleBar onClick={onClickTitleBar} onSelect={onChangeTitleBar} />
 				<Flex className='card-list'>
 					{list?.map((item) => (
 						<DashboardCard key={item.code} data={item} onClick={onClick} />

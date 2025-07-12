@@ -24,6 +24,7 @@ export default defineConfig(({ mode }) => {
 		},
 		server: {
 			port: Number(env.VITE_PORT), // 원하는 포트 번호
+			host: true, // 외부 접근 허용
 			proxy: {
 				'/api': {
 					target: env.VITE_API_URL,
@@ -32,12 +33,5 @@ export default defineConfig(({ mode }) => {
 				},
 			},
 		},
-		// resolve: {
-		//   alias: {
-		//     '@features': path.resolve(__dirname, 'src/features'),
-		//     '@components': path.resolve(__dirname, 'src/components'),
-		//     '@utils': path.resolve(__dirname, 'src/utils'),
-		//   },
-		// },
 	};
 });

@@ -22,7 +22,7 @@ const StyledFlex = styled(Flex, {
 	},
 });
 
-export const DashboardTitleBar = ({
+export const PageTitleBar = ({
 	onClick,
 	onSelect,
 }: {

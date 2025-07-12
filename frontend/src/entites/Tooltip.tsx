@@ -17,17 +17,6 @@ const StyledTooltip = styled(MuiTooltip, {
 	},
 });
 
-// const StyledTooltip = styled(({ className, ...props }: TooltipProps) => (
-//   <MuiTooltip {...props} arrow classes={{ popper: className }} />
-// ))(({ theme }) => ({
-//   [`& .${tooltipClasses.arrow}`]: {
-//     color: theme.palette.common.black,
-//   },
-//   [`& .${tooltipClasses.tooltip}`]: {
-//     backgroundColor: theme.palette.common.black,
-//   },
-// }));
-
 export const Tooltip = ({
 	message,
 	color = 'error',

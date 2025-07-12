@@ -6,7 +6,7 @@
 	"lint": "eslint . --fix && prettier --write .",
 	"format": "prettier --write .",
 	"scripts": {
-		"dev": "vite --mode dev",
+		"dev": "vite --mode dev --open",
 		"prod": "vite --mode prod",
 		"build": "tsc -b && vite build",
 		"serve": "vite preview --port 80 --open",

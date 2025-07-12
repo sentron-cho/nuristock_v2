@@ -1,5 +1,5 @@
 import { TextFieldForm } from '@entites/TextFieldForm';
-import { Dialog } from '@features/common/ui/Dialog.ui';
+import { Dialog } from '@entites/Dialog';
 import { useForm } from 'react-hook-form';
 
 export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => void }) => {

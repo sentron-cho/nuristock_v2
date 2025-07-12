@@ -1,4 +1,4 @@
-name: nuristock
+name: nuristock-doc
 app:
   name: nuristock
   port: 80

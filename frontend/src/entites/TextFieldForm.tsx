@@ -5,7 +5,7 @@ import {
 	TextFieldProps as MuiTextFieldProps,
 } from '@mui/material';
 import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
-import { Tooltip } from '@features/common/ui/Tooltip.ui';
+import { Tooltip } from '@entites/Tooltip';
 import clsx from 'clsx';
 import { styled } from '@styles/stitches.config';
 
