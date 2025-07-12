@@ -1,11 +1,13 @@
 # 프로젝트 빌드
-FROM node:16-buster AS builder
+FROM node:20 AS builder
 WORKDIR /app
-COPY package*.json .
-RUN npm ci
 COPY . .
-RUN npm run build
+COPY package*.json .
+# RUN npm ci
 
+RUN rm -rf node_modules package-lock.json \
+  && npm install \
+  && npm run build
 
 # Production 런타임 - nginx
 FROM nginxinc/nginx-unprivileged:1.23 AS runner
