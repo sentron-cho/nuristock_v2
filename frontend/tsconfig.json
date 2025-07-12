@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"outDir": "./dist", // ✅ 빌드 결과물이 생성될 디렉토리
+		"outDir": "./output", // ✅ 빌드 결과물이 생성될 디렉토리
 		"rootDir": "./src", // 입력 파일의 기준 경로
 		"declaration": true, // .d.ts 파일 생성
 		"declarationDir": "./dist/types", // .d.ts 파일만 따로 분리 저장할 수도 있음
