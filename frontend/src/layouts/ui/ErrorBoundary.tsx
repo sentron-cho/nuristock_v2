@@ -59,7 +59,7 @@ export const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
 	const message = error.message || errorMessages[error.name] || ST.ERROR_UNKNOWN;
 
 	React.useEffect(() => {
-		toast.error(message);
+		toast.toast('error', message);
 	}, [message, toast]);
 
 	return (

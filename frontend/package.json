@@ -9,7 +9,7 @@
 		"dev": "vite --mode dev",
 		"prod": "vite --mode prod",
 		"build": "tsc -b && vite build",
-		"serve": "vite preview --port 3000 --open",
+		"serve": "vite preview --port 80 --open",
 		"lint": "eslint .",
 		"preview": "vite preview"
 	},

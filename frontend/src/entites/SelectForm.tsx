@@ -4,7 +4,6 @@ import {
 	MenuItem,
 	Select as MuiSelect,
 	FormControl,
-	FormHelperText,
 	SelectChangeEvent,
 	SelectProps as MuiSelectProps,
 } from '@mui/material';
@@ -143,7 +142,7 @@ export const Select: React.FC<SelectProps> = ({
 		onClearError?.(id);
 	};
 
-	console.log({ defaultValue, options });
+	console.log({ defaultValue, options, message });
 
 	return (
 		<StyledForm
