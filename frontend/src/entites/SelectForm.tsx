@@ -11,8 +11,7 @@ import {
 import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
-
-export type OptionType = { label: string; value: string };
+import { OptionType } from '@shared/config/common.type';
 
 export type SelectOptionType = OptionType;
 

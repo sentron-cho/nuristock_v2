@@ -1,0 +1,9 @@
+name: nuristock
+app:
+  name: nuristock
+  port: 80
+  build:
+    type: dockerfile
+    file: Dockerfile
+  run:
+    command: nginx -g 'daemon off;'

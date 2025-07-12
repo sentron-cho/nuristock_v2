@@ -5,7 +5,7 @@ import { styled } from '@styles/stitches.config';
 import { SummaryData } from '../../features/dashboard/config/Dashbord.data';
 import {
 	DashboardItemType as DataType,
-	DashboardResponse as ResponseType,
+	// DashboardResponse as ResponseType,
 } from '@features/dashboard/api/dashboard.dto';
 import { useSelectDashboard } from '@features/dashboard/api/dashboard.api';
 import { DashboardCard } from '@features/dashboard/ui/DashboardCard.ui';

@@ -1,7 +1,4 @@
-export enum UseYn {
-	Yes = 'Y',
-	No = 'N',
-}
+import { UseYn } from "@shared/config/common.enum";
 
 export interface DashboardItemType {
 	stockid: number;

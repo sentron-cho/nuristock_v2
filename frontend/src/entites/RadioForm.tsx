@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, FormHelperText } from '@mui/material';
 import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
-import { OptionType } from './SelectForm';
 import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
+import { OptionType } from '@shared/config/common.type';
 
 export type RadioOptionType = OptionType;
 
@@ -79,26 +79,26 @@ interface RadioProps {
 	error?: boolean;
 	message?: string;
 	row?: boolean;
-  disabled?: boolean;
-  
-  onClearError?: (id: string) => void;
+	disabled?: boolean;
+
+	onClearError?: (id: string) => void;
 }
 
 const RadioBase: React.FC<RadioProps> = ({
 	id,
 	value,
 	options,
-  onChange,
-  onClearError,
+	onChange,
+	onClearError,
 	label,
 	error,
 	message,
 	row = false,
 	disabled = false,
 }) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange?.(e.target.value.toString());
-    onClearError?.(id);
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		onChange?.(e.target.value.toString());
+		onClearError?.(id);
 	};
 
 	return (
@@ -106,8 +106,8 @@ const RadioBase: React.FC<RadioProps> = ({
 			className={clsx('radio-form', { error })}
 			// component='fieldset'
 			error={error}
-			disabled={disabled}>
-			
+			disabled={disabled}
+		>
 			{label && <FormLabel component='legend'>{label}</FormLabel>}
 
 			<RadioGroup id={id} value={value} onChange={handleChange} row={row} name={id}>
