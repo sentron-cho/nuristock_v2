@@ -1,9 +1,14 @@
-FROM node:20 as builder
 WORKDIR /app
+COPY package*.json .
+RUN npm ci
 COPY . .
-RUN npm install
 RUN npm run build
 
-FROM nginx:alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
-EXPOSE 80
+
+# Production 런타임 - nginx
+FROM nginxinc/nginx-unprivileged:1.23 AS runner
+WORKDIR /usr/share/nginx/html
+COPY --from=builder /app/build .
+
+EXPOSE 3000
+CMD ["nginx", "-g", "daemon off;"]
