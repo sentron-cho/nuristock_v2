@@ -12,7 +12,7 @@ RUN rm -rf node_modules package-lock.json \
 # Production 런타임 - nginx
 FROM nginxinc/nginx-unprivileged:1.23 AS runner
 WORKDIR /usr/share/nginx/html
-COPY --from=builder /dist .
+COPY --from=builder /app/dist .
 
 EXPOSE 3000
 CMD ["nginx", "-g", "daemon off;"]
