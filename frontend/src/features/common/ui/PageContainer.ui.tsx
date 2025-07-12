@@ -37,6 +37,7 @@ type PageContainerProps = ComponentProps<typeof StyledContainer> & {
 	className?: string;
 	summaryData?: SummaryDataType[];
 	children?: ReactNode;
+	onClickSummary?: (item: SummaryDataType) => void
 };
 
 export const PageContainer = ({
@@ -46,6 +47,7 @@ export const PageContainer = ({
 	padding,
 	children,
 	summaryData,
+	onClickSummary,
 	...props
 }: PageContainerProps) => {
 	const titleBarHeight = useMemo(() => 40, []);
@@ -61,7 +63,7 @@ export const PageContainer = ({
 			}}
 			{...props}
 		>
-			{summaryData && <SummaryBar data={summaryData} height={summaryHeight} />}
+			{summaryData && <SummaryBar data={summaryData} height={summaryHeight} onClick={onClickSummary}  />}
 			<div
 				className='scroll-view'
 				style={{

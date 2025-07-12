@@ -102,9 +102,11 @@ export const { styled, css, globalCss, theme, createTheme, config } = createStit
 			xxl: '32px',
 		},
 		radii: {
+			xs: '2px',
 			sm: '4px',
 			md: '8px',
 			lg: '12px',
+			xl: '16px',
 		},
 		sizes: {
 			formSmall: '24px',

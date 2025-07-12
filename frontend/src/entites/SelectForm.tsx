@@ -59,8 +59,26 @@ const StyledForm = styled(FormControl, {
 			},
 		},
 
+		border: '1px solid $gray800',
+		borderRadius: '$xs',
+
+		'&.small': {
+			lineHeight: '$formSmall',
+			height: '$formSmall',
+		},
+
+		'&.medium': {
+			lineHeight: '$formMedium',
+			height: '$formMedium',
+		},
+
+		'&.large': {
+			lineHeight: '$formLarge',
+			height: '$formLarge',
+		},
+
 		'.MuiOutlinedInput-notchedOutline': {
-			borderColor: 'unset !important',
+			borderColor: 'transparent !important',
 			borderWidth: '1px !important',
 		},
 
@@ -86,7 +104,7 @@ const StyledForm = styled(FormControl, {
 
 interface SelectProps {
 	id: string;
-	options: SelectOptionType[];
+	options?: SelectOptionType[];
 
 	value?: string;
 	onChange?: (value: string) => void;
@@ -125,9 +143,11 @@ export const Select: React.FC<SelectProps> = ({
 		onClearError?.(id);
 	};
 
+	console.log({ defaultValue, options });
+
 	return (
 		<StyledForm
-			className={clsx('select-form', { error })}
+			className={clsx('select-form', size, { error })}
 			fullWidth={width ? false : fullWidth}
 			size={size}
 			disabled={disabled}
@@ -135,7 +155,7 @@ export const Select: React.FC<SelectProps> = ({
 		>
 			{label && <InputLabel id={`label-${id}`}>{label}</InputLabel>}
 
-			<MuiSelect
+			{options && <MuiSelect
 				size={size}
 				labelId={`label-${id}`}
 				id={id}
@@ -152,14 +172,14 @@ export const Select: React.FC<SelectProps> = ({
 					</MenuItem>
 				)}
 
-				{options.map((option) => (
+				{options?.map((option) => (
 					<MenuItem key={option.value} value={option.value}>
 						{option.label}
 					</MenuItem>
 				))}
-			</MuiSelect>
+			</MuiSelect>}
 
-			{message && <FormHelperText>{message}</FormHelperText>}
+			{/* {message && <FormHelperText>{message}</FormHelperText>} */}
 		</StyledForm>
 	);
 };

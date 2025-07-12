@@ -9,7 +9,8 @@ export default defineConfig(({ mode }) => {
 	// dotenv.config({ path: envPath });
 	const env = loadEnv(mode, process.cwd(), 'VITE_');
 
-	console.log({ env });
+	// console.log({ env });
+	console.log('[vite start]', { url: `http://${env?.VITE_API_URL}:${env?.VITE_PORT}` });
 
 	return {
 		plugins: [react(), tsconfigPaths()],
@@ -22,6 +23,7 @@ export default defineConfig(({ mode }) => {
 			],
 		},
 		server: {
+			port: Number(env.VITE_PORT), // 원하는 포트 번호
 			proxy: {
 				'/api': {
 					target: env.VITE_API_URL,

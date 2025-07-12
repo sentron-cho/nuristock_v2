@@ -3,9 +3,9 @@ import Flex from '@entites/Flex';
 import { IconAdd } from '@entites/Icons';
 import { SelectForm } from '@entites/SelectForm';
 import { Title } from '@entites/Title';
+import { ST } from '@shared/config/kor.lang';
 import { styled } from '@styles/stitches.config';
 import { useMemo } from 'react';
-import { ST } from '@shared/config/default.config';
 
 const StyledFlex = styled(Flex, {
 	backgroundColor: '$gray400',
@@ -31,17 +31,17 @@ export const DashboardTitleBar = ({
 }) => {
 	const options = useMemo(() => {
 		return [
-			{ label: '보유금액', value: 'keep-cost' },
-			{ label: '예상손익', value: 'sise-sonic' },
-			{ label: '손익금액', value: 'sonic-cost' },
-			{ label: '손익율', value: 'sonic-rate' },
-			{ label: '제목', value: 'title' },
+			{ label: ST.DASHBOARD.COST, value: 'keep-cost' },
+			{ label: ST.DASHBOARD.PROFIT_AND_LOSS, value: 'sise-sonic' },
+			{ label: ST.DASHBOARD.SONIC, value: 'sonic-cost' },
+			{ label: ST.DASHBOARD.SONIC_RATE, value: 'sonic-rate' },
+			{ label: ST.DASHBOARD.TITLE, value: 'title' },
 		];
 	}, []);
 
 	return (
 		<StyledFlex className='dashboard-titl-bar' justify={'between'}>
-			<Title title={ST.KEEP_STOCKS} />
+			<Title title={ST.DASHBOARD.KEEP_STOCKS} />
 			<SelectForm
 				size='medium'
 				id='select'

@@ -1,0 +1,27 @@
+name: nuristock-app
+app:
+  name: nuristock-backend
+  port: 3000
+  env:
+    - name: DB_HOST
+      value: mariadb:3306
+    - name: DB_USER
+      value: root
+    - name: DB_PASSWORD
+      value: qlalfdldi
+    - name: DB_NAME
+      value: test
+  build:
+    type: dockerfile
+    file: Dockerfile
+  run:
+    command: node dist/index.js
+services:
+  - name: mariadb
+    type: mariadb
+    plan: free
+    options:
+      version: "10.6"
+      user: root
+      password: qlalfdldi
+      database: nuristock

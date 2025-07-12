@@ -17,7 +17,6 @@ import { URL } from '@shared/config/url.enum';
 import { EID } from '@shared/config/default.config';
 
 const StyledPage = styled(PageContainer, {
-
 	'.card-list': {
 		flexWrap: 'wrap',
 		gap: '$0',
@@ -25,13 +24,13 @@ const StyledPage = styled(PageContainer, {
 });
 
 const DashboardPage = () => {
-	const summaryData = useMemo(() => {
-		return SummaryData();
-	}, []);
-
 	const [popup, setPopup] = useState<{ type: 'append'; item?: FieldValues }>();
 
 	const { data } = useSelectDashboard();
+
+	const summaryData = useMemo(() => {
+		return SummaryData();
+	}, []);
 
 	const list = useMemo(() => data?.value, [data]);
 	console.log(list);

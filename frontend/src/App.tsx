@@ -2,6 +2,7 @@
 import { RouterProvider } from 'react-router-dom';
 import router from './router/router.config';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ToastProvider } from './layouts/ui/ToastProviter.ui';
 
 const App = () => {
 	const queryClient = new QueryClient();
@@ -14,9 +15,11 @@ const App = () => {
 	console.log('[App]', { mode, isProd, url, api });
 
 	return (
-		<QueryClientProvider client={queryClient}>
-			<RouterProvider router={router} />
-		</QueryClientProvider>
+		<ToastProvider>
+			<QueryClientProvider client={queryClient}>
+				<RouterProvider router={router} />
+			</QueryClientProvider>
+		</ToastProvider>
 	);
 };
 

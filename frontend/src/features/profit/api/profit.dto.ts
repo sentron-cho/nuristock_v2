@@ -1,6 +1,6 @@
-import { UseYn } from "@shared/config/common.enum";
+import { UseYn } from '@shared/config/common.enum';
 
-export interface DashboardItemType {
+export interface ProfitItemType {
 	stockid: number;
 	userid: string;
 	code: string;
@@ -22,8 +22,17 @@ export interface DashboardItemType {
 	ecost?: string;
 }
 
-export interface DashboardResponse {
-	value?: DashboardItemType[];
+export interface ProfitResponse {
+	value?: ProfitItemType[];
+}
+
+export interface ProfitYearsItemType {
+	year: string;
+	sum: number;
+}
+
+export interface ProfitYearsResponse {
+	value?: ProfitYearsItemType[];
 }
 
 export interface StockSiseResponse {

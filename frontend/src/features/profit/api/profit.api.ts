@@ -1,10 +1,11 @@
-import { DashboardResponse } from './profit.dto';
+import { ProfitResponse, ProfitYearsResponse } from './profit.dto';
 import { mock as mockData } from './mock/profit.list';
+import { mock as mockYears } from './mock/profit.years';
 // import { mock as mockDate } from './mock/profit.date';
 import { useQuery } from '@tanstack/react-query';
 
-export const useSelectDashboard = () => {
-	return useQuery<unknown, Error, DashboardResponse[]>({
+export const useSelectProfit = () => {
+	return useQuery<unknown, Error, ProfitResponse>({
 		queryKey: ['PROFIT-R01'],
 		queryFn: () => mockData,
 	});
@@ -18,3 +19,10 @@ export const useSelectDashboard = () => {
 	// 	select: (res) => res?.data?.map((a) => a.userid),
 	// });
 };
+
+export const useSelectProfitYears = () => {
+		return useQuery<unknown, Error, ProfitYearsResponse>({
+		queryKey: ['PROFIT-R02'],
+		queryFn: () => mockYears,
+	});
+}
