@@ -1,11 +1,16 @@
-# 1단계: 빌드
-FROM node:20 AS builder
-WORKDIR /src
+# 프로젝트 빌드
+FROM node:16-buster AS builder
+WORKDIR /app
+COPY package*.json .
+RUN npm ci
 COPY . .
-RUN npm install && npm run build
+RUN npm run build
 
-# 2단계: nginx로 서비스
-FROM nginx:alpine
-COPY --from=builder /dist /usr/share/nginx/html
-EXPOSE 80
+
+# Production 런타임 - nginx
+FROM nginxinc/nginx-unprivileged:1.23 AS runner
+WORKDIR /usr/share/nginx/html
+COPY --from=builder /dist .
+
+EXPOSE 3000
 CMD ["nginx", "-g", "daemon off;"]
