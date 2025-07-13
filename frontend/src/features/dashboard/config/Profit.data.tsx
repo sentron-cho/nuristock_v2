@@ -1,7 +1,7 @@
 import { SummaryDataType } from '@features/common/ui/SummaryBar.ui';
 import { ST } from '@shared/config/kor.lang';
 import { RenderCost, RenderDate, RenderPrice } from '@shared/libs/tableRender.lib';
-import { getCostColorType } from '@shared/libs/utils.lib';
+import { getCostColorType, sortDirections } from '@shared/libs/utils.lib';
 import { ColumnsType } from 'antd/es/table';
 
 export const SummaryData = (): SummaryDataType[] => {
@@ -20,10 +20,31 @@ export const Headers = ({ filter }: { filter?: string }): ColumnsType => {
 	const title = hidden ? TITLE.YEAR : TITLE.NAME;
 
 	const items: ColumnsType = [
-		{ title: title, dataIndex: 'name', key: '', align: 'left' },
-		{ title: TITLE.CODE, dataIndex: 'code', key: '', align: 'center', hidden: hidden },
-		{ title: TITLE.SDATE, dataIndex: 'sdate', key: '', align: 'center', hidden: hidden, render: RenderDate },
-		{ title: TITLE.EDATE, dataIndex: 'edate', key: '', align: 'center', hidden: hidden, render: RenderDate },
+		{
+			title: title,
+			dataIndex: 'name',
+			key: 'name',
+			align: 'left',
+			defaultSortOrder: 'ascend',
+			sortDirections: sortDirections('asc'),
+			sorter: (a, b) => String(a.name).localeCompare(b.name),
+			fixed: true,
+		},
+		{
+			title: TITLE.CODE,
+			dataIndex: 'code',
+			key: 'code',
+			align: 'center',
+			hidden: hidden,
+		},
+		{
+			title: TITLE.SDATE, dataIndex: 'sdate', key: 'sdate', align: 'center', hidden: hidden,
+			render: RenderDate, sorter: (a, b) => String(a.sdate).localeCompare(b.sdate),
+		},
+		{
+			title: TITLE.EDATE, dataIndex: 'edate', key: 'edate', align: 'center', hidden: hidden,
+			render: RenderDate, sorter: (a, b) => String(a.edate).localeCompare(b.edate),
+		},
 		{
 			title: TITLE.SPRICE,
 			dataIndex: 'scost',
@@ -46,8 +67,8 @@ export const Headers = ({ filter }: { filter?: string }): ColumnsType => {
 		},
 		{
 			title: TITLE.SONICRATE,
-			dataIndex: 'sonic_rate',
-			key: 'sonic_rate',
+			dataIndex: 'sonicRate',
+			key: 'sonicRate',
 			align: 'right',
 			render: (v, row) => {
 				// const sonic = row?.ecost - row?.scost;
@@ -56,11 +77,13 @@ export const Headers = ({ filter }: { filter?: string }): ColumnsType => {
 
 				return RenderCost(!isNaN(cost) ? cost?.toFixed(1) : v, { color });
 			},
+			sortDirections: sortDirections('desc'),
+			sorter: (a, b) => Math.round((a?.sonic / a?.scost) * 100) - Math.round((b?.sonic / b?.scost) * 100),
 		},
 		{
 			title: TITLE.YSONICRATE,
-			dataIndex: 'sonic_rate_year',
-			key: 'sonic_rate_year',
+			dataIndex: 'sonicRateYear',
+			key: 'sonicRateYear',
 			align: 'right',
 			render: (v, row) => {
 				// const sonic = row?.ecost - row?.scost;
@@ -79,6 +102,8 @@ export const Headers = ({ filter }: { filter?: string }): ColumnsType => {
 				const color = getCostColorType(v);
 				return RenderPrice(v, { color });
 			},
+			sortDirections: sortDirections('desc'),
+			sorter: (a, b) => a.sonic - b.sonic,
 		},
 	];
 

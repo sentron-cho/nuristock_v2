@@ -1,4 +1,5 @@
 import { EID } from "@shared/config/default.config";
+import { SortOrder } from "antd/es/table/interface";
 
 export enum COST {
 	EUK = '억',
@@ -56,3 +57,11 @@ export const getCostColorType = (value?: string | number) => {
 	else if (number > 0) return 'plus';
 	else return 'minus';
 }
+
+export const sortDirections = (type: 'asc' | 'desc'): SortOrder[] => {
+	if (type === 'asc') {
+		return ['ascend', 'descend', 'ascend']
+	} else {
+		return ['descend', 'ascend', 'descend']
+	}
+};

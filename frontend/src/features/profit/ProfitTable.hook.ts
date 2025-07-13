@@ -1,32 +1,23 @@
-import { cloneDeep, sortBy } from 'lodash';
+import { cloneDeep } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import { ProfitItemType as DataType } from './api/profit.dto';
 import dayjs from 'dayjs';
 
-// export const useProfitTable = <T = unknown>() => {
-//   const [data, setData] = useState<T | undefined>();
-
-//   console.log(data);
-
-//   return {
-//     data,
-//     setData,
-//   }
-// };
-
 export const useProfitTable = (initialData?: DataType[]) => {
 	const [data, setData] = useState<DataType[] | undefined>(initialData);
 	const [filter, setFilter] = useState<string>('codes');
+	const [total, setTotal] = useState<number>(0);
 
-	useEffect(
-		() =>
-			setData(
-				cloneDeep(initialData)?.map((a) => {
-					return { ...a, sonic: (a?.ecost || 0) - (a?.scost || 0) };
-				})
-			),
-		[initialData]
-	);
+	useEffect(() => {
+		const items = cloneDeep(initialData)?.map((a) => {
+			return { ...a, sonic: ((a?.ecost || 0) - (a?.scost || 0)) * (a?.count || 0) };
+		});
+
+		setData(items);
+
+		const sonic = items?.map((a) => a?.sonic || 0)?.reduce((a, b) => a + b, 0);
+		setTotal(Number(sonic));
+	}, [initialData]);
 
 	const filteredData = useMemo(() => {
 		if (!data?.length) return undefined;
@@ -48,7 +39,7 @@ export const useProfitTable = (initialData?: DataType[]) => {
 					} else {
 						key = curr[filteredKey];
 					}
-					console.log({ key, filteredKey });
+					// console.log({ key, filteredKey });
 
 					// 초기화
 					if (!acc[key]) {
@@ -75,11 +66,12 @@ export const useProfitTable = (initialData?: DataType[]) => {
 				}
 			});
 
-			return sortBy(result, ['code']);
+			// return sortBy(result, ['code']);
+			return result;
 		}
 	}, [data, filter]);
 
-	console.log('[useProfitTable]', { filteredData, data });
+	// console.log('[useProfitTable]', { filteredData, data });
 
 	return {
 		filteredData,
@@ -87,5 +79,6 @@ export const useProfitTable = (initialData?: DataType[]) => {
 		setData,
 		filter,
 		setFilter,
+		total,
 	};
 };

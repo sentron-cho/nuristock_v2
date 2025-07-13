@@ -1,19 +1,21 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
 import { SummaryData, Headers } from '@features/dashboard/config/Profit.data';
 import { SummaryDataType } from '@features/common/ui/SummaryBar.ui';
-import { Button } from '@entites/Button';
-import { useErrorBoundary } from 'react-error-boundary';
-import { ErrorType } from '@layouts/ui/ErrorBoundary';
-import { useToast } from '@layouts/hooks/toast.hook';
+// import { useErrorBoundary } from 'react-error-boundary';
+// import { ErrorType } from '@layouts/ui/ErrorBoundary';
+// import { useToast } from '@layouts/hooks/toast.hook';
 import { styled } from '@styles/stitches.config';
 import { useSelectProfit, useSelectProfitYears } from '@features/profit/api/profit.api';
 import { SelectOptionType } from '@entites/SelectForm';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { ST } from '@shared/config/kor.lang';
 import Flex from '@entites/Flex';
-import { Table } from '@entites/Table';
+import { Table, TableRecordType } from '@entites/Table';
 import { useProfitTable } from '@features/profit/ProfitTable.hook';
+import { getCostColorType, toCost } from '@shared/libs/utils.lib';
+import { ProfitItemType } from '@features/profit/api/profit.dto';
+import { SubTableList } from '@features/profit/ui/SubTableList.ui';
 
 const StyledPage = styled(PageContainer, {
 	'.card-list': {
@@ -23,17 +25,19 @@ const StyledPage = styled(PageContainer, {
 });
 
 const ProfitPage = () => {
-	const { showBoundary } = useErrorBoundary();
-	const { toast } = useToast();
+	// const { showBoundary } = useErrorBoundary();
+	// const { toast } = useToast();
 
 	const { data: profitData } = useSelectProfit();
 	const { data: yearsData } = useSelectProfitYears();
+	const [loading, setLoading] = useState<boolean>(false);
+	const [selectedList, setSelectedList] = useState<string[]>();
 
 	// const list = useMemo(() => data?.value, [data]);
 
 	// const years = useEffect(() => yearsData?.value, [yearsData]);
 
-	const { filteredData: list, filter, setFilter } = useProfitTable(profitData?.value);
+	const { data, filteredData: list, total, filter, setFilter } = useProfitTable(profitData?.value);
 
 	const yearsSelect = useMemo(
 		() => yearsData?.value?.map((a) => ({ value: a?.year, label: a?.year }) as SelectOptionType),
@@ -44,23 +48,28 @@ const ProfitPage = () => {
 		return SummaryData();
 	}, []);
 
-	const headers = useMemo(() => Headers({filter}), [filter]);
+	const headers = useMemo(() => Headers({ filter }), [filter]);
 	console.log({ list, yearsSelect, headers, profitData });
 
 	const onClickSummary = (item?: SummaryDataType) => {
+		setLoading(true);
 		setFilter(item?.id as string);
+		setSelectedList(undefined);
+		setTimeout(() => {
+			setLoading(false);
+		}, 100);
 		console.log('[onClickSummary]', { item });
 	};
 
-	const onClickError = () => {
-		const error = new Error('인증 오류입니다');
-		error.name = ErrorType.Unknown;
-		showBoundary(error);
-	};
+	// const onClickError = () => {
+	// 	const error = new Error('인증 오류입니다');
+	// 	error.name = ErrorType.Unknown;
+	// 	showBoundary(error);
+	// };
 
-	const onClickToast = () => {
-		toast('info', '성공');
-	};
+	// const onClickToast = () => {
+	// 	toast('info', '성공');
+	// };
 
 	const onClickTitleBar = () => {
 		console.log('[onClickTitleBar]');
@@ -70,9 +79,22 @@ const ProfitPage = () => {
 		console.log('[onClickTitleBar]', { value });
 	};
 
+	const onRowClick = (record: TableRecordType) => {
+		const row = record as ProfitItemType;
+		if (row?.name) {
+			if (selectedList?.includes(row.name)) {
+				setSelectedList((prev) => prev?.filter((name) => name !== row.name));
+			} else {
+				setSelectedList((prev) => [...(prev || []), row.name]);
+			}
+		}
+	};
+
 	return (
 		<StyledPage summaryData={summaryData} onClickSummary={onClickSummary}>
 			<PageTitleBar
+				title={total ? `${ST.SONIC} : ${toCost(total)}` : ''}
+				titleProps={{ className: getCostColorType(total) }}
 				selectProps={{
 					options: yearsSelect,
 					defaultValue: yearsSelect?.[0]?.value,
@@ -85,11 +107,23 @@ const ProfitPage = () => {
 			/>
 
 			<Flex className={'table-layer'}>
-				<Table headers={headers} data={list} />
+				<Table
+					rowKey={'rowid'}
+					headers={headers}
+					data={list}
+					loading={loading}
+					pending={loading}
+					// fixedRowCount={10}
+					onRowClick={onRowClick}
+				/>
 			</Flex>
 
-			<Button onClick={onClickError} title='오류 테스트'></Button>
-			<Button onClick={onClickToast} title='알림 표시'></Button>
+			{selectedList?.length && <SubTableList
+				headers={headers}
+				selected={selectedList}
+				data={data}
+				filter={filter}
+			/>}
 		</StyledPage>
 	);
 };
