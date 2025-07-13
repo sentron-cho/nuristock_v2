@@ -8,8 +8,9 @@ import { ErrorType } from '@layouts/ui/ErrorBoundary';
 import { useToast } from '@layouts/hooks/toast.hook';
 import { styled } from '@styles/stitches.config';
 import { useSelectProfit, useSelectProfitYears } from '@features/profit/api/profit.api';
-import Flex from '@entites/Flex';
-import { Select, SelectOptionType } from '@entites/SelectForm';
+import { SelectOptionType } from '@entites/SelectForm';
+import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
+import { ST } from '@shared/config/kor.lang';
 
 const StyledPage = styled(PageContainer, {
 	'.card-list': {
@@ -29,7 +30,10 @@ const ProfitPage = () => {
 	const years = useMemo(() => yearsData?.value, [data]);
 	console.log({ list, years });
 
-	const yearsSelect = useMemo(() => years?.map((a) => ({ value: a?.year, label: a?.year } as SelectOptionType)), [years]);
+	const yearsSelect = useMemo(
+		() => years?.map((a) => ({ value: a?.year, label: a?.year }) as SelectOptionType),
+		[years]
+	);
 
 	const summaryData = useMemo(() => {
 		return SummaryData();
@@ -49,16 +53,28 @@ const ProfitPage = () => {
 		toast('info', '성공');
 	};
 
+	const onClickTitleBar = () => {
+		console.log('[onClickTitleBar]');
+	};
+
+	const onChangeTitleBar = (value: string) => {
+		console.log('[onClickTitleBar]', { value });
+	};
+
 	return (
 		<StyledPage summaryData={summaryData} onClickSummary={onClickSummary}>
-			<Flex className='title-bar'>
-        <Select
-          id={'year'}
-          width={100}
-          options={yearsSelect}
-          value={yearsSelect?.[0]?.value}
-          defaultValue={yearsSelect?.[0]?.value} />
-			</Flex>
+			<PageTitleBar
+				selectProps={{
+					options: yearsSelect,
+					defaultValue: yearsSelect?.[0]?.value,
+					onChange: onChangeTitleBar,
+				}}
+				buttonProps={{
+					title: ST.ADD,
+					onClick: onClickTitleBar,
+				}}
+			/>
+
 			<Button onClick={onClickError} title='오류 테스트'></Button>
 			<Button onClick={onClickToast} title='알림 표시'></Button>
 		</StyledPage>

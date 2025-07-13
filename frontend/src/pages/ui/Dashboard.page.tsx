@@ -2,7 +2,10 @@ import { useMemo, useState } from 'react';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
 import { styled } from '@styles/stitches.config';
 // import { StatsForm } from '@features/StatsForm.ui';
-import { SummaryData } from '../../features/dashboard/config/Dashbord.data';
+import {
+	DashboardSummaryData as SummaryData,
+	DashboardTitleOptions as SelectOptions,
+} from '../../features/dashboard/config/Dashbord.data';
 import {
 	DashboardItemType as DataType,
 	// DashboardResponse as ResponseType,
@@ -15,6 +18,8 @@ import { FieldValues } from 'react-hook-form';
 import { StockRegisterPopup } from '@features/dashboard/ui/StockRegister.popup';
 import { URL } from '@shared/config/url.enum';
 import { EID } from '@shared/config/default.config';
+import { ST } from '@shared/config/kor.lang';
+import { IconAdd } from '@entites/Icons';
 
 const StyledPage = styled(PageContainer, {
 	'.card-list': {
@@ -30,6 +35,10 @@ const DashboardPage = () => {
 
 	const summaryData = useMemo(() => {
 		return SummaryData();
+	}, []);
+
+	const titleOptions = useMemo(() => {
+		return SelectOptions();
 	}, []);
 
 	const list = useMemo(() => data?.value, [data]);
@@ -104,7 +113,19 @@ const DashboardPage = () => {
 	return (
 		<>
 			<StyledPage summaryData={summaryData}>
-				<PageTitleBar onClick={onClickTitleBar} onSelect={onChangeTitleBar} />
+				<PageTitleBar
+					title={ST.KEEP_STOCK}
+					selectProps={{
+						options: titleOptions,
+						defaultValue: titleOptions?.[0]?.value,
+						onChange: onChangeTitleBar,
+					}}
+					buttonProps={{
+						icon: <IconAdd />,
+						title: ST.ADD,
+						onClick: onClickTitleBar,
+					}}
+				/>
 				<Flex className='card-list'>
 					{list?.map((item) => (
 						<DashboardCard key={item.code} data={item} onClick={onClick} />

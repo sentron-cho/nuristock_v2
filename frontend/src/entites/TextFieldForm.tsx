@@ -1,9 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import {
-	TextField as MuiTextField,
-	FormControl,
-	TextFieldProps as MuiTextFieldProps,
-} from '@mui/material';
+import { TextField as MuiTextField, FormControl, TextFieldProps as MuiTextFieldProps } from '@mui/material';
 import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import { Tooltip } from '@entites/Tooltip';
 import clsx from 'clsx';
@@ -103,15 +99,15 @@ const TextField: React.FC<TextFieldProps> = ({
 }) => {
 	const [innerError, setInnerError] = useState<string>();
 
+	const isError = useMemo(() => error || !!innerError, [error, innerError]);
+
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		onChange?.(e.target.value?.toString());
 		onClearError?.(id);
 	};
 
-	const isError = useMemo(() => error || innerError, [error, innerError])
-
 	return (
-		<StyledForm className={clsx('text-field', { error: isError })} fullWidth error={error} disabled={disabled}>
+		<StyledForm className={clsx('text-field', { error: isError })} fullWidth error={isError} disabled={disabled}>
 			<MuiTextField
 				{...props}
 				id={id}

@@ -11,10 +11,11 @@ import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
 import { OptionType } from '@shared/config/common.type';
+import { Tooltip } from './Tooltip';
 
 export type SelectOptionType = OptionType;
 
-type SelectFormProps<T extends FieldValues = FieldValues> = SelectProps & {
+export type SelectFormProps<T extends FieldValues = FieldValues> = SelectProps & {
 	name?: keyof T;
 	formMethod?: UseFormReturn<FieldValues>;
 };
@@ -101,8 +102,8 @@ const StyledForm = styled(FormControl, {
 	},
 });
 
-interface SelectProps {
-	id: string;
+export interface SelectProps {
+	id?: string;
 	options?: SelectOptionType[];
 
 	value?: string;
@@ -122,7 +123,7 @@ interface SelectProps {
 }
 
 export const Select: React.FC<SelectProps> = ({
-	id,
+	id = 'select',
 	value,
 	options,
 	onChange,
@@ -137,48 +138,55 @@ export const Select: React.FC<SelectProps> = ({
 	defaultValue,
 	width,
 }) => {
+	// const [innerError, setInnerError] = useState<string>();
+	// const isError = useMemo(() => error || !!innerError, [error, innerError])
+
 	const handleChange = (e: SelectChangeEvent<string | number>) => {
 		onChange?.(e?.target?.value?.toString());
 		onClearError?.(id);
 	};
 
-	console.log({ defaultValue, options, message });
-
 	return (
 		<StyledForm
-			className={clsx('select-form', size, { error })}
+			className={clsx('select-form', size, { error: error })}
 			fullWidth={width ? false : fullWidth}
 			size={size}
 			disabled={disabled}
 			error={error}
+			style={{ width }}
 		>
-			{label && <InputLabel id={`label-${id}`}>{label}</InputLabel>}
+			{options && (
+				<>
+					{label && <InputLabel id={`label-${id}`}>{label}</InputLabel>}
 
-			{options && <MuiSelect
-				size={size}
-				labelId={`label-${id}`}
-				id={id}
-				label={label}
-				value={value}
-				onChange={handleChange}
-				displayEmpty={!!placeholder}
-				defaultValue={defaultValue}
-				style={{ width }}
-			>
-				{placeholder && (
-					<MenuItem value='' disabled>
-						{placeholder}
-					</MenuItem>
-				)}
+					<MuiSelect
+						size={size}
+						labelId={`label-${id}`}
+						id={id}
+						label={label}
+						value={value}
+						onChange={handleChange}
+						displayEmpty={!!placeholder}
+						defaultValue={defaultValue}
+						// style={{ width }}
+					>
+						{placeholder && (
+							<MenuItem value='' disabled>
+								{placeholder}
+							</MenuItem>
+						)}
 
-				{options?.map((option) => (
-					<MenuItem key={option.value} value={option.value}>
-						{option.label}
-					</MenuItem>
-				))}
-			</MuiSelect>}
+						{options?.map((option) => (
+							<MenuItem key={option.value} value={option.value}>
+								{option.label}
+							</MenuItem>
+						))}
+					</MuiSelect>
 
-			{/* {message && <FormHelperText>{message}</FormHelperText>} */}
+					{message && <Tooltip message={message} color={error ? 'error' : 'action'} />}
+					{/* {innerError && <Tooltip message={innerError} color={'error'} />} */}
+				</>
+			)}
 		</StyledForm>
 	);
 };

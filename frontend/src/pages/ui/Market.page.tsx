@@ -3,7 +3,7 @@ import { PageContainer } from '../../features/common/ui/PageContainer.ui';
 import { ErrorType } from 'src/layouts/ui/ErrorBoundary';
 import { useErrorBoundary } from 'react-error-boundary';
 
-const SearchPage = () => {
+const MarketPage = () => {
 	const { showBoundary } = useErrorBoundary();
 
 	const throwCustomError = () => {
@@ -19,5 +19,5 @@ const SearchPage = () => {
 	);
 };
 
-SearchPage.displayName = 'SearchPage';
-export default SearchPage;
+MarketPage.displayName = 'MarketPage';
+export default MarketPage;

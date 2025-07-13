@@ -1,11 +1,8 @@
-import { Button } from '@entites/Button';
+import { Button, ButtonProps } from '@entites/Button';
 import Flex from '@entites/Flex';
-import { IconAdd } from '@entites/Icons';
-import { SelectForm } from '@entites/SelectForm';
+import { SelectForm, SelectFormProps } from '@entites/SelectForm';
 import { Title } from '@entites/Title';
-import { ST } from '@shared/config/kor.lang';
 import { styled } from '@styles/stitches.config';
-import { useMemo } from 'react';
 
 const StyledFlex = styled(Flex, {
 	backgroundColor: '$gray400',
@@ -22,35 +19,35 @@ const StyledFlex = styled(Flex, {
 	},
 });
 
-export const PageTitleBar = ({
-	onClick,
-	onSelect,
-}: {
-	onClick: () => void;
-	onSelect: (value: string) => void;
-}) => {
-	const options = useMemo(() => {
-		return [
-			{ label: ST.DASHBOARD.COST, value: 'keep-cost' },
-			{ label: ST.DASHBOARD.PROFIT_AND_LOSS, value: 'sise-sonic' },
-			{ label: ST.DASHBOARD.SONIC, value: 'sonic-cost' },
-			{ label: ST.DASHBOARD.SONIC_RATE, value: 'sonic-rate' },
-			{ label: ST.DASHBOARD.TITLE, value: 'title' },
-		];
-	}, []);
+interface PageTitleBarProps {
+	title?: string;
+	selectProps?: SelectFormProps;
+	buttonProps?: ButtonProps;
+}
 
+export const PageTitleBar: React.FC<PageTitleBarProps> = ({ title, buttonProps, selectProps }) => {
 	return (
 		<StyledFlex className='dashboard-titl-bar' justify={'between'}>
-			<Title title={ST.DASHBOARD.KEEP_STOCKS} />
-			<SelectForm
-				size='medium'
-				id='select'
-				width={180}
-				options={options}
-				onChange={onSelect}
-				defaultValue='keep-cost'
-			/>
-			<Button size='medium' icon={<IconAdd />} title={'추가'} onClick={onClick} />
+			{title && <Title title={title} />}
+			{selectProps && (
+				<SelectForm
+					{...selectProps}
+					size='medium'
+					width={180}
+					// onChange={selectProps?.onSelect}
+					// options={selectProps?.options}
+					// defaultValue={selectProps?.defaultValue}
+				/>
+			)}
+			{buttonProps && (
+				<Button
+					{...buttonProps}
+					size='medium'
+					// icon={<IconAdd />}
+					// title={buttonTitle}
+					// onClick={onClick}
+				/>
+			)}
 		</StyledFlex>
 	);
 };

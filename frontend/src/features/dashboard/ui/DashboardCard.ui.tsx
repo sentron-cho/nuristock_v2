@@ -211,7 +211,7 @@ export const DashboardCard = ({
 							)}
 						</Flex>
 					) : (
-						<div className='noitem'>{ST.DASHBOARD.NO_HISTORY}</div>
+						<div className='noitem'>{ST.NO_HISTORY}</div>
 					)}
 				</Flex>
 

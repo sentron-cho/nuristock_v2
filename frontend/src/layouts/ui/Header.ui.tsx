@@ -7,6 +7,8 @@ import IconMenu from '@mui/icons-material/Menu';
 import IconMenuOpen from '@mui/icons-material/MenuOpen';
 import IconLogo from '@mui/icons-material/MonetizationOn';
 import { StyledHeader } from '../style/Header.style';
+import { ST } from '@shared/config/kor.lang';
+import { URL } from '@shared/config/url.enum';
 
 // === Component ===
 const Header: React.FC = () => {
@@ -27,10 +29,10 @@ const Header: React.FC = () => {
 
 	const menu = useMemo(() => {
 		return [
-			{ value: '/', label: '메인' },
-			{ value: '/search', label: '종목검색' },
-			{ value: '/profit', label: '투자손익' },
-			{ value: '/value', label: '가치투자' },
+			{ value: URL.ROOT, label: ST.MENU.DASHBOARD },
+			{ value: URL.MARKET, label: ST.MENU.MARKET },
+			{ value: URL.PROFIT, label: ST.MENU.PROFIT },
+			{ value: URL.INVEST, label: ST.MENU.INVEST },
 		];
 	}, []);
 

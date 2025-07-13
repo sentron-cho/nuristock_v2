@@ -6,8 +6,8 @@ import NotFoundPage from '../pages/ui/NotFound.page';
 import StockPage from '../pages/ui/Stock.page';
 import AboutPage from '../pages/ui/About.page';
 import ProfitPage from '../pages/ui/Profit.page';
-import SearchPage from '../pages/ui/Search.page';
-import ValuePage from '../pages/ui/Value.page';
+import MarketPage from '../pages/ui/Market.page';
+import InvestmentPage from '../pages/ui/Investment.page';
 
 const router = createBrowserRouter([
   {
@@ -33,14 +33,14 @@ const router = createBrowserRouter([
         children: [{ index: true, element: <ProfitPage /> }],
       },
       {
-        path: 'search',
+        path: 'market',
         element: <PageLayout />,
-        children: [{ index: true, element: <SearchPage /> }],
+        children: [{ index: true, element: <MarketPage /> }],
       },
       {
-        path: 'value',
+        path: 'invest',
         element: <PageLayout />,
-        children: [{ index: true, element: <ValuePage /> }],
+        children: [{ index: true, element: <InvestmentPage /> }],
       },
       {
         path: 'about',
