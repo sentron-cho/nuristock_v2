@@ -1,25 +1,15 @@
-import { UseYn } from '@shared/config/common.enum';
-
 export interface ProfitItemType {
-	stockid: number;
-	userid: string;
+	rowid: number;
+	utime: string;
 	code: string;
 	name: string;
-	rprice: number;
-	rtime: string;
-	kcount: number;
-	kprice: number;
-	ecount: number;
-	eprice: number;
-	sprice: number;
-	showyn: UseYn;
-	utime: string;
-	ctime: string;
-	stime?: string;
-	sise?: number;
-	updown?: string;
-	erate?: number;
-	ecost?: string;
+	stockid: number;
+	count?: number;
+	scost?: number;
+	sdate?: string;
+	ecost?: number;
+	edate?: string;
+	sonic?: number;
 }
 
 export interface ProfitResponse {

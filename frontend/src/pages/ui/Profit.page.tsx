@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
-import { SummaryData } from '@features/dashboard/config/Profit.data';
+import { SummaryData, Headers } from '@features/dashboard/config/Profit.data';
 import { SummaryDataType } from '@features/common/ui/SummaryBar.ui';
 import { Button } from '@entites/Button';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -11,6 +11,9 @@ import { useSelectProfit, useSelectProfitYears } from '@features/profit/api/prof
 import { SelectOptionType } from '@entites/SelectForm';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { ST } from '@shared/config/kor.lang';
+import Flex from '@entites/Flex';
+import { Table } from '@entites/Table';
+import { useProfitTable } from '@features/profit/ProfitTable.hook';
 
 const StyledPage = styled(PageContainer, {
 	'.card-list': {
@@ -23,23 +26,29 @@ const ProfitPage = () => {
 	const { showBoundary } = useErrorBoundary();
 	const { toast } = useToast();
 
-	const { data } = useSelectProfit();
+	const { data: profitData } = useSelectProfit();
 	const { data: yearsData } = useSelectProfitYears();
 
-	const list = useMemo(() => data?.value, [data]);
-	const years = useMemo(() => yearsData?.value, [data]);
-	console.log({ list, years });
+	// const list = useMemo(() => data?.value, [data]);
+
+	// const years = useEffect(() => yearsData?.value, [yearsData]);
+
+	const { filteredData: list, filter, setFilter } = useProfitTable(profitData?.value);
 
 	const yearsSelect = useMemo(
-		() => years?.map((a) => ({ value: a?.year, label: a?.year }) as SelectOptionType),
-		[years]
+		() => yearsData?.value?.map((a) => ({ value: a?.year, label: a?.year }) as SelectOptionType),
+		[yearsData]
 	);
 
 	const summaryData = useMemo(() => {
 		return SummaryData();
 	}, []);
 
+	const headers = useMemo(() => Headers({filter}), [filter]);
+	console.log({ list, yearsSelect, headers, profitData });
+
 	const onClickSummary = (item?: SummaryDataType) => {
+		setFilter(item?.id as string);
 		console.log('[onClickSummary]', { item });
 	};
 
@@ -74,6 +83,10 @@ const ProfitPage = () => {
 					onClick: onClickTitleBar,
 				}}
 			/>
+
+			<Flex className={'table-layer'}>
+				<Table headers={headers} data={list} />
+			</Flex>
 
 			<Button onClick={onClickError} title='오류 테스트'></Button>
 			<Button onClick={onClickToast} title='알림 표시'></Button>

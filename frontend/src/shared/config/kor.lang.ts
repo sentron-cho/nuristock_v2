@@ -181,17 +181,18 @@ const KOR = {
 	// 	},
 	// },
 
-	// PROFIT: {
-	// 	YEARMONTH: '년월',
-	// 	NAME: '종목명',
-	// 	CODE: '종목코드',
-	// 	SDATE: '매수일',
-	// 	EDATE: '매도일',
-	// 	SPRICE: '매수금',
-	// 	EPRICE: '매도금',
-	// 	SONICRATE: '손익율[%]',
-	// 	YSONICRATE: '년손익율[%]',
-	// },
+	PROFIT_TABLE: {
+		YEAR: '년월',
+		NAME: '종목명',
+		CODE: '종목코드',
+		SDATE: '매수일',
+		EDATE: '매도일',
+		SPRICE: '매수금',
+		EPRICE: '매도금',
+		SONICRATE: '손익율[%]',
+		YSONICRATE: '년손익율[%]',
+		SONIC: '손익',
+	},
 
 	// DAILY: {
 	// 	DAY: '날짜',

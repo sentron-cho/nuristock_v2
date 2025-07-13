@@ -47,3 +47,12 @@ export const toShortCost = (v?: number | string) => {
 		return withCommas(v);
 	}
 };
+
+
+export const getCostColorType = (value?: string | number) => {
+	const number = Number(value);
+
+	if (!value || number === 0) return 'none';
+	else if (number > 0) return 'plus';
+	else return 'minus';
+}

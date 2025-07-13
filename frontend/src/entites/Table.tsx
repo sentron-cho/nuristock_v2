@@ -1,17 +1,64 @@
-import { Table, TableProps } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
+import { styled } from '@styles/stitches.config';
+import { Table as MuiTable, TableProps as MuiTableProps } from 'antd';
+import Flex from './Flex';
+import clsx from 'clsx';
+import { AnyObject } from 'antd/es/_util/type';
 
-interface CommonTableProps<T> extends TableProps<T> {
-	headers: ColumnsType<T>;
-	data: T[];
-	rowKey?: string | ((record: T) => string);
+export type RecordDataType = AnyObject;
+
+interface TableProps extends MuiTableProps {
+	headers: MuiTableProps['columns'];
+	data?: RecordDataType[];
+	rowKey?: string | ((record: RecordDataType) => string);
 	loading?: boolean;
-	pagination?: TableProps['pagination'];
-	onRowClick?: (record: T) => void;
+	pagination?: MuiTableProps['pagination'];
+	onRowClick?: (record: RecordDataType) => void;
 	emptyMessage?: string;
+	fixedRowCount?: number;
 }
 
-export const TableWrapper = <T extends object>({
+const StyledTable = styled(Flex, {
+	'&.table': {
+		background: '$gray600',
+
+		'.ant-table.ant-table-empty': {
+			'.ant-table-body': {
+				display: 'flex',
+				flexDirection: 'cloumn',
+				alignItems: 'center',
+				justifyContent: 'center',
+
+				'.ant-table-placeholder > .ant-table-cell': {
+					border: 'unset',
+				},
+			},
+		},
+
+		'.ant-table': {
+			'.ant-table-body': {
+				height: '100vh',
+
+				'.ant-table-tbody': {
+					tr: {
+						height: '40px',
+						td: {
+							padding: '$4 $10',
+						},
+					},
+				},
+
+				'.plus': {
+					color: '$plus',
+				},
+				'.minus': {
+					color: '$minus',
+				}
+			},
+		}
+	},
+});
+
+export const Table = ({
 	headers,
 	data,
 	rowKey = 'id',
@@ -19,19 +66,23 @@ export const TableWrapper = <T extends object>({
 	pagination = false,
 	onRowClick,
 	emptyMessage = '데이터가 없습니다.',
+	fixedRowCount,
 	...rest
-}: CommonTableProps<T>) => {
+}: TableProps) => {
 	return (
-		<Table<T>
-			columns={headers}
-			dataSource={data}
-			rowKey={rowKey}
-			loading={loading}
-			pagination={pagination}
-			locale={{ emptyText: emptyMessage }}
-			onRow={onRowClick ? (record) => ({ onClick: () => onRowClick(record) }) : undefined}
-			{...rest}
-		/>
+		<StyledTable className={clsx('table')}>
+			<MuiTable
+				tableLayout={'fixed'}
+				columns={headers}
+				dataSource={data}
+				rowKey={rowKey}
+				loading={loading}
+				pagination={pagination}
+				locale={{ emptyText: emptyMessage }}
+				onRow={onRowClick ? (record) => ({ onClick: () => onRowClick(record) }) : undefined}
+				scroll={{ y: fixedRowCount ? 40 * fixedRowCount : 400 }}
+				{...rest}
+			/>
+		</StyledTable>
 	);
 };
-
