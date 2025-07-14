@@ -20,6 +20,7 @@ import { URL } from '@shared/config/url.enum';
 import { EID } from '@shared/config/default.config';
 import { ST } from '@shared/config/kor.lang';
 import { IconAdd } from '@entites/Icons';
+import { useNavigate } from 'react-router-dom';
 
 const StyledPage = styled(PageContainer, {
 	'.card-list': {
@@ -29,6 +30,7 @@ const StyledPage = styled(PageContainer, {
 });
 
 const DashboardPage = () => {
+	const navigate = useNavigate();
 	const [popup, setPopup] = useState<{ type: 'append'; item?: FieldValues }>();
 
 	const { data } = useSelectDashboard();
@@ -47,13 +49,7 @@ const DashboardPage = () => {
 	const onClick = (eid?: string, item?: DataType) => {
 		let data = item;
 		if (eid === EID.SELECT) {
-			// this.setState({ selected: data });
-			// this.props.onClick && this.props.onClick(eid, data, e);
-			return;
-		}
-
-		if (eid === EID.NEW) {
-			// this.props.history.push(`${URL.MARKET}`);
+			navigate(`${URL.MYSTOCK}/${item?.code}`);
 		} else if (eid === EID.EDIT) {
 			// this.setState({
 			//   modal: {

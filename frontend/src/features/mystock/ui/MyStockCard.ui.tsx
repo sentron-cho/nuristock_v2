@@ -1,20 +1,20 @@
 import { ST } from '@shared/config/kor.lang';
-import { DashboardItemType as DataType, StockSiseResponse as SiseType } from '../api/dashboard.dto';
-import { valueOfPlusMinus, withCommas } from '@shared/libs/utils.lib';
+import { MyStockKeepType as DataType, MyStockSiseItemType as SiseType } from '../api/mystock.dto';
+import { toCost, valueOfDateDiff, valueOfPlusMinus, withCommas } from '@shared/libs/utils.lib';
 import Card from '@mui/material/Card';
 import clsx from 'clsx';
 import Flex from '@entites/Flex';
 import { styled } from '@styles/stitches.config';
 import Typography from '@mui/material/Typography';
-import { IconButton, IconType } from '@entites/IconButton';
-import { IconLaunch } from '@entites/Icons';
+import { IconArrowUp as IconUp, IconArrowDown as IconDown, IconPlayArrow } from '@entites/Icons';
 import { Button } from '@entites/Button';
 import { useMemo } from 'react';
 import { EID } from '@shared/config/default.config';
+import dayjs from 'dayjs';
 
 const StyledCard = styled(Card, {
 	width: '33.33333%',
-	height: '280px',
+	height: '300px',
 	boxShadow: 'unset !important',
 	padding: '$4',
 
@@ -35,8 +35,8 @@ const StyledCard = styled(Card, {
 				padding: '0 $4',
 			},
 
-			'.trade-info, .keep-info': {
-				'&.keep-info': {
+			'.trade-info, .keep-info, .sell-info': {
+				'&.keep-info, &.sell-info': {
 					borderTop: '1px solid $gray300',
 				},
 
@@ -46,6 +46,19 @@ const StyledCard = styled(Card, {
 			'.head': {
 				height: '40px',
 				borderBottom: '1px solid $gray300',
+
+				'.left': {
+					'.minus': {
+						color: '$minus',
+						transform: 'rotate(90deg)',
+						marginTop: '-2px',
+					},
+					'.plus': {
+						color: '$plus',
+						transform: 'rotate(-90deg)',
+						marginTop: '2px',
+					},
+				},
 			},
 
 			'.body': {
@@ -99,71 +112,76 @@ const StyledCard = styled(Card, {
 
 const LONG_TIME_FORMAT_LENGTH = 8;
 
-export const DashboardCard = ({
+export const MyStockCard = ({
 	data,
-	siseData,
+	sise,
 	onClick,
 }: {
 	data: DataType;
-	siseData?: SiseType;
+	sise?: SiseType;
 	onClick?: (eid?: string, item?: DataType) => void;
 }) => {
-	// console.log('[DashboardCard]', { siseData });
+	console.log('[DashboardCard]', { sise, data });
 
 	const handleClick = (eid?: string) => {
 		onClick?.(eid, data);
 	};
 
-	const sise = useMemo(() => {
-		if (!data.stime) return { total: '', text: '', time: '', price: 0 };
+	// const sise = useMemo(() => {
+	// 	return {
+	// 		total: '1',
+	// 		text: '2',
+	// 		time: '3',
+	// 		price: 217000,
+	// 	};
+	// }, [data]);
 
-		const siseTotal = data.kcount * (data?.sise || 0);
-		const sisePercent = `[${((siseTotal / data.kprice) * 100 - 100).toFixed(0)} %]`;
-		const siseText =
-			data.kcount > 0 ? `[${withCommas(data.kcount)} x ${withCommas(data.sise)} ${ST.WON}] ${sisePercent}` : '';
-		const siseTitle = data.stime.length > LONG_TIME_FORMAT_LENGTH ? ST.SISE : ST.SISE_END;
-
-		return {
-			total: `${withCommas(siseTotal)} ${ST.WON}`,
-			text: siseText,
-			time: `${siseTitle}(${data.stime})`,
-			price: siseTotal,
-		};
-	}, [data]);
+	// sdate: '20250626',
+	// scost: 210000,
+	// count: 10,
 
 	const values = useMemo(() => {
-		const buyAvg = data?.ecount ? Math.round(data.sprice / data.ecount) : 0;
-		const buyText = data?.ecount ? `${withCommas(data.ecount)} x ${withCommas(buyAvg)}` : '';
+		// const buySum = data.count * data.scost;
+		// const buyText = data?.count ? `${withCommas(data.count)} x ${withCommas(data.scost)}` : '';
 
-		const sellAvg = data?.ecount ? Math.round(data.eprice / data.ecount) : 0;
-		const sellText = data?.ecount ? `${withCommas(data.ecount)} x ${withCommas(sellAvg)}` : '';
+		const makeSise = (data: DataType, per: number = 0, title?: string) => {
+			const targetCost = data.scost * (per === 0 ? 1 : (1 * per) / 100);
 
-		const keepAvg = data.kcount ? Math.round(data.kprice / data.kcount) : 0;
-		const keepText = data.kcount ? `${withCommas(data.kcount)} x ${withCommas(keepAvg)}` : '';
+			return {
+				title: title || `${ST.KEEP_SISE}(${per}%)`,
+				text: data?.count ? `${withCommas(data.count)} x ${withCommas(targetCost)}` : '',
+				value: data.count * targetCost,
+			};
+		};
 
-		const sonic = data.eprice - data.sprice;
-		const sonicText = sonic !== 0 ? `${((data.eprice / data.sprice) * 100 - 100).toFixed(0)}` : '';
+		const buy = makeSise(data, 0, ST.BUY);
+		const sell = makeSise({ ...data, scost: sise?.sise || 0 }, 0, ST.SELL);
+		const siseA = makeSise(data, 10);
+		const siseB = makeSise(data, 20);
+		const siseC = makeSise(data, 30);
 
-		const stype = valueOfPlusMinus(sise.price, data.kprice);
+		const keepDate = valueOfDateDiff(data.sdate, new Date());
+
+		// const sellSum = data.count * (sise?.price || 0);
+		// const sellText = data?.count ? `${withCommas(data.count)} x ${withCommas(sise?.price || 0)}` : '';
+
+		const soinc = sell.value - buy.value;
+
+		const rate = Number((soinc / sell?.value) * 100).toFixed(1);
 
 		return {
-			buyAvg,
-			buyText,
-			sellAvg,
-			sellText,
-			keepAvg,
-			keepText,
-			sonic,
-			sonicText,
-			stype,
+			buy,
+			sell,
+			siseA,
+			siseB,
+			siseC,
+			soinc,
+			rate,
+			keepDate,
 		};
 	}, [data]);
 
-	const type = valueOfPlusMinus(values?.sonic);
-	const active = data.kprice > 0;
-	const history = data.sprice || data.kprice;
-
-	const icon = data.updown === 'down' ? 'arrowdn' : data.updown === 'up' ? 'arrowup' : '';
+	const type = valueOfPlusMinus(sise?.sise, data.scost);
 
 	const handleSiseClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
@@ -171,46 +189,47 @@ export const DashboardCard = ({
 	};
 
 	return (
-		<StyledCard className={clsx('card', { active }, type, { sm: !history })}>
+		<StyledCard className={clsx('card', type, { sm: !history })}>
 			<Flex className='box' direction='column' onClick={() => handleClick(EID.SELECT)}>
 				<Flex className='head' justify='between'>
-					<Flex gap={4} className='left' flex={1}>
+					<Flex gap={0} className={clsx('left', type)} flex={1}>
+						{type === EID.MINUS && <IconPlayArrow className={EID.MINUS} />}
+						{type === EID.PLUS && <IconPlayArrow className={EID.PLUS} />}
+
 						<Typography fontWeight={'bold'} className='title'>
-							{data.name}
+							{toCost(values?.soinc)}
 						</Typography>
-						<Typography fontWeight={'bold'} className='code'>
-							{data.code}
+
+						<Typography fontWeight={'bold'} className='rate'>
+							{`(${ST.SONIC_RATE} ${values?.rate}%)`}
 						</Typography>
 					</Flex>
+
 					<Flex gap={4} className='right' width='fit-contents'>
-						<IconButton eid='delete' type={IconType.DELETE} onClick={handleClick} />
-						<IconButton eid='edit' type={IconType.EDIT} onClick={handleClick} />
+						<Typography fontWeight={'bold'} className='date'>
+							{dayjs(data?.ctime).format('YYYY/MM/DD')}
+						</Typography>
 					</Flex>
 				</Flex>
 
 				<Flex gap={8} className='body' direction='column' justify='start'>
 					{history ? (
-						<Flex direction={'column'}>
-							{/* 매수/매도/손익 */}
+						<Flex className='layout' direction={'column'} flex={1}>
+							{/* 매수/예상 */}
 							<Flex className='trade-info' direction='column' align='start' gap={4}>
-								<LineFiled title={ST.BUY} text={values?.buyText} value={withCommas(data.sprice)} />
-								<LineFiled title={ST.SELL} text={values?.sellText} value={withCommas(data.eprice)} />
-								<LineFiled
-									className={valueOfPlusMinus(values?.sonic)}
-									title={ST.SONIC}
-									text={values?.sonicText}
-									suffix={{ text: '%', value: ST.WON }}
-									value={withCommas(values?.sonic)}
-								/>
+								<LineFiled {...values.buy} value={withCommas(values?.buy.value)} />
+								<LineFiled {...values.siseA} value={withCommas(values.siseA.value)} />
+								<LineFiled {...values.siseB} value={withCommas(values.siseB.value)} />
+								<LineFiled {...values.siseC} value={withCommas(values.siseC.value)} />
 							</Flex>
-							{/* 보유/예상/예상수익 */}
-							{active && (
-								<Flex className='keep-info' direction='column' align='start' gap={4}>
-									<LineFiled title={ST.KEEP} text={values?.keepText} value={withCommas(data.kprice)} />
-									<LineFiled title={ST.KEEP_SISE} text={sise.text} value={sise.total} type={values?.stype} />
-									<LineFiled title={ST.SELL_SISE} value={withCommas(sise.price - data.kprice)} type={values?.stype} />
-								</Flex>
-							)}
+							{/* 현재가 매도시 */}
+							<Flex className={clsx('sell-info', type)} direction='column' align='start' gap={4}>
+								<LineFiled {...values.sell} value={withCommas(values.sell.value)} />
+							</Flex>
+							{/* 보유일 */}
+							<Flex className='keep-info' direction='column' align='start' gap={4} flex={1}>
+								<LineFiled title={ST.KEEP_DATE} value={values?.keepDate} suffix={{}} />
+							</Flex>
 						</Flex>
 					) : (
 						<div className='noitem'>{ST.NO_HISTORY}</div>
@@ -218,19 +237,11 @@ export const DashboardCard = ({
 				</Flex>
 
 				<Flex className='foot'>
-					<span className='st-time'>{sise.time}</span>
 					<Flex gap={8}>
-						<Button
-							className='naver'
-							eid='naver'
-							icon={<IconLaunch />}
-							size='small'
-							title='Naver'
-							onClick={handleClick}
-						/>
-						<Button className='daum' eid='daum' icon={<IconLaunch />} size='small' title='Daum' onClick={handleClick} />
+						<Button eid='sell' size='small' title={ST.SELL} onClick={handleClick} />
+						<Button eid='calc' size='small' title={ST.CALC} onClick={handleClick} />
 					</Flex>
-					{data?.sise && (
+					{/* {data?.sise && (
 						<div className='grp-r' onClick={handleSiseClick}>
 							<span className={clsx('st-value', data.updown)}>
 								{withCommas(data.sise)}
@@ -239,7 +250,7 @@ export const DashboardCard = ({
 							</span>
 							<span className={clsx('st-rate md', data.updown)}>{`(${data.erate}%)`}</span>
 						</div>
-					)}
+					)} */}
 				</Flex>
 			</Flex>
 		</StyledCard>
@@ -272,6 +283,7 @@ export const LineFiled = ({
 	text,
 	suffix = { text: ST.WON, value: ST.WON },
 	className,
+	flex = 1,
 }: {
 	title: string;
 	type?: string;
@@ -280,9 +292,10 @@ export const LineFiled = ({
 	text?: string;
 	suffix?: { text?: string; value?: string };
 	className?: string;
+	flex?: number;
 }) => {
 	return (
-		<StyledLineFiled className={clsx('col', type, className)} justify={'between'}>
+		<StyledLineFiled className={clsx('col', type, className)} justify={'between'} flex={flex}>
 			<Flex className='left' gap={10} width={120}>
 				<Typography className='title'>{title}</Typography>
 				<Flex className='middle' flex={1}>

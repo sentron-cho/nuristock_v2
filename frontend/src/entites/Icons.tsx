@@ -5,8 +5,13 @@ import IconLink from '@mui/icons-material/Link';
 import IconAdd from '@mui/icons-material/Add';
 import IconClose from '@mui/icons-material/Close';
 import IconAlert from '@mui/icons-material/ErrorOutline';
+import IconArrowUp from '@mui/icons-material/ArrowDropUp';
+import IconArrowDown from '@mui/icons-material/ArrowDropDown';
+import IconUp from '@mui/icons-material/ArrowUpward';
+import IconDown from '@mui/icons-material/ArrowDownward';
+import IconPlayArrow from '@mui/icons-material/PlayArrow';
 
-export { IconDelete, IconEdit, IconLaunch, IconLink, IconAdd, IconClose, IconAlert};
+export { IconPlayArrow, IconDelete, IconEdit, IconLaunch, IconLink, IconAdd, IconClose, IconAlert, IconUp, IconDown, IconArrowUp, IconArrowDown };
 
 // export enum IconType {
 // 	DELETE = 'delete',

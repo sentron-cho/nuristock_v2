@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
-import { SummaryData, Headers } from '@features/dashboard/config/Profit.data';
+import { SummaryData, Headers } from '@features/profit/config/Profit.data';
 import { SummaryDataType } from '@features/common/ui/SummaryBar.ui';
 // import { useErrorBoundary } from 'react-error-boundary';
 // import { ErrorType } from '@layouts/ui/ErrorBoundary';
