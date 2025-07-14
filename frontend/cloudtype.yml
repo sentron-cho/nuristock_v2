@@ -1,6 +1,6 @@
-name: nuristock-doc
+name: nuristock-frontend
 app:
-  name: nuristock
+  name: nuristock-frontend
   port: 80
   build:
     type: dockerfile

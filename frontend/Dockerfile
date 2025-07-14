@@ -35,7 +35,7 @@ FROM nginx:latest
 COPY --from=build /app/dist /usr/share/nginx/html
 
 # 환경 변수 설정
-ENV PORT=80
+# ENV PORT=80
 EXPOSE 3000
 
 CMD ["nginx", "-g", "daemon off;"]
