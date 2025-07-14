@@ -3,7 +3,7 @@ import { Dialog } from '@entites/Dialog';
 import { useForm } from 'react-hook-form';
 import { ST } from '@shared/config/kor.lang';
 
-export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => void }) => {
+export const StockUpdaterPopup = ({ onClose }: { onClose: (isOk: boolean) => void }) => {
 	const forms = useForm<{ textInput: string }>({ defaultValues: { textInput: '' } });
 
 	const onClickClose = (isOk: boolean) => {

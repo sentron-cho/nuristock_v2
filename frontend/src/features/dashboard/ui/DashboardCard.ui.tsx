@@ -1,5 +1,5 @@
 import { ST } from '@shared/config/kor.lang';
-import { DashboardItemType as DataType, StockSiseResponse as SiseType } from '../api/dashboard.dto';
+import { DashboardItemType as DataType, DashboardSiseItemType as SiseType } from '../api/dashboard.dto';
 import { valueOfPlusMinus, withCommas } from '@shared/libs/utils.lib';
 import Card from '@mui/material/Card';
 import clsx from 'clsx';
@@ -11,6 +11,7 @@ import { IconLaunch } from '@entites/Icons';
 import { Button } from '@entites/Button';
 import { useMemo } from 'react';
 import { EID } from '@shared/config/default.config';
+import { Text } from '@entites/Text';
 
 const StyledCard = styled(Card, {
 	width: '33.33333%',
@@ -105,31 +106,37 @@ export const DashboardCard = ({
 	onClick,
 }: {
 	data: DataType;
-	siseData?: SiseType;
+	siseData?: SiseType[];
 	onClick?: (eid?: string, item?: DataType) => void;
 }) => {
-	console.log('[DashboardCard]', { siseData });
-
 	const handleClick = (eid?: string) => {
 		onClick?.(eid, data);
 	};
 
 	const sise = useMemo(() => {
-		if (!data.stime) return { total: '', text: '', time: '', price: 0 };
+		const siseItem = siseData?.find((a) => a.code === data.code);
+		console.log({ siseItem });
 
-		const siseTotal = data.kcount * (data?.sise || 0);
+		if (!siseItem?.sise) return { total: '', text: '', time: '', price: 0 };
+
+		const siseTotal = data.kcount * (siseItem?.sise || 0);
 		const sisePercent = `[${((siseTotal / data.kprice) * 100 - 100).toFixed(0)} %]`;
 		const siseText =
-			data.kcount > 0 ? `[${withCommas(data.kcount)} x ${withCommas(data.sise)} ${ST.WON}] ${sisePercent}` : '';
-		const siseTitle = data.stime.length > LONG_TIME_FORMAT_LENGTH ? ST.SISE : ST.SISE_END;
+			data.kcount > 0 ? `[${withCommas(data?.kcount)} x ${withCommas(siseItem?.sise)} ${ST.WON}] ${sisePercent}` : '';
+		const siseTitle = siseItem?.time?.length > LONG_TIME_FORMAT_LENGTH ? ST.SISE : ST.SISE_END;
 
 		return {
+			// ...siseItem,
+			sise: siseItem.sise,
+			erate: siseItem.erate,
+			ecost: siseItem.ecost,
+			updown: siseItem.updown,
 			total: `${withCommas(siseTotal)} ${ST.WON}`,
 			text: siseText,
-			time: `${siseTitle}(${data.stime})`,
+			time: `${siseTitle}(${siseItem?.time})`,
 			price: siseTotal,
 		};
-	}, [data]);
+	}, [siseData]);
 
 	const values = useMemo(() => {
 		const buyAvg = data?.ecount ? Math.round(data.sprice / data.ecount) : 0;
@@ -163,7 +170,7 @@ export const DashboardCard = ({
 	const active = data.kprice > 0;
 	const history = data.sprice || data.kprice;
 
-	const icon = data.updown === 'down' ? 'arrowdn' : data.updown === 'up' ? 'arrowup' : '';
+	const icon = sise?.updown === 'down' ? 'arrowdn' : sise?.updown === 'up' ? 'arrowup' : '';
 
 	const handleSiseClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
@@ -218,7 +225,6 @@ export const DashboardCard = ({
 				</Flex>
 
 				<Flex className='foot'>
-					<span className='st-time'>{sise.time}</span>
 					<Flex gap={8}>
 						<Button
 							className='naver'
@@ -230,15 +236,20 @@ export const DashboardCard = ({
 						/>
 						<Button className='daum' eid='daum' icon={<IconLaunch />} size='small' title='Daum' onClick={handleClick} />
 					</Flex>
-					{data?.sise && (
-						<div className='grp-r' onClick={handleSiseClick}>
-							<span className={clsx('st-value', data.updown)}>
-								{withCommas(data.sise)}
-								{icon && <IconButton type={IconType.DELETE} onClick={handleClick} />}
-								{data.erate !== 0 ? `${withCommas(data.ecost)}` : ''}
-							</span>
-							<span className={clsx('st-rate md', data.updown)}>{`(${data.erate}%)`}</span>
-						</div>
+					{sise && (
+						<Flex>
+							<Text className='st-time' text={sise.time} fontSize={'small'}/>
+
+							<Flex className='grp-r' gap={4} onClick={handleSiseClick}>
+								{/* <span className={clsx('st-value', sise?.updown)}>
+									{icon && <IconButton type={IconType.DELETE} onClick={handleClick} />}
+								</span> */}
+
+								<Text fontSize={'small'} text={withCommas(sise?.sise)} />
+								{sise?.erate !== 0 && <Text fontSize={'small'} text={withCommas(sise?.ecost)} />}
+								<Text className={clsx('st-rate md', sise?.updown)} fontSize={'small'} text={`(${sise?.erate}%)`} />
+							</Flex>
+						</Flex>
 					)}
 				</Flex>
 			</Flex>

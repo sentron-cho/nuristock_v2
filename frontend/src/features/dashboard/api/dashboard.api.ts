@@ -1,5 +1,6 @@
-import { DashboardResponse } from './dashboard.dto';
+import { DashboardResponse, DashboardSiseResponse } from './dashboard.dto';
 import { mock as mockData } from './mock/dashboard.list';
+import { mock as mockSise } from './mock/dashboard.sise';
 import { useQuery } from '@tanstack/react-query';
 
 const API_URL = import.meta.env.VITE_API_URL
@@ -20,3 +21,12 @@ export const useSelectDashboard = () => {
 	// 	select: (res) => res?.data?.map((a) => a.userid),
 	// });
 };
+
+export const useSelectDashboardSise = (code?: string) => {
+	console.log('[useSelectDashboardSise]', { code });
+	return useQuery<unknown, Error, DashboardSiseResponse>({
+		queryKey: ['MYSTOCK-R02'],
+		queryFn: () => mockSise,
+	});
+};
+

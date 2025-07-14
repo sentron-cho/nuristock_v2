@@ -5,12 +5,12 @@ import { styled } from '@styles/stitches.config';
 import {
 	DashboardSummaryData as SummaryData,
 	DashboardTitleOptions as SelectOptions,
-} from '../../features/dashboard/config/Dashbord.data';
+} from '@features/dashboard/config/Dashbord.data';
 import {
 	DashboardItemType as DataType,
 	// DashboardResponse as ResponseType,
 } from '@features/dashboard/api/dashboard.dto';
-import { useSelectDashboard } from '@features/dashboard/api/dashboard.api';
+import { useSelectDashboard, useSelectDashboardSise } from '@features/dashboard/api/dashboard.api';
 import { DashboardCard } from '@features/dashboard/ui/DashboardCard.ui';
 import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
@@ -21,6 +21,7 @@ import { EID } from '@shared/config/default.config';
 import { ST } from '@shared/config/kor.lang';
 import { IconAdd } from '@entites/Icons';
 import { useNavigate } from 'react-router-dom';
+import { StockUpdaterPopup } from '@features/dashboard/ui/StockUpdater.popup';
 
 const StyledPage = styled(PageContainer, {
 	'.card-list': {
@@ -31,9 +32,10 @@ const StyledPage = styled(PageContainer, {
 
 const DashboardPage = () => {
 	const navigate = useNavigate();
-	const [popup, setPopup] = useState<{ type: 'append'; item?: FieldValues }>();
+	const [popup, setPopup] = useState<{ type: 'insert' | 'update'; item?: FieldValues }>();
 
 	const { data } = useSelectDashboard();
+	const { data: siseData } = useSelectDashboardSise();
 
 	const summaryData = useMemo(() => {
 		return SummaryData();
@@ -44,13 +46,16 @@ const DashboardPage = () => {
 	}, []);
 
 	const list = useMemo(() => data?.value, [data]);
-	console.log(list);
+	const sise = useMemo(() => siseData?.value, [siseData]);
+	// console.log({ list, sise });
 
 	const onClick = (eid?: string, item?: DataType) => {
 		let data = item;
 		if (eid === EID.SELECT) {
 			navigate(`${URL.MYSTOCK}/${item?.code}`);
 		} else if (eid === EID.EDIT) {
+			setPopup({ type: 'update', item: item });
+
 			// this.setState({
 			//   modal: {
 			//     show: true, title: ST.ADD, state: STAT.I, size: 'sm', children: ModalEditor, data: { ...data },
@@ -94,14 +99,19 @@ const DashboardPage = () => {
 
 	const onClickTitleBar = () => {
 		console.log('[onClickTitleBar]');
-		setPopup({ type: 'append' });
+		setPopup({ type: 'insert' });
 	};
 
 	const onChangeTitleBar = (value: string) => {
 		console.log('[onClickTitleBar]', { value });
 	};
 
-	const onCloseAppend = (isOk: boolean) => {
+	const onClosePopup = (eid: string, isOk: boolean) => {
+		if (eid === EID.INSERT) {
+			
+		} else if (eid === EID.UPDATE) {
+
+		}
 		console.log('[onClickTitleBar]', { isOk });
 		setPopup(undefined);
 	};
@@ -124,11 +134,14 @@ const DashboardPage = () => {
 				/>
 				<Flex className='card-list'>
 					{list?.map((item) => (
-						<DashboardCard key={item.code} data={item} onClick={onClick} />
+						<DashboardCard key={item.code} data={item} siseData={sise} onClick={onClick} />
 					))}
 				</Flex>
 			</StyledPage>
-			{popup?.type === 'append' && <StockRegisterPopup onClose={onCloseAppend} />}
+
+			{popup?.type === EID.INSERT && <StockRegisterPopup onClose={(isOk) => onClosePopup(popup.type, isOk)} />}
+			{popup?.type === EID.UPDATE && <StockUpdaterPopup onClose={(isOk) => onClosePopup(popup.type, isOk)} />}
+
 			{/* {popup?.type === 'append' && <Alert onClose={() => setPopup(undefined)} />} */}
 		</>
 	);
