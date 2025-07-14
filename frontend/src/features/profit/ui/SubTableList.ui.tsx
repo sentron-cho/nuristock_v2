@@ -5,7 +5,6 @@ import { Table } from '@entites/Table';
 import { styled } from '@stitches/react';
 import clsx from 'clsx';
 import { Text } from '@entites/Text';
-import { useMemo, useState } from 'react';
 
 const StyledTable = styled(Flex, {
 	marginTop: '20px',
@@ -26,13 +25,13 @@ interface SubTableListProps {
 export const SubTableList: React.FC<SubTableListProps> = ({ headers, selected, loading, data, filter }) => {
   console.log({ filter, data });
 
-  const [dataList, setDataList] = useState<ProfitItemType[]>();
+  // const [dataList, setDataList] = useState<ProfitItemType[]>();
   
-  const filterKey = useMemo(() => {
-    if (filter === 'codes') return 'name';
-    else if (filter === 'months') return 'sdate';
-    else return 'sdate';
-  }, [filter]);
+  // const filterKey = useMemo(() => {
+  //   if (filter === 'codes') return 'name';
+  //   else if (filter === 'months') return 'sdate';
+  //   else return 'sdate';
+  // }, [filter]);
 
 	if (!selected || !headers || filter === 'all') return null;
 

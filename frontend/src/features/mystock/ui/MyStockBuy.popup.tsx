@@ -1,9 +1,10 @@
 import { TextFieldForm } from '@entites/TextFieldForm';
 import { Dialog } from '@entites/Dialog';
 import { useForm } from 'react-hook-form';
-import { MystockItemType } from '../api/mystock.dto';
+import { MyStockKeepType } from '../api/mystock.dto';
 
-export const MyStockBuyPopup = ({ item, onClose }: { item?: MystockItemType, onClose: (isOk: boolean) => void }) => {
+export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onClose: (isOk: boolean) => void }) => {
+	console.log(item);
 	const forms = useForm<{ textInput: string }>({ defaultValues: { textInput: '' } });
 
 	const onClickClose = (isOk: boolean) => {

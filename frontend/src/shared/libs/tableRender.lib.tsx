@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { getCostColorType, toCost, withCommas } from './utils.lib';
+import { toCost, withCommas } from './utils.lib';
 import { Text } from '@entites/Text';
 import clsx from 'clsx';
 

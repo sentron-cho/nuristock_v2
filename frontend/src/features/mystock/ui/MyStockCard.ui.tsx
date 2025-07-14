@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import Flex from '@entites/Flex';
 import { styled } from '@styles/stitches.config';
 import Typography from '@mui/material/Typography';
-import { IconArrowUp as IconUp, IconArrowDown as IconDown, IconPlayArrow } from '@entites/Icons';
+import { IconPlayArrow } from '@entites/Icons';
 import { Button } from '@entites/Button';
 import { useMemo } from 'react';
 import { EID } from '@shared/config/default.config';
@@ -110,8 +110,6 @@ const StyledCard = styled(Card, {
 	},
 });
 
-const LONG_TIME_FORMAT_LENGTH = 8;
-
 export const MyStockCard = ({
 	data,
 	sise,
@@ -183,10 +181,10 @@ export const MyStockCard = ({
 
 	const type = valueOfPlusMinus(sise?.sise, data.scost);
 
-	const handleSiseClick = (e: React.MouseEvent) => {
-		e.stopPropagation();
-		onClick?.('sise', data);
-	};
+	// const handleSiseClick = (e: React.MouseEvent) => {
+	// 	e.stopPropagation();
+	// 	onClick?.('sise', data);
+	// };
 
 	return (
 		<StyledCard className={clsx('card', type, { sm: !history })}>

@@ -108,7 +108,7 @@ export const DashboardCard = ({
 	siseData?: SiseType;
 	onClick?: (eid?: string, item?: DataType) => void;
 }) => {
-	// console.log('[DashboardCard]', { siseData });
+	console.log('[DashboardCard]', { siseData });
 
 	const handleClick = (eid?: string) => {
 		onClick?.(eid, data);

@@ -4,10 +4,10 @@ import { styled } from '@styles/stitches.config';
 import {
 	MyStockSummaryData as SummaryData,
 	MyStockTitleOptions as SelectOptions,
-} from '../../features/mystock/config/Mystock.data';
+} from '@features/mystock/config/MyStock.data';
 import { MyStockKeepType as DataType } from '@features/mystock/api/mystock.dto';
 import { useSelectMyStock, useSelectMyStockSise } from '@features/mystock/api/mystock.api';
-import { MyStockCard } from '@features/mystock/ui/MystockCard.ui';
+import { MyStockCard } from '@features/mystock/ui/MyStockCard.ui';
 import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { EID } from '@shared/config/default.config';
