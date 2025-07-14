@@ -23,7 +23,8 @@ WORKDIR /app
 
 # package.json과 package-lock.json을 먼저 복사하여 의존성 설치
 COPY package.json package-lock.json ./
-RUN npm install
+RUN rm -rf node_modules package-lock.json \
+  && npm install
 
 # 전체 소스 코드 복사 후 빌드 실행
 COPY . .
