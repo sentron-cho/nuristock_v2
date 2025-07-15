@@ -32,6 +32,9 @@ RUN npm run build
 
 RUN rm -rf /user/share/nginx/html/*
 
+RUN mkdir -p /var/cache/nginx/client_temp && \
+    chown -R nginx:nginx /var/cache/nginx
+
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # 2️⃣ Nginx를 사용하여 정적 파일 서빙
