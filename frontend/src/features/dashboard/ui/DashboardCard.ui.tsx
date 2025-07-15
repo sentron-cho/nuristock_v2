@@ -170,7 +170,7 @@ export const DashboardCard = ({
 	const active = data.kprice > 0;
 	const history = data.sprice || data.kprice;
 
-	const icon = sise?.updown === 'down' ? 'arrowdn' : sise?.updown === 'up' ? 'arrowup' : '';
+	// const icon = sise?.updown === 'down' ? 'arrowdn' : sise?.updown === 'up' ? 'arrowup' : '';
 
 	const handleSiseClick = (e: React.MouseEvent) => {
 		e.stopPropagation();

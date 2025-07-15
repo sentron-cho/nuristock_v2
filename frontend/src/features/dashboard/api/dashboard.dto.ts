@@ -1,5 +1,3 @@
-import { UseYn } from '@shared/config/common.enum';
-
 export interface DashboardItemType {
 	stockid: number;
 	userid: number;
@@ -15,26 +13,6 @@ export interface DashboardItemType {
 	showyn: string;
 	utime: string;
 	ctime: string;
-
-	// stockid: number;
-	// userid: string;
-	// code: string;
-	// name: string;
-	// rprice: number;
-	// rtime: string;
-	// kcount: number;
-	// kprice: number;
-	// ecount: number;
-	// eprice: number;
-	// sprice: number;
-	// showyn: UseYn;
-	// utime: string;
-	// ctime: string;
-	// stime?: string;
-	// sise?: number;
-	// updown?: string;
-	// erate?: number;
-	// ecost?: string;
 }
 
 export interface DashboardResponse {
