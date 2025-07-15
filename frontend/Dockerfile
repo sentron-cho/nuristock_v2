@@ -32,8 +32,7 @@ RUN npm run build
 
 RUN rm -rf /user/share/nginx/html/*
 
-RUN mkdir -p /var/cache/nginx/client_temp && \
-    chown -R nginx:nginx /var/cache/nginx
+RUN mkdir -p /var/cache/nginx/client_temp
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
