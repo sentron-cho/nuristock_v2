@@ -7,11 +7,13 @@ import Flex from '@entites/Flex';
 import { styled } from '@styles/stitches.config';
 import Typography from '@mui/material/Typography';
 import { IconButton, IconType } from '@entites/IconButton';
-import { IconLaunch } from '@entites/Icons';
+import { IconUp, IconDown, IconLaunch } from '@entites/Icons';
 import { Button } from '@entites/Button';
 import { useMemo } from 'react';
 import { EID } from '@shared/config/default.config';
 import { Text } from '@entites/Text';
+import dayjs from 'dayjs';
+import { CardLineFiled } from '@features/common/ui/CardLineField.ui';
 
 const StyledCard = styled(Card, {
 	width: '33.33333%',
@@ -72,6 +74,25 @@ const StyledCard = styled(Card, {
 						color: '$black',
 					},
 				},
+
+				'.sise': {
+					textAlign: 'right',
+
+					'.time': {
+						color: '$gray600',
+					},
+
+					'.icon': {
+						position: 'relative',
+						marginLeft: '24px',
+
+						svg: {
+							left: '-20px',
+							position: 'absolute',
+							opacity: '0.8',
+						},
+					},
+				},
 			},
 
 			'.plus': {
@@ -115,14 +136,14 @@ export const DashboardCard = ({
 
 	const sise = useMemo(() => {
 		const siseItem = siseData?.find((a) => a.code === data.code);
-		console.log({ siseItem });
+		// console.log({ siseItem });
 
 		if (!siseItem?.sise) return { total: '', text: '', time: '', price: 0 };
 
 		const siseTotal = data.kcount * (siseItem?.sise || 0);
 		const sisePercent = `[${((siseTotal / data.kprice) * 100 - 100).toFixed(0)} %]`;
 		const siseText =
-			data.kcount > 0 ? `[${withCommas(data?.kcount)} x ${withCommas(siseItem?.sise)} ${ST.WON}] ${sisePercent}` : '';
+			data.kcount > 0 ? `[${withCommas(data?.kcount)} x ${withCommas(siseItem?.sise)}${ST.WON}] ${sisePercent}` : '';
 		const siseTitle = siseItem?.time?.length > LONG_TIME_FORMAT_LENGTH ? ST.SISE : ST.SISE_END;
 
 		return {
@@ -131,9 +152,9 @@ export const DashboardCard = ({
 			erate: siseItem.erate,
 			ecost: siseItem.ecost,
 			updown: siseItem.updown,
-			total: `${withCommas(siseTotal)} ${ST.WON}`,
+			total: `${withCommas(siseTotal)}`,
 			text: siseText,
-			time: `${siseTitle}(${siseItem?.time})`,
+			time: `${siseTitle}(${dayjs(siseItem?.time).format('MM.DD HH:MM')})`,
 			price: siseTotal,
 		};
 	}, [siseData]);
@@ -198,11 +219,12 @@ export const DashboardCard = ({
 				<Flex gap={8} className='body' direction='column' justify='start'>
 					{history ? (
 						<Flex direction={'column'}>
+
 							{/* 매수/매도/손익 */}
-							<Flex className='trade-info' direction='column' align='start' gap={4}>
-								<LineFiled title={ST.BUY} text={values?.buyText} value={withCommas(data.sprice)} />
-								<LineFiled title={ST.SELL} text={values?.sellText} value={withCommas(data.eprice)} />
-								<LineFiled
+							<Flex className='trade-info' direction='column' align='start' gap={10}>
+								<CardLineFiled title={ST.BUY} text={values?.buyText} value={withCommas(data.sprice)} />
+								<CardLineFiled title={ST.SELL} text={values?.sellText} value={withCommas(data.eprice)} />
+								<CardLineFiled
 									className={valueOfPlusMinus(values?.sonic)}
 									title={ST.SONIC}
 									text={values?.sonicText}
@@ -210,12 +232,23 @@ export const DashboardCard = ({
 									value={withCommas(values?.sonic)}
 								/>
 							</Flex>
+
 							{/* 보유/예상/예상수익 */}
 							{active && (
-								<Flex className='keep-info' direction='column' align='start' gap={4}>
-									<LineFiled title={ST.KEEP} text={values?.keepText} value={withCommas(data.kprice)} />
-									<LineFiled title={ST.KEEP_SISE} text={sise.text} value={sise.total} type={values?.stype} />
-									<LineFiled title={ST.SELL_SISE} value={withCommas(sise.price - data.kprice)} type={values?.stype} />
+								<Flex className='keep-info' direction='column' align='start' gap={10}>
+									<CardLineFiled title={ST.KEEP} text={values?.keepText} value={withCommas(data.kprice)} />
+									<CardLineFiled
+										title={ST.KEEP_SISE}
+										text={sise.text}
+										value={sise.total}
+										type={values?.stype}
+										suffix={{ value: ST.WON }}
+									/>
+									<CardLineFiled
+										title={ST.SELL_SISE}
+										value={withCommas(sise.price - data.kprice)}
+										type={values?.stype}
+									/>
 								</Flex>
 							)}
 						</Flex>
@@ -224,8 +257,8 @@ export const DashboardCard = ({
 					)}
 				</Flex>
 
-				<Flex className='foot'>
-					<Flex gap={8}>
+				<Flex className='foot' justify={'between'}>
+					<Flex gap={8} width={200}>
 						<Button
 							className='naver'
 							eid='naver'
@@ -236,82 +269,24 @@ export const DashboardCard = ({
 						/>
 						<Button className='daum' eid='daum' icon={<IconLaunch />} size='small' title='Daum' onClick={handleClick} />
 					</Flex>
+
 					{sise && (
-						<Flex>
-							<Text className='st-time' text={sise.time} fontSize={'small'}/>
+						<Flex className={'sise'} direction={'column'} align={'end'} flex={1} gap={8}>
+							<Text className='time' text={sise.time} size={'xxs'} />
 
-							<Flex className='grp-r' gap={4} onClick={handleSiseClick}>
-								{/* <span className={clsx('st-value', sise?.updown)}>
-									{icon && <IconButton type={IconType.DELETE} onClick={handleClick} />}
-								</span> */}
-
-								<Text fontSize={'small'} text={withCommas(sise?.sise)} />
-								{sise?.erate !== 0 && <Text fontSize={'small'} text={withCommas(sise?.ecost)} />}
-								<Text className={clsx('st-rate md', sise?.updown)} fontSize={'small'} text={`(${sise?.erate}%)`} />
+							<Flex className={clsx('price', type)} gap={4} onClick={handleSiseClick} width={'fit-content'}>
+								<Text text={withCommas(sise?.sise)} />
+								<Flex className={clsx({ icon: !!sise?.updown })}>
+									{sise?.updown === EID.UP && <IconUp fontSize='small' />}
+									{sise?.updown === EID.DOWN && <IconDown fontSize='small' />}
+									{sise?.erate !== 0 && <Text text={withCommas(sise?.ecost)} />}
+								</Flex>
+								<Text text={`(${sise?.erate}%)`} />
 							</Flex>
 						</Flex>
 					)}
 				</Flex>
 			</Flex>
 		</StyledCard>
-	);
-};
-
-const StyledLineFiled = styled(Flex, {
-	fontSize: '$sm',
-
-	'.MuiTypography-root': {
-		fontSize: '$sm',
-	},
-
-	'.left': {
-		width: '200px',
-	},
-
-	'.right': {
-		textAlign: 'right',
-		flex: 1,
-		fontSize: '$xs',
-	},
-});
-
-export const LineFiled = ({
-	title,
-	type,
-	date,
-	value,
-	text,
-	suffix = { text: ST.WON, value: ST.WON },
-	className,
-}: {
-	title: string;
-	type?: string;
-	date?: string;
-	value?: string | number;
-	text?: string;
-	suffix?: { text?: string; value?: string };
-	className?: string;
-}) => {
-	return (
-		<StyledLineFiled className={clsx('col', type, className)} justify={'between'}>
-			<Flex className='left' gap={10} width={120}>
-				<Typography className='title'>{title}</Typography>
-				<Flex className='middle' flex={1}>
-					{text && (
-						<Flex>
-							<Typography className='text' fontWeight={'bold'}>
-								{text}
-							</Typography>
-							{suffix?.text && <Typography>{suffix.text}</Typography>}
-						</Flex>
-					)}
-					{date && <Typography className={'date'}>{`[${date}]`}</Typography>}
-				</Flex>
-			</Flex>
-			<Flex className='right' gap={2} justify={'end'} flex={1}>
-				<Typography fontWeight={'bold'}>{value || 0}</Typography>
-				{suffix?.value && <Typography>{suffix.value}</Typography>}
-			</Flex>
-		</StyledLineFiled>
 	);
 };

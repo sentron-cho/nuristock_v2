@@ -11,7 +11,7 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 			const isValid = false;
 
 			if (!isValid) {
-				forms.setError('textInput', { message: '값을 입력하세요.' });
+				forms.setError('textInput', { message: ST.PLEASE_INPUT });
 				return;
 			}
 		}
@@ -24,7 +24,7 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 	};
 
 	return (
-		<Dialog title={ST.UPDATE} onClose={onClickClose}>
+		<Dialog title={ST.STOCK_APPEND} onClose={onClickClose}>
 			<TextFieldForm size='small' id='textInput' formMethod={forms} onClearError={onClearError} maxLength={10} />
 		</Dialog>
 	);

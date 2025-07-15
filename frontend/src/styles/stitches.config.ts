@@ -119,6 +119,14 @@ export const { styled, css, globalCss, theme, createTheme, config } = createStit
 			pageWidth: '$xl',
 		},
 		lineHeights: {
+			xxs: '10px',
+			xs: '12px',
+			sm: '14px',
+			md: '16px',
+			lg: '20px',
+			xl: '24px',
+			xxl: '32px',
+
 			formSmall: '24px',
 			formMedium: '32px',
 			formLarge: '40px',

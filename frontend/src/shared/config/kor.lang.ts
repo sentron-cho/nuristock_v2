@@ -157,6 +157,9 @@ const KOR = {
 		BUCKET: '버킷',
 	},
 
+	STOCK_TITLE: '주식(종목)명',
+	STOCK_APPEND: '종목 추가',
+
 	// DASHBOARD: {
 	// 	ADD: '종목 추가',
 

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
 import { styled } from '@styles/stitches.config';
 // import { StatsForm } from '@features/StatsForm.ui';
@@ -14,7 +14,6 @@ import { useSelectDashboard, useSelectDashboardSise } from '@features/dashboard/
 import { DashboardCard } from '@features/dashboard/ui/DashboardCard.ui';
 import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
-import { FieldValues } from 'react-hook-form';
 import { StockRegisterPopup } from '@features/dashboard/ui/StockRegister.popup';
 import { URL } from '@shared/config/url.enum';
 import { EID } from '@shared/config/default.config';
@@ -22,6 +21,8 @@ import { ST } from '@shared/config/kor.lang';
 import { IconAdd } from '@entites/Icons';
 import { useNavigate } from 'react-router-dom';
 import { StockUpdaterPopup } from '@features/dashboard/ui/StockUpdater.popup';
+import { PopupType } from '@entites/Dialog';
+import { sortBy, reverse } from 'lodash';
 
 const StyledPage = styled(PageContainer, {
 	'.card-list': {
@@ -32,7 +33,8 @@ const StyledPage = styled(PageContainer, {
 
 const DashboardPage = () => {
 	const navigate = useNavigate();
-	const [popup, setPopup] = useState<{ type: 'insert' | 'update'; item?: FieldValues }>();
+	const [popup, setPopup] = useState<PopupType>();
+	const [sort, setSort] = useState<string>();
 
 	const { data } = useSelectDashboard();
 	const { data: siseData } = useSelectDashboardSise();
@@ -45,33 +47,83 @@ const DashboardPage = () => {
 		return SelectOptions();
 	}, []);
 
-	const list = useMemo(() => data?.value, [data]);
+	useEffect(() => setSort(titleOptions?.[0]?.value), [titleOptions]);
+
 	const sise = useMemo(() => siseData?.value, [siseData]);
-	// console.log({ list, sise });
+
+	const list = useMemo(
+		() =>
+			data?.value?.map((row) => {
+				// const buyAvg = a?.ecount ? Math.round(a.sprice / a.ecount) : 0;
+				// 			const buyTotal = a?.ecount ? `${withCommas(a.ecount)} x ${withCommas(buyAvg)}` : '';
+
+				// 			const sellAvg = a?.ecount ? Math.round(a.eprice / a.ecount) : 0;
+				// 			const sellText = a?.ecount ? `${withCommas(a.ecount)} x ${withCommas(sellAvg)}` : '';
+
+				// 			const keepAvg = a.kcount ? Math.round(a.kprice / a.kcount) : 0;
+				// 			const keepText = a.kcount ? `${withCommas(a.kcount)} x ${withCommas(keepAvg)}` : '';
+
+				const siseValue = sise?.find((a) => a.code === row.code)?.sise;
+
+				const sonic = row.eprice - row.sprice;
+				const sonicRate = sonic !== 0 ? ((row.eprice / row.sprice) * 100 - 100) : 0;
+
+				return {
+					...row,
+					sonic: sonic,
+					sonicRate: sonicRate,
+					sise: siseValue,
+					siseSonic: siseValue ? (row?.kcount * siseValue) - row?.kprice : 0,
+					// ktotal: ,
+					// etotal: data.ecount * ,
+					// stotal: 0,
+				};
+			}),
+		[data, sise]
+	);
+	
+	
+	const sortedList = useMemo(() => {
+		if (sort === 'keepCost') {
+			return reverse(sortBy(list, 'kprice'));
+		} else if (sort === 'title') {
+			return sortBy(list, 'name');
+		} else if (sort === 'sonic') {
+			return reverse(sortBy(list, 'siseSonic'));
+		} else if (sort === 'sonicRate') {
+			return reverse(sortBy(list, 'sonicRate'));
+		} else if (sort === 'sonicCost') {
+			return reverse(sortBy(list, 'sonic'));
+		} else {
+			return list;
+		}
+	}, [list, sort]);
+	
+	console.log({ sortedList });
 
 	const onClick = (eid?: string, item?: DataType) => {
 		let data = item;
 		if (eid === EID.SELECT) {
 			navigate(`${URL.MYSTOCK}/${item?.code}`);
 		} else if (eid === EID.EDIT) {
-			setPopup({ type: 'update', item: item });
-
-			// this.setState({
-			//   modal: {
-			//     show: true, title: ST.ADD, state: STAT.I, size: 'sm', children: ModalEditor, data: { ...data },
-			//     onOk: (data) => {
-			//       (data != null) && actions.doUpdate(API.DASHBOARD, data).then(({ result }) => {
-			//         const array = [...this.state.list];
-			//         const item = array.find(item => item.stockid === result.rowid)
-			//         if (item) {
-			//           item.name = result.name;
-			//           this.setState({ list: array, update: new Date() });
-			//         }
-			//         // this.doReload(() => this.doLoadSise());
-			//       });
-			//     }
-			//   }
-			// });
+			setPopup({
+				type: 'update',
+				item: item,
+				onClose: (isOk: boolean) => {
+					console.log(isOk);
+					// data != null &&
+					// 	actions.doUpdate(API.DASHBOARD, data).then(({ result }) => {
+					// 		const array = [...this.state.list];
+					// 		const item = array.find((item) => item.stockid === result.rowid);
+					// 		if (item) {
+					// 			item.name = result.name;
+					// 			this.setState({ list: array, update: new Date() });
+					// 		}
+					// 		// this.doReload(() => this.doLoadSise());
+					// 	});
+					setPopup(undefined);
+				},
+			});
 		} else if (eid === EID.DELETE) {
 			// const msg = data.eprice ? ST.Q.STOCK_DELETE : null;
 			// const type = data.eprice ? 'warn' : 'info';
@@ -99,22 +151,27 @@ const DashboardPage = () => {
 
 	const onClickTitleBar = () => {
 		console.log('[onClickTitleBar]');
-		setPopup({ type: 'insert' });
+		setPopup({
+			type: 'insert',
+			onClose: (isOk: boolean) => {
+				console.log(isOk);
+				setPopup(undefined);
+			},
+		});
 	};
 
 	const onChangeTitleBar = (value: string) => {
 		console.log('[onClickTitleBar]', { value });
+		setSort(value);
 	};
 
-	const onClosePopup = (eid: string, isOk: boolean) => {
-		if (eid === EID.INSERT) {
-			
-		} else if (eid === EID.UPDATE) {
-
-		}
-		console.log('[onClickTitleBar]', { isOk });
-		setPopup(undefined);
-	};
+	// const onClosePopup = (eid: string, isOk: boolean) => {
+	// 	if (eid === EID.INSERT) {
+	// 	} else if (eid === EID.UPDATE) {
+	// 	}
+	// 	console.log('[onClickTitleBar]', { isOk });
+	// 	setPopup(undefined);
+	// };
 
 	return (
 		<>
@@ -133,14 +190,14 @@ const DashboardPage = () => {
 					}}
 				/>
 				<Flex className='card-list'>
-					{list?.map((item) => (
+					{sortedList?.map((item) => (
 						<DashboardCard key={item.code} data={item} siseData={sise} onClick={onClick} />
 					))}
 				</Flex>
 			</StyledPage>
 
-			{popup?.type === EID.INSERT && <StockRegisterPopup onClose={(isOk) => onClosePopup(popup.type, isOk)} />}
-			{popup?.type === EID.UPDATE && <StockUpdaterPopup onClose={(isOk) => onClosePopup(popup.type, isOk)} />}
+			{popup?.type === EID.INSERT && <StockRegisterPopup onClose={popup?.onClose} />}
+			{popup?.type === EID.UPDATE && <StockUpdaterPopup item={popup?.item as DataType} onClose={popup?.onClose} />}
 
 			{/* {popup?.type === 'append' && <Alert onClose={() => setPopup(undefined)} />} */}
 		</>

@@ -13,6 +13,13 @@ export interface DashboardItemType {
 	showyn: string;
 	utime: string;
 	ctime: string;
+
+	sonic?: number;
+	sonicRate?: number;
+
+	// ktotal?: number;
+	// etotal?: number;
+	// stotal?: number;
 }
 
 export interface DashboardResponse {

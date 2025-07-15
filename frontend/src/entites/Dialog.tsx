@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { styled } from '@styles/stitches.config';
 import { PropsWithChildren } from 'react';
+import { FieldValues } from 'react-hook-form';
 
 const StyledDialog = styled(MuiDialog, {
 	'.contents': {
@@ -27,6 +28,12 @@ interface DialogProps extends Omit<MuiDialogProps, 'open'> {
 	onClose: (isOk: boolean) => void;
 	fullScreen?: boolean;
 	backdrop?: boolean;
+}
+
+export interface PopupType {
+	type: 'insert' | 'update' | string;
+	item?: FieldValues;
+	onClose: (isOk: boolean, item?: FieldValues) => void;
 }
 
 export const Dialog = ({

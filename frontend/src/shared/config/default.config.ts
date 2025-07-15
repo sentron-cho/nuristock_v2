@@ -58,6 +58,8 @@ export const EID = {
 	PLUS: 'plus',
 	MIN: 'min',
 	MAX: 'max',
+	UP: 'up',
+	DOWN: 'down',
 };
 
 export const KEY = {

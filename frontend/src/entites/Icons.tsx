@@ -5,13 +5,44 @@ import IconLink from '@mui/icons-material/Link';
 import IconAdd from '@mui/icons-material/Add';
 import IconClose from '@mui/icons-material/Close';
 import IconAlert from '@mui/icons-material/ErrorOutline';
-import IconArrowUp from '@mui/icons-material/ArrowDropUp';
-import IconArrowDown from '@mui/icons-material/ArrowDropDown';
-import IconUp from '@mui/icons-material/ArrowUpward';
-import IconDown from '@mui/icons-material/ArrowDownward';
+import IconArrowUp from '@mui/icons-material/ArrowUpward';
+import IconArrowDown from '@mui/icons-material/ArrowDownward';
 import IconPlayArrow from '@mui/icons-material/PlayArrow';
+import { styled } from '@stitches/react';
+import { SvgIconProps } from '@mui/material';
 
-export { IconPlayArrow, IconDelete, IconEdit, IconLaunch, IconLink, IconAdd, IconClose, IconAlert, IconUp, IconDown, IconArrowUp, IconArrowDown };
+const StyledUp = styled(IconPlayArrow, {
+	color: '$plus',
+	transform: 'rotate(-90deg)',
+	marginTop: '2px',
+});
+const IconUp = (props: SvgIconProps) => {
+	return <StyledUp {...props} />;
+};
+
+const StyledDown = styled(IconPlayArrow, {
+	color: '$minus',
+	transform: 'rotate(90deg)',
+	marginTop: '-2px',
+});
+const IconDown = (props: SvgIconProps) => {
+	return <StyledDown {...props} />;
+};
+
+export {
+	IconPlayArrow,
+	IconDelete,
+	IconEdit,
+	IconLaunch,
+	IconLink,
+	IconAdd,
+	IconClose,
+	IconAlert,
+	IconUp,
+	IconDown,
+	IconArrowUp,
+	IconArrowDown,
+};
 
 // export enum IconType {
 // 	DELETE = 'delete',

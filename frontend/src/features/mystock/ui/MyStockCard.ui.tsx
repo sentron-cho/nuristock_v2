@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import Flex from '@entites/Flex';
 import { styled } from '@styles/stitches.config';
 import Typography from '@mui/material/Typography';
-import { IconPlayArrow } from '@entites/Icons';
+import { IconUp, IconDown } from '@entites/Icons';
 import { Button } from '@entites/Button';
 import { useMemo } from 'react';
 import { EID } from '@shared/config/default.config';
@@ -48,16 +48,16 @@ const StyledCard = styled(Card, {
 				borderBottom: '1px solid $gray300',
 
 				'.left': {
-					'.minus': {
-						color: '$minus',
-						transform: 'rotate(90deg)',
-						marginTop: '-2px',
-					},
-					'.plus': {
-						color: '$plus',
-						transform: 'rotate(-90deg)',
-						marginTop: '2px',
-					},
+					// '.minus': {
+					// 	color: '$minus',
+					// 	transform: 'rotate(90deg)',
+					// 	marginTop: '-2px',
+					// },
+					// '.plus': {
+					// 	color: '$plus',
+					// 	transform: 'rotate(-90deg)',
+					// 	marginTop: '2px',
+					// },
 				},
 			},
 
@@ -191,8 +191,8 @@ export const MyStockCard = ({
 			<Flex className='box' direction='column' onClick={() => handleClick(EID.SELECT)}>
 				<Flex className='head' justify='between'>
 					<Flex gap={0} className={clsx('left', type)} flex={1}>
-						{type === EID.MINUS && <IconPlayArrow className={EID.MINUS} />}
-						{type === EID.PLUS && <IconPlayArrow className={EID.PLUS} />}
+						{type === EID.MINUS && <IconDown />}
+						{type === EID.PLUS && <IconUp />}
 
 						<Typography fontWeight={'bold'} className='title'>
 							{toCost(values?.soinc)}
