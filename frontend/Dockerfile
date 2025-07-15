@@ -30,9 +30,13 @@ RUN rm -rf node_modules package-lock.json \
 COPY . .
 RUN npm run build
 
+RUN rm -rf /user/share/nginx/html/*
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # 2️⃣ Nginx를 사용하여 정적 파일 서빙
-FROM nginx:latest
-COPY --from=build /app/dist /usr/share/nginx/html
+FROM nginx:alpine
+COPY --from=build /app/dist/ /usr/share/nginx/html
 
 # 환경 변수 설정
 # ENV PORT=80
