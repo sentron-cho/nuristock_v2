@@ -17,6 +17,7 @@ import { useParams } from 'react-router-dom';
 import { MyStockBuyPopup } from '@features/mystock/ui/MyStockBuy.popup';
 import { MyStockSellPopup } from '@features/mystock/ui/MyStockSell.popup';
 import { PopupType } from '@entites/Dialog';
+import { reverse, sortBy } from 'lodash';
 
 const StyledPage = styled(PageContainer, {
 	'.card-list': {
@@ -42,25 +43,27 @@ const MyStockPage = () => {
 		return SelectOptions();
 	}, []);
 
-	const keepList = useMemo(() => data?.keeps, [data]);
-	const sellList = useMemo(() => data?.sells, [data]);
+	const keepList = useMemo(() => reverse(sortBy(data?.keeps, 'sdate')), [data]);
+	const sellList = useMemo(() => reverse(sortBy(data?.sells, 'edate')), [data]);
 	const sise = useMemo(() => siseData?.value, [siseData]);
 	console.log({ data, keepList, sellList });
 
 	const onClick = (eid?: string, item?: DataType) => {
 		console.log({ eid, item });
 
-		if (eid === EID.SELECT) {
-			setPopup({
-				type: 'sell',
-				item,
-				onClose: (isOk: boolean) => {
-					console.log(isOk);
-					setPopup(undefined);
-				},
-			});
+		if (eid === EID.SELECT || 'sell') {
+			viewType === 'keep' &&
+				setPopup({
+					type: 'sell',
+					item,
+					onClose: (isOk: boolean) => {
+						console.log(isOk);
+						setPopup(undefined);
+					},
+				});
 		} else if (eid === EID.EDIT) {
 		} else if (eid === EID.DELETE) {
+		} else if (eid === 'calc') {
 		}
 	};
 
@@ -109,9 +112,13 @@ const MyStockPage = () => {
 				/>
 				<Flex className='card-list'>
 					{viewType === 'keep' &&
-						keepList?.map((item) => <MyStockCard key={item.rowid} data={item} sise={sise} onClick={onClick} />)}
+						keepList?.map((item) => (
+							<MyStockCard viewType={viewType} key={item.rowid} data={item} sise={sise} onClick={onClick} />
+						))}
 					{viewType === 'trade' &&
-						sellList?.map((item) => <MyStockCard key={item.rowid} data={item} sise={sise} onClick={onClick} />)}
+						sellList?.map((item) => (
+							<MyStockCard viewType={viewType} key={item.rowid} data={item} sise={sise} onClick={onClick} />
+						))}
 				</Flex>
 			</StyledPage>
 
