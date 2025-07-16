@@ -1,4 +1,3 @@
-
 import { ST } from '@shared/config/kor.lang';
 import clsx from 'clsx';
 import Flex from '@entites/Flex';
@@ -6,21 +5,21 @@ import { styled } from '@styles/stitches.config';
 import { Text } from '@entites/Text';
 
 const StyledLineFiled = styled(Flex, {
-	fontSize: '$sm',
+	// fontSize: '$sm',
 
-	'.MuiTypography-root': {
-		fontSize: '$sm',
-	},
+	// '.MuiTypography-root': {
+	// 	fontSize: '$sm',
+	// },
 
-	'.left': {
-		width: '200px',
-	},
+	// '.left': {
+	// 	// width: '200px',
+	// },
 
-	'.right': {
-		textAlign: 'right',
-		flex: 1,
-		fontSize: '$xs',
-	},
+	// '.right': {
+	// 	textAlign: 'right',
+	// 	// flex: 1,
+	// 	fontSize: '$xs',
+	// },
 });
 
 export const CardLineFiled = ({
@@ -42,19 +41,19 @@ export const CardLineFiled = ({
 }) => {
 	return (
 		<StyledLineFiled className={clsx('col', type, className)} justify={'between'}>
-			<Flex className='left' gap={10} width={120}>
+			<Flex className='left' gap={10} flex={1}>
 				<Text className='title' text={title} />
-				<Flex className='middle' flex={1}>
+				<Flex className='middle' fullWidth={false} flex={1} gap={4} align={'end'}>
 					{text && (
-						<Flex>
+						<Flex fullWidth={false}>
 							<Text className='text' bold text={text} />
 							{suffix?.text && <Text bold text={suffix.text} />}
 						</Flex>
 					)}
-					{date && <Text className={'date'} text={`[${date}]`} />}
+					{date && <Text size='xxs' className={'date'} text={`[${date}]`} flex={1}/>}
 				</Flex>
 			</Flex>
-			<Flex className='right' gap={2} justify={'end'} flex={1}>
+			<Flex className='right' gap={2} justify={'end'} fullWidth={false}>
 				<Text bold text={value || 0} />
 				{suffix?.value && <Text text={suffix.value} />}
 			</Flex>

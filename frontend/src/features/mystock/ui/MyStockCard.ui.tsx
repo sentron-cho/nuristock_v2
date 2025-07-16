@@ -157,15 +157,23 @@ const TradeContents = ({ data }: { data: SellType }) => {
 	const values = useMemo(() => {
 		const makeTrade = (data: SellType, type?: 'sell' | 'buy') => {
 			const cost = type === 'buy' ? data?.scost : data?.ecost;
+			const date = type === 'buy' ? data?.sdate : data?.edate;
 			return {
 				title: type === 'buy' ? ST.BUY : ST.SELL,
 				text: data?.count ? `${withCommas(data.count)} x ${withCommas(cost)}` : '',
 				value: data.count * cost,
+				date: dayjs(date).format('YYYY-MM-DD'),
 			};
 		};
 
 		const buy = makeTrade(data, 'buy');
 		const sell = makeTrade(data, 'sell');
+		const trade = {
+			title: ST.YEAR_SONIC,
+			text: '',
+			value: '',
+			date: ``,
+		}
 
 		const keepDate = valueOfDateDiff(data.sdate, new Date());
 		const soinc = sell.value - buy.value;
@@ -175,6 +183,7 @@ const TradeContents = ({ data }: { data: SellType }) => {
 		return {
 			buy,
 			sell,
+			trade,
 			soinc,
 			rate,
 			keepDate,
@@ -212,12 +221,12 @@ const TradeContents = ({ data }: { data: SellType }) => {
 						{/* 매수/매도 */}
 						<Flex className='trade-info' direction='column' align='start' gap={10}>
 							<CardLineFiled {...values.buy} value={withCommas(values?.buy.value)} />
-							<CardLineFiled {...values.sell} value={withCommas(values?.sell.value)} />
+							<CardLineFiled className={type} {...values.sell} value={withCommas(values?.sell.value)} />
 						</Flex>
 
-						{/* 보유일 */}
+						{/* 연수익/보유일 */}
 						<Flex className='keep-info' direction='column' align='start' gap={10} flex={1}>
-							<CardLineFiled {...values.sell} value={withCommas(values?.sell.value)} />
+							<CardLineFiled className={type} {...values.trade} value={withCommas(values?.trade.value)} />
 							<CardLineFiled title={ST.KEEP_DATE} value={values?.keepDate} suffix={{}} />
 						</Flex>
 					</Flex>
