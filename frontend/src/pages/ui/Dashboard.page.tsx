@@ -35,7 +35,7 @@ const StyledPage = styled(PageContainer, {
 const DashboardPage = () => {
 	const navigate = useNavigate();
 
-	const { showAlert, showToast, showConfirm } = useCommonHook();
+	const { showToast, showConfirm } = useCommonHook();
 
 	const [popup, setPopup] = useState<PopupType>();
 	const [sort, setSort] = useState<string>();
@@ -96,8 +96,6 @@ const DashboardPage = () => {
 			return list;
 		}
 	}, [list, sort]);
-
-	console.log({ sortedList });
 
 	const onClick = (eid?: string, item?: DataType) => {
 		let data = item;

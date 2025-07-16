@@ -3,7 +3,6 @@ import { MyStockKeepType as DataType, MyStockSiseItemType as SiseType } from '..
 import { toCost, valueOfDateDiff, valueOfPlusMinus, withCommas } from '@shared/libs/utils.lib';
 import Card from '@mui/material/Card';
 import clsx from 'clsx';
-import Flex from '@entites/Flex';
 import { styled } from '@styles/stitches.config';
 import Typography from '@mui/material/Typography';
 import { IconUp, IconDown } from '@entites/Icons';
@@ -11,6 +10,8 @@ import { Button } from '@entites/Button';
 import { useMemo } from 'react';
 import { EID } from '@shared/config/default.config';
 import dayjs from 'dayjs';
+import { IconButton, IconType } from '@entites/IconButton';
+import Flex from '@entites/Flex';
 
 const StyledCard = styled(Card, {
 	width: '33.33333%',
@@ -47,18 +48,7 @@ const StyledCard = styled(Card, {
 				height: '40px',
 				borderBottom: '1px solid $gray300',
 
-				'.left': {
-					// '.minus': {
-					// 	color: '$minus',
-					// 	transform: 'rotate(90deg)',
-					// 	marginTop: '-2px',
-					// },
-					// '.plus': {
-					// 	color: '$plus',
-					// 	transform: 'rotate(-90deg)',
-					// 	marginTop: '2px',
-					// },
-				},
+				'.left': {},
 			},
 
 			'.body': {
@@ -125,23 +115,7 @@ export const MyStockCard = ({
 		onClick?.(eid, data);
 	};
 
-	// const sise = useMemo(() => {
-	// 	return {
-	// 		total: '1',
-	// 		text: '2',
-	// 		time: '3',
-	// 		price: 217000,
-	// 	};
-	// }, [data]);
-
-	// sdate: '20250626',
-	// scost: 210000,
-	// count: 10,
-
 	const values = useMemo(() => {
-		// const buySum = data.count * data.scost;
-		// const buyText = data?.count ? `${withCommas(data.count)} x ${withCommas(data.scost)}` : '';
-
 		const makeSise = (data: DataType, per: number = 0, title?: string) => {
 			const targetCost = data.scost * (per === 0 ? 1 : (1 * per) / 100);
 
@@ -159,10 +133,6 @@ export const MyStockCard = ({
 		const siseC = makeSise(data, 30);
 
 		const keepDate = valueOfDateDiff(data.sdate, new Date());
-
-		// const sellSum = data.count * (sise?.price || 0);
-		// const sellText = data?.count ? `${withCommas(data.count)} x ${withCommas(sise?.price || 0)}` : '';
-
 		const soinc = sell.value - buy.value;
 
 		const rate = Number((soinc / sell?.value) * 100).toFixed(1);
@@ -177,7 +147,7 @@ export const MyStockCard = ({
 			rate,
 			keepDate,
 		};
-	}, [data]);
+	}, [data, sise]);
 
 	const type = valueOfPlusMinus(sise?.sise, data.scost);
 
@@ -234,21 +204,15 @@ export const MyStockCard = ({
 					)}
 				</Flex>
 
-				<Flex className='foot'>
+				<Flex className='foot' justify={'between'}>
 					<Flex gap={8}>
 						<Button eid='sell' size='small' title={ST.SELL} onClick={handleClick} />
 						<Button eid='calc' size='small' title={ST.CALC} onClick={handleClick} />
 					</Flex>
-					{/* {data?.sise && (
-						<div className='grp-r' onClick={handleSiseClick}>
-							<span className={clsx('st-value', data.updown)}>
-								{withCommas(data.sise)}
-								{icon && <IconButton type={IconType.DELETE} onClick={handleClick} />}
-								{data.erate !== 0 ? `${withCommas(data.ecost)}` : ''}
-							</span>
-							<span className={clsx('st-rate md', data.updown)}>{`(${data.erate}%)`}</span>
-						</div>
-					)} */}
+					<Flex gap={8} fullWidth={false}>
+						<IconButton type={IconType.EDIT} eid='edit' />
+						<IconButton type={IconType.DELETE} eid='delete' />
+					</Flex>
 				</Flex>
 			</Flex>
 		</StyledCard>

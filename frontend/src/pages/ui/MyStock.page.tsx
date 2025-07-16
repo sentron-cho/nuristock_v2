@@ -5,7 +5,7 @@ import {
 	MyStockSummaryData as SummaryData,
 	MyStockTitleOptions as SelectOptions,
 } from '@features/mystock/config/MyStock.data';
-import { MyStockKeepType as DataType } from '@features/mystock/api/mystock.dto';
+import { MyStockKeepType as DataType, MyStockKeepType } from '@features/mystock/api/mystock.dto';
 import { useSelectMyStock, useSelectMyStockSise } from '@features/mystock/api/mystock.api';
 import { MyStockCard } from '@features/mystock/ui/MyStockCard.ui';
 import Flex from '@entites/Flex';
@@ -16,6 +16,7 @@ import { IconAdd } from '@entites/Icons';
 import { useParams } from 'react-router-dom';
 import { MyStockBuyPopup } from '@features/mystock/ui/MyStockBuy.popup';
 import { MyStockSellPopup } from '@features/mystock/ui/MyStockSell.popup';
+import { PopupType } from '@entites/Dialog';
 
 const StyledPage = styled(PageContainer, {
 	'.card-list': {
@@ -27,7 +28,8 @@ const StyledPage = styled(PageContainer, {
 const MyStockPage = () => {
 	const param = useParams();
 
-	const [popup, setPopup] = useState<{ type: 'buy' | 'sell'; item?: DataType; code?: string }>();
+	const [popup, setPopup] = useState<PopupType & { type: 'buy' | 'sell' }>();
+	const [viewType, setViewType] = useState<'keep' | 'trade'>('keep');
 
 	const { data } = useSelectMyStock(param?.id);
 	const { data: siseData } = useSelectMyStockSise(param?.id);
@@ -40,15 +42,23 @@ const MyStockPage = () => {
 		return SelectOptions();
 	}, []);
 
-	const list = useMemo(() => data?.keeps, [data]);
+	const keepList = useMemo(() => data?.keeps, [data]);
+	const sellList = useMemo(() => data?.sells, [data]);
 	const sise = useMemo(() => siseData?.value, [siseData]);
-	console.log(list);
+	console.log({ data, keepList, sellList });
 
 	const onClick = (eid?: string, item?: DataType) => {
 		console.log({ eid, item });
 
 		if (eid === EID.SELECT) {
-			setPopup({ type: 'sell', item });
+			setPopup({
+				type: 'sell',
+				item,
+				onClose: (isOk: boolean) => {
+					console.log(isOk);
+					setPopup(undefined);
+				},
+			});
 		} else if (eid === EID.EDIT) {
 		} else if (eid === EID.DELETE) {
 		}
@@ -56,12 +66,19 @@ const MyStockPage = () => {
 
 	const onClickTitleBar = () => {
 		console.log('[onClickTitleBar]');
-		setPopup({ type: 'buy' });
+		setPopup({
+			type: 'buy',
+			item: { code: param?.id },
+			onClose: (isOk: boolean) => {
+				console.log(isOk);
+				setPopup(undefined);
+			},
+		});
 	};
 
 	const onChangeTitleBar = (value: string) => {
 		console.log('[onClickTitleBar]', { value });
-		setPopup({ type: 'buy', code: param?.id });
+		setViewType(value as 'keep' | 'trade');
 	};
 
 	const onCloseBuy = (isOk: boolean) => {
@@ -91,14 +108,15 @@ const MyStockPage = () => {
 					}}
 				/>
 				<Flex className='card-list'>
-					{list?.map((item) => (
-						<MyStockCard key={item.rowid} data={item} sise={sise} onClick={onClick} />
-					))}
+					{viewType === 'keep' &&
+						keepList?.map((item) => <MyStockCard key={item.rowid} data={item} sise={sise} onClick={onClick} />)}
+					{viewType === 'trade' &&
+						sellList?.map((item) => <MyStockCard key={item.rowid} data={item} sise={sise} onClick={onClick} />)}
 				</Flex>
 			</StyledPage>
 
-			{popup?.type === 'buy' && <MyStockBuyPopup item={popup?.item} onClose={onCloseBuy} />}
-			{popup?.type === 'sell' && <MyStockSellPopup item={popup?.item} onClose={onCloseSell} />}
+			{popup?.type === 'buy' && <MyStockBuyPopup item={popup?.item as MyStockKeepType} onClose={onCloseBuy} />}
+			{popup?.type === 'sell' && <MyStockSellPopup item={popup?.item as MyStockKeepType} onClose={onCloseSell} />}
 		</>
 	);
 };

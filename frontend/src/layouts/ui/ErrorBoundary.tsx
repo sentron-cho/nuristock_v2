@@ -45,7 +45,7 @@ export const ErrorType = {
 	Unknown: 'Unknown',
 	NetworkError: 'NetworkError',
 	NotFound: 'NotFound',
-}
+};
 
 const errorMessages: ErrorMap = {
 	Unknown: ST.ERROR_UNKNOWN,
@@ -54,13 +54,13 @@ const errorMessages: ErrorMap = {
 };
 
 export const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
-	const toast = useToast();
+	const { showToast } = useToast();
 
 	const message = error.message || errorMessages[error.name] || ST.ERROR_UNKNOWN;
 
 	React.useEffect(() => {
-		toast.toast('error', message);
-	}, [message, toast]);
+		showToast('error', message);
+	}, [message, showToast]);
 
 	return (
 		<div role='alert' style={{ padding: '2rem', textAlign: 'center' }}>

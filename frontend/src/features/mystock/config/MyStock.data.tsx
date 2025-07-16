@@ -12,10 +12,7 @@ export const MyStockSummaryData = (): SummaryDataType[] => {
 
 export const MyStockTitleOptions = (): SelectOptionType[] => {
 	return [
-		{ label: ST.KEEP_COST, value: 'keep-cost' },
-		{ label: ST.SONIC, value: 'sonic' },
-		{ label: ST.SONIC_COST, value: 'sonic-cost' },
-		{ label: ST.SONIC_RATE, value: 'sonic-rate' },
-		{ label: ST.TITLE, value: 'title' },
+		{ label: ST.KEEP_LIST, value: 'keep' },
+		{ label: ST.TRADE_LIST, value: 'trade' },
 	];
 };

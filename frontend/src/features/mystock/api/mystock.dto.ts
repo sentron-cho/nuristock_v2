@@ -30,7 +30,7 @@ export interface MyStockListType {
 export interface MyStockResponse {
 	value?: MyStockItemType[];
 	keeps?: MyStockKeepType[];
-	seels?: MyStockSellType[];
+	sells?: MyStockSellType[];
 	stocks?: MyStockListType[];
 }
 

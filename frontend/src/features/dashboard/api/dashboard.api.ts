@@ -25,7 +25,7 @@ export const useSelectDashboard = () => {
 export const useSelectDashboardSise = (code?: string) => {
 	console.log('[useSelectDashboardSise]', { code });
 	return useQuery<unknown, Error, DashboardSiseResponse>({
-		queryKey: ['MYSTOCK-R02'],
+		queryKey: ['DASHARD-R02'],
 		queryFn: () => mockSise,
 	});
 };
