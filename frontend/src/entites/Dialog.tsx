@@ -48,12 +48,10 @@ export const Dialog = ({
 	const isFullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
 	const onOk = () => {
-		console.log('[onOk]');
 		onClose(true);
 	};
 
 	const onCancel = () => {
-		console.log('[onCancel]');
 		onClose(false);
 	};
 

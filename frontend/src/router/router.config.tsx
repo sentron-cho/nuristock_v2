@@ -9,6 +9,7 @@ import ProfitPage from '../pages/ui/Profit.page';
 import MarketPage from '../pages/ui/Market.page';
 import InvestmentPage from '../pages/ui/Investment.page';
 import MyStockPage from '@page/ui/MyStock.page';
+import DividendPage from '@page/ui/Dividend.page';
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,11 @@ const router = createBrowserRouter([
         path: 'invest',
         element: <PageLayout />,
         children: [{ index: true, element: <InvestmentPage /> }],
+      },
+      {
+        path: 'dividend',
+        element: <PageLayout />,
+        children: [{ index: true, element: <DividendPage /> }],
       },
       {
         path: 'about',

@@ -11,30 +11,22 @@ export const StockUpdaterPopup = ({ item, onClose }: { item?: DataType; onClose:
 		defaultValues: { title: item?.name },
 		resolver: zodResolver(
 			z.object({
-				title: z.string({ message: ST.PLEASE_INPUT }),
+				title: z.string().nonempty({ message: ST.PLEASE_INPUT }),
 			})
 		),
 	});
 	console.log(item);
 
 	const onClickClose = (isOk: boolean) => {
-		// if (isOk) {
-		// 	if (!forms?.getValues('textInput')) {
-		// 		forms.setError('textInput', { message: ST.PLEASE_INPUT });
-		// 		return;
-		// 	}
-		// }
-
 		forms?.handleSubmit(
 			(forms) => {
 				console.log('[success]', { forms });
+				onClose?.(isOk);
 			},
-			(error) => {
-				console.log('[error]', { error });
-			}
+			// (error) => {
+			// 	console.log('[error]', { error });
+			// }
 		)();
-
-		onClose?.(isOk);
 	};
 
 	const onClearError = (id: string) => {

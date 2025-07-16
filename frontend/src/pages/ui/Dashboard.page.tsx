@@ -23,6 +23,7 @@ import { useNavigate } from 'react-router-dom';
 import { StockUpdaterPopup } from '@features/dashboard/ui/StockUpdater.popup';
 import { PopupType } from '@entites/Dialog';
 import { sortBy, reverse } from 'lodash';
+import { useCommonHook } from '@shared/hooks/useCommon.hook';
 
 const StyledPage = styled(PageContainer, {
 	'.card-list': {
@@ -33,6 +34,9 @@ const StyledPage = styled(PageContainer, {
 
 const DashboardPage = () => {
 	const navigate = useNavigate();
+
+	const { showAlert, showToast, showConfirm } = useCommonHook();
+
 	const [popup, setPopup] = useState<PopupType>();
 	const [sort, setSort] = useState<string>();
 
@@ -54,51 +58,45 @@ const DashboardPage = () => {
 	const list = useMemo(
 		() =>
 			data?.value?.map((row) => {
-				// const buyAvg = a?.ecount ? Math.round(a.sprice / a.ecount) : 0;
-				// 			const buyTotal = a?.ecount ? `${withCommas(a.ecount)} x ${withCommas(buyAvg)}` : '';
-
-				// 			const sellAvg = a?.ecount ? Math.round(a.eprice / a.ecount) : 0;
-				// 			const sellText = a?.ecount ? `${withCommas(a.ecount)} x ${withCommas(sellAvg)}` : '';
-
-				// 			const keepAvg = a.kcount ? Math.round(a.kprice / a.kcount) : 0;
-				// 			const keepText = a.kcount ? `${withCommas(a.kcount)} x ${withCommas(keepAvg)}` : '';
-
 				const siseValue = sise?.find((a) => a.code === row.code)?.sise;
 
 				const sonic = row.eprice - row.sprice;
-				const sonicRate = sonic !== 0 ? ((row.eprice / row.sprice) * 100 - 100) : 0;
+				const sonicRate = sonic !== 0 ? (row.eprice / row.sprice) * 100 - 100 : 0;
 
 				return {
 					...row,
 					sonic: sonic,
 					sonicRate: sonicRate,
 					sise: siseValue,
-					siseSonic: siseValue ? (row?.kcount * siseValue) - row?.kprice : 0,
-					// ktotal: ,
-					// etotal: data.ecount * ,
-					// stotal: 0,
+					siseSonic: siseValue ? row?.kcount * siseValue - row?.kprice : 0,
 				};
 			}),
 		[data, sise]
 	);
-	
-	
+
 	const sortedList = useMemo(() => {
 		if (sort === 'keepCost') {
 			return reverse(sortBy(list, 'kprice'));
 		} else if (sort === 'title') {
 			return sortBy(list, 'name');
 		} else if (sort === 'sonic') {
-			return reverse(sortBy(list, 'siseSonic'));
+			// 손익
+			const keeps = list?.filter((a) => a.kcount);
+			const rest = list?.filter((a) => !a.kcount);
+			return reverse([...sortBy(rest, 'siseSonic'), ...sortBy(keeps, 'siseSonic')]);
 		} else if (sort === 'sonicRate') {
+			// 손익율
 			return reverse(sortBy(list, 'sonicRate'));
+			// return reverse([...sortBy(rest, 'sonicRate'), ...sortBy(keeps, 'sonicRate')]);
 		} else if (sort === 'sonicCost') {
+			// 손익금액
 			return reverse(sortBy(list, 'sonic'));
+			// return reverse([...sortBy(rest, 'sonic'), ...sortBy(keeps, 'sonic')]);
 		} else {
 			return list;
 		}
 	}, [list, sort]);
-	
+
 	console.log({ sortedList });
 
 	const onClick = (eid?: string, item?: DataType) => {
@@ -125,21 +123,20 @@ const DashboardPage = () => {
 				},
 			});
 		} else if (eid === EID.DELETE) {
-			// const msg = data.eprice ? ST.Q.STOCK_DELETE : null;
-			// const type = data.eprice ? 'warn' : 'info';
-			// this.setState({
-			//   confirm: {
-			//     show: true, msg, type, onClicked: (isOk) => {
-			//       if (isOk) {
-			//         const value = { 'state': STAT.D, 'rowid': String(data.stockid) };
-			//         actions.doDelete(API.DASHBOARD, value).then(({ code, result }) => {
-			//           this.setState({ alert: { show: true, code: code, key: new Date() } });
-			//           this.doReload();
-			//         });
-			//       }
-			//     },
-			//   }
-			// });
+			showConfirm({
+				content: ST.WANT_TO_DELETE,
+				onClose: (isOk) => {
+					if (isOk) {
+						// 	const value = { state: STAT.D, rowid: String(data.stockid) };
+						// 	actions.doDelete(API.DASHBOARD, value).then(({ code, result }) => {
+						// 		this.setState({ alert: { show: true, code: code, key: new Date() } });
+						// 		this.doReload();
+						// 	});
+
+						showToast('info', ST.DELETEED);
+					}
+				},
+			});
 		} else if (eid === 'naver') {
 			window.open(`${URL.REST.NAVER}?code=${data?.code.replace('A', '')}`);
 		} else if (eid === 'daum') {

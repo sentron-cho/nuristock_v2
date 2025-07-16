@@ -6,6 +6,7 @@ export const URL = {
 	MARKET: '/market',
 	PROFIT: '/profit',
 	DAILY: '/daily',
+	DIVIDEND: '/dividend',
 	INVEST: '/invest',
 	BUCKET: '/bucket',
 	SELL: '/sell',

@@ -201,6 +201,8 @@ export const DashboardCard = ({
 	return (
 		<StyledCard className={clsx('card', { active }, type, { sm: !history })}>
 			<Flex className='box' direction='column' onClick={() => handleClick(EID.SELECT)}>
+				
+				{/* head */}
 				<Flex className='head' justify='between'>
 					<Flex gap={4} className='left' flex={1}>
 						<Typography fontWeight={'bold'} className='title'>
@@ -216,10 +218,10 @@ export const DashboardCard = ({
 					</Flex>
 				</Flex>
 
+				{/* body */}
 				<Flex gap={8} className='body' direction='column' justify='start'>
 					{history ? (
 						<Flex direction={'column'}>
-
 							{/* 매수/매도/손익 */}
 							<Flex className='trade-info' direction='column' align='start' gap={10}>
 								<CardLineFiled title={ST.BUY} text={values?.buyText} value={withCommas(data.sprice)} />
@@ -257,6 +259,7 @@ export const DashboardCard = ({
 					)}
 				</Flex>
 
+				{/* foot */}
 				<Flex className='foot' justify={'between'}>
 					<Flex gap={8} width={200}>
 						<Button

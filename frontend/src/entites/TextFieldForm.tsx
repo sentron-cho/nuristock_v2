@@ -56,13 +56,13 @@ const StyledForm = styled(FormControl, {
 
 		'.MuiInputBase-input': {
 			padding: '0 $10',
-			lineHeight: '36px',
+			lineHeight: '20px',
 			height: '36px',
 		},
 
 		'.MuiInputBase-sizeSmall > .MuiSelect-select': {
 			padding: '0 $10',
-			lineHeight: '28px',
+			lineHeight: '16px',
 			height: '28px',
 		},
 	},

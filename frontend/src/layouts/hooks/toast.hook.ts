@@ -13,6 +13,6 @@ export const useToast = () => {
 		error: () => enqueueSnackbar(ST.FAILUER, { variant: 'error' }),
 		info: (msg: string) => enqueueSnackbar(msg, { variant: 'info' }),
 		warning: (msg: string) => enqueueSnackbar(msg, { variant: 'warning' }),
-		toast,
+		showToast: toast,
 	};
 };

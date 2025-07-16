@@ -2,7 +2,9 @@
 import { RouterProvider } from 'react-router-dom';
 import router from './router/router.config';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ToastProvider } from './layouts/ui/ToastProviter.ui';
+import { ToastProvider } from './layouts/ui/ToastProvider.ui';
+import { AlertProvider } from '@layouts/ui/AlertProvider.ui';
+import { ConfirmProvider } from '@layouts/ui/ConfirmProvider.ui';
 
 const App = () => {
 	const queryClient = new QueryClient();
@@ -15,11 +17,15 @@ const App = () => {
 	console.log('[App]', { mode, isProd, url, api });
 
 	return (
-		<ToastProvider>
-			<QueryClientProvider client={queryClient}>
-				<RouterProvider router={router} />
-			</QueryClientProvider>
-		</ToastProvider>
+		<ConfirmProvider>
+			<AlertProvider>
+				<ToastProvider>
+					<QueryClientProvider client={queryClient}>
+						<RouterProvider router={router} />
+					</QueryClientProvider>
+				</ToastProvider>
+			</AlertProvider>
+		</ConfirmProvider>
 	);
 };
 
