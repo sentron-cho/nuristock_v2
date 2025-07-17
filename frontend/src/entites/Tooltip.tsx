@@ -10,9 +10,9 @@ const StyledTooltip = styled(MuiTooltip, {
 
 	'&.tooltip.icon': {
 		position: 'absolute',
-		height: '24px',
-		width: '24px',
-		top: 'calc(50% - 12px)',
+		height: '20px',
+		width: '20px',
+		top: 'calc(50% - 10px)',
 		right: '$4',
 	},
 });

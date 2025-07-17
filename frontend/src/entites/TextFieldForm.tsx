@@ -28,6 +28,7 @@ export const TextFieldForm = <T extends FieldValues = FieldValues>(props: TextFi
 								props?.formMethod?.clearErrors(id);
 								field.onChange(value);
 							}}
+							inputRef={field.ref}
 							error={!!formState?.errors[props?.name || props.id]}
 							message={formState?.errors[props?.name || props.id]?.message as string}
 						/>
@@ -49,7 +50,7 @@ const StyledForm = styled(FormControl, {
 			},
 
 			input: {
-				paddingRight: '30px',
+				paddingRight: '24px',
 			},
 		},
 

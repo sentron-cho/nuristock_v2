@@ -7,6 +7,7 @@ import Flex from '@entites/Flex';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { styled } from '@styles/stitches.config';
+import { useEffect, useRef } from 'react';
 
 const StyledForm = styled(Flex, {
 	input: {
@@ -14,7 +15,11 @@ const StyledForm = styled(Flex, {
 	},
 });
 
-interface FormType { date: string, cost: string, count: string }
+interface FormType {
+	date: string;
+	cost: string;
+	count: string;
+}
 
 export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onClose: (isOk: boolean) => void }) => {
 	const forms = useForm({
@@ -22,12 +27,16 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onC
 		resolver: zodResolver(
 			z.object({
 				date: z.string().nonempty({ message: ST.PLEASE_INPUT }),
-				cost: z.coerce.number().min(1, ST.ONLY_NUMBER), //z.string().nonempty({ message: ST.PLEASE_INPUT }),
+				cost: z.coerce.number().min(1, ST.ONLY_NUMBER),
 				count: z.coerce.number().min(1, ST.ONLY_NUMBER),
 			})
 		),
 	});
 	console.log(item);
+
+	useEffect(() => {
+		setTimeout(() => forms?.setFocus('cost'), 200);
+	}, [forms]);
 
 	const onClickClose = (isOk: boolean) => {
 		if (isOk) {
@@ -35,10 +44,14 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onC
 				(forms) => {
 					console.log('[success]', { forms });
 					onClose?.(isOk);
+				},
+				(error) => {
+					console.log('[error]', { error });
+					const firstErrorField = Object.keys(error)[0];
+					if (firstErrorField) {
+						forms?.setFocus(firstErrorField as keyof typeof error as any);
+					}
 				}
-				// (error) => {
-				// 	console.log('[error]', { error });
-				// }
 			)();
 		} else {
 			onClose?.(false);
@@ -52,13 +65,7 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onC
 	return (
 		<Dialog title={ST.BUY} onClose={onClickClose}>
 			<StyledForm direction={'column'} gap={20}>
-				<TextFieldForm
-					label='날자'
-					size='small'
-					id='date'
-					formMethod={forms}
-					maxLength={10}
-				/>
+				<TextFieldForm label='날자' size='small' id='date' formMethod={forms} maxLength={10} focused />
 				<TextFieldForm
 					className='cost'
 					label='단가'
@@ -76,6 +83,7 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onC
 					id='count'
 					formMethod={forms}
 					maxLength={10}
+					focused
 				/>
 			</StyledForm>
 		</Dialog>
