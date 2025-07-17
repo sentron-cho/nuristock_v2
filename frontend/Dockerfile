@@ -71,7 +71,7 @@ RUN mkdir -p /var/cache/nginx/client_temp && \
     chown -R nginx:nginx /var/cache/nginx
 
 # 🔄 nginx 설정 복사 (default.conf 또는 nginx.conf)
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # 📁 정적 파일 복사
 COPY --from=build /app/dist /usr/share/nginx/html
