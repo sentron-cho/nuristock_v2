@@ -13,11 +13,14 @@ import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { EID } from '@shared/config/default.config';
 import { ST } from '@shared/config/kor.lang';
 import { IconAdd } from '@entites/Icons';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { MyStockBuyPopup } from '@features/mystock/ui/MyStockBuy.popup';
 import { MyStockSellPopup } from '@features/mystock/ui/MyStockSell.popup';
 import { PopupType } from '@entites/Dialog';
 import { reverse, sortBy } from 'lodash';
+import { SelectForm } from '@entites/SelectForm';
+import { OptionType } from '@shared/config/common.type';
+import { URL } from '@shared/config/url.enum';
 
 const StyledPage = styled(PageContainer, {
 	'.card-list': {
@@ -27,6 +30,7 @@ const StyledPage = styled(PageContainer, {
 });
 
 const MyStockPage = () => {
+	const navigate = useNavigate();
 	const param = useParams();
 
 	const [popup, setPopup] = useState<PopupType & { type: 'buy' | 'sell' }>();
@@ -45,8 +49,17 @@ const MyStockPage = () => {
 
 	const keepList = useMemo(() => reverse(sortBy(data?.keeps, 'sdate')), [data]);
 	const sellList = useMemo(() => reverse(sortBy(data?.sells, 'edate')), [data]);
+	const stocks = useMemo(
+		() =>
+			sortBy(
+				data?.stocks?.map((a) => ({ value: a?.code, label: a?.name } as OptionType)),
+				'label'
+			),
+		[data]
+	);
 	const sise = useMemo(() => siseData?.value, [siseData]);
-	console.log({ data, keepList, sellList });
+	const selected = useMemo(() => stocks?.find(a => a.value === param?.id)?.value, [stocks, param]);
+	console.log({ selected, data, keepList, sellList });
 
 	const onClick = (eid?: string, item?: DataType) => {
 		console.log({ eid, item });
@@ -84,6 +97,11 @@ const MyStockPage = () => {
 		setViewType(value as 'keep' | 'trade');
 	};
 
+	const onChangeStock = (value: string) => {
+		console.log('[onChangeStock]', { value });
+		navigate(`${URL.MYSTOCK}/${value}`);
+	};
+
 	const onCloseBuy = (isOk: boolean) => {
 		console.log('[onCloseBuy]', { isOk });
 		setPopup(undefined);
@@ -98,10 +116,11 @@ const MyStockPage = () => {
 		<>
 			<StyledPage summaryData={summaryData}>
 				<PageTitleBar
-					title={ST.KEEP_STOCK}
+					// title={ST.KEEP_STOCK}
 					selectProps={{
 						options: titleOptions,
 						defaultValue: titleOptions?.[0]?.value,
+						value: viewType,
 						onChange: onChangeTitleBar,
 					}}
 					buttonProps={{
@@ -109,7 +128,16 @@ const MyStockPage = () => {
 						title: ST.ADD,
 						onClick: onClickTitleBar,
 					}}
-				/>
+				>
+					<SelectForm
+						options={stocks}
+						size='medium'
+						border={false}
+						defaultValue={selected}
+						// value={selected}
+						onChange={onChangeStock}
+					/>
+				</PageTitleBar>
 				<Flex className='card-list'>
 					{viewType === 'keep' &&
 						keepList?.map((item) => (

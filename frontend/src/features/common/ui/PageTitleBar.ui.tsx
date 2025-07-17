@@ -3,28 +3,41 @@ import Flex from '@entites/Flex';
 import { SelectForm, SelectFormProps } from '@entites/SelectForm';
 import { Title } from '@entites/Title';
 import { styled } from '@styles/stitches.config';
+import { ReactNode } from 'react';
 
 const StyledFlex = styled(Flex, {
-	backgroundColor: '$gray400',
-	padding: '$4',
 	position: 'sticky',
-	marginTop: '$10',
 	top: 0,
 	zIndex: '999',
+	padding: '0',
+	margin: 0,
 
-	'.title': {
-		position: 'absolute',
-		width: '100%',
-		textAlign: 'center',
+	'.box': {
+		position: 'relative',
+		backgroundColor: '$bgcolor',
+		borderBottom: '1px solid $gray700',
+		// boxShadow: '0px 2px 1px -1px rgba(0,0,0,0.2)',
+		padding: '$8',
+		// marginTop: '$4',
+
+		'.left': {
+			position: 'absolute',
+			left: 4,
+		},
+
+		'.right': {
+			position: 'absolute',
+			right: 4,
+		},
+
+		'.plus': {
+			color: '$plus',
+		},
+
+		'.minus': {
+			color: '$minus',
+		},
 	},
-
-	'.plus': {
-		color: '$plus',
-	},
-
-	'.minus': {
-		color: '$minus',
-	}
 });
 
 interface PageTitleBarProps {
@@ -34,31 +47,30 @@ interface PageTitleBarProps {
 	};
 	selectProps?: SelectFormProps;
 	buttonProps?: ButtonProps;
+	children?: ReactNode;
 }
 
-export const PageTitleBar: React.FC<PageTitleBarProps> = ({ title, buttonProps, selectProps, titleProps }) => {
+export const PageTitleBar: React.FC<PageTitleBarProps> = ({
+	title,
+	buttonProps,
+	selectProps,
+	titleProps,
+	children,
+}) => {
 	return (
-		<StyledFlex className='dashboard-titl-bar' justify={'between'}>
-			{title && <Title title={title} className={titleProps?.className || ''} />}
-			{selectProps && (
-				<SelectForm
-					{...selectProps}
-					size='medium'
-					width={selectProps?.width || 140}
-					// onChange={selectProps?.onSelect}
-					// options={selectProps?.options}
-					// defaultValue={selectProps?.defaultValue}
-				/>
-			)}
-			{buttonProps && (
-				<Button
-					{...buttonProps}
-					size='medium'
-					// icon={<IconAdd />}
-					// title={buttonTitle}
-					// onClick={onClick}
-				/>
-			)}
+		<StyledFlex className='page-titl-bar'>
+			<Flex className='box' justify={'center'}>
+				{title && <Title title={title} className={titleProps?.className || ''} />}
+				{children && (
+					<Flex width={'140px'} className='title'>
+						{children}
+					</Flex>
+				)}
+				{selectProps && (
+					<SelectForm {...selectProps} className={'left'} size='medium' width={selectProps?.width || 140} />
+				)}
+				{buttonProps && <Button {...buttonProps} className={'right'} size='medium' />}
+			</Flex>
 		</StyledFlex>
 	);
 };

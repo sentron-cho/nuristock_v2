@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
 	InputLabel,
 	MenuItem,
@@ -59,8 +59,12 @@ const StyledForm = styled(FormControl, {
 			},
 		},
 
-		border: '1px solid $gray800',
 		borderRadius: '$xs',
+		boxSizing: 'border-box',
+
+		'&.border': {
+			border: '1px solid $gray800',
+		},
 
 		'&.small': {
 			lineHeight: '$formSmall',
@@ -118,6 +122,8 @@ export interface SelectProps {
 	fullWidth?: boolean;
 	disabled?: boolean;
 	size?: MuiSelectProps['size'];
+	className?: string;
+	border?: boolean;
 
 	onClearError?: (id: string) => void;
 }
@@ -137,18 +143,22 @@ export const Select: React.FC<SelectProps> = ({
 	message,
 	defaultValue,
 	width,
+	className,
+	border = true,
 }) => {
-	// const [innerError, setInnerError] = useState<string>();
-	// const isError = useMemo(() => error || !!innerError, [error, innerError])
+	// const [innerValue, setInnerValue] = useState<string>('');
 
 	const handleChange = (e: SelectChangeEvent<string | number>) => {
 		onChange?.(e?.target?.value?.toString());
+		// setInnerValue(e?.target?.value?.toString());
 		onClearError?.(id);
 	};
 
+	// useEffect(() => setInnerValue(value || defaultValue || ''), [value, defaultValue]);
+
 	return (
 		<StyledForm
-			className={clsx('select-form', size, { error: error })}
+			className={clsx('select-form', size, { error, border }, className)}
 			fullWidth={width ? false : fullWidth}
 			size={size}
 			disabled={disabled}
@@ -164,10 +174,11 @@ export const Select: React.FC<SelectProps> = ({
 						labelId={`label-${id}`}
 						id={id}
 						label={label}
-						value={value}
+						// value={innerValue}
+						value={value || defaultValue || ''}
 						onChange={handleChange}
 						displayEmpty={!!placeholder}
-						defaultValue={defaultValue}
+						// defaultValue={defaultValue}
 						// style={{ width }}
 					>
 						{placeholder && (
