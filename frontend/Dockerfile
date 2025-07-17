@@ -90,7 +90,7 @@ RUN chown nginx:nginx /user/share/nginx/
 
 RUN chown 750 /etc/nginx/
 RUN chown 750 /etc/nginx/*
-RUN chown 750 /etc/nginx/config.d/*.conf
+RUN chown 750 /etc/nginx/nginx.conf
 RUN chown 750 /user/lib/nginx/modules/
 RUN chown 750 /user/lib/nginx/modules/*
 RUN chown 750 /var/log/nginx/
