@@ -5,21 +5,7 @@ import { styled } from '@styles/stitches.config';
 import { Text } from '@entites/Text';
 
 const StyledLineFiled = styled(Flex, {
-	// fontSize: '$sm',
 
-	// '.MuiTypography-root': {
-	// 	fontSize: '$sm',
-	// },
-
-	// '.left': {
-	// 	// width: '200px',
-	// },
-
-	// '.right': {
-	// 	textAlign: 'right',
-	// 	// flex: 1,
-	// 	fontSize: '$xs',
-	// },
 });
 
 export const CardLineFiled = ({

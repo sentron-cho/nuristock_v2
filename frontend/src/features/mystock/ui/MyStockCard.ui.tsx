@@ -56,18 +56,15 @@ const StyledCard = styled(Card, {
 				height: '40px',
 				borderBottom: '1px solid $gray300',
 
-				'.left': {},
+				'.date': {
+					color: '$gray700',
+				},
 			},
 
 			'.body': {
 				borderBottom: '1px solid $gray300',
 				overflow: 'hidden',
 				flex: 1,
-
-				'.b-item': {
-					borderTop: '1px solid $gray300',
-					paddingTop: '$10',
-				},
 			},
 
 			'.foot': {
@@ -119,8 +116,6 @@ export const MyStockCard = ({
 	viewType: 'keep' | 'trade';
 	onClick?: (eid?: string, item?: KeepType | SellType) => void;
 }) => {
-	console.log('[DashboardCard]', { sise, data });
-
 	const handleClick = (eid?: string) => {
 		onClick?.(eid, data);
 	};
@@ -168,17 +163,19 @@ const TradeContents = ({ data }: { data: SellType }) => {
 
 		const buy = makeTrade(data, 'buy');
 		const sell = makeTrade(data, 'sell');
+
+		const keepDate = valueOfDateDiff(data.sdate, data.edate);
+		const soinc = sell.value - buy.value;
+		const rate = Number((soinc / sell?.value) * 100).toFixed(1);
+
+		const days = Math.abs(dayjs(data.sdate).diff(dayjs(data.edate), 'day'));
+		const target = days < 365 ? 1 : Number((Number(days) / 365).toFixed(1));
 		const trade = {
 			title: ST.YEAR_SONIC,
-			text: '',
-			value: '',
-			date: ``,
-		}
-
-		const keepDate = valueOfDateDiff(data.sdate, new Date());
-		const soinc = sell.value - buy.value;
-
-		const rate = Number((soinc / sell?.value) * 100).toFixed(1);
+			text: ST.YEAR_SONIC_DESC,
+			value: (Number(rate) / target).toFixed(1),
+			date: '',
+		};
 
 		return {
 			buy,
@@ -195,44 +192,28 @@ const TradeContents = ({ data }: { data: SellType }) => {
 	return (
 		<>
 			<Flex className='head' justify='between'>
-				<Flex gap={0} className={clsx('left', type)} flex={1}>
-					{type === EID.MINUS && <IconDown />}
-					{type === EID.PLUS && <IconUp />}
-
-					<Typography fontWeight={'bold'} className='title'>
-						{toCost(values?.soinc)}
-					</Typography>
-
-					<Typography fontWeight={'bold'} className='rate'>
-						{`(${ST.SONIC_RATE} ${values?.rate}%)`}
-					</Typography>
-				</Flex>
-
-				<Flex gap={4} className='right' width='fit-contents'>
-					<Typography fontWeight={'bold'} className='date'>
-						{dayjs(data?.ctime).format('YYYY/MM/DD')}
-					</Typography>
-				</Flex>
+				<CardContentHead type={type} title={values?.soinc?.toString()} rate={values?.rate} date={data?.ctime} />
 			</Flex>
 
 			<Flex gap={8} className='body' direction='column' justify='start'>
-				{data ? (
-					<Flex className='layout' direction={'column'} flex={1}>
-						{/* 매수/매도 */}
-						<Flex className='trade-info' direction='column' align='start' gap={10}>
-							<CardLineFiled {...values.buy} value={withCommas(values?.buy.value)} />
-							<CardLineFiled className={type} {...values.sell} value={withCommas(values?.sell.value)} />
-						</Flex>
-
-						{/* 연수익/보유일 */}
-						<Flex className='keep-info' direction='column' align='start' gap={10} flex={1}>
-							<CardLineFiled className={type} {...values.trade} value={withCommas(values?.trade.value)} />
-							<CardLineFiled title={ST.KEEP_DATE} value={values?.keepDate} suffix={{}} />
-						</Flex>
+				<Flex className='layout' direction={'column'} flex={1}>
+					{/* 매수/매도 */}
+					<Flex className='trade-info' direction='column' align='start' gap={10}>
+						<CardLineFiled {...values.buy} value={withCommas(values?.buy.value)} />
+						<CardLineFiled className={type} {...values.sell} value={withCommas(values?.sell.value)} />
 					</Flex>
-				) : (
-					<div className='noitem'>{ST.NO_HISTORY}</div>
-				)}
+
+					{/* 연수익/보유일 */}
+					<Flex className='keep-info' direction='column' align='start' gap={10} flex={1}>
+						<CardLineFiled
+							className={type}
+							{...values.trade}
+							value={withCommas(values?.trade.value)}
+							suffix={{ value: '%', text: '' }}
+						/>
+						<CardLineFiled title={ST.KEEP_DATE} value={values?.keepDate} suffix={{}} />
+					</Flex>
+				</Flex>
 			</Flex>
 		</>
 	);
@@ -258,7 +239,6 @@ const KeepContents = ({ data, sise }: { data: KeepType; sise?: SiseType }) => {
 
 		const keepDate = valueOfDateDiff(data.sdate, new Date());
 		const soinc = sell.value - buy.value;
-
 		const rate = Number((soinc / sell?.value) * 100).toFixed(1);
 
 		return {
@@ -278,48 +258,60 @@ const KeepContents = ({ data, sise }: { data: KeepType; sise?: SiseType }) => {
 	return (
 		<>
 			<Flex className='head' justify='between'>
-				<Flex gap={0} className={clsx('left', type)} flex={1}>
-					{type === EID.MINUS && <IconDown />}
-					{type === EID.PLUS && <IconUp />}
-
-					<Typography fontWeight={'bold'} className='title'>
-						{toCost(values?.soinc)}
-					</Typography>
-
-					<Typography fontWeight={'bold'} className='rate'>
-						{`(${ST.SONIC_RATE} ${values?.rate}%)`}
-					</Typography>
-				</Flex>
-
-				<Flex gap={4} className='right' width='fit-contents'>
-					<Typography fontWeight={'bold'} className='date'>
-						{dayjs(data?.ctime).format('YYYY/MM/DD')}
-					</Typography>
-				</Flex>
+				<CardContentHead type={type} title={values?.soinc?.toString()} rate={values?.rate} date={data?.ctime} />
 			</Flex>
 
 			<Flex gap={8} className='body' direction='column' justify='start'>
-				{data ? (
-					<Flex className='layout' direction={'column'} flex={1}>
-						{/* 매수/예상 */}
-						<Flex className='trade-info' direction='column' align='start' gap={10}>
-							<CardLineFiled {...values.buy} value={withCommas(values?.buy.value)} />
-							<CardLineFiled {...values.siseA} value={withCommas(values.siseA.value)} />
-							<CardLineFiled {...values.siseB} value={withCommas(values.siseB.value)} />
-							<CardLineFiled {...values.siseC} value={withCommas(values.siseC.value)} />
-						</Flex>
-						{/* 현재가 매도시 */}
-						<Flex className={clsx('sell-info', type)} direction='column' align='start' gap={10}>
-							<CardLineFiled {...values.sell} value={withCommas(values.sell.value)} />
-						</Flex>
-						{/* 보유일 */}
-						<Flex className='keep-info' direction='column' align='start' gap={10} flex={1}>
-							<CardLineFiled title={ST.KEEP_DATE} value={values?.keepDate} suffix={{}} />
-						</Flex>
+				<Flex className='layout' direction={'column'} flex={1}>
+					{/* 매수/예상 */}
+					<Flex className='trade-info' direction='column' align='start' gap={10}>
+						<CardLineFiled {...values.buy} value={withCommas(values?.buy.value)} />
+						<CardLineFiled {...values.siseA} value={withCommas(values.siseA.value)} />
+						<CardLineFiled {...values.siseB} value={withCommas(values.siseB.value)} />
+						<CardLineFiled {...values.siseC} value={withCommas(values.siseC.value)} />
 					</Flex>
-				) : (
-					<div className='noitem'>{ST.NO_HISTORY}</div>
-				)}
+					{/* 현재가 매도시 */}
+					<Flex className={clsx('sell-info', type)} direction='column' align='start' gap={10}>
+						<CardLineFiled {...values.sell} value={withCommas(values.sell.value)} />
+					</Flex>
+					{/* 보유일 */}
+					<Flex className='keep-info' direction='column' align='start' gap={10} flex={1}>
+						<CardLineFiled title={ST.KEEP_DATE} value={values?.keepDate} suffix={{}} />
+					</Flex>
+				</Flex>
+			</Flex>
+		</>
+	);
+};
+
+const CardContentHead = ({
+	type,
+	title,
+	rate,
+	date,
+}: {
+	type?: string;
+	title?: string;
+	rate?: string;
+	date?: string;
+}) => {
+	return (
+		<>
+			<Flex gap={0} className={clsx('left', type)} flex={1}>
+				{type === EID.MINUS && <IconDown />}
+				{type === EID.PLUS && <IconUp />}
+
+				<Typography fontWeight={'bold'} className='title'>
+					{toCost(title)}
+				</Typography>
+
+				<Typography fontWeight={'bold'} className='rate'>
+					{`(${ST.SONIC_RATE} ${rate}%)`}
+				</Typography>
+			</Flex>
+
+			<Flex gap={4} className='right' width='fit-contents'>
+				<Typography className='date'>{dayjs(date).format('YYYY/MM/DD')}</Typography>
 			</Flex>
 		</>
 	);
