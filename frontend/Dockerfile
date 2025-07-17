@@ -82,7 +82,7 @@ COPY --from=build /app/dist /usr/share/nginx/html
 # Set enviroment variable from nginx config
 RUN chown nginx:nginx /etc/nginx/
 RUN chown nginx:nginx /etc/nginx/*
-RUN chown nginx:nginx /etc/nginx/config.d/*.conf
+RUN chown nginx:nginx /etc/nginx/nginx.conf
 RUN chown nginx:nginx /user/lib/nginx/modules/
 RUN chown nginx:nginx /user/lib/nginx/modules/*
 RUN chown nginx:nginx /var/log/nginx/
