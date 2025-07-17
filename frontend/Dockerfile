@@ -64,11 +64,14 @@ RUN npm run build
 FROM nginx:alpine
 
 # 💡 default.conf 제거 (엔트리포인트 오류 방지)
-RUN rm /etc/nginx/conf.d/default.conf
+# RUN rm /etc/nginx/conf.d/default.conf
 
 # 🔧 nginx 캐시 디렉토리 생성 + 권한 부여 (중요!)
 RUN mkdir -p /var/cache/nginx/client_temp && \
     chown -R nginx:nginx /var/cache/nginx
+    
+# conf.d 디렉토리 제거 또는 깨끗이 비우기
+RUN rm -rf /etc/nginx/conf.d/*
 
 # 🔄 nginx 설정 복사 (default.conf 또는 nginx.conf)
 COPY nginx.conf /etc/nginx/nginx.conf
