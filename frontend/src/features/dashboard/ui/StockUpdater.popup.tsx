@@ -3,8 +3,8 @@ import { Dialog } from '@entites/Dialog';
 import { useForm } from 'react-hook-form';
 import { ST } from '@shared/config/kor.lang';
 import { DashboardItemType as DataType } from '@features/dashboard/api/dashboard.dto';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 export const StockUpdaterPopup = ({ item, onClose }: { item?: DataType; onClose: (isOk: boolean) => void }) => {
 	const forms = useForm<{ title: string }>({
@@ -27,6 +27,8 @@ export const StockUpdaterPopup = ({ item, onClose }: { item?: DataType; onClose:
 			// 	console.log('[error]', { error });
 			// }
 		)();
+
+		onClose?.(isOk);
 	};
 
 	const onClearError = (id: string) => {

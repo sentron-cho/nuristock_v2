@@ -47,6 +47,10 @@ const StyledForm = styled(FormControl, {
 				borderColor: '$red !important',
 				borderWidth: '1px !important',
 			},
+
+			input: {
+				paddingRight: '30px',
+			},
 		},
 
 		'.MuiOutlinedInput-notchedOutline': {

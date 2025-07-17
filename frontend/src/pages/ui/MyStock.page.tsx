@@ -116,7 +116,6 @@ const MyStockPage = () => {
 		<>
 			<StyledPage summaryData={summaryData}>
 				<PageTitleBar
-					// title={ST.KEEP_STOCK}
 					selectProps={{
 						options: titleOptions,
 						defaultValue: titleOptions?.[0]?.value,
@@ -125,7 +124,7 @@ const MyStockPage = () => {
 					}}
 					buttonProps={{
 						icon: <IconAdd />,
-						title: ST.ADD,
+						title: ST.BUY,
 						onClick: onClickTitleBar,
 					}}
 				>

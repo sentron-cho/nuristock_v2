@@ -2,22 +2,47 @@ import { TextFieldForm } from '@entites/TextFieldForm';
 import { Dialog } from '@entites/Dialog';
 import { useForm } from 'react-hook-form';
 import { MyStockKeepType } from '../api/mystock.dto';
+import { ST } from '@shared/config/kor.lang';
+import Flex from '@entites/Flex';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { styled } from '@styles/stitches.config';
+
+const StyledForm = styled(Flex, {
+	input: {
+		textAlign: 'right',
+	},
+});
+
+interface FormType { date: string, cost: string, count: string }
 
 export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onClose: (isOk: boolean) => void }) => {
+	const forms = useForm({
+		defaultValues: { date: '', cost: '', count: '' },
+		resolver: zodResolver(
+			z.object({
+				date: z.string().nonempty({ message: ST.PLEASE_INPUT }),
+				cost: z.coerce.number().min(1, ST.ONLY_NUMBER), //z.string().nonempty({ message: ST.PLEASE_INPUT }),
+				count: z.coerce.number().min(1, ST.ONLY_NUMBER),
+			})
+		),
+	});
 	console.log(item);
-	const forms = useForm<{ textInput: string }>({ defaultValues: { textInput: '' } });
 
 	const onClickClose = (isOk: boolean) => {
 		if (isOk) {
-			const isValid = false;
-
-			if (!isValid) {
-				forms.setError('textInput', { message: '값을 입력하세요.' });
-				return;
-			}
+			forms?.handleSubmit(
+				(forms) => {
+					console.log('[success]', { forms });
+					onClose?.(isOk);
+				}
+				// (error) => {
+				// 	console.log('[error]', { error });
+				// }
+			)();
+		} else {
+			onClose?.(false);
 		}
-
-		onClose?.(isOk);
 	};
 
 	const onClearError = (id: string) => {
@@ -25,8 +50,34 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onC
 	};
 
 	return (
-		<Dialog title='주식추가' onClose={onClickClose}>
-			<TextFieldForm size='small' id='textInput' formMethod={forms} onClearError={onClearError} maxLength={10} />
+		<Dialog title={ST.BUY} onClose={onClickClose}>
+			<StyledForm direction={'column'} gap={20}>
+				<TextFieldForm
+					label='날자'
+					size='small'
+					id='date'
+					formMethod={forms}
+					maxLength={10}
+				/>
+				<TextFieldForm
+					className='cost'
+					label='단가'
+					size='small'
+					id='cost'
+					formMethod={forms}
+					maxLength={10}
+					// inputMode='numeric'
+					focused
+				/>
+				<TextFieldForm
+					className='count'
+					label='주식수'
+					size='small'
+					id='count'
+					formMethod={forms}
+					maxLength={10}
+				/>
+			</StyledForm>
 		</Dialog>
 	);
 };
