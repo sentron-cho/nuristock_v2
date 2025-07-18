@@ -7,19 +7,13 @@ import Flex from '@entites/Flex';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { styled } from '@styles/stitches.config';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 const StyledForm = styled(Flex, {
 	input: {
 		textAlign: 'right',
 	},
 });
-
-interface FormType {
-	date: string;
-	cost: string;
-	count: string;
-}
 
 export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onClose: (isOk: boolean) => void }) => {
 	const forms = useForm({
@@ -58,9 +52,9 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onC
 		}
 	};
 
-	const onClearError = (id: string) => {
-		forms?.clearErrors(id as never);
-	};
+	// const onClearError = (id: string) => {
+	// 	forms?.clearErrors(id as never);
+	// };
 
 	return (
 		<Dialog title={ST.BUY} onClose={onClickClose}>
