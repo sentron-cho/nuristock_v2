@@ -123,7 +123,7 @@ const TextField: React.FC<TextFieldProps> = ({
 		let value = e?.target?.value?.toString();
 
 		if (withComma) {
-			value = withCommas(withCommas(value, true))?.toString();
+			value = withCommas(withCommas(value, true))?.toString() || value;
 		}
 
 		onChange?.(value);

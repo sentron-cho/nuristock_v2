@@ -62,8 +62,9 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onC
 	const onClickClose = (isOk: boolean) => {
 		if (isOk) {
 			forms?.handleSubmit(
-				(forms) => {
-					console.log('[success]', { forms });
+				(values) => {
+					const params = { ...values, date: dayjs(values?.date).format('YYYY-MM-DD') }
+					console.log('[success]', { values, params });
 					onClose?.(isOk);
 				},
 				(error) => {
@@ -82,7 +83,6 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onC
 	return (
 		<Dialog title={ST.BUY} onClose={onClickClose}>
 			<StyledForm direction={'column'} gap={20}>
-				{/* <TextFieldForm label='날자' size='small' id='date' formMethod={forms} maxLength={10} focused /> */}
 				<DatePickerForm id='date' label='매수일' placeholder='매수일을 선택하세요' formMethod={forms} align='right' />
 				<TextFieldForm
 					className='cost'
@@ -93,9 +93,6 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onC
 					formMethod={forms}
 					maxLength={12}
 					withComma
-					// onChange={(v) => {
-					// 	forms?.setValue('cost', withCommas(withCommas(v, true)));
-					// }}
 					focused
 					align='right'
 				/>
