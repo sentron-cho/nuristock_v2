@@ -83,16 +83,16 @@ COPY --from=build /app/dist /usr/share/nginx/html
 RUN chown nginx:nginx /etc/nginx/
 RUN chown nginx:nginx /etc/nginx/*
 RUN chown nginx:nginx /etc/nginx/conf.d/default.conf
-RUN chown nginx:nginx /user/lib/nginx/modules/
-RUN chown nginx:nginx /user/lib/nginx/modules/*
+# RUN chown nginx:nginx /user/lib/nginx/modules/
+# RUN chown nginx:nginx /user/lib/nginx/modules/*
 RUN chown nginx:nginx /var/log/nginx/
 RUN chown nginx:nginx /user/share/nginx/
 
 RUN chown 750 /etc/nginx/
 RUN chown 750 /etc/nginx/*
 RUN chown 750 /etc/nginx/conf.d/default.conf
-RUN chown 750 /user/lib/nginx/modules/
-RUN chown 750 /user/lib/nginx/modules/*
+# RUN chown 750 /user/lib/nginx/modules/
+# RUN chown 750 /user/lib/nginx/modules/*
 RUN chown 750 /var/log/nginx/
 RUN chown 750 /var/log/nginx/*
 RUN chown 750 /user/share/nginx/
