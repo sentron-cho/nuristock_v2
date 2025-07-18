@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 
 export const useSelectMyStock = (code?: string) => {
 	console.log('[useSelectMyStock]', { code });
+	
 	return useQuery<unknown, Error, MyStockResponse>({
 		queryKey: ['MYSTOCK-R01'],
 		queryFn: () => mockData,
