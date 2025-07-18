@@ -71,10 +71,10 @@ RUN mkdir -p /var/cache/nginx/client_temp && \
     chown -R nginx:nginx /var/cache/nginx
     
 # conf.d 디렉토리 제거 또는 깨끗이 비우기
-RUN rm -rf /etc/nginx/conf.d/*
+RUN rm -rf /etc/nginx/nginx/html/*
 
 # 🔄 nginx 설정 복사 (default.conf 또는 nginx.conf)
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # 📁 정적 파일 복사
 COPY --from=build /app/dist /usr/share/nginx/html
@@ -82,7 +82,7 @@ COPY --from=build /app/dist /usr/share/nginx/html
 # Set enviroment variable from nginx config
 RUN chown nginx:nginx /etc/nginx/
 RUN chown nginx:nginx /etc/nginx/*
-RUN chown nginx:nginx /etc/nginx/nginx.conf
+RUN chown nginx:nginx /etc/nginx/conf.d/default.conf
 RUN chown nginx:nginx /user/lib/nginx/modules/
 RUN chown nginx:nginx /user/lib/nginx/modules/*
 RUN chown nginx:nginx /var/log/nginx/
@@ -90,7 +90,7 @@ RUN chown nginx:nginx /user/share/nginx/
 
 RUN chown 750 /etc/nginx/
 RUN chown 750 /etc/nginx/*
-RUN chown 750 /etc/nginx/nginx.conf
+RUN chown 750 /etc/nginx/conf.d/default.conf
 RUN chown 750 /user/lib/nginx/modules/
 RUN chown 750 /user/lib/nginx/modules/*
 RUN chown 750 /var/log/nginx/
