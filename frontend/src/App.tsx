@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ToastProvider } from './layouts/ui/ToastProvider.ui';
 import { AlertProvider } from '@layouts/ui/AlertProvider.ui';
 import { ConfirmProvider } from '@layouts/ui/ConfirmProvider.ui';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 const App = () => {
 	const queryClient = new QueryClient();
@@ -21,7 +23,9 @@ const App = () => {
 			<AlertProvider>
 				<ToastProvider>
 					<QueryClientProvider client={queryClient}>
-						<RouterProvider router={router} />
+						<LocalizationProvider dateAdapter={AdapterDayjs}>
+							<RouterProvider router={router} />
+						</LocalizationProvider>
 					</QueryClientProvider>
 				</ToastProvider>
 			</AlertProvider>

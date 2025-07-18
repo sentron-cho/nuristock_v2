@@ -8,23 +8,50 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { styled } from '@styles/stitches.config';
 import { useEffect } from 'react';
+import { DatePickerForm } from '@entites/DatePickerForm';
+import dayjs from 'dayjs';
+import { withCommas } from '@shared/libs/utils.lib';
 
 const StyledForm = styled(Flex, {
 	input: {
-		textAlign: 'right',
+		// textAlign: 'right',
 	},
 });
 
 export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onClose: (isOk: boolean) => void }) => {
 	const forms = useForm({
-		defaultValues: { date: '', cost: '', count: '' },
+		defaultValues: { date: new Date(), cost: '', count: '' },
 		resolver: zodResolver(
 			z.object({
-				date: z.string().nonempty({ message: ST.PLEASE_INPUT }),
-				cost: z.coerce.number().min(1, ST.ONLY_NUMBER),
-				count: z.coerce.number().min(1, ST.ONLY_NUMBER),
+				date: z.coerce.string().refine(
+					(value) => {
+						const isValid = dayjs(value).isValid();
+						console.log({ value, isValid });
+						return isValid;
+					},
+					{ message: ST.PLEASE_INPUT }
+				),
+				cost: z.coerce
+					.string()
+					.refine(
+						(value) => {
+							return !isNaN(Number(withCommas(value, true)));
+						},
+						{ message: ST.ONLY_NUMBER }
+					)
+					.min(1, ST.ONLY_NUMBER),
+				count: z.coerce
+					.string()
+					.refine(
+						(value) => {
+							return !isNaN(Number(withCommas(value, true)));
+						},
+						{ message: ST.ONLY_NUMBER }
+					)
+					.min(1, ST.ONLY_NUMBER),
 			})
 		),
+		shouldFocusError: true,
 	});
 	console.log(item);
 
@@ -41,10 +68,6 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onC
 				},
 				(error) => {
 					console.log('[error]', { error });
-					const firstErrorField = Object.keys(error)[0];
-					if (firstErrorField) {
-						forms?.setFocus(firstErrorField as keyof typeof error as any);
-					}
 				}
 			)();
 		} else {
@@ -59,25 +82,34 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onC
 	return (
 		<Dialog title={ST.BUY} onClose={onClickClose}>
 			<StyledForm direction={'column'} gap={20}>
-				<TextFieldForm label='날자' size='small' id='date' formMethod={forms} maxLength={10} focused />
+				{/* <TextFieldForm label='날자' size='small' id='date' formMethod={forms} maxLength={10} focused /> */}
+				<DatePickerForm id='date' label='매수일' placeholder='매수일을 선택하세요' formMethod={forms} align='right' />
 				<TextFieldForm
 					className='cost'
-					label='단가'
+					label='매수 단가'
+					placeholder='매수 단가를 입력하세요.'
 					size='small'
 					id='cost'
 					formMethod={forms}
-					maxLength={10}
-					// inputMode='numeric'
+					maxLength={12}
+					withComma
+					// onChange={(v) => {
+					// 	forms?.setValue('cost', withCommas(withCommas(v, true)));
+					// }}
 					focused
+					align='right'
 				/>
 				<TextFieldForm
 					className='count'
-					label='주식수'
+					label='매수 개수'
+					placeholder='매수 개수를 입력하세요.'
 					size='small'
 					id='count'
 					formMethod={forms}
-					maxLength={10}
+					maxLength={8}
+					withComma
 					focused
+					align='right'
 				/>
 			</StyledForm>
 		</Dialog>

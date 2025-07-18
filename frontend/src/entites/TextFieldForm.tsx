@@ -4,6 +4,7 @@ import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import { Tooltip } from '@entites/Tooltip';
 import clsx from 'clsx';
 import { styled } from '@styles/stitches.config';
+import { withCommas } from '@shared/libs/utils.lib';
 
 type TextFieldFormProps<T extends FieldValues = FieldValues> = TextFieldProps & {
 	name?: keyof T;
@@ -27,10 +28,11 @@ export const TextFieldForm = <T extends FieldValues = FieldValues>(props: TextFi
 							onChange={(value) => {
 								props?.formMethod?.clearErrors(id);
 								field.onChange(value);
+								props?.onChange?.(value);
 							}}
 							inputRef={field.ref}
-							error={!!formState?.errors[props?.name || props.id]}
-							message={formState?.errors[props?.name || props.id]?.message as string}
+							error={!!formState?.errors[id]}
+							message={formState?.errors[id]?.message as string}
 						/>
 					);
 				}}
@@ -71,6 +73,13 @@ const StyledForm = styled(FormControl, {
 			height: '28px',
 		},
 	},
+	variants: {
+		align: {
+			right: { '.MuiInputBase-input': { textAlign: 'right' } },
+			left: { '.MuiInputBase-input': { textAlign: 'left' } },
+			center: { '.MuiInputBase-input': { textAlign: 'center' } },
+		},
+	},
 });
 
 export interface TextFieldProps extends Omit<MuiTextFieldProps, 'onChange'> {
@@ -87,6 +96,8 @@ export interface TextFieldProps extends Omit<MuiTextFieldProps, 'onChange'> {
 	multiline?: boolean;
 	rows?: number;
 	maxLength?: number;
+	align?: 'left' | 'center' | 'right';
+	withComma?: boolean;
 
 	onClearError?: (id: string) => void;
 }
@@ -100,6 +111,8 @@ const TextField: React.FC<TextFieldProps> = ({
 	message,
 	disabled = false,
 	maxLength,
+	align,
+	withComma,
 	...props
 }) => {
 	const [innerError, setInnerError] = useState<string>();
@@ -107,12 +120,24 @@ const TextField: React.FC<TextFieldProps> = ({
 	const isError = useMemo(() => error || !!innerError, [error, innerError]);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		onChange?.(e.target.value?.toString());
+		let value = e?.target?.value?.toString();
+
+		if (withComma) {
+			value = withCommas(withCommas(value, true))?.toString();
+		}
+
+		onChange?.(value);
 		onClearError?.(id);
 	};
 
 	return (
-		<StyledForm className={clsx('text-field', { error: isError })} fullWidth error={isError} disabled={disabled}>
+		<StyledForm
+			className={clsx('text-field', { error: isError })}
+			fullWidth
+			error={isError}
+			disabled={disabled}
+			align={align}
+		>
 			<MuiTextField
 				{...props}
 				id={id}
@@ -130,6 +155,8 @@ const TextField: React.FC<TextFieldProps> = ({
 						setTimeout(() => setInnerError(undefined), 3000);
 						e.preventDefault();
 					}
+
+					props?.onBeforeInput?.(e);
 				}}
 			/>
 			{message && <Tooltip message={message} color={error ? 'error' : 'action'} />}
