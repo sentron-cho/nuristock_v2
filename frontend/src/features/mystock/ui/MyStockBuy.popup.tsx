@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 import { DatePickerForm } from '@entites/DatePickerForm';
 import dayjs from 'dayjs';
 import { withCommas } from '@shared/libs/utils.lib';
-import { useCommonHook } from '@shared/hooks/useCommon.hook';
+import { Schema, useCommonHook } from '@shared/hooks/useCommon.hook';
 
 const StyledForm = styled(Flex, {
 	input: {
@@ -20,48 +20,22 @@ const StyledForm = styled(Flex, {
 });
 
 export const MyStockBuyPopup = ({ item, onClose }: { item?: TreadType; onClose: (isOk: boolean) => void }) => {
-	console.log('[MyStockBuyPopup]', { item });
-
 	const { showToast } = useCommonHook();
 
 	const forms = useForm({
 		defaultValues: { date: new Date(), cost: withCommas(item?.sise), count: '' },
-		// values:{date: new Date(), cost: item?.sise, count: item?.count},
 		resolver: zodResolver(
 			z.object({
-				date: z.coerce.string().refine(
-					(value) => {
-						const isValid = dayjs(value).isValid();
-						console.log({ value, isValid });
-						return isValid;
-					},
-					{ message: ST.IN_DATE }
-				),
-				cost: z.coerce
-					.string()
-					.refine(
-						(value) => {
-							return !isNaN(Number(withCommas(value, true)));
-						},
-						{ message: ST.ONLY_NUMBER }
-					)
-					.min(1, ST.ONLY_NUMBER),
-				count: z.coerce
-					.string()
-					.refine(
-						(value) => {
-							return !isNaN(Number(withCommas(value, true)));
-						},
-						{ message: ST.ONLY_NUMBER }
-					)
-					.min(1, ST.ONLY_NUMBER),
+				date: Schema.DefaultDate,
+				cost: Schema.DefaultNumber,
+				count: Schema.DefaultNumber,
 			})
 		),
 		shouldFocusError: true,
 	});
 
 	useEffect(() => {
-		setTimeout(() => forms?.setFocus('count'), 200);
+		setTimeout(() => forms?.setFocus('cost'), 200);
 	}, [forms]);
 
 	const onClickClose = (isOk: boolean) => {
@@ -72,11 +46,10 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: TreadType; onClose: 
 					console.log('[success]', { values, params });
 					showToast('registered');
 					onClose?.(isOk);
-				},
-				(error) => {
-					showToast('error');
-					console.error('[error]', { error });
 				}
+				// (error) => {
+				// 	console.error('[error]', { error });
+				// }
 			)();
 		} else {
 			onClose?.(false);

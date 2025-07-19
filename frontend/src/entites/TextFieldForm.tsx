@@ -64,12 +64,16 @@ const StyledForm = styled(FormControl, {
 			color: '$primary',
 		},
 
-		'.Mui-readOnly, .Mui-disabled': {
+		'.Mui-readOnly, .Mui-disabled, &.disabled': {
 			'.MuiOutlinedInput-notchedOutline': {
-				borderColor: '$disable !important',
+				borderColor: '$gray400 !important',
 			},
 
-			'&.Mui-disabled': {
+			'&.Mui-disabled, &.disabled': {
+				'.MuiFormLabel-root': {
+					opacity: '0.7',
+				},
+
 				'.MuiInputBase-input': {
 					color: '$disable !important',
 					'-webkit-text-fill-color': 'unset',
@@ -156,7 +160,7 @@ const TextField: React.FC<TextFieldProps> = ({
 
 	return (
 		<StyledForm
-			className={clsx('text-field', { error: isError, readonly: readOnly })}
+			className={clsx('text-field', { error: isError, readonly: readOnly, disabled })}
 			fullWidth
 			error={isError}
 			disabled={disabled}
@@ -173,6 +177,9 @@ const TextField: React.FC<TextFieldProps> = ({
 						readOnly: readOnly,
 						disabled: disabled,
 						...(props?.slotProps?.input || {}),
+						onFocus: (e) => {
+							if (!readOnly) e.target.select();
+						},
 					},
 				}}
 				fullWidth

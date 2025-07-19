@@ -14,6 +14,10 @@ export const useToast = () => {
 			enqueueSnackbar(ST.REGISTERED, { variant: 'success' }) // 등록되었습니다.
 		} else if (type === 'updated') {
 			enqueueSnackbar(ST.UPDATED, { variant: 'success' }) // 저장되었습니다.
+		} else if (type === 'error') {
+			enqueueSnackbar(ST.FAILUER, { variant: 'success' }) // 오류가 발생했습니다.
+		} else if (type === 'success') {
+			enqueueSnackbar(ST.SUCCESS, { variant: 'success' }) // 처리되었습니다.
 		} else {
 			enqueueSnackbar(message, { variant: type as BaseVariant})
 		}

@@ -59,29 +59,25 @@ const MyStockPage = () => {
 	);
 	const sise = useMemo(() => siseData?.value, [siseData]);
 	const selected = useMemo(() => stocks?.find((a) => a.value === param?.id)?.value, [stocks, param]);
-	console.log({ selected, data, keepList, sellList });
+	// console.log({ selected, data, keepList, sellList });
 
 	const onClick = (eid?: string, item?: KeepType) => {
 		console.log({ eid, item });
 
 		if (eid === EID.SELECT || eid === 'sell') {
-			console.log('[sell]');
 			viewType === 'keep' &&
 				setPopup({
 					type: 'sell',
-					item,
-					onClose: (isOk: boolean) => {
-						console.log('[onCloseSell]', { isOk });
+					item: { ...item, sise: sise?.sise },
+					onClose: () => {
 						setPopup(undefined);
 					},
 				});
 		} else if (eid === 'buy') {
-			console.log('[buy]');
 			setPopup({
 				type: 'buy',
 				item: { ...item, sise: sise?.sise },
-				onClose: (isOk: boolean) => {
-					console.log('[onCloseBuy]', { isOk });
+				onClose: () => {
 					setPopup(undefined);
 				},
 			});
@@ -95,12 +91,10 @@ const MyStockPage = () => {
 	};
 
 	const onChangeTitleBar = (value: string) => {
-		console.log('[onClickTitleBar]', { value });
 		setViewType(value as 'keep' | 'trade');
 	};
 
 	const onChangeStock = (value: string) => {
-		console.log('[onChangeStock]', { value });
 		navigate(`${URL.MYSTOCK}/${value}`);
 	};
 

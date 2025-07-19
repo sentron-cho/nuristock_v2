@@ -72,10 +72,14 @@ const StyledForm = styled(FormControl, {
 				display: 'none',
 			},
 			'.MuiPickersOutlinedInput-notchedOutline': {
-				borderColor: '$disable !important',
+				borderColor: '$gray400 !important',
 			},
 
 			'&.Mui-disabled': {
+				'.MuiFormLabel-root': {
+					opacity: '0.7',
+				},
+
 				'.MuiPickersSectionList-root .MuiPickersSectionList-section span': {
 					color: '$disable !important',
 				},

@@ -1,17 +1,18 @@
 import { TextFieldForm } from '@entites/TextFieldForm';
 import { Dialog } from '@entites/Dialog';
-import { useForm } from 'react-hook-form';
+import { FieldValues, useForm, UseFormReturn } from 'react-hook-form';
 import { MyStockTreadType as TreadType } from '../api/mystock.dto';
 import { styled } from '@styles/stitches.config';
 import Flex from '@entites/Flex';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { DatePickerForm } from '@entites/DatePickerForm';
 import dayjs from 'dayjs';
 import { withCommas } from '@shared/libs/utils.lib';
-import { useCommonHook } from '@shared/hooks/useCommon.hook';
+import { Schema, useCommonHook } from '@shared/hooks/useCommon.hook';
 import { ST } from '@shared/config/kor.lang';
+import { Text } from '@entites/Text';
 
 const StyledForm = styled(Flex, {
 	input: {
@@ -25,58 +26,43 @@ export const MyStockSellPopup = ({ item, onClose }: { item?: TreadType; onClose:
 	const { showToast } = useCommonHook();
 
 	const forms = useForm({
-		defaultValues: { date: new Date(), cost: withCommas(item?.sise), count: '' },
-		// values:{date: new Date(), cost: item?.sise, count: item?.count},
+		defaultValues: {
+			buyCost: withCommas(item?.scost),
+			buyCount: withCommas(item?.count),
+			buyDate: item?.sdate,
+			sellDate: new Date(),
+			sellCost: withCommas(item?.sise),
+			sellCount: withCommas(item?.count),
+		},
 		resolver: zodResolver(
 			z.object({
-				date: z.coerce.string().refine(
-					(value) => {
-						const isValid = dayjs(value).isValid();
-						console.log({ value, isValid });
-						return isValid;
-					},
-					{ message: ST.IN_DATE }
-				),
-				cost: z.coerce
-					.string()
-					.refine(
-						(value) => {
-							return !isNaN(Number(withCommas(value, true)));
-						},
-						{ message: ST.ONLY_NUMBER }
-					)
-					.min(1, ST.ONLY_NUMBER),
-				count: z.coerce
-					.string()
-					.refine(
-						(value) => {
-							return !isNaN(Number(withCommas(value, true)));
-						},
-						{ message: ST.ONLY_NUMBER }
-					)
-					.min(1, ST.ONLY_NUMBER),
+				buyCost: z.string().optional(),
+				buyCount: z.string().optional(),
+				buyDate: z.string().optional(),
+				sellDate: Schema.DefaultDate,
+				sellCost: Schema.DefaultNumber,
+				sellCount: Schema.DefaultNumber,
 			})
 		),
 		shouldFocusError: true,
 	});
 
 	useEffect(() => {
-		setTimeout(() => forms?.setFocus('count'), 200);
+		setTimeout(() => forms?.setFocus('sellCost'), 200);
 	}, [forms]);
 
 	const onClickClose = (isOk: boolean) => {
 		if (isOk) {
 			forms?.handleSubmit(
 				(values) => {
-					const params = { ...values, date: dayjs(values?.date).format('YYYY-MM-DD') };
+					const params = { ...values, date: dayjs(values?.sellDate).format('YYYY-MM-DD') };
 					console.log('[success]', { values, params });
 					showToast('registered');
 					onClose?.(isOk);
-				},
-				(error) => {
-					showToast('error');
-					console.error('[error]', { error });
 				}
+				// (error) => {
+				// 	console.error('[error]', { error });
+				// }
 			)();
 		} else {
 			onClose?.(false);
@@ -87,69 +73,60 @@ export const MyStockSellPopup = ({ item, onClose }: { item?: TreadType; onClose:
 		<Dialog title={ST.SELL} onClose={onClickClose}>
 			<StyledForm direction={'column'} gap={24}>
 				{/* 매수 */}
-				<Flex direction={'column'} gap={10}>
-					<DatePickerForm
-						id='buyDate'
-						disabled
-						defaultValue={dayjs(new Date())}
-						label={ST.BUY_DATE}
-						placeholder={ST.IN_DATE}
-						align='right'
-					/>
-					<Flex direction={'row'} gap={10}>
-						<TextFieldForm
-							id='buyCost'
-							disabled
-							label={ST.BUY_COST}
-							size='small'
-							withComma
-							align='right'
-							value={'123'}
-						/>
-						<TextFieldForm
-							id='buyCount'
-							disabled
-							label={ST.STOCK_COUNT}
-							size='small'
-							withComma
-							align='right'
-							defaultValue={123}
-						/>
-					</Flex>
-				</Flex>
+				<ContentsForm type={'buy'} formMethod={forms} />
 
 				{/* 매도 */}
-				<Flex direction={'column'} gap={10}>
-					<DatePickerForm id='date' label={ST.SELL_DATE} placeholder={ST.IN_DATE} formMethod={forms} align='right' />
-					<Flex direction={'row'} gap={10}>
-						<TextFieldForm
-							className='cost'
-							label={ST.SELL_COST}
-							placeholder={ST.IN_NUMBER}
-							size='small'
-							id='cost'
-							formMethod={forms}
-							maxLength={12}
-							withComma
-							focused
-							align='right'
-						/>
-						<TextFieldForm
-							className='count'
-							label={ST.STOCK_COUNT}
-							placeholder={ST.IN_NUMBER}
-							size='small'
-							id='count'
-							formMethod={forms}
-							maxLength={8}
-							withComma
-							focused
-							align='right'
-							// slotProps={{ input: { type: 'number' } }}
-						/>
-					</Flex>
-				</Flex>
+				<ContentsForm type={'sell'} formMethod={forms} />
 			</StyledForm>
 		</Dialog>
+	);
+};
+
+const ContentsForm = <T extends FieldValues>({
+	type = 'buy',
+	formMethod,
+}: {
+	type: 'buy' | 'sell';
+	formMethod?: UseFormReturn<T>;
+}) => {
+	const isBuy = useMemo(() => type === 'buy', [type]);
+
+	return (
+		<Flex direction={'column'} gap={10}>
+			<Text bold text={isBuy ? ST.BUY : ST.SELL} />
+			<DatePickerForm
+				id={`${type}Date`}
+				disabled={isBuy}
+				defaultValue={dayjs(new Date())}
+				label={isBuy ? ST.BUY_DATE : ST.SELL_DATE}
+				placeholder={ST.IN_DATE}
+				align='right'
+				formMethod={formMethod}
+			/>
+			<Flex direction={'row'} gap={10}>
+				<TextFieldForm
+					id={`${type}Cost`}
+					disabled={isBuy}
+					focused={!isBuy}
+					label={isBuy ? ST.BUY_COST : ST.SELL_COST}
+					size='small'
+					withComma
+					align='right'
+					formMethod={formMethod}
+				/>
+				<TextFieldForm
+					id={`${type}Count`}
+					disabled={isBuy}
+					focused={!isBuy}
+					label={ST.STOCK_COUNT}
+					placeholder={ST.IN_NUMBER}
+					size='small'
+					withComma
+					align='right'
+					maxLength={8}
+					formMethod={formMethod}
+				/>
+			</Flex>
+		</Flex>
 	);
 };
