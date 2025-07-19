@@ -5,7 +5,7 @@ import {
 	MyStockSummaryData as SummaryData,
 	MyStockTitleOptions as SelectOptions,
 } from '@features/mystock/config/MyStock.data';
-import { MyStockKeepType as DataType, MyStockKeepType } from '@features/mystock/api/mystock.dto';
+import { MyStockKeepType as KeepType, MyStockTreadType as TreadType } from '@features/mystock/api/mystock.dto';
 import { useSelectMyStock, useSelectMyStockSise } from '@features/mystock/api/mystock.api';
 import { MyStockCard } from '@features/mystock/ui/MyStockCard.ui';
 import Flex from '@entites/Flex';
@@ -52,44 +52,46 @@ const MyStockPage = () => {
 	const stocks = useMemo(
 		() =>
 			sortBy(
-				data?.stocks?.map((a) => ({ value: a?.code, label: a?.name } as OptionType)),
+				data?.stocks?.map((a) => ({ value: a?.code, label: a?.name }) as OptionType),
 				'label'
 			),
 		[data]
 	);
 	const sise = useMemo(() => siseData?.value, [siseData]);
-	const selected = useMemo(() => stocks?.find(a => a.value === param?.id)?.value, [stocks, param]);
+	const selected = useMemo(() => stocks?.find((a) => a.value === param?.id)?.value, [stocks, param]);
 	console.log({ selected, data, keepList, sellList });
 
-	const onClick = (eid?: string, item?: DataType) => {
+	const onClick = (eid?: string, item?: KeepType) => {
 		console.log({ eid, item });
 
-		if (eid === EID.SELECT || 'sell') {
+		if (eid === EID.SELECT || eid === 'sell') {
+			console.log('[sell]');
 			viewType === 'keep' &&
 				setPopup({
 					type: 'sell',
 					item,
 					onClose: (isOk: boolean) => {
-						console.log(isOk);
+						console.log('[onCloseSell]', { isOk });
 						setPopup(undefined);
 					},
 				});
+		} else if (eid === 'buy') {
+			console.log('[buy]');
+			setPopup({
+				type: 'buy',
+				item: { ...item, sise: sise?.sise },
+				onClose: (isOk: boolean) => {
+					console.log('[onCloseBuy]', { isOk });
+					setPopup(undefined);
+				},
+			});
 		} else if (eid === EID.EDIT) {
+			console.log('[edit]');
 		} else if (eid === EID.DELETE) {
+			console.log('[delete]');
 		} else if (eid === 'calc') {
+			console.log('[calc]');
 		}
-	};
-
-	const onClickTitleBar = () => {
-		console.log('[onClickTitleBar]');
-		setPopup({
-			type: 'buy',
-			item: { code: param?.id },
-			onClose: (isOk: boolean) => {
-				console.log(isOk);
-				setPopup(undefined);
-			},
-		});
 	};
 
 	const onChangeTitleBar = (value: string) => {
@@ -100,16 +102,6 @@ const MyStockPage = () => {
 	const onChangeStock = (value: string) => {
 		console.log('[onChangeStock]', { value });
 		navigate(`${URL.MYSTOCK}/${value}`);
-	};
-
-	const onCloseBuy = (isOk: boolean) => {
-		console.log('[onCloseBuy]', { isOk });
-		setPopup(undefined);
-	};
-
-	const onCloseSell = (isOk: boolean) => {
-		console.log('[onCloseSell]', { isOk });
-		setPopup(undefined);
 	};
 
 	return (
@@ -123,9 +115,10 @@ const MyStockPage = () => {
 						onChange: onChangeTitleBar,
 					}}
 					buttonProps={{
+						eid: 'buy',
 						icon: <IconAdd />,
 						title: ST.BUY,
-						onClick: onClickTitleBar,
+						onClick: onClick,
 					}}
 				>
 					<SelectForm
@@ -149,8 +142,8 @@ const MyStockPage = () => {
 				</Flex>
 			</StyledPage>
 
-			{popup?.type === 'buy' && <MyStockBuyPopup item={popup?.item as MyStockKeepType} onClose={onCloseBuy} />}
-			{popup?.type === 'sell' && <MyStockSellPopup item={popup?.item as MyStockKeepType} onClose={onCloseSell} />}
+			{popup?.type === 'buy' && <MyStockBuyPopup item={popup?.item as TreadType} onClose={popup.onClose} />}
+			{popup?.type === 'sell' && <MyStockSellPopup item={popup?.item as TreadType} onClose={popup.onClose} />}
 		</>
 	);
 };

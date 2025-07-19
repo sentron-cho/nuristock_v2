@@ -13,6 +13,10 @@ export interface MyStockKeepType {
 	ctime: string;
 }
 
+export interface MyStockTreadType extends MyStockKeepType {	
+	sise?: number;
+}
+
 export interface MyStockSellType extends MyStockKeepType {
 	edate: string;
 	ecost: number;

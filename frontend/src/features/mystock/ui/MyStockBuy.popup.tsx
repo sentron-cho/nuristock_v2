@@ -1,7 +1,7 @@
 import { TextFieldForm } from '@entites/TextFieldForm';
 import { Dialog } from '@entites/Dialog';
 import { useForm } from 'react-hook-form';
-import { MyStockKeepType } from '../api/mystock.dto';
+import { MyStockTreadType as TreadType } from '../api/mystock.dto';
 import { ST } from '@shared/config/kor.lang';
 import Flex from '@entites/Flex';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import { DatePickerForm } from '@entites/DatePickerForm';
 import dayjs from 'dayjs';
 import { withCommas } from '@shared/libs/utils.lib';
+import { useCommonHook } from '@shared/hooks/useCommon.hook';
 
 const StyledForm = styled(Flex, {
 	input: {
@@ -18,9 +19,14 @@ const StyledForm = styled(Flex, {
 	},
 });
 
-export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onClose: (isOk: boolean) => void }) => {
+export const MyStockBuyPopup = ({ item, onClose }: { item?: TreadType; onClose: (isOk: boolean) => void }) => {
+	console.log('[MyStockBuyPopup]', { item });
+
+	const { showToast } = useCommonHook();
+
 	const forms = useForm({
-		defaultValues: { date: new Date(), cost: '', count: '' },
+		defaultValues: { date: new Date(), cost: withCommas(item?.sise), count: '' },
+		// values:{date: new Date(), cost: item?.sise, count: item?.count},
 		resolver: zodResolver(
 			z.object({
 				date: z.coerce.string().refine(
@@ -29,7 +35,7 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onC
 						console.log({ value, isValid });
 						return isValid;
 					},
-					{ message: ST.PLEASE_INPUT }
+					{ message: ST.IN_DATE }
 				),
 				cost: z.coerce
 					.string()
@@ -53,22 +59,23 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onC
 		),
 		shouldFocusError: true,
 	});
-	console.log(item);
 
 	useEffect(() => {
-		setTimeout(() => forms?.setFocus('cost'), 200);
+		setTimeout(() => forms?.setFocus('count'), 200);
 	}, [forms]);
 
 	const onClickClose = (isOk: boolean) => {
 		if (isOk) {
 			forms?.handleSubmit(
 				(values) => {
-					const params = { ...values, date: dayjs(values?.date).format('YYYY-MM-DD') }
+					const params = { ...values, date: dayjs(values?.date).format('YYYY-MM-DD') };
 					console.log('[success]', { values, params });
+					showToast('registered');
 					onClose?.(isOk);
 				},
 				(error) => {
-					console.log('[error]', { error });
+					showToast('error');
+					console.error('[error]', { error });
 				}
 			)();
 		} else {
@@ -76,20 +83,15 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onC
 		}
 	};
 
-	// const onClearError = (id: string) => {
-	// 	forms?.clearErrors(id as never);
-	// };
-
 	return (
 		<Dialog title={ST.BUY} onClose={onClickClose}>
 			<StyledForm direction={'column'} gap={20}>
-				<DatePickerForm id='date' label='매수일' placeholder='매수일을 선택하세요' formMethod={forms} align='right' />
+				<DatePickerForm id='date' label={ST.BUY_DATE} placeholder={ST.IN_DATE} formMethod={forms} align='right' />
 				<TextFieldForm
-					className='cost'
-					label='매수 단가'
-					placeholder='매수 단가를 입력하세요.'
-					size='small'
 					id='cost'
+					label={ST.BUY_COST}
+					placeholder={ST.IN_NUMBER}
+					size='small'
 					formMethod={forms}
 					maxLength={12}
 					withComma
@@ -97,16 +99,16 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: MyStockKeepType; onC
 					align='right'
 				/>
 				<TextFieldForm
-					className='count'
-					label='매수 개수'
-					placeholder='매수 개수를 입력하세요.'
-					size='small'
 					id='count'
+					label={ST.STOCK_COUNT}
+					placeholder={ST.IN_NUMBER}
+					size='small'
 					formMethod={forms}
 					maxLength={8}
 					withComma
 					focused
 					align='right'
+					// slotProps={{ input: { type: 'number' } }}
 				/>
 			</StyledForm>
 		</Dialog>

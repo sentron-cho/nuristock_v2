@@ -54,6 +54,27 @@ const StyledForm = styled(FormControl, {
 			input: {
 				paddingRight: '24px',
 			},
+
+			'.MuiFormLabel-root': {
+				color: '$error',
+			},
+		},
+
+		'.MuiFormLabel-root': {
+			color: '$primary',
+		},
+
+		'.Mui-readOnly, .Mui-disabled': {
+			'.MuiOutlinedInput-notchedOutline': {
+				borderColor: '$disable !important',
+			},
+
+			'&.Mui-disabled': {
+				'.MuiInputBase-input': {
+					color: '$disable !important',
+					'-webkit-text-fill-color': 'unset',
+				},
+			},
 		},
 
 		'.MuiOutlinedInput-notchedOutline': {
@@ -73,6 +94,7 @@ const StyledForm = styled(FormControl, {
 			height: '28px',
 		},
 	},
+
 	variants: {
 		align: {
 			right: { '.MuiInputBase-input': { textAlign: 'right' } },
@@ -98,6 +120,7 @@ export interface TextFieldProps extends Omit<MuiTextFieldProps, 'onChange'> {
 	maxLength?: number;
 	align?: 'left' | 'center' | 'right';
 	withComma?: boolean;
+	readOnly?: boolean;
 
 	onClearError?: (id: string) => void;
 }
@@ -113,6 +136,7 @@ const TextField: React.FC<TextFieldProps> = ({
 	maxLength,
 	align,
 	withComma,
+	readOnly,
 	...props
 }) => {
 	const [innerError, setInnerError] = useState<string>();
@@ -132,7 +156,7 @@ const TextField: React.FC<TextFieldProps> = ({
 
 	return (
 		<StyledForm
-			className={clsx('text-field', { error: isError })}
+			className={clsx('text-field', { error: isError, readonly: readOnly })}
 			fullWidth
 			error={isError}
 			disabled={disabled}
@@ -144,6 +168,13 @@ const TextField: React.FC<TextFieldProps> = ({
 				onChange={handleChange}
 				value={value}
 				variant='outlined'
+				slotProps={{
+					input: {
+						readOnly: readOnly,
+						disabled: disabled,
+						...(props?.slotProps?.input || {}),
+					},
+				}}
 				fullWidth
 				onBeforeInput={(e) => {
 					const target = e.target as HTMLInputElement;

@@ -49,6 +49,8 @@ const KOR = {
 	TITLE: '제목',
 	IN_TITLE: '제목을 입력하세요.',
 	IN_VALUE: '값을 입력하세요.',
+	IN_DATE: '날자를 입력하세요.',
+	IN_NUMBER: '숫자를 입력하세요.',
 	CHECK_DUP: '중복체크',
 	CHECK_OK: '확인되었습니다',
 	CHECK_CONN: '연결확인',
@@ -114,9 +116,10 @@ const KOR = {
 	PLEASE_INPUT: '입력하세요',
 	PLEASE_SELECT: '선택하세요',
 
-	SAVEED: '저장되었습니다.',
-	EDITED: '수정되었습니다.',
+	REGISTERED: '등록되었습니다.',
+	UPDATED: '저장되었습니다.',
 	DELETEED: '삭제되었습니다.',
+
 	NODATA: '표시할 데이터가 없습니다.',
 	SUCCESS: '처리되었습니다.',
 	FAILUER: '오류가 발생했습니다.',
@@ -160,6 +163,11 @@ const KOR = {
 
 	STOCK_TITLE: '주식(종목)명',
 	STOCK_APPEND: '종목 추가',
+
+	BUY_DATE: '매수일',
+	SELL_DATE: '매도일',
+	BUY_COST: '매수단가',
+	SELL_COST: '매도단가',
 
 	// DASHBOARD: {
 	// 	ADD: '종목 추가',

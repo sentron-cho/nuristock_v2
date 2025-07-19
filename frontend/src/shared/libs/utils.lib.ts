@@ -23,7 +23,7 @@ export const withCommas = (v?: number | string, isRemove?: boolean) => {
 		[COST.CHEN, COST.MAN, COST.WON, COST.CHEN].forEach((a) => (temp = temp?.replace(a, '')));
 		return temp;
 	} else {
-		return !v ? '0' : v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+		return !v ? '' : v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 	}
 };
 

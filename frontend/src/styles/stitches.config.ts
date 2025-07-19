@@ -64,7 +64,7 @@ export const { styled, css, globalCss, theme, createTheme, config } = createStit
 			minus: '#0066CC',
 			select: '#f6f8fa',
 			back: '#202020a0',
-
+			
 			bgcolor: '#f5f7fa',
 		},
 		fontWeights: {

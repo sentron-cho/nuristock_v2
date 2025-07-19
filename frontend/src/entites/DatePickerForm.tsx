@@ -6,6 +6,7 @@ import { FormControl } from '@mui/material';
 import { Tooltip } from '@entites/Tooltip';
 import clsx from 'clsx';
 import dayjs, { Dayjs } from 'dayjs';
+import { ST } from '@shared/config/kor.lang';
 
 type DatePickerFormProps<T extends FieldValues = FieldValues> = Omit<CustomDatePickerProps, 'value' | 'onChange'> & {
 	name?: Path<T>;
@@ -25,11 +26,11 @@ export const DatePickerForm = <T extends FieldValues = FieldValues>(props: DateP
 					<CustomDatePicker
 						{...props}
 						value={field.value}
-            onChange={(value) => {
+						onChange={(value) => {
 							props?.formMethod?.clearErrors(id);
 							field.onChange(value);
 							// field.onChange(dayjs(value).format('YYYY-MM-DD'));
-            }}
+						}}
 						error={!!formState.errors?.[id]}
 						message={formState.errors?.[id]?.message as string}
 					/>
@@ -43,21 +44,62 @@ export const DatePickerForm = <T extends FieldValues = FieldValues>(props: DateP
 
 const StyledForm = styled(FormControl, {
 	'&.date-picker': {
-		'.MuiInputAdornment-positionEnd': {
-			marginRight: '-8px',
-		},
 		'&.error': {
 			'.MuiPickersSectionList-root': {
 				paddingRight: '6px',
 			},
+
 			'.MuiPickersOutlinedInput-notchedOutline': {
 				borderColor: '$red !important',
 				borderWidth: '1px !important',
+				// color: #1976d2;
 			},
 
 			'.tooltip.icon': {
 				marginRight: '22px',
 			},
+
+			'.MuiFormLabel-root': {
+				color: '$error',
+			},
+		},
+
+		'.Mui-readOnly, .Mui-disabled': {
+			'&.MuiPickersInputBase-root, .MuiPickersInputBase-root': {
+				paddingRight: '8px',
+			},
+			'.MuiInputAdornment-positionEnd': {
+				display: 'none',
+			},
+			'.MuiPickersOutlinedInput-notchedOutline': {
+				borderColor: '$disable !important',
+			},
+
+			'&.Mui-disabled': {
+				'.MuiPickersSectionList-root .MuiPickersSectionList-section span': {
+					color: '$disable !important',
+				},
+			},
+		},
+
+		'.MuiPickersInputBase-root': {
+			lineHeight: '20px',
+			height: '36px',
+		},
+
+		'&.small': {
+			'.MuiPickersInputBase-root': {
+				lineHeight: '16px',
+				height: '28px',
+			},
+		},
+
+		'.MuiInputAdornment-positionEnd': {
+			marginRight: '-8px',
+		},
+
+		'.MuiFormLabel-root': {
+			color: '$primary',
 		},
 
 		'.MuiPickersOutlinedInput-notchedOutline': {
@@ -89,7 +131,9 @@ export interface CustomDatePickerProps extends Omit<MuiDatePickerProps<false>, '
 	error?: boolean;
 	message?: string;
 	disabled?: boolean;
+	readOnly?: boolean;
 	align?: 'left' | 'center' | 'right';
+	size?: 'small' | 'medium' | 'large';
 }
 
 const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
@@ -99,30 +143,22 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
 	error,
 	message,
 	disabled = false,
-  align,
-  // inputRef,
+	readOnly = false,
+	align,
+	size = 'medium',
 	...props
 }) => {
-	// console.log({ value: value || new Date() });
-	// const inputRef = useRef<HTMLInputElement>(null);
-
-	// // 오류 발생 시 자동 포커스
-	// useEffect(() => {
-  //   if (error) {
-  //     const el = inputRef.current?.getElementsByClassName('MuiPickersSectionList-section');
-	// 		el?.[0] && (el?.[0]?.getElementsByClassName('MuiPickersSectionList-sectionContent')?.[0] as HTMLDivElement)?.focus();
-	// 	}
-  // }, [error]);
-  
-  // const [open, setOpen] = useState<boolean>();
-
-  // useEffect(() => setOpen(!!error), [error])
-
 	return (
-		<StyledForm className={clsx('date-picker', { error })} fullWidth error={error} align={align} disabled={disabled}>
+		<StyledForm
+			className={clsx('date-picker', { error, readonly: readOnly }, size)}
+			fullWidth
+			error={error}
+			align={align}
+			disabled={disabled}
+		>
 			<MuiDatePicker
-        {...props}
-        // ref={inputRef}
+				{...props}
+				// ref={inputRef}
 				format='YYYY-MM-DD'
 				value={dayjs(value)}
 				onChange={onChange}
@@ -134,9 +170,10 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
 						error,
 						variant: 'outlined',
 						helperText: null,
+						disabled: disabled,
+						readOnly: readOnly,
 					},
-        }}
-        // open={open}
+				}}
 			/>
 			{message && <Tooltip message={message} color={error ? 'error' : 'action'} />}
 		</StyledForm>
