@@ -2,11 +2,12 @@ import { SelectOptionType } from '@entites/SelectForm';
 import { SummaryDataType } from '@features/common/ui/SummaryBar.ui';
 import { ST } from '@shared/config/kor.lang';
 
-export const MyStockSummaryData = (): SummaryDataType[] => {
+export const MyStockSummaryData = (values?: string[]): SummaryDataType[] => {
 	return [
-		{ id: '1', label: ST.CAPITAL, value: '123456789' },
-		{ id: '2', label: ST.AT_MARKET_PRICE, value: '123456789' },
-		{ id: '3', label: ST.SONIC, value: '123456789' },
+		{ id: '1', label: ST.BUY, value: values?.[0] || '' },
+		{ id: '2', label: ST.SELL, value: values?.[1] || '' },
+		{ id: '3', label: ST.KEEP_COST, value: values?.[2] || '' },
+		{ id: '4', label: ST.SONIC, value: values?.[3] || '' },
 	];
 };
 

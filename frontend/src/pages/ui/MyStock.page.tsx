@@ -5,7 +5,12 @@ import {
 	MyStockSummaryData as SummaryData,
 	MyStockTitleOptions as SelectOptions,
 } from '@features/mystock/config/MyStock.data';
-import { MyStockKeepType as KeepType, MyStockTreadType as TreadType } from '@features/mystock/api/mystock.dto';
+import {
+	MyStockKeepType as KeepType,
+	MyStockKeepType,
+	MyStockSellType,
+	MyStockTreadType as TreadType,
+} from '@features/mystock/api/mystock.dto';
 import { useSelectMyStock, useSelectMyStockSise } from '@features/mystock/api/mystock.api';
 import { MyStockCard } from '@features/mystock/ui/MyStockCard.ui';
 import Flex from '@entites/Flex';
@@ -39,10 +44,6 @@ const MyStockPage = () => {
 	const { data } = useSelectMyStock(param?.id);
 	const { data: siseData } = useSelectMyStockSise(param?.id);
 
-	const summaryData = useMemo(() => {
-		return SummaryData();
-	}, []);
-
 	const titleOptions = useMemo(() => {
 		return SelectOptions();
 	}, []);
@@ -60,6 +61,15 @@ const MyStockPage = () => {
 	const sise = useMemo(() => siseData?.value, [siseData]);
 	const selected = useMemo(() => stocks?.find((a) => a.value === param?.id)?.value, [stocks, param]);
 	// console.log({ selected, data, keepList, sellList });
+
+	const summaryData = useMemo(() => {
+		const buy = (data?.sells as MyStockSellType[])?.map((a) => a.scost * a.count)?.reduce((a, b) => a + b, 0);
+		const sell = (data?.sells as MyStockSellType[])?.map((a) => a.ecost * a.count)?.reduce((a, b) => a + b, 0);
+		const keep = (data?.keeps as MyStockKeepType[])?.map((a) => a.scost * a.count)?.reduce((a, b) => a + b, 0);
+		const sonic = buy && sell && (sell - buy);
+		const values: string[] = [buy?.toString() || '', sell?.toString() || '', keep?.toString() || '', sonic?.toString() || ''];
+		return SummaryData(values);
+	}, [data]);
 
 	const onClick = (eid?: string, item?: KeepType) => {
 		console.log({ eid, item });
@@ -115,13 +125,7 @@ const MyStockPage = () => {
 						onClick: onClick,
 					}}
 				>
-					<SelectForm
-						options={stocks}
-						size='medium'
-						border={false}
-						defaultValue={selected}
-						onChange={onChangeStock}
-					/>
+					<SelectForm options={stocks} size='medium' border={false} defaultValue={selected} onChange={onChangeStock} />
 				</PageTitleBar>
 				<Flex className='card-list'>
 					{viewType === 'keep' &&
