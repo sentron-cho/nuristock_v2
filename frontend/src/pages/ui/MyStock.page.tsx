@@ -120,7 +120,6 @@ const MyStockPage = () => {
 						size='medium'
 						border={false}
 						defaultValue={selected}
-						// value={selected}
 						onChange={onChangeStock}
 					/>
 				</PageTitleBar>

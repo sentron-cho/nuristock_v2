@@ -7,6 +7,7 @@ import {
 	DashboardTitleOptions as SelectOptions,
 } from '@features/dashboard/config/Dashbord.data';
 import {
+	DashboardItemType,
 	DashboardItemType as DataType,
 	// DashboardResponse as ResponseType,
 } from '@features/dashboard/api/dashboard.dto';
@@ -43,10 +44,6 @@ const DashboardPage = () => {
 	const { data } = useSelectDashboard();
 	const { data: siseData } = useSelectDashboardSise();
 
-	const summaryData = useMemo(() => {
-		return SummaryData();
-	}, []);
-
 	const titleOptions = useMemo(() => {
 		return SelectOptions();
 	}, []);
@@ -74,6 +71,18 @@ const DashboardPage = () => {
 		[data, sise]
 	);
 
+	const summaryData = useMemo(() => {
+		const captal = (list as DashboardItemType[])?.map(a => a.kprice)?.reduce((a, b) => a + b, 0);
+		const sell = (list as DashboardItemType[])?.map(a => {
+			const v = sise?.find(b => b.code === a.code)?.sise as number
+			return a.kcount * v;
+		})?.reduce((a, b) => a + b, 0);
+		const sonic = sell && captal && (sell - captal);
+
+		const values: string[] = [captal?.toString() || '', sell?.toString() || '', sonic?.toString() || ''];
+		return SummaryData(values);
+	}, [list, sise]);
+
 	const sortedList = useMemo(() => {
 		if (sort === 'keepCost') {
 			return reverse(sortBy(list, 'kprice'));
@@ -99,8 +108,17 @@ const DashboardPage = () => {
 
 	const onClick = (eid?: string, item?: DataType) => {
 		let data = item;
+
 		if (eid === EID.SELECT) {
 			navigate(`${URL.MYSTOCK}/${item?.code}`);
+		} else if (eid === EID.ADD) {
+			setPopup({
+				type: 'insert',
+				onClose: (isOk: boolean) => {
+					console.log(isOk);
+					setPopup(undefined);
+				},
+			});
 		} else if (eid === EID.EDIT) {
 			setPopup({
 				type: 'update',
@@ -144,30 +162,6 @@ const DashboardPage = () => {
 		}
 	};
 
-	const onClickTitleBar = () => {
-		console.log('[onClickTitleBar]');
-		setPopup({
-			type: 'insert',
-			onClose: (isOk: boolean) => {
-				console.log(isOk);
-				setPopup(undefined);
-			},
-		});
-	};
-
-	const onChangeTitleBar = (value: string) => {
-		console.log('[onClickTitleBar]', { value });
-		setSort(value);
-	};
-
-	// const onClosePopup = (eid: string, isOk: boolean) => {
-	// 	if (eid === EID.INSERT) {
-	// 	} else if (eid === EID.UPDATE) {
-	// 	}
-	// 	console.log('[onClickTitleBar]', { isOk });
-	// 	setPopup(undefined);
-	// };
-
 	return (
 		<>
 			<StyledPage summaryData={summaryData}>
@@ -176,12 +170,13 @@ const DashboardPage = () => {
 					selectProps={{
 						options: titleOptions,
 						defaultValue: titleOptions?.[0]?.value,
-						onChange: onChangeTitleBar,
+						onChange: setSort,
 					}}
 					buttonProps={{
+						eid: EID.ADD,
 						icon: <IconAdd />,
 						title: ST.ADD,
-						onClick: onClickTitleBar,
+						onClick: onClick,
 					}}
 				/>
 				<Flex className='card-list'>

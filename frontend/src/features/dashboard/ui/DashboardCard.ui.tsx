@@ -219,7 +219,7 @@ export const DashboardCard = ({
 				</Flex>
 
 				{/* body */}
-				<Flex gap={8} className='body' direction='column' justify='start'>
+				<Flex gap={8} className='body' direction='column' justify={history ? 'start' : 'center'}>
 					{history ? (
 						<Flex direction={'column'}>
 							{/* 매수/매도/손익 */}

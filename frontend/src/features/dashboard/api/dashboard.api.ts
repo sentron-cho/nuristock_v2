@@ -3,10 +3,9 @@ import { mock as mockData } from './mock/dashboard.list';
 import { mock as mockSise } from './mock/dashboard.sise';
 import { useQuery } from '@tanstack/react-query';
 
-const API_URL = import.meta.env.VITE_API_URL
+// const API_URL = import.meta.env.VITE_API_URL
 
 export const useSelectDashboard = () => {
-	console.log(API_URL);
 	return useQuery<unknown, Error, DashboardResponse>({
 		queryKey: ['DASHARD-R01'],
 		queryFn: () => mockData,
@@ -23,7 +22,6 @@ export const useSelectDashboard = () => {
 };
 
 export const useSelectDashboardSise = (code?: string) => {
-	console.log('[useSelectDashboardSise]', { code });
 	return useQuery<unknown, Error, DashboardSiseResponse>({
 		queryKey: ['DASHARD-R02'],
 		queryFn: () => mockSise,

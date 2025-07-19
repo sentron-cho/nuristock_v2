@@ -77,7 +77,7 @@ export const SummaryBar = ({
 							onClick={() => onClickItem(item)}>
 							<Flex className='box' direction={'column'}>
 								<Typography className='title'>{item.label}</Typography>
-								<Typography className='text'>{toCost(item.value)}</Typography>
+								<Typography className='text' height={18}>{item.value ? toCost(item.value) : ''}</Typography>
 							</Flex>
 						</Flex>
 					);
