@@ -3,15 +3,14 @@ import {
 	InputLabel,
 	MenuItem,
 	Select as MuiSelect,
-	FormControl,
 	SelectChangeEvent,
 	SelectProps as MuiSelectProps,
 } from '@mui/material';
 import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
-import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
 import { OptionType } from '@shared/config/common.type';
 import { Tooltip } from './Tooltip';
+import { StyledSelectForm } from './SelectForm.style';
 
 export type SelectOptionType = OptionType;
 
@@ -49,62 +48,6 @@ export const SelectForm = <T extends FieldValues = FieldValues>(props: SelectFor
 		return <Select {...props} />;
 	}
 };
-
-const StyledForm = styled(FormControl, {
-	'&.select-form': {
-		'&.error': {
-			'.MuiOutlinedInput-notchedOutline': {
-				borderColor: '$red !important',
-				borderWidth: '1px !important',
-			},
-		},
-
-		borderRadius: '$xs',
-		boxSizing: 'border-box',
-
-		'&.border': {
-			border: '1px solid $gray800',
-		},
-
-		'&.small': {
-			lineHeight: '$formSmall',
-			height: '$formSmall',
-		},
-
-		'&.medium': {
-			lineHeight: '$formMedium',
-			height: '$formMedium',
-		},
-
-		'&.large': {
-			lineHeight: '$formLarge',
-			height: '$formLarge',
-		},
-
-		'.MuiOutlinedInput-notchedOutline': {
-			borderColor: 'transparent !important',
-			borderWidth: '1px !important',
-		},
-
-		'.MuiSelect-root > .MuiSelect-select': {
-			padding: '0 $10',
-			lineHeight: '$formMedium',
-			height: '$formMedium',
-		},
-
-		'.MuiInputBase-sizeSmall > .MuiSelect-select': {
-			padding: '0 $10',
-			lineHeight: '$formSmall',
-			height: '$formSmall',
-		},
-
-		'.MuiInputBase-sizeLarge > .MuiSelect-select': {
-			padding: '0 $10',
-			lineHeight: '$formLarge',
-			height: '$formLarge',
-		},
-	},
-});
 
 export interface SelectProps {
 	id?: string;
@@ -157,7 +100,7 @@ export const Select: React.FC<SelectProps> = ({
 	// useEffect(() => setInnerValue(value || defaultValue || ''), [value, defaultValue]);
 
 	return (
-		<StyledForm
+		<StyledSelectForm
 			className={clsx('select-form', size, { error, border }, className)}
 			fullWidth={width ? false : fullWidth}
 			size={size}
@@ -198,6 +141,6 @@ export const Select: React.FC<SelectProps> = ({
 					{/* {innerError && <Tooltip message={innerError} color={'error'} />} */}
 				</>
 			)}
-		</StyledForm>
+		</StyledSelectForm>
 	);
 };

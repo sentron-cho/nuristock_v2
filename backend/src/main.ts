@@ -1,10 +1,11 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { FRONT_END_ORIGIN } from "./types/url.js"; // tsconfig가 moduleResolution: node라면 .js 필요
-import dashboardRoute from "./routes/dashboard.route.js";
-import mystockRoute from "./routes/mystock.route.js";
 import dbPlugin from "./plugins/db.js"; // 🔥 DB 플러그인 추가
 import dotenv from 'dotenv';
+import dashboardRoute from "./routes/dashboard.route.js";
+import mystockRoute from "./routes/mystock.route.js";
+import marketRoute from "./routes/market.route.js";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ await fastify.register(dbPlugin);
 // 라우트 등록
 await fastify.register(dashboardRoute);
 await fastify.register(mystockRoute);
+await fastify.register(marketRoute);
 
 fastify.get("/", async (req, reply) => {
   return { hello: "world" };

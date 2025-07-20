@@ -42,7 +42,6 @@ const DashboardPage = () => {
 	const [sort, setSort] = useState<string>();
 
 	const { data } = useSelectDashboard();
-	// const { data: siseData } = useSelectDashboardSise();
 
 	const titleOptions = useMemo(() => {
 		return SelectOptions();

@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from 'react';
-import { TextField as MuiTextField, FormControl, TextFieldProps as MuiTextFieldProps } from '@mui/material';
+import { TextField as MuiTextField, TextFieldProps as MuiTextFieldProps } from '@mui/material';
 import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import { Tooltip } from '@entites/Tooltip';
 import clsx from 'clsx';
-import { styled } from '@styles/stitches.config';
 import { withCommas } from '@shared/libs/utils.lib';
+import { StyledTextFieldForm } from './TextFieldForm.style';
 
 type TextFieldFormProps<T extends FieldValues = FieldValues> = TextFieldProps & {
 	name?: keyof T;
@@ -42,71 +42,6 @@ export const TextFieldForm = <T extends FieldValues = FieldValues>(props: TextFi
 		return <TextField {...props} />;
 	}
 };
-
-const StyledForm = styled(FormControl, {
-	'&.text-field': {
-		'&.error': {
-			'.MuiOutlinedInput-notchedOutline': {
-				borderColor: '$red !important',
-				borderWidth: '1px !important',
-			},
-
-			input: {
-				paddingRight: '24px',
-			},
-
-			'.MuiFormLabel-root': {
-				color: '$error',
-			},
-		},
-
-		'.MuiFormLabel-root': {
-			color: '$primary',
-		},
-
-		'.Mui-readOnly, .Mui-disabled, &.disabled': {
-			'.MuiOutlinedInput-notchedOutline': {
-				borderColor: '$gray400 !important',
-			},
-
-			'&.Mui-disabled, &.disabled': {
-				'.MuiFormLabel-root': {
-					opacity: '0.7',
-				},
-
-				'.MuiInputBase-input': {
-					color: '$disable !important',
-					'-webkit-text-fill-color': 'unset',
-				},
-			},
-		},
-
-		'.MuiOutlinedInput-notchedOutline': {
-			borderColor: 'unset !important',
-			borderWidth: '1px !important',
-		},
-
-		'.MuiInputBase-input': {
-			padding: '0 $10',
-			lineHeight: '20px',
-			height: '36px',
-		},
-
-		'.MuiInputBase-sizeSmall > .MuiSelect-select': {
-			padding: '0 $10',
-			lineHeight: '16px',
-			height: '28px',
-		},
-	},
-
-	variants: {
-		align: {
-			right: { '.MuiInputBase-input': { textAlign: 'right' } },
-			left: { '.MuiInputBase-input': { textAlign: 'left' } },
-			center: { '.MuiInputBase-input': { textAlign: 'center' } },
-		},
-	},
-});
 
 export interface TextFieldProps extends Omit<MuiTextFieldProps, 'onChange'> {
 	id: string;
@@ -159,7 +94,7 @@ const TextField: React.FC<TextFieldProps> = ({
 	};
 
 	return (
-		<StyledForm
+		<StyledTextFieldForm
 			className={clsx('text-field', { error: isError, readonly: readOnly, disabled })}
 			fullWidth
 			error={isError}
@@ -199,6 +134,6 @@ const TextField: React.FC<TextFieldProps> = ({
 			/>
 			{message && <Tooltip message={message} color={error ? 'error' : 'action'} />}
 			{innerError && <Tooltip message={innerError} color={'error'} />}
-		</StyledForm>
+		</StyledTextFieldForm>
 	);
 };

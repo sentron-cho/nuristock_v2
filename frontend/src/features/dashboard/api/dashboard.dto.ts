@@ -3,8 +3,6 @@ export interface DashboardItemType {
 	userid: number;
 	code: string;
 	name: string;
-	rprice: number
-	rtime: string;
 	kcount: number;
 	kprice: number;
 	ecount: number;
@@ -16,10 +14,6 @@ export interface DashboardItemType {
 
 	sonic?: number;
 	sonicRate?: number;
-
-	// ktotal?: number;
-	// etotal?: number;
-	// stotal?: number;
 }
 
 export interface DashboardResponse {

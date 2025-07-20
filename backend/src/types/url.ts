@@ -10,6 +10,10 @@ export const URL = {
   MYSTOCK: {
     ROOT: `${ROOT_URL}/mystock`,
     SISE: `${ROOT_URL}/mystock/sise`
+  },
+  MARKET: {
+    ROOT: `${ROOT_URL}/market`,
+    SISE: `${ROOT_URL}/mystock/sise`
   }
 }
 

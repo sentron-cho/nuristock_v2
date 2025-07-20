@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
-import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, FormHelperText } from '@mui/material';
+import { FormLabel, RadioGroup, FormControlLabel, Radio, FormHelperText } from '@mui/material';
 import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
-import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
 import { OptionType } from '@shared/config/common.type';
+import { StyledRadioForm } from './RadioForm.style';
 
 export type RadioOptionType = OptionType;
 
@@ -39,35 +39,6 @@ export const RadioForm = <T extends FieldValues = FieldValues>(props: RadioFormP
 		return <RadioBase {...props} />;
 	}
 };
-
-const StyledForm = styled(FormControl, {
-	'&.radio-form': {
-		'&.error': {
-			'.MuiOutlinedInput-notchedOutline': {
-				borderColor: '$red !important',
-				borderWidth: '1px !important',
-			},
-		},
-
-		'.MuiOutlinedInput-notchedOutline': {
-			borderColor: 'unset !important',
-			borderWidth: '1px !important',
-		},
-
-		'.MuiSelect-root > .MuiSelect-select': {
-			padding: '0 $10',
-			lineHeight: '36px',
-			height: '36px',
-		},
-
-		'.MuiInputBase-sizeSmall > .MuiSelect-select': {
-			padding: '0 $10',
-			lineHeight: '28px',
-			height: '28px',
-		},
-	},
-});
-
 interface RadioProps {
 	id: string;
 	options: RadioOptionType[];
@@ -102,7 +73,7 @@ const RadioBase: React.FC<RadioProps> = ({
 	};
 
 	return (
-		<StyledForm
+		<StyledRadioForm
 			className={clsx('radio-form', { error })}
 			// component='fieldset'
 			error={error}
@@ -117,6 +88,6 @@ const RadioBase: React.FC<RadioProps> = ({
 			</RadioGroup>
 
 			{message && <FormHelperText>{message}</FormHelperText>}
-		</StyledForm>
+		</StyledRadioForm>
 	);
 };

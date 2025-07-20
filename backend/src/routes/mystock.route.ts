@@ -1,7 +1,5 @@
 import URL from "../types/url.js";
 import { FastifyInstance } from "fastify";
-import { mock as mockData } from "../mock/mystock/mystock.list.js";
-import { mock as mockSise } from "../mock/mystock/mystock.sise.js";
 
 const mystockRoute = (fastify: FastifyInstance) => {
   fastify.get(URL.MYSTOCK.ROOT, async (req, reply) => {

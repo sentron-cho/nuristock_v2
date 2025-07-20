@@ -1,37 +1,6 @@
-import { Typography, TypographyProps } from '@mui/material';
-import { styled } from '@stitches/react';
+import { TypographyProps } from '@mui/material';
 import clsx from 'clsx';
-
-const StyledText = styled(Typography, {
-	'&.xxs': {
-		fontSize: '$xxs',
-		lineHeight:'$xxs',
-	},
-	'&.xs': {
-		fontSize: '$xs',
-		lineHeight:'$xs',
-	},
-	'&.sm': {
-		fontSize: '$sm',
-		lineHeight:'$sm',
-	},
-	'&.md': {
-		fontSize: '$md',
-		lineHeight:'$md',
-	},
-	'&.lg': {
-		fontSize: '$lg',
-		lineHeight:'$lg',
-	},
-	'&.xl': {
-		fontSize: '$xl',
-		lineHeight:'$xl',
-	},
-	'&.xxl': {
-		fontSize: '$xxl',
-		lineHeight:'$xxl',
-	},
-});
+import { StyledText } from './Text.style';
 
 export interface TextProps extends TypographyProps {
 	text?: string | number;
