@@ -1,30 +1,41 @@
-import { DashboardResponse, DashboardSiseResponse } from './dashboard.dto';
-import { mock as mockData } from './mock/dashboard.list';
-import { mock as mockSise } from './mock/dashboard.sise';
-import { useQuery } from '@tanstack/react-query';
-
-// const API_URL = import.meta.env.VITE_API_URL
+import { DashboardResponse } from './dashboard.dto';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { API } from '@shared/config/url.enum';
+import axios from 'axios';
+// import { mock as mockData } from './mock/dashboard.list';
+// import { mock as mockSise } from './mock/dashboard.sise';
 
 export const useSelectDashboard = () => {
-	return useQuery<unknown, Error, DashboardResponse>({
-		queryKey: ['DASHARD-R01'],
-		queryFn: () => mockData,
-	});
-
-	// return useQuery<{ data: DashboardResponse[] }, Error, string[]>({
-	// 	queryKey: ['dashboard-s01'],
-	// 	// queryFn: () => fetch('/api/v0/dashboard'),
-	// 	queryFn: () => ({
-	// 		data: data,
-	// 	}),
-	// 	select: (res) => res?.data?.map((a) => a.userid),
-	// });
-};
-
-export const useSelectDashboardSise = (code?: string) => {
-	return useQuery<unknown, Error, DashboardSiseResponse>({
-		queryKey: ['DASHARD-R02'],
-		queryFn: () => mockSise,
+	return useSuspenseQuery<unknown, Error, DashboardResponse>({
+		queryKey: ['DASHBOARD-R01'],
+		queryFn: async (): Promise<DashboardResponse> => {
+			const main = await axios.get(API.DASHBOARD);
+			const sise = await axios.get(API.DASHBOARD_SISE);
+			return { ...(main.data || {}), sise: [...(sise?.data?.value || [])] };
+		},
+		// queryFn: async () => {
+		// 	return Query.parse(await axios.get(API.DASHBOARD));
+		// },
+		// select: (res) => res?.data?.map((a) => a.userid),
 	});
 };
 
+// export const useSelectDashboard = () => {
+//   return useQuery<DashboardResponse>({
+//     queryKey: ['DASHBOARD-R01'],
+//     queryFn: async (): Promise<DashboardResponse> => {
+//       const res = await axios.get(API.DASHBOARD);
+//       return res?.data;
+//     },
+//     suspense: true,
+//   });
+// };
+
+// export const useSelectDashboardSise = () => {
+// 	return useQuery<unknown, Error, DashboardSiseResponse>({
+// 		queryKey: ['DASHBOARD-R02'],
+// 		queryFn: async () => {
+// 			return Query.parse(await axios.get(API.DASHBOARD_SISE));
+// 		},
+// 	});
+// };

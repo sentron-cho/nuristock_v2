@@ -11,7 +11,7 @@ import {
 	DashboardItemType as DataType,
 	// DashboardResponse as ResponseType,
 } from '@features/dashboard/api/dashboard.dto';
-import { useSelectDashboard, useSelectDashboardSise } from '@features/dashboard/api/dashboard.api';
+import { useSelectDashboard } from '@features/dashboard/api/dashboard.api';
 import { DashboardCard } from '@features/dashboard/ui/DashboardCard.ui';
 import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
@@ -42,7 +42,7 @@ const DashboardPage = () => {
 	const [sort, setSort] = useState<string>();
 
 	const { data } = useSelectDashboard();
-	const { data: siseData } = useSelectDashboardSise();
+	// const { data: siseData } = useSelectDashboardSise();
 
 	const titleOptions = useMemo(() => {
 		return SelectOptions();
@@ -50,12 +50,10 @@ const DashboardPage = () => {
 
 	useEffect(() => setSort(titleOptions?.[0]?.value), [titleOptions]);
 
-	const sise = useMemo(() => siseData?.value, [siseData]);
-
 	const list = useMemo(
 		() =>
 			data?.value?.map((row) => {
-				const siseValue = sise?.find((a) => a.code === row.code)?.sise;
+				const siseValue = data?.sise?.find((a) => a.code === row.code)?.sise;
 
 				const sonic = row.eprice - row.sprice;
 				const sonicRate = sonic !== 0 ? (row.eprice / row.sprice) * 100 - 100 : 0;
@@ -68,20 +66,20 @@ const DashboardPage = () => {
 					siseSonic: siseValue ? row?.kcount * siseValue - row?.kprice : 0,
 				};
 			}),
-		[data, sise]
+		[data]
 	);
 
 	const summaryData = useMemo(() => {
 		const captal = (list as DashboardItemType[])?.map(a => a.kprice)?.reduce((a, b) => a + b, 0);
-		const sell = (list as DashboardItemType[])?.map(a => {
-			const v = sise?.find(b => b.code === a.code)?.sise as number
+		const sell = data?.sise ? (list as DashboardItemType[])?.map(a => {
+			const v = data?.sise?.find(b => b.code === a.code)?.sise as number
 			return a.kcount * v;
-		})?.reduce((a, b) => a + b, 0);
+		})?.reduce((a, b) => a + b, 0) : '';
 		const sonic = sell && captal && (sell - captal);
 
 		const values: string[] = [captal?.toString() || '', sell?.toString() || '', sonic?.toString() || ''];
 		return SummaryData(values);
-	}, [list, sise]);
+	}, [list, data]);
 
 	const sortedList = useMemo(() => {
 		if (sort === 'keepCost') {
@@ -162,6 +160,8 @@ const DashboardPage = () => {
 		}
 	};
 
+	// if(isPending) return 'Loading...'
+
 	return (
 		<>
 			<StyledPage summaryData={summaryData}>
@@ -181,7 +181,7 @@ const DashboardPage = () => {
 				/>
 				<Flex className='card-list'>
 					{sortedList?.map((item) => (
-						<DashboardCard key={item.code} data={item} siseData={sise} onClick={onClick} />
+						<DashboardCard key={item.code} data={item} siseData={data?.sise} onClick={onClick} />
 					))}
 				</Flex>
 			</StyledPage>

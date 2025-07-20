@@ -24,6 +24,7 @@ export interface DashboardItemType {
 
 export interface DashboardResponse {
 	value?: DashboardItemType[];
+	sise?: DashboardSiseItemType[];
 }
 
 export interface DashboardSiseItemType {
@@ -38,9 +39,9 @@ export interface DashboardSiseItemType {
 	utime: string;
 }
 
-export interface DashboardSiseResponse {
-	value?: DashboardSiseItemType[];
-}
+// export interface DashboardSiseResponse {
+// 	value?: DashboardSiseItemType[];
+// }
 
 export interface StockSiseType {
 	kcount: number;

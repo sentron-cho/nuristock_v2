@@ -96,7 +96,6 @@ export const DashboardCard = ({
 	return (
 		<StyledCard className={clsx('card', { active }, type, { sm: !history })}>
 			<Flex className='box' direction='column' onClick={() => handleClick(EID.SELECT)}>
-				
 				{/* head */}
 				<Flex className='head' justify='between'>
 					<Flex gap={4} className='left' flex={1}>
@@ -168,7 +167,7 @@ export const DashboardCard = ({
 						<Button className='daum' eid='daum' icon={<IconLaunch />} size='small' title='Daum' onClick={handleClick} />
 					</Flex>
 
-					{sise && (
+					{sise && sise?.erate && (
 						<Flex className={'sise'} direction={'column'} align={'end'} flex={1} gap={8}>
 							<Text className='time' text={sise.time} size={'xxs'} />
 

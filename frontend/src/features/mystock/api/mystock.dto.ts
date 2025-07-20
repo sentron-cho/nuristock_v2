@@ -36,6 +36,7 @@ export interface MyStockResponse {
 	keeps?: MyStockKeepType[];
 	sells?: MyStockSellType[];
 	stocks?: MyStockListType[];
+	sise?: MyStockSiseItemType;
 }
 
 export interface MyStockSiseItemType {
@@ -45,6 +46,6 @@ export interface MyStockSiseItemType {
 	updown: string;
 }
 
-export interface MyStockSiseResponse {
-	value?: MyStockSiseItemType;
-}
+// export interface MyStockSiseResponse {
+// 	value?: MyStockSiseItemType;
+// }

@@ -9,8 +9,9 @@ export default defineConfig(({ mode }) => {
 	// dotenv.config({ path: envPath });
 	const env = loadEnv(mode, process.cwd(), 'VITE_');
 
-	// console.log({ env });
-	console.log('[vite start]', { url: `http://${env?.VITE_API_URL}:${env?.VITE_PORT}` });
+	// console.log({ location: location });
+	console.log('[START]', { url: `${env?.VITE_HOST}:${env?.VITE_PORT}` });
+	console.log('[API]', { url: `${env?.VITE_API_URL}` });
 
 	return {
 		plugins: [react(), tsconfigPaths()],
@@ -23,13 +24,14 @@ export default defineConfig(({ mode }) => {
 			],
 		},
 		server: {
+			// host: env.VITE_HOST,
 			port: Number(env.VITE_PORT), // 원하는 포트 번호
-			host: true, // 외부 접근 허용
+			// host: true, // 외부 접근 허용
 			proxy: {
 				'/api': {
-					target: env.VITE_API_URL,
+					target: env?.VITE_API_URL,
 					changeOrigin: true,
-					// rewrite: (path) => path.replace(/^\/api/, ''),
+					rewrite: (path) => path.replace(/^\/api/, '/api'), // 경로 유지
 				},
 			},
 		},

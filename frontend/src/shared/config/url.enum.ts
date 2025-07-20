@@ -23,7 +23,7 @@ export const URL = {
 	},
 };
 
-const API_ROOT = '/api';
+const API_ROOT = '/api/v1';
 
 export const API = {
 	DASHBOARD: `${API_ROOT}/dashboard`,

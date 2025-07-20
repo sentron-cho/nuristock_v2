@@ -131,7 +131,7 @@ export const KeepContents = ({ data, sise }: { data: KeepType; sise?: SiseType }
 	return (
 		<>
 			<Flex className='head' justify='between'>
-				<CardContentHead type={type} title={values?.soinc?.toString()} rate={values?.rate} date={data?.ctime} />
+				<CardContentHead sise={sise} type={type} title={values?.soinc?.toString()} rate={values?.rate} date={data?.ctime} />
 			</Flex>
 
 			<Flex gap={8} className='body' direction='column' justify='start'>
@@ -139,12 +139,12 @@ export const KeepContents = ({ data, sise }: { data: KeepType; sise?: SiseType }
 					{/* 매수/현재가 매도시 */}
 					<Flex className='trade-info' direction='column' align='start' gap={10}>
 						<CardLineFiled {...values.buy} value={withCommas(values?.buy.value)} />
-						<CardLineFiled
+						{sise && <CardLineFiled
 							{...values.sell}
 							value={withCommas(values.sell.value)}
 							type={type}
 							suffix={{ text: '', value: ST.WON }}
-						/>
+						/>}
 					</Flex>
 					{/* 예상 */}
 					<Flex className={clsx('cast-info', type)} direction='column' align='start' gap={10}>
@@ -182,25 +182,31 @@ const CardContentHead = ({
 	title,
 	rate,
 	date,
+	sise,
 }: {
 	type?: string;
 	title?: string;
 	rate?: string;
 	date?: string;
+	sise?: SiseType;
 }) => {
 	return (
 		<>
 			<Flex gap={0} className={clsx('left', type)} flex={1}>
-				{type === EID.MINUS && <IconDown />}
-				{type === EID.PLUS && <IconUp />}
+				{sise && (
+					<>
+						{type === EID.MINUS && <IconDown />}
+						{type === EID.PLUS && <IconUp />}
 
-				<Typography fontWeight={'bold'} className='title'>
-					{toCost(title)}
-				</Typography>
+						<Typography fontWeight={'bold'} className='title'>
+							{toCost(title)}
+						</Typography>
 
-				<Typography fontWeight={'bold'} className='rate'>
-					{`(${ST.SONIC_RATE} ${rate}%)`}
-				</Typography>
+						<Typography fontWeight={'bold'} className='rate'>
+							{`(${ST.SONIC_RATE} ${rate}%)`}
+						</Typography>
+					</>
+				)}
 			</Flex>
 
 			<Flex gap={4} className='right' width='fit-contents'>

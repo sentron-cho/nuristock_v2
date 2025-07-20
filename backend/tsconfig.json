@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
-    "target": "es2020",
-    "module": "commonjs",
+    "module": "ESNext", // ✅ ESM import/export 사용
+    "target": "es2020", // ✅ 최신 문법 사용
+    "esModuleInterop": true, // ✅ CommonJS 라이브러리와 호환
+    "moduleResolution": "node", // ✅ node 방식 모듈 해석
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
-    "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
     "resolveJsonModule": true,
     "sourceMap": true,
     "declaration": true
