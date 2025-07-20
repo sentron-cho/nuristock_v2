@@ -12,6 +12,38 @@ import { IconButton, IconType } from '@entites/IconButton';
 import Flex from '@entites/Flex';
 import { KeepContents, TradeContents } from './MyStockCardContents.ui';
 import { StyledCard } from '../style/MyStockCard.style';
+import { Text } from '@entites/Text';
+
+export const MyStcokCardList = ({
+	viewType,
+	list,
+	onClick,
+	sise,
+}: {
+	viewType: 'keep' | 'trade';
+	list?: KeepType[] | SellType[];
+	onClick?: (eid?: string, item?: KeepType | SellType) => void;
+	sise?: SiseType;
+}) => {
+
+	if (!list?.length) return <NoData />;
+
+	return (
+		<Flex className='card-list'>
+			{list?.map((item) => (
+				<MyStockCard viewType={viewType} key={item.rowid} data={item} sise={sise} onClick={onClick} />
+			))}
+		</Flex>
+	);
+};
+
+const NoData = () => {
+	return (
+		<Flex height={'100%'} justify={'center'}>
+			<Text size='lg' text='거래 내역이 없습니다.' color='textDisabled' />
+		</Flex>
+	);
+};
 
 export const MyStockCard = ({
 	data,
@@ -39,7 +71,7 @@ export const MyStockCard = ({
 		<StyledCard className={clsx('card', type, viewType, { sm: !history })}>
 			<Flex className='box' direction='column' onClick={() => handleClick(EID.SELECT)}>
 				{viewType === 'keep' && <KeepContents data={data as KeepType} sise={sise} />}
-				{viewType === 'trade' && <TradeContents data={data as SellType} />}
+				{viewType === 'trade' && <TradeContents data={data as SellType} sise={sise} />}
 
 				<Flex className='foot' justify={'between'}>
 					<Flex gap={8} style={{ visibility: viewType === 'keep' ? 'visible' : 'hidden' }}>

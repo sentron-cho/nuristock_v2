@@ -14,7 +14,7 @@ import dayjs from 'dayjs';
 import Flex from '@entites/Flex';
 import { CardLineFiled } from '@features/common/ui/CardLineField.ui';
 
-export const TradeContents = ({ data }: { data: SellType }) => {
+export const TradeContents = ({ data, sise }: { data: SellType, sise?: SiseType }) => {
 	const values = useMemo(() => {
 		const makeTrade = (data: SellType, type?: 'sell' | 'buy') => {
 			const cost = type === 'buy' ? data?.scost : data?.ecost;
@@ -58,7 +58,7 @@ export const TradeContents = ({ data }: { data: SellType }) => {
 	return (
 		<>
 			<Flex className='head' justify='between'>
-				<CardContentHead type={type} title={values?.soinc?.toString()} rate={values?.rate} date={data?.ctime} />
+				<CardContentHead sise={sise} type={type} title={values?.soinc?.toString()} rate={values?.rate} date={data?.ctime} />
 			</Flex>
 
 			<Flex gap={8} className='body' direction='column' justify='start'>

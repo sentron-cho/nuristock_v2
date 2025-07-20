@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import { styled } from '@styles/stitches.config';
 import { useMemo, type ComponentProps, type ReactNode } from 'react';
 import { SummaryBar, SummaryDataType } from './SummaryBar.ui';
+import Flex from '@entites/Flex';
 
 const StyledContainer = styled('div', {
 	boxSizing: 'border-box',
@@ -17,7 +18,8 @@ const StyledContainer = styled('div', {
 
 		'.contents-wrap': {
 			maxWidth: '$pageWidth',
-    	margin: 'auto',
+			margin: 'auto',
+			height: '100%',
 		}
 	},
 
@@ -70,7 +72,7 @@ export const PageContainer = ({
 					height: `calc(100% - ${summaryHeight}px )`,
 				}}
 			>
-				<div className='contents-wrap'>{children}</div>
+				<Flex direction={'column'} className='contents-wrap' flex={1}>{children}</Flex>
 			</div>
 		</StyledContainer>
 	);

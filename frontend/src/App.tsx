@@ -7,8 +7,6 @@ import { AlertProvider } from '@layouts/ui/AlertProvider.ui';
 import { ConfirmProvider } from '@layouts/ui/ConfirmProvider.ui';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { Suspense } from 'react';
-import { Box, CircularProgress } from '@mui/material';
 
 const App = () => {
 	const queryClient = new QueryClient();

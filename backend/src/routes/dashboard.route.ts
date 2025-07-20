@@ -22,32 +22,6 @@ const dashboardRoute = (fastify: FastifyInstance) => {
         max_page: 1,
         page: "1",
       };
-
-      // reply
-      //   .code(200)
-      //   .header("Content-Type", "application/json")
-      //   .send(
-      //     JSON.parse(
-      //       safeStringify({
-      //         code: 200,
-      //         value: result,
-      //         total: result.length,
-      //         max_page: 1,
-      //         page: "1",
-      //       })
-      //     )
-      //   );
-
-      // return mockData;
-      // return JSON.parse(
-      //   JSON.stringify({
-      //     code: 200,
-      //     value: result,
-      //     total: result?.length,
-      //     max_page: 1,
-      //     page: "1",
-      //   })
-      // );
     } catch (error) {
       console.error("[DASHBOARD ERROR]", error); // ← 여기 로그 확인
       reply.status(500).send({ code: 500, message: "DB 조회 실패" });

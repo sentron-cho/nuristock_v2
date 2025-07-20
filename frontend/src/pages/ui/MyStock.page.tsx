@@ -12,7 +12,7 @@ import {
 	MyStockTreadType as TreadType,
 } from '@features/mystock/api/mystock.dto';
 import { useSelectMyStock } from '@features/mystock/api/mystock.api';
-import { MyStockCard } from '@features/mystock/ui/MyStockCard.ui';
+import { MyStcokCardList, MyStockCard } from '@features/mystock/ui/MyStockCard.ui';
 import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { EID } from '@shared/config/default.config';
@@ -57,16 +57,19 @@ const MyStockPage = () => {
 			),
 		[data]
 	);
-	// const sise = useMemo(() => data?.sise, [data]);
 	const selected = useMemo(() => stocks?.find((a) => a.value === param?.id)?.value, [stocks, param]);
-	// console.log({ selected, data, keepList, sellList });
 
 	const summaryData = useMemo(() => {
 		const buy = (data?.sells as MyStockSellType[])?.map((a) => a.scost * a.count)?.reduce((a, b) => a + b, 0);
 		const sell = (data?.sells as MyStockSellType[])?.map((a) => a.ecost * a.count)?.reduce((a, b) => a + b, 0);
 		const keep = (data?.keeps as MyStockKeepType[])?.map((a) => a.scost * a.count)?.reduce((a, b) => a + b, 0);
-		const sonic = buy && sell && (sell - buy);
-		const values: string[] = [buy?.toString() || '', sell?.toString() || '', keep?.toString() || '', sonic?.toString() || ''];
+		const sonic = buy && sell && sell - buy;
+		const values: string[] = [
+			buy?.toString() || '',
+			sell?.toString() || '',
+			keep?.toString() || '',
+			sonic?.toString() || '',
+		];
 		return SummaryData(values);
 	}, [data]);
 
@@ -126,16 +129,13 @@ const MyStockPage = () => {
 				>
 					<SelectForm options={stocks} size='medium' border={false} defaultValue={selected} onChange={onChangeStock} />
 				</PageTitleBar>
-				<Flex className='card-list'>
-					{viewType === 'keep' &&
-						keepList?.map((item) => (
-							<MyStockCard viewType={viewType} key={item.rowid} data={item} sise={data?.sise} onClick={onClick} />
-						))}
-					{viewType === 'trade' &&
-						sellList?.map((item) => (
-							<MyStockCard viewType={viewType} key={item.rowid} data={item} sise={data?.sise} onClick={onClick} />
-						))}
-				</Flex>
+
+				<MyStcokCardList
+					viewType={viewType}
+					list={viewType === 'keep' ? keepList : sellList}
+					sise={data?.sise}
+					onClick={onClick}
+				/>
 			</StyledPage>
 
 			{popup?.type === 'buy' && <MyStockBuyPopup item={popup?.item as TreadType} onClose={popup.onClose} />}

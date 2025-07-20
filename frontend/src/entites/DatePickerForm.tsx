@@ -6,7 +6,6 @@ import { FormControl } from '@mui/material';
 import { Tooltip } from '@entites/Tooltip';
 import clsx from 'clsx';
 import dayjs, { Dayjs } from 'dayjs';
-import { ST } from '@shared/config/kor.lang';
 
 type DatePickerFormProps<T extends FieldValues = FieldValues> = Omit<CustomDatePickerProps, 'value' | 'onChange'> & {
 	name?: Path<T>;
