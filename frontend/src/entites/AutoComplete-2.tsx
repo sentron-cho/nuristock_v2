@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Autocomplete, AutocompleteProps, TextField as MuiTextField } from '@mui/material';
 import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import clsx from 'clsx';
@@ -8,7 +8,10 @@ import { OptionType } from '@shared/config/common.type';
 
 export type SelectOptionType = OptionType;
 
-type AutoCompleteFormProps<T extends FieldValues = FieldValues> = BaseAutoCompleteProps<SelectOptionType> & {
+type AutoCompleteFormProps<
+	T extends FieldValues = FieldValues,
+	OptionType = any,
+> = BaseAutoCompleteProps<SelectOptionType> & {
 	name?: Path<T>;
 	formMethod?: UseFormReturn<T>;
 };
@@ -27,10 +30,10 @@ export const AutoCompleteForm = <T extends FieldValues = FieldValues>(props: Aut
 						{...props}
 						id={id}
 						value={field.value ?? null}
-						onChange={(option) => {
+						onChange={(_, newValue) => {
 							props?.formMethod?.clearErrors(id);
-							field.onChange(option);
-							props?.onChange?.(option);
+							field.onChange(newValue);
+							props?.onChange?.(_, newValue);
 						}}
 						error={!!formState.errors[id]}
 						message={formState.errors[id]?.message as string}
@@ -50,7 +53,7 @@ interface BaseAutoCompleteProps<SelectOptionType>
 	placeholder?: string;
 
 	value?: SelectOptionType | null;
-	onChange?: (value: SelectOptionType | null) => void;
+	onChange?: (event: React.SyntheticEvent, value: SelectOptionType | null) => void;
 
 	error?: boolean;
 	message?: string;
@@ -70,23 +73,28 @@ const AutoComplete = <SelectOptionType,>({
 	readOnly = false,
 	...props
 }: BaseAutoCompleteProps<SelectOptionType>) => {
-	// const [innerError, setInnerError] = useState<string>();
+	const [innerError, setInnerError] = useState<string>();
 
-	// const isError = useMemo(() => error || !!innerError, [error, innerError]);
+	const isError = useMemo(() => error || !!innerError, [error, innerError]);
 
 	return (
 		<StyledTextFieldForm
-			className={clsx('autocomplete-form', { error: error, readonly: readOnly, disabled })}
+			className={clsx('autocomplete-form', { error: isError, readonly: readOnly, disabled })}
 			fullWidth
-			error={error}
+			error={isError}
 			disabled={disabled}
 		>
 			<Autocomplete
 				{...props}
 				id={id}
 				value={value}
-				onChange={(_e, v) => {
-					onChange?.(v);
+				onChange={(e, v) => {
+					console.log({ v, e });
+					onChange?.(e, v);
+				}}
+				getOptionLabel={(option) => {
+					console.log(option);
+					return (option as SelectOptionType)?.label as string;
 				}}
 				readOnly={readOnly}
 				disabled={disabled}
@@ -94,9 +102,9 @@ const AutoComplete = <SelectOptionType,>({
 					<MuiTextField
 						{...params}
 						variant='outlined'
-            label={label}
+						label={label}
 						placeholder={placeholder}
-						error={error}
+						error={isError}
 						onFocus={(e) => {
 							console.log(e.target.select());
 
@@ -106,7 +114,7 @@ const AutoComplete = <SelectOptionType,>({
 				)}
 			/>
 			{message && <Tooltip message={message} color={error ? 'error' : 'action'} />}
-			{/* {innerError && <Tooltip message={innerError} color='error' />} */}
+			{innerError && <Tooltip message={innerError} color='error' />}
 		</StyledTextFieldForm>
 	);
 };

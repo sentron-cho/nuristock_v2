@@ -3,27 +3,48 @@ import { Dialog } from '@entites/Dialog';
 import { useForm } from 'react-hook-form';
 import { ST } from '@shared/config/kor.lang';
 import { useSelectMarket } from '@features/market/api/market.api';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Flex from '@entites/Flex';
 import { AutoCompleteForm } from '@entites/AutoComplete';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
+import { sortBy } from 'lodash';
 
 export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => void }) => {
 	const { showToast } = useCommonHook();
 
 	const forms = useForm({
-		defaultValues: { search: '' },
-		resolver: zodResolver(
-			z.object({
-				search: z.string({ message: '선택하세요.' }),
-			})
-		),
+		defaultValues: { search: undefined },
+		// resolver: zodResolver(
+		// 	z.object({
+		// 		search: z.object({
+		// 			label: z.string().nonempty({message: '123'}),
+		// 			value: z.string('123'),
+		// 		}),
+		// 	})
+		// ),
 	});
 
+	const [search, setSearch] = useState<string>();
+
 	const { data, isPending } = useSelectMarket();
-	const list = useMemo(() => data?.value, [data]);
+	const list = useMemo(() => {
+		const items = data?.value?.map((a) => ({ label: `${a?.name}(${a?.code})`, value: a?.code }));
+		return sortBy(items, ['label']);
+	}, [data]);
+
+	const filtered = useMemo(() => {
+		console.log(search);
+		if (search && search?.length > 0) {
+			const items = list?.filter((a) => a?.label.includes(search));
+			console.log(items);
+			return items;
+			// return list?.filter((a) => a?.label.includes(search));
+		} else {
+			return list?.slice(0, 100);
+		}
+	}, [search, list]);
 
 	useEffect(() => {
 		console.log(list);
@@ -34,16 +55,22 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 			forms?.handleSubmit(
 				(values) => {
 					console.log('[success]', { values });
+
+					if (!values?.search) {
+						forms.setError('search', { message: '입력하세요' });
+						return;
+					}
+
 					showToast('registered');
 					onClose?.(isOk);
+				},
+				(error) => {
+					console.error('[error]', { error });
 				}
-				// (error) => {
-				// 	console.error('[error]', { error });
-				// }
 			)();
+		} else {
+			onClose(false);
 		}
-
-		onClose?.(isOk);
 	};
 
 	const onClearError = (id: string) => {
@@ -56,12 +83,20 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 			{!isPending && (
 				<Flex direction={'column'}>
 					<AutoCompleteForm
-						name='search'
+						id='search'
 						formMethod={forms}
-						options={['삼성전자', 'LG에너지솔루션', '카카오']}
-						getOptionLabel={(option) => {
-							console.log(option);
-							return option;
+						options={filtered}
+						// getOptionLabel={(option) => {
+						// 	console.log(option);
+						// 	return option;
+						// }}
+						// onInput={(v) => {
+						// 	console.log({ value: v });
+						// 	setSearch(v);
+						// }}
+						onInput={(e) => {
+							console.log({ e });
+							setSearch((e?.target as HTMLInputElement).value);
 						}}
 						label='종목 선택'
 						placeholder='종목명을 입력하세요'

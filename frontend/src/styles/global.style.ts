@@ -22,5 +22,11 @@ export const globalStyles = globalCss({
 		'.MuiTooltip-arrow': {
 			color: '$black'
 		}
+	},
+
+	'.autocomplete-popup': {
+		'.MuiPaper-root': {
+			maxHeight: '400px',
+		}
 	}
 });

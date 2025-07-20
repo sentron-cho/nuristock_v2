@@ -20,7 +20,7 @@ export type SelectFormProps<T extends FieldValues = FieldValues> = SelectProps &
 };
 
 export const SelectForm = <T extends FieldValues = FieldValues>(props: SelectFormProps<T>) => {
-	const isHookFormMode = 'control' in props;
+	const isHookFormMode = 'formMethod' in props;
 	const id = useMemo(() => (props?.name || props.id) as string, [props?.name, props.id]);
 
 	// react-hook-form 방식
@@ -89,15 +89,11 @@ export const Select: React.FC<SelectProps> = ({
 	className,
 	border = true,
 }) => {
-	// const [innerValue, setInnerValue] = useState<string>('');
-
 	const handleChange = (e: SelectChangeEvent<string | number>) => {
 		onChange?.(e?.target?.value?.toString());
 		// setInnerValue(e?.target?.value?.toString());
 		onClearError?.(id);
 	};
-
-	// useEffect(() => setInnerValue(value || defaultValue || ''), [value, defaultValue]);
 
 	return (
 		<StyledSelectForm
