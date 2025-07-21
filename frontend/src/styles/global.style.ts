@@ -20,13 +20,33 @@ export const globalStyles = globalCss({
 		},
 
 		'.MuiTooltip-arrow': {
-			color: '$black'
-		}
+			color: '$black',
+		},
 	},
 
-	'.autocomplete-popup': {
-		'.MuiPaper-root': {
-			maxHeight: '400px',
-		}
-	}
+	'.autocomplete-popper': {
+		'&.small': {
+			'.MuiAutocomplete-listbox > li': {
+				lineHeight: '$formSmall',
+				height: '$formSmall',
+				fontSize: '$sm',
+			},
+		},
+
+		'&.medium': {
+			'.MuiAutocomplete-listbox > li': {
+				lineHeight: '$formMedium',
+				height: '$formMedium',
+				fontSize: '$md',
+			},
+		},
+
+		'&.large': {
+			'.MuiAutocomplete-listbox > li': {
+				lineHeight: '$formLarge',
+				height: '$formLarge',
+				fontSize: '$lg',
+			},
+		},
+	},
 });

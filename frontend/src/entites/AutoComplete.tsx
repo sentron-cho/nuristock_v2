@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
-import { Autocomplete, AutocompleteProps, TextField as MuiTextField } from '@mui/material';
+import { Autocomplete, AutocompleteProps, TextField as MuiTextField, SelectProps } from '@mui/material';
 import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import clsx from 'clsx';
 import { Tooltip } from '@entites/Tooltip';
-import { StyledTextFieldForm } from './TextFieldForm.style';
 import { OptionType } from '@shared/config/common.type';
+import { StyledAutoCompleteForm } from './AutoComplete.style';
 
 export type SelectOptionType = OptionType;
 
@@ -44,7 +44,7 @@ export const AutoCompleteForm = <T extends FieldValues = FieldValues>(props: Aut
 };
 
 interface BaseAutoCompleteProps<SelectOptionType>
-	extends Omit<AutocompleteProps<SelectOptionType, false, false, false>, 'renderInput' | 'onChange' | 'value'> {
+	extends Omit<AutocompleteProps<SelectOptionType, false, false, false>, 'renderInput' | 'onChange' | 'value' | 'size'> {
 	id: string;
 	label?: string;
 	placeholder?: string;
@@ -56,6 +56,7 @@ interface BaseAutoCompleteProps<SelectOptionType>
 	message?: string;
 	disabled?: boolean;
 	readOnly?: boolean;
+	size?: 'small' | 'medium' | 'large';
 }
 
 const AutoComplete = <SelectOptionType,>({
@@ -68,6 +69,7 @@ const AutoComplete = <SelectOptionType,>({
 	message,
 	disabled = false,
 	readOnly = false,
+	size = 'medium',
 	...props
 }: BaseAutoCompleteProps<SelectOptionType>) => {
 	// const [innerError, setInnerError] = useState<string>();
@@ -75,8 +77,8 @@ const AutoComplete = <SelectOptionType,>({
 	// const isError = useMemo(() => error || !!innerError, [error, innerError]);
 
 	return (
-		<StyledTextFieldForm
-			className={clsx('autocomplete-form', { error: error, readonly: readOnly, disabled })}
+		<StyledAutoCompleteForm
+			className={clsx('autocomplete-form', size, { error: error, readonly: readOnly, disabled })}
 			fullWidth
 			error={error}
 			disabled={disabled}
@@ -90,11 +92,14 @@ const AutoComplete = <SelectOptionType,>({
 				}}
 				readOnly={readOnly}
 				disabled={disabled}
+				slotProps={{
+					popper: { className: clsx('autocomplete-popper', size) },
+				}}
 				renderInput={(params) => (
 					<MuiTextField
 						{...params}
 						variant='outlined'
-            label={label}
+						label={label}
 						placeholder={placeholder}
 						error={error}
 						onFocus={(e) => {
@@ -107,6 +112,6 @@ const AutoComplete = <SelectOptionType,>({
 			/>
 			{message && <Tooltip message={message} color={error ? 'error' : 'action'} />}
 			{/* {innerError && <Tooltip message={innerError} color='error' />} */}
-		</StyledTextFieldForm>
+		</StyledAutoCompleteForm>
 	);
 };
