@@ -3,32 +3,40 @@ import { Dialog } from '@entites/Dialog';
 import { useForm } from 'react-hook-form';
 import { ST } from '@shared/config/kor.lang';
 import { useSelectMarket } from '@features/market/api/market.api';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import Flex from '@entites/Flex';
-import { AutoCompleteForm } from '@entites/AutoComplete';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { sortBy } from 'lodash';
 import { ListForm, ListItemType } from '@entites/ListForm';
 import { IconClear } from '@entites/Icons';
+import { styled } from '@stitches/react';
+import clsx from 'clsx';
+
+const StyledFlex = styled(Flex, {
+	'.search': {
+		'.clear': {
+			marginRight: '-10px',
+			opacity: '0.7',
+			cursor: 'pointer',
+			display: 'none',
+
+			'&.active': {
+				display: 'block',
+			},
+		},
+	},
+
+	'&.clear': {
+		'.tooltip.icon': {
+			marginRight: '20px',
+		},
+	}
+});
 
 export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => void }) => {
 	const { showToast } = useCommonHook();
 
-	const forms = useForm({
-		defaultValues: { search: '' },
-		// resolver: zodResolver(
-		// 	z.object({
-		// 		search: z.object({
-		// 			label: z.string().nonempty({message: '123'}),
-		// 			value: z.string('123'),
-		// 		}),
-		// 	})
-		// ),
-	});
-
-	// const [search, setSearch] = useState<string>();
+	const forms = useForm({ defaultValues: { search: '' } });
 
 	const { data, isPending } = useSelectMarket();
 	const list = useMemo(() => {
@@ -77,40 +85,44 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 		}
 	};
 
-	const onClearError = (id: string) => {
-		forms?.clearErrors(id as never);
-	};
+	// const onClearError = (id: string) => {
+	// 	forms?.clearErrors(id as never);
+	// };
 
 	const onSelect = (item: ListItemType) => {
 		console.log('[onSelect]', item);
 		forms?.setValue('search', item?.text);
+		forms?.clearErrors('search');
 	};
 
 	const onClear = () => {
 		forms?.setValue('search', '');
-	}
+	};
 
 	return (
 		<Dialog title={ST.STOCK_APPEND} onClose={onClickClose}>
 			{!list?.length || (isPending && 'Loading...')}
 			{!isPending && (
-				<Flex direction={'column'} gap={8}>
+				<StyledFlex direction={'column'} gap={8} className={clsx({ clear: search?.length })}>
 					<TextFieldForm
+						className={clsx('search')}
 						size='small'
 						id='search'
 						formMethod={forms}
-						onClearError={onClearError}
+						// onClearError={onClearError}
 						maxLength={10}
 						slotProps={{
 							input: {
-								endAdornment: <IconClear fontSize='small' onClick={onClear} />,
+								endAdornment: (
+									<IconClear className={clsx('clear', { active: search?.length })} fontSize='small' onClick={onClear} />
+								),
 							},
 						}}
 					/>
 					<Flex height={'300px'}>
 						<ListForm height={'100%'} size='small' type='virtual' items={filtered} onSelect={onSelect} />
 					</Flex>
-				</Flex>
+				</StyledFlex>
 			)}
 		</Dialog>
 	);
