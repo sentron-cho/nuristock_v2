@@ -10,14 +10,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { sortBy } from 'lodash';
-import { ListForm, ListItemType } from '@entites/ListForm';
-import { IconClear } from '@entites/Icons';
 
 export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => void }) => {
 	const { showToast } = useCommonHook();
 
 	const forms = useForm({
-		defaultValues: { search: '' },
+		defaultValues: { search: undefined },
 		// resolver: zodResolver(
 		// 	z.object({
 		// 		search: z.object({
@@ -28,25 +26,23 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 		// ),
 	});
 
-	// const [search, setSearch] = useState<string>();
+	const [search, setSearch] = useState<string>();
 
 	const { data, isPending } = useSelectMarket();
 	const list = useMemo(() => {
-		const items = data?.value?.map((a) => ({ text: `${a?.name}(${a?.code})`, id: a?.code }));
+		const items = data?.value?.map((a) => ({ label: `${a?.name}(${a?.code})`, value: a?.code }));
 		return sortBy(items, ['label']);
 	}, [data]);
 
-	const search = forms?.watch('search');
-
 	const filtered = useMemo(() => {
-		// console.log(search);
+		console.log(search);
 		if (search && search?.length > 0) {
-			const items = list?.filter((a) => a?.text.includes(search));
-			// console.log(items);
+			const items = list?.filter((a) => a?.label.includes(search));
+			console.log(items);
 			return items;
 			// return list?.filter((a) => a?.label.includes(search));
 		} else {
-			return list; //?.slice(0, 100);
+			return list?.slice(0, 100);
 		}
 	}, [search, list]);
 
@@ -81,35 +77,31 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 		forms?.clearErrors(id as never);
 	};
 
-	const onSelect = (item: ListItemType) => {
-		console.log('[onSelect]', item);
-		forms?.setValue('search', item?.text);
-	};
-
-	const onClear = () => {
-		forms?.setValue('search', '');
-	}
-
 	return (
 		<Dialog title={ST.STOCK_APPEND} onClose={onClickClose}>
 			{!list?.length || (isPending && 'Loading...')}
 			{!isPending && (
-				<Flex direction={'column'} gap={8}>
-					<TextFieldForm
-						size='small'
+				<Flex direction={'column'}>
+					<AutoCompleteForm
 						id='search'
 						formMethod={forms}
-						onClearError={onClearError}
-						maxLength={10}
-						slotProps={{
-							input: {
-								endAdornment: <IconClear fontSize='small' onClick={onClear} />,
-							},
+						options={filtered}
+						// getOptionLabel={(option) => {
+						// 	console.log(option);
+						// 	return option;
+						// }}
+						// onInput={(v) => {
+						// 	console.log({ value: v });
+						// 	setSearch(v);
+						// }}
+						onInput={(e) => {
+							console.log({ e });
+							setSearch((e?.target as HTMLInputElement).value);
 						}}
+						label='종목 선택'
+						placeholder='종목명을 입력하세요'
 					/>
-					<Flex height={'300px'}>
-						<ListForm height={'100%'} size='small' type='virtual' items={filtered} onSelect={onSelect} />
-					</Flex>
+					{/* <TextFieldForm size='small' id='textInput' formMethod={forms} onClearError={onClearError} maxLength={10} /> */}
 				</Flex>
 			)}
 		</Dialog>

@@ -8,6 +8,7 @@ import IconAlert from '@mui/icons-material/ErrorOutline';
 import IconArrowUp from '@mui/icons-material/ArrowUpward';
 import IconArrowDown from '@mui/icons-material/ArrowDownward';
 import IconPlayArrow from '@mui/icons-material/PlayArrow';
+import IconClear from '@mui/icons-material/Clear';
 import { styled } from '@stitches/react';
 import { SvgIconProps } from '@mui/material';
 
@@ -44,4 +45,5 @@ export {
 	IconDown,
 	IconArrowUp,
 	IconArrowDown,
+	IconClear
 };
