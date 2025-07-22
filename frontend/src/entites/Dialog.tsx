@@ -19,7 +19,20 @@ import { FieldValues } from 'react-hook-form';
 const StyledDialog = styled(MuiDialog, {
 	'.contents': {
 		minHeight: '100px',
-		maxHeight: '400px',
+		// maxHeight: '400px',
+		height: '100%',
+	},
+
+	'.MuiDialog-paperFullScreen': {
+		'.MuiDialogContent-root': {
+			padding: '20px 10px',
+			overflow: 'hidden',
+
+			'.contents': {
+				height: 'clac(100vh - 100px)',
+				maxHeight: 'unset',
+			},
+		},
 	},
 });
 

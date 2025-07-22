@@ -168,6 +168,8 @@ const KOR = {
 	SELL_DATE: '매도일',
 	BUY_COST: '매수단가',
 	SELL_COST: '매도단가',
+	INPUT_SEARCH: '종목명 또는 코드 입력',
+	SELECT_SEARCH: '추가할 종목 선택하세요.',
 
 	// DASHBOARD: {
 	// 	ADD: '종목 추가',

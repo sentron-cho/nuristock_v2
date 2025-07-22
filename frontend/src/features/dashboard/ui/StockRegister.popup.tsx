@@ -1,47 +1,51 @@
-import { TextFieldForm } from '@entites/TextFieldForm';
 import { Dialog } from '@entites/Dialog';
-import { useForm } from 'react-hook-form';
+import { FieldValues, useForm } from 'react-hook-form';
 import { ST } from '@shared/config/kor.lang';
 import { useSelectMarket } from '@features/market/api/market.api';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Flex from '@entites/Flex';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { sortBy } from 'lodash';
 import { ListForm, ListItemType } from '@entites/ListForm';
-import { IconClear } from '@entites/Icons';
 import { styled } from '@stitches/react';
 import clsx from 'clsx';
+import { SearchFieldForm } from '@entites/SearchFieldForm';
 
-const StyledFlex = styled(Flex, {
-	'.search': {
-		'.clear': {
-			marginRight: '-10px',
-			opacity: '0.7',
-			cursor: 'pointer',
-			display: 'none',
+const StyledDialog = styled(Dialog, {
+	overflow: 'hidden',
 
-			'&.active': {
-				display: 'block',
-			},
+	'.list-layer': {
+		height: '300px',
+	},
+
+	'.popup-contents': {
+		height: '100%',
+
+		'.list-form': {
+			height: 'unset',
+			flex: 1,
+			overflowY: 'auto',
 		},
 	},
 
-	'&.clear': {
-		'.tooltip.icon': {
-			marginRight: '20px',
+	'.MuiDialog-paperFullScreen': {
+		'.list-layer': {
+			height: 'calc(100% - 40px)',
+			// height: 'unset',
 		},
-	}
+	},
 });
 
 export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => void }) => {
-	const { showToast } = useCommonHook();
+	const { showToast, showAlert } = useCommonHook();
 
-	const forms = useForm({ defaultValues: { search: '' } });
+	const forms = useForm<FieldValues>({ defaultValues: { search: '' } });
+	const [selected, setSelected] = useState<string>();
 
 	const { data, isPending } = useSelectMarket();
 	const list = useMemo(() => {
 		const items = data?.value?.map((a) => ({ text: `${a?.name}(${a?.code})`, id: a?.code }));
-		return sortBy(items, ['label']);
+		return sortBy(items, ['text']);
 	}, [data]);
 
 	const search = forms?.watch('search');
@@ -49,12 +53,12 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 	const filtered = useMemo(() => {
 		// console.log(search);
 		if (search && search?.length > 0) {
-			const items = list?.filter((a) => a?.text.includes(search));
+			const items = list?.filter((a) => a?.text.includes(search))?.slice(0, 50);
 			// console.log(items);
 			return items;
 			// return list?.filter((a) => a?.label.includes(search));
 		} else {
-			return list; //?.slice(0, 100);
+			return list?.slice(0, 50);
 		}
 	}, [search, list]);
 
@@ -68,9 +72,14 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 				(values) => {
 					console.log('[success]', { values });
 
+					// 검색 필드 미 입력시
 					if (!values?.search) {
-						forms.setError('search', { message: '입력하세요' });
-						return;
+						return forms.setError('search', { message: ST.INPUT_SEARCH });
+					}
+
+					// 검색된 결과 미 선택시
+					if (!selected) {
+						return showAlert({ content: ST.SELECT_SEARCH });
 					}
 
 					showToast('registered');
@@ -85,45 +94,34 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 		}
 	};
 
-	// const onClearError = (id: string) => {
-	// 	forms?.clearErrors(id as never);
-	// };
-
 	const onSelect = (item: ListItemType) => {
 		console.log('[onSelect]', item);
+
+		setSelected(item.id as string);
 		forms?.setValue('search', item?.text);
 		forms?.clearErrors('search');
 	};
 
 	const onClear = () => {
-		forms?.setValue('search', '');
+		setSelected(undefined);
+		// forms?.setValue('search', '');
 	};
 
 	return (
-		<Dialog title={ST.STOCK_APPEND} onClose={onClickClose}>
+		<StyledDialog className='stock-register' title={ST.STOCK_APPEND} onClose={onClickClose}>
 			{!list?.length || (isPending && 'Loading...')}
 			{!isPending && (
-				<StyledFlex direction={'column'} gap={8} className={clsx({ clear: search?.length })}>
-					<TextFieldForm
-						className={clsx('search')}
-						size='small'
-						id='search'
-						formMethod={forms}
-						// onClearError={onClearError}
-						maxLength={10}
-						slotProps={{
-							input: {
-								endAdornment: (
-									<IconClear className={clsx('clear', { active: search?.length })} fontSize='small' onClick={onClear} />
-								),
-							},
-						}}
-					/>
-					<Flex height={'300px'}>
-						<ListForm height={'100%'} size='small' type='virtual' items={filtered} onSelect={onSelect} />
+				<Flex direction={'column'} gap={8} className={clsx('popup-contents')}>
+					<SearchFieldForm id={'search'} formMethod={forms} onClear={onClear} />
+					<Flex className='list-layer'>
+						<ListForm selected={selected} size='small' items={filtered} onSelect={onSelect} />
 					</Flex>
-				</StyledFlex>
+
+					{/* <Flex height={'300px'}>
+						<ListForm selected={selected} height={'100%'} size='small' type='virtual' items={filtered} onSelect={onSelect} />
+					</Flex> */}
+				</Flex>
 			)}
-		</Dialog>
+		</StyledDialog>
 	);
 };

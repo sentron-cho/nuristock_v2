@@ -29,7 +29,7 @@ const StyledDialog = styled(Dialog, {
   },
 
 	'.contents': {
-		minHeight: '100px',
+		minHeight: '60px',
     maxHeight: '400px',
 	},
 });
@@ -73,7 +73,7 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
         </DialogContent>
 
         <DialogActions>
-          <DialogButtons onOk={() => handleClose(true)} onCancel={() => handleClose(false)} okText={ST.OK} />
+          <DialogButtons onOk={() => handleClose(true)} okText={ST.OK} />
 				</DialogActions>
 			</StyledDialog>
 		</AlertContext.Provider>

@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import { withCommas } from '@shared/libs/utils.lib';
 import { StyledTextFieldForm } from './TextFieldForm.style';
 
-type TextFieldFormProps<T extends FieldValues = FieldValues> = TextFieldProps & {
+export type TextFieldFormProps<T extends FieldValues = FieldValues> = TextFieldProps & {
 	name?: keyof T;
 	formMethod?: UseFormReturn<T>;
 };

@@ -18,6 +18,12 @@ const StyledListForm = styled(Flex, {
 			height: '100%',
 			overflowX: 'hidden',
 			overflowY: 'auto',
+
+			'.active': {
+				'.MuiButtonBase-root': {
+					backgroundColor: '$gray300',
+				}
+			},
 		},
 
 		'.readonly': {
@@ -73,6 +79,7 @@ interface ListFormProps {
 	height?: number | string;
 	width?: number | string;
 	size?: 'small' | 'medium' | 'large';
+	selected?: string | number;
 	vitualProps?: {
 		itemSize?: number;
 	};
@@ -84,22 +91,24 @@ export const ListForm: React.FC<ListFormProps> = (props) => {
 	const { type = 'normal', size = 'medium', className = '', height = '100%', width = '100%' } = props;
 
 	return (
-		<StyledListForm className={clsx('list-form', size, className)} style={{ height: height, width: width }}>
+		<StyledListForm direction={'column'} className={clsx('list-form', size, className)} style={{ height: height, width: width }}>
 			{type === 'normal' && <StandardList {...props} size={size} />}
-			{type === 'virtual' && <VitualList {...props} size={size} height={height} width={width}  />}
+			{type === 'virtual' && <VitualList {...props} size={size} height={height} width={width} />}
 		</StyledListForm>
 	);
 };
 
 const StandardList: React.FC<ListFormProps> = (props) => {
-	const { items, onSelect } = props;
+	const { items, onSelect, selected } = props;
 	console.log({ items });
 
 	return (
 		<List className='list-box'>
 			{items?.map((item, index) => {
+				const active = selected?.toString() === item?.id?.toString();
+
 				return (
-					<ListItem key={`li-${index}`} disablePadding>
+					<ListItem className={clsx({ active })} key={`li-${index}`} disablePadding>
 						<ListItemButton className={clsx({ readonly: !onSelect })} onClick={() => onSelect?.(item)}>
 							<ListItemText primary={item?.text} />
 						</ListItemButton>
@@ -111,7 +120,7 @@ const StandardList: React.FC<ListFormProps> = (props) => {
 };
 
 const VitualList: React.FC<ListFormProps> = (props) => {
-	const { items, vitualProps, height, onSelect } = props;
+	const { items, vitualProps, height, onSelect, selected } = props;
 	const { itemSize = 40 } = vitualProps || {};
 
 	// const handleItemClick = (value: string) => {
@@ -126,8 +135,8 @@ const VitualList: React.FC<ListFormProps> = (props) => {
 			itemSize={itemSize}
 			itemCount={items?.length || 0}
 			overscanCount={5}
-			itemData={{ items, onSelect: onSelect }}
-			style={{height: height}}
+			itemData={{ items, onSelect, selected }}
+			style={{ height: height }}
 		>
 			{renderRow}
 		</FixedSizeList>
@@ -136,16 +145,11 @@ const VitualList: React.FC<ListFormProps> = (props) => {
 
 const renderRow = (props: ListChildComponentProps) => {
 	const { index, style, data } = props;
-	// console.log(data);
-
 	const item = (data?.items as ListItemType[])?.[index];
-
-	// const handleClick = () => {
-	// 	data?.onSelect?.(index);
-	// };
+	const active = data?.selected?.toString() === item?.id?.toString();
 
 	return (
-		<ListItem style={style} key={index} component='div' disablePadding>
+		<ListItem className={clsx({ active })} style={style} key={index} component='div' disablePadding>
 			<ListItemButton className={clsx({ readonly: !data?.onSelect })} onClick={() => data?.onSelect?.(item)}>
 				<ListItemText primary={item?.text} />
 			</ListItemButton>

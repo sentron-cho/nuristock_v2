@@ -1,3 +1,6 @@
+import { styled } from '@stitches/react';
+import { SvgIconProps } from '@mui/material';
+
 import IconDelete from '@mui/icons-material/Delete';
 import IconEdit from '@mui/icons-material/EditDocument';
 import IconLaunch from '@mui/icons-material/Launch';
@@ -9,8 +12,7 @@ import IconArrowUp from '@mui/icons-material/ArrowUpward';
 import IconArrowDown from '@mui/icons-material/ArrowDownward';
 import IconPlayArrow from '@mui/icons-material/PlayArrow';
 import IconClear from '@mui/icons-material/Clear';
-import { styled } from '@stitches/react';
-import { SvgIconProps } from '@mui/material';
+import IconSearch from '@mui/icons-material/Search';
 
 const StyledUp = styled(IconPlayArrow, {
 	color: '$plus',
@@ -45,5 +47,6 @@ export {
 	IconDown,
 	IconArrowUp,
 	IconArrowDown,
-	IconClear
+	IconClear,
+	IconSearch
 };
