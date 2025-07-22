@@ -57,6 +57,8 @@ RUN rm -rf node_modules package-lock.json \
   && npm install
 
 COPY . .
+
+RUN npm config set strict-ssl false
 RUN npm run build
 
 
