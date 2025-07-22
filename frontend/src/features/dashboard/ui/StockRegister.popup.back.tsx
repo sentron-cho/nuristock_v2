@@ -1,4 +1,3 @@
-import { TextFieldForm } from '@entites/TextFieldForm';
 import { Dialog } from '@entites/Dialog';
 import { useForm } from 'react-hook-form';
 import { ST } from '@shared/config/kor.lang';
@@ -6,8 +5,6 @@ import { useSelectMarket } from '@features/market/api/market.api';
 import { useEffect, useMemo, useState } from 'react';
 import Flex from '@entites/Flex';
 import { AutoCompleteForm } from '@entites/AutoComplete';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { sortBy } from 'lodash';
 
@@ -16,14 +13,6 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 
 	const forms = useForm({
 		defaultValues: { search: undefined },
-		// resolver: zodResolver(
-		// 	z.object({
-		// 		search: z.object({
-		// 			label: z.string().nonempty({message: '123'}),
-		// 			value: z.string('123'),
-		// 		}),
-		// 	})
-		// ),
 	});
 
 	const [search, setSearch] = useState<string>();
@@ -73,10 +62,6 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 		}
 	};
 
-	const onClearError = (id: string) => {
-		forms?.clearErrors(id as never);
-	};
-
 	return (
 		<Dialog title={ST.STOCK_APPEND} onClose={onClickClose}>
 			{!list?.length || (isPending && 'Loading...')}
@@ -86,14 +71,6 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 						id='search'
 						formMethod={forms}
 						options={filtered}
-						// getOptionLabel={(option) => {
-						// 	console.log(option);
-						// 	return option;
-						// }}
-						// onInput={(v) => {
-						// 	console.log({ value: v });
-						// 	setSearch(v);
-						// }}
 						onInput={(e) => {
 							console.log({ e });
 							setSearch((e?.target as HTMLInputElement).value);

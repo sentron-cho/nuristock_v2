@@ -12,8 +12,7 @@ import {
 	MyStockTreadType as TreadType,
 } from '@features/mystock/api/mystock.dto';
 import { useSelectMyStock } from '@features/mystock/api/mystock.api';
-import { MyStcokCardList, MyStockCard } from '@features/mystock/ui/MyStockCard.ui';
-import Flex from '@entites/Flex';
+import { MyStcokCardList } from '@features/mystock/ui/MyStockCard.ui';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { EID } from '@shared/config/default.config';
 import { ST } from '@shared/config/kor.lang';
