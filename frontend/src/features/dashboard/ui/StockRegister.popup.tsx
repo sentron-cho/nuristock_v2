@@ -114,7 +114,7 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 				<Flex direction={'column'} gap={8} className={clsx('popup-contents')}>
 					<SearchFieldForm id={'search'} formMethod={forms} onClear={onClear} />
 					<Flex className='list-layer'>
-						<ListForm selected={selected} size='small' items={filtered} onSelect={onSelect} />
+						<ListForm searchValue={search} selected={selected} size='small' items={filtered} onSelect={onSelect} />
 					</Flex>
 
 					{/* <Flex height={'300px'}>

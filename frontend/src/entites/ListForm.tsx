@@ -22,8 +22,12 @@ const StyledListForm = styled(Flex, {
 			'.active': {
 				'.MuiButtonBase-root': {
 					backgroundColor: '$gray300',
-				}
+				},
 			},
+
+			'.search-text': {
+				color: '$error'
+			}
 		},
 
 		'.readonly': {
@@ -84,6 +88,7 @@ interface ListFormProps {
 		itemSize?: number;
 	};
 	className?: string;
+	searchValue?: string;
 	onSelect?: (item: ListItemType) => void;
 }
 
@@ -91,16 +96,38 @@ export const ListForm: React.FC<ListFormProps> = (props) => {
 	const { type = 'normal', size = 'medium', className = '', height = '100%', width = '100%' } = props;
 
 	return (
-		<StyledListForm direction={'column'} className={clsx('list-form', size, className)} style={{ height: height, width: width }}>
+		<StyledListForm
+			direction={'column'}
+			className={clsx('list-form', size, className)}
+			style={{ height: height, width: width }}
+		>
 			{type === 'normal' && <StandardList {...props} size={size} />}
 			{type === 'virtual' && <VitualList {...props} size={size} height={height} width={width} />}
 		</StyledListForm>
 	);
 };
 
+const SearchText = ({ search, text }: { search?: string; text?: string }) => {
+	if (!text) return '';
+
+	const start = search ? text.indexOf(search) : -1;
+	if (start < 0 || !search) return text;
+
+	const end = start + search.length;
+
+	// console.log({ start, end, text });
+
+	return (
+		<>
+			<span>{text?.slice(0, start)}</span>
+			<span className='search-text'>{text?.slice(start, end)}</span>
+			<span>{text?.slice(end)}</span>
+		</>
+	);
+};
+
 const StandardList: React.FC<ListFormProps> = (props) => {
-	const { items, onSelect, selected } = props;
-	console.log({ items });
+	const { items, onSelect, selected, searchValue } = props;
 
 	return (
 		<List className='list-box'>
@@ -110,7 +137,7 @@ const StandardList: React.FC<ListFormProps> = (props) => {
 				return (
 					<ListItem className={clsx({ active })} key={`li-${index}`} disablePadding>
 						<ListItemButton className={clsx({ readonly: !onSelect })} onClick={() => onSelect?.(item)}>
-							<ListItemText primary={item?.text} />
+							<ListItemText primary={<SearchText search={searchValue} text={item?.text} />} />
 						</ListItemButton>
 					</ListItem>
 				);
