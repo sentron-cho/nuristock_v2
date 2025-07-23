@@ -88,7 +88,7 @@ RUN chown nginx:nginx /etc/nginx/conf.d/default.conf
 # RUN chown nginx:nginx /user/lib/nginx/modules/
 # RUN chown nginx:nginx /user/lib/nginx/modules/*
 RUN chown nginx:nginx /var/log/nginx/
-RUN chown nginx:nginx /var/cache/nginx/proxy_temp
+# RUN chown nginx:nginx /var/cache/nginx/proxy_temp
 # RUN chown nginx:nginx /user/share/nginx/
 
 RUN chown 750 /etc/nginx/
