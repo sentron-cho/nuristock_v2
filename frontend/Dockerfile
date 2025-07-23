@@ -70,6 +70,10 @@ FROM nginx:alpine as dev
 
 # 🔧 nginx 캐시 디렉토리 생성 + 권한 부여 (중요!)
 RUN mkdir -p /var/cache/nginx/client_temp && \
+    mkdir -p /var/cache/nginx/proxy_temp && \
+    chown -R nginx:nginx /var/cache/nginx
+
+RUN mkdir -p /var/cache/nginx/proxy_temp && \
     chown -R nginx:nginx /var/cache/nginx
     
 # conf.d 디렉토리 제거 또는 깨끗이 비우기
