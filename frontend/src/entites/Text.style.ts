@@ -1,6 +1,5 @@
 import { Typography } from '@mui/material';
 import { styled } from '@styles/stitches.config';
-import Flex from './Flex';
 
 export const StyledText = styled(Typography, {
 	'&.xxs': {
