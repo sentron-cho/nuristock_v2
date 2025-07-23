@@ -84,6 +84,7 @@ COPY --from=build /app/dist /usr/share/nginx/html
 # Set enviroment variable from nginx config
 RUN chown nginx:nginx /etc/nginx/
 RUN chown nginx:nginx /etc/nginx/*
+
 RUN chown nginx:nginx /etc/nginx/conf.d/default.conf
 # RUN chown nginx:nginx /user/lib/nginx/modules/
 # RUN chown nginx:nginx /user/lib/nginx/modules/*
@@ -98,7 +99,7 @@ RUN chown 750 /etc/nginx/conf.d/default.conf
 # RUN chown 750 /user/lib/nginx/modules/*
 RUN chown 750 /var/log/nginx/
 RUN chown 750 /var/log/nginx/*
-RUN chown 750 /var/cache/nginx/proxy_temp
+# RUN chown 750 /var/cache/nginx/proxy_temp
 # RUN chown 750 /user/share/nginx/
 
 EXPOSE 80
