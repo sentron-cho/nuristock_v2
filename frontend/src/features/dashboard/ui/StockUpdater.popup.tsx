@@ -1,4 +1,4 @@
-import { TextFieldForm } from '@entites/TextFieldForm';
+import { TextInputForm } from '@entites/TextInputForm';
 import { Dialog } from '@entites/Dialog';
 import { useForm } from 'react-hook-form';
 import { ST } from '@shared/config/kor.lang';
@@ -37,7 +37,7 @@ export const StockUpdaterPopup = ({ item, onClose }: { item?: DataType; onClose:
 
 	return (
 		<Dialog title={ST.UPDATE} onClose={onClickClose}>
-			<TextFieldForm
+			<TextInputForm
 				label={ST.STOCK_TITLE}
 				size='small'
 				id='title'

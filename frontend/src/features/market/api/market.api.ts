@@ -1,4 +1,4 @@
-import { MyStockResponse } from './market.dto';
+import { MarketResponse } from './market.dto';
 import { useQuery } from '@tanstack/react-query';
 import { API } from '@shared/config/url.enum';
 import axios from 'axios';
@@ -8,7 +8,7 @@ import axios from 'axios';
 export const useSelectMarket = (name?: string) => {
 	return useQuery({
 		queryKey: ['MYMARKET-R01', name],
-		queryFn: async (): Promise<MyStockResponse> => {
+		queryFn: async (): Promise<MarketResponse> => {
 			const res = await axios.get(API.MARKET, { params: { name } });
 			return res?.data;
 		},

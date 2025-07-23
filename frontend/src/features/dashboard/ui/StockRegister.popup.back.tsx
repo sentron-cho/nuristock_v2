@@ -78,7 +78,7 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 						label='종목 선택'
 						placeholder='종목명을 입력하세요'
 					/>
-					{/* <TextFieldForm size='small' id='textInput' formMethod={forms} onClearError={onClearError} maxLength={10} /> */}
+					{/* <TextInputForm size='small' id='textInput' formMethod={forms} onClearError={onClearError} maxLength={10} /> */}
 				</Flex>
 			)}
 		</Dialog>

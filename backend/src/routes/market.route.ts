@@ -4,12 +4,11 @@ import { FastifyInstance } from "fastify";
 const marketRoute = (fastify: FastifyInstance) => {
   fastify.get(URL.MARKET.ROOT, async (req, reply) => {
     console.log(`[API:CALL]`, { url: `${URL.MYSTOCK.ROOT}`, query: req.query });
-    const { code } = req.query as { code?: string };
+    // const { code } = req.query as { code?: string };
 
     try {
-      const list = await fastify.db.query(`SELECT code, name FROM market`);
+      const list = await fastify.db.query(`SELECT code, name, type, state FROM market`);
       console.log("[DB Select]", { keeps: list?.length });
-
 
       return {
         code: 200,

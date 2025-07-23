@@ -4,14 +4,14 @@ import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import { Tooltip } from '@entites/Tooltip';
 import clsx from 'clsx';
 import { withCommas } from '@shared/libs/utils.lib';
-import { StyledTextFieldForm } from './TextFieldForm.style';
+import { StyledTextInputForm } from './TextInputForm.style';
 
-export type TextFieldFormProps<T extends FieldValues = FieldValues> = TextFieldProps & {
+export type TextInputFormProps<T extends FieldValues = FieldValues> = TextInputProps & {
 	name?: keyof T;
 	formMethod?: UseFormReturn<T>;
 };
 
-export const TextFieldForm = <T extends FieldValues = FieldValues>(props: TextFieldFormProps<T>) => {
+export const TextInputForm = <T extends FieldValues = FieldValues>(props: TextInputFormProps<T>) => {
 	const isHookFormMode = 'formMethod' in props;
 	const id = useMemo(() => (props?.name || props.id) as Path<T>, [props?.name, props.id]);
 
@@ -43,7 +43,7 @@ export const TextFieldForm = <T extends FieldValues = FieldValues>(props: TextFi
 	}
 };
 
-export interface TextFieldProps extends Omit<MuiTextFieldProps, 'onChange'> {
+export interface TextInputProps extends Omit<MuiTextFieldProps, 'onChange'> {
 	id: string;
 	label?: string;
 	placeholder?: string;
@@ -64,7 +64,7 @@ export interface TextFieldProps extends Omit<MuiTextFieldProps, 'onChange'> {
 	onClearError?: (id: string) => void;
 }
 
-const TextField: React.FC<TextFieldProps> = ({
+const TextField: React.FC<TextInputProps> = ({
 	id,
 	value,
 	onChange,
@@ -94,8 +94,8 @@ const TextField: React.FC<TextFieldProps> = ({
 	};
 
 	return (
-		<StyledTextFieldForm
-			className={clsx('text-field', { error: isError, readonly: readOnly, disabled })}
+		<StyledTextInputForm
+			className={clsx('text-input', { error: isError, readonly: readOnly, disabled })}
 			fullWidth
 			error={isError}
 			disabled={disabled}
@@ -134,6 +134,6 @@ const TextField: React.FC<TextFieldProps> = ({
 			/>
 			{message && <Tooltip message={message} color={error ? 'error' : 'action'} />}
 			{innerError && <Tooltip message={innerError} color={'error'} />}
-		</StyledTextFieldForm>
+		</StyledTextInputForm>
 	);
 };

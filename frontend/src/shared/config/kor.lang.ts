@@ -110,6 +110,8 @@ const KOR = {
 	UP_SORT: '오름차순',
 	DOWN_SORT: '내림차순',
 	ECOST: '등락',
+	KOSPI: '코스피',
+	KOSDAQ: '코스닥',
 
 	NO_SERVICE: '서비스 준비중',
 
@@ -170,6 +172,7 @@ const KOR = {
 	SELL_COST: '매도단가',
 	INPUT_SEARCH: '종목명 또는 코드 입력',
 	SELECT_SEARCH: '추가할 종목 선택하세요.',
+	MARKET: '거래소',
 
 	// DASHBOARD: {
 	// 	ADD: '종목 추가',

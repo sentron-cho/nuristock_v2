@@ -1,8 +1,8 @@
 import { FormControl } from '@mui/material';
 import { styled } from '@styles/stitches.config';
 
-export const StyledTextFieldForm = styled(FormControl, {
-  '&.text-field': {
+export const StyledTextInputForm = styled(FormControl, {
+  '&.text-input': {
     '&.error': {
       '.MuiOutlinedInput-notchedOutline': {
         borderColor: '$red !important',

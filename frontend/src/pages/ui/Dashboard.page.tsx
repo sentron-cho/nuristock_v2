@@ -41,7 +41,7 @@ const DashboardPage = () => {
 	const [popup, setPopup] = useState<PopupType>();
 	const [sort, setSort] = useState<string>();
 
-	const { data } = useSelectDashboard();
+	const { data, refetch } = useSelectDashboard();
 
 	const titleOptions = useMemo(() => {
 		return SelectOptions();
@@ -114,6 +114,7 @@ const DashboardPage = () => {
 				onClose: (isOk: boolean) => {
 					console.log(isOk);
 					setPopup(undefined);
+					isOk && refetch();
 				},
 			});
 		} else if (eid === EID.EDIT) {

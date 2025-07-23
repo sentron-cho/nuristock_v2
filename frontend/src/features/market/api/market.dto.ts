@@ -1,10 +1,12 @@
-export interface MyStockItemType {
+export interface MarketItemType {
 	code: string;
 	name: string;
+	state?: string;
+	type?: string;
 }
 
-export interface MyStockResponse {
-	value?: MyStockItemType[];
+export interface MarketResponse {
+	value?: MarketItemType[];
 }
 
 

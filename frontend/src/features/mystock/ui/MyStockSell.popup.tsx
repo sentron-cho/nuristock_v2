@@ -1,4 +1,4 @@
-import { TextFieldForm } from '@entites/TextFieldForm';
+import { TextInputForm } from '@entites/TextInputForm';
 import { Dialog } from '@entites/Dialog';
 import { FieldValues, useForm, UseFormReturn } from 'react-hook-form';
 import { MyStockTreadType as TreadType } from '../api/mystock.dto';
@@ -104,7 +104,7 @@ const ContentsForm = <T extends FieldValues>({
 				formMethod={formMethod}
 			/>
 			<Flex direction={'row'} gap={10}>
-				<TextFieldForm
+				<TextInputForm
 					id={`${type}Cost`}
 					disabled={isBuy}
 					focused={!isBuy}
@@ -114,7 +114,7 @@ const ContentsForm = <T extends FieldValues>({
 					align='right'
 					formMethod={formMethod}
 				/>
-				<TextFieldForm
+				<TextInputForm
 					id={`${type}Count`}
 					disabled={isBuy}
 					focused={!isBuy}

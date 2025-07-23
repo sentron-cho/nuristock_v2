@@ -1,9 +1,11 @@
+import { useToast } from '@layouts/hooks/toast.hook';
 import { MyStockResponse } from './mystock.dto';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { API } from '@shared/config/url.enum';
 import axios from 'axios';
-// import { mock as mockData } from './mock/mystock.list';
-// import { mock as mockSise } from './mock/mystock.sise';
+import { MarketItemType } from '@features/market/api/market.dto';
+import { ST } from '@shared/config/kor.lang';
+import { FieldValues } from 'react-hook-form';
 
 export const useSelectMyStock = (code: string) => {
 	return useSuspenseQuery({
@@ -12,6 +14,22 @@ export const useSelectMyStock = (code: string) => {
 			const main = await axios.get(API.MYSTOCK, { params: { code } });
 			const sise = await axios.get(API.MYSTOCK_SISE, { params: { code } });
 			return { ...(main.data || {}), sise: { ...sise?.data?.value } };
+		},
+	});
+};
+
+export const useCreateMyStock = () => {
+	const { toast } = useToast();
+
+	return useMutation({
+		mutationKey: ['MYSTOCK-C01'],
+		mutationFn: async (data: MarketItemType) => {
+			return await axios.post(API.MYSTOCK, data);
+		},
+		onError: (error) => {
+			console.log(error);
+			const err = error as FieldValues
+			toast('error', err?.response?.data?.message || ST.ERROR_PROBLEM);
 		},
 	});
 };

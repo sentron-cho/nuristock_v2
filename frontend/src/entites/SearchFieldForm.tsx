@@ -1,5 +1,5 @@
 import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
-import { TextFieldForm, TextFieldFormProps } from './TextFieldForm';
+import { TextInputForm, TextInputFormProps } from './TextInputForm';
 import clsx from 'clsx';
 import { useMemo } from 'react';
 import { IconClear, IconSearch } from './Icons';
@@ -40,7 +40,7 @@ const StyledFlex = styled(Flex, {
 	},
 });
 
-type SearchFieldFormProps<T extends FieldValues = FieldValues> = TextFieldFormProps & {
+type SearchFieldFormProps<T extends FieldValues = FieldValues> = TextInputFormProps & {
 	name?: keyof T;
 	formMethod?: UseFormReturn<T>;
 	onClear?: () => void;
@@ -49,20 +49,16 @@ type SearchFieldFormProps<T extends FieldValues = FieldValues> = TextFieldFormPr
 export const SearchFieldForm = <T extends FieldValues = FieldValues>(props: SearchFieldFormProps<T>) => {
 	const id = useMemo(() => (props?.name || props.id) as Path<T>, [props?.name, props.id]);
 	const searchValue = props?.formMethod?.getValues(id) || props?.value;
-
-	console.log(searchValue);
-
 	const error = props?.error || props?.formMethod?.getFieldState(id)?.error;
 
 	const onClear = () => {
-		// props?.formMethod?.clearErrors(id);
 		props?.formMethod?.resetField(id);
 		props?.onClear?.();
 	};
 
 	return (
 		<StyledFlex className={clsx('search-field', { error })}>
-			<TextFieldForm
+			<TextInputForm
 				{...props}
 				className={clsx('search')}
 				size='small'

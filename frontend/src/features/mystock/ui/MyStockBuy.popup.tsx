@@ -1,4 +1,4 @@
-import { TextFieldForm } from '@entites/TextFieldForm';
+import { TextInputForm } from '@entites/TextInputForm';
 import { Dialog } from '@entites/Dialog';
 import { useForm } from 'react-hook-form';
 import { MyStockTreadType as TreadType } from '../api/mystock.dto';
@@ -60,7 +60,7 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: TreadType; onClose: 
 		<Dialog title={ST.BUY} onClose={onClickClose}>
 			<StyledForm direction={'column'} gap={20}>
 				<DatePickerForm id='date' label={ST.BUY_DATE} placeholder={ST.IN_DATE} formMethod={forms} align='right' />
-				<TextFieldForm
+				<TextInputForm
 					id='cost'
 					label={ST.BUY_COST}
 					placeholder={ST.IN_NUMBER}
@@ -71,7 +71,7 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: TreadType; onClose: 
 					focused
 					align='right'
 				/>
-				<TextFieldForm
+				<TextInputForm
 					id='count'
 					label={ST.STOCK_COUNT}
 					placeholder={ST.IN_NUMBER}
