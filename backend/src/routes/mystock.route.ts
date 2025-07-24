@@ -11,14 +11,9 @@ const mystockRoute = (fastify: FastifyInstance) => {
 
     try {
       const mystocks = await fastify.db.query(`SELECT * FROM dashboard`);
-      const stock = await fastify.db.query(`SELECT stockid, name FROM dashboard WHERE code='${code}'`);
-      // console.log("[DB Select]", { stock, mystocks: mystocks?.length });
-
-      const { stockid } = stock?.[0];
-      const keeps = await fastify.db.query(`SELECT * FROM keeps WHERE stockid='${stockid}'`);
-      const sells = await fastify.db.query(`SELECT * FROM sells WHERE stockid='${stockid}'`);
-
-      console.log("[DB Select]", { keeps: keeps?.length, sells: sells?.length });
+      const stock = await fastify.db.query(`SELECT code, name FROM dashboard WHERE code='${code}'`);
+      const keeps = await fastify.db.query(`SELECT * FROM keeps WHERE code='${code}'`);
+      const sells = await fastify.db.query(`SELECT * FROM sells WHERE code='${code}'`);
 
       return {
         code: 200,
@@ -43,8 +38,6 @@ const mystockRoute = (fastify: FastifyInstance) => {
       const sise = await fastify.db.query(
         `SELECT code, stime as time, sise, updown  FROM market WHERE code='${code}';`
       );
-      console.log("[DB:SELECT]", { sise });
-
       return {
         code: 200,
         value: {
@@ -60,13 +53,10 @@ const mystockRoute = (fastify: FastifyInstance) => {
   fastify.post(URL.MYSTOCK.ROOT, async (req, reply) => {
     console.log(`[API:CALL]`, { url: `${URL.MYSTOCK.ROOT}`, body: req.body });
     const { code, name } = req.body as Record<string, string>;
-    console.log({ code, name });
 
     try {
       const res = await fastify.db.query(`INSERT INTO dashboard (code, name) VALUES ('${code}', '${name}');`);
-      console.log("[DB:INSERT]", { res });
-
-      reply.status(200).send({ value: 0 });
+      reply.status(200).send({ value: code });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.ROOT }));
     }
@@ -76,13 +66,10 @@ const mystockRoute = (fastify: FastifyInstance) => {
   fastify.delete(URL.MYSTOCK.ROOT, async (req, reply) => {
     console.log(`[API:CALL]`, { url: `${URL.MYSTOCK.ROOT}`, query: req.query });
     const { code, name } = req.query as Record<string, string>;
-    console.log({ code, name });
 
     try {
       const res = await fastify.db.query(`DELETE FROM dashboard WHERE code='${code}';`);
-      console.log("[DB:DELETE]", { res });
-
-      reply.status(200).send({ value: 0 });
+      reply.status(200).send({ value: code });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.ROOT }));
     }
@@ -92,13 +79,10 @@ const mystockRoute = (fastify: FastifyInstance) => {
   fastify.put(URL.MYSTOCK.ROOT, async (req, reply) => {
     console.log(`[API:CALL]`, { url: `${URL.MYSTOCK.ROOT}`, query: req.body });
     const { code, name } = req.body as Record<string, string>;
-    console.log({ code, name });
 
     try {
       const res = await fastify.db.query(`UPDATE dashboard SET name = '${name}' WHERE code = '${code}';`);
-      console.log("[DB:UPDATE]", { res });
-
-      reply.status(200).send({ value: 0 });
+      reply.status(200).send({ value: code });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.ROOT }));
     }
