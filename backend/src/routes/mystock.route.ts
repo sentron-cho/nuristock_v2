@@ -14,6 +14,9 @@ const mystockRoute = (fastify: FastifyInstance) => {
       const stock = await fastify.db.query(`SELECT code, name FROM dashboard WHERE code='${code}'`);
       const keeps = await fastify.db.query(`SELECT * FROM keeps WHERE code='${code}'`);
       const sells = await fastify.db.query(`SELECT * FROM sells WHERE code='${code}'`);
+      const sise = await fastify.db.query(
+        `SELECT code, stime as time, sise, updown  FROM market WHERE code='${code}';`
+      );
 
       return {
         code: 200,
@@ -23,31 +26,32 @@ const mystockRoute = (fastify: FastifyInstance) => {
         keeps: keeps,
         sells: sells,
         stocks: mystocks,
+        sise: { ...(sise?.[0] || {}) },
       };
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.ROOT }));
     }
   });
 
-  // 보유종목 시세 조회
-  fastify.get(URL.MYSTOCK.SISE, async (req, reply) => {
-    console.log(`[API:CALL]`, { url: `${URL.MYSTOCK.SISE}`, req: req.headers });
-    const { code } = req.query as { code?: string };
+  // // 보유종목 시세 조회
+  // fastify.get(URL.MYSTOCK.SISE, async (req, reply) => {
+  //   console.log(`[API:CALL]`, { url: `${URL.MYSTOCK.SISE}`, req: req.headers });
+  //   const { code } = req.query as { code?: string };
 
-    try {
-      const sise = await fastify.db.query(
-        `SELECT code, stime as time, sise, updown  FROM market WHERE code='${code}';`
-      );
-      return {
-        code: 200,
-        value: {
-          ...(sise?.[0] || {}),
-        },
-      };
-    } catch (error) {
-      reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.ROOT }));
-    }
-  });
+  //   try {
+  //     const sise = await fastify.db.query(
+  //       `SELECT code, stime as time, sise, updown  FROM market WHERE code='${code}';`
+  //     );
+  //     return {
+  //       code: 200,
+  //       value: {
+  //         ...(sise?.[0] || {}),
+  //       },
+  //     };
+  //   } catch (error) {
+  //     reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.ROOT }));
+  //   }
+  // });
 
   // 보유종목 추가
   fastify.post(URL.MYSTOCK.ROOT, async (req, reply) => {

@@ -9,8 +9,8 @@ export const useSelectMyStock = (code: string) => {
 		queryKey: ['MYSTOCK-R01', code],
 		queryFn: async (): Promise<MyStockResponse> => {
 			const main = await api.get(API.MYSTOCK, { params: { code } });
-			const sise = await api.get(API.MYSTOCK_SISE, { params: { code } });
-			return { ...(main.data || {}), sise: { ...sise?.data?.value } };
+			// const sise = await api.get(API.MYSTOCK_SISE, { params: { code } });
+			return main.data;
 		},
 	});
 };
