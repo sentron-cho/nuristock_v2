@@ -9,7 +9,7 @@ import {
 	DashboardItemType as DataType,
 	DashboardSiseItemType as SiseItemType
 } from '@features/dashboard/api/dashboard.dto';
-import { useSelectDashboard } from '@features/dashboard/api/dashboard.api';
+import { useDeleteDashboard, useSelectDashboard } from '@features/dashboard/api/dashboard.api';
 import { DashboardCard } from '@features/dashboard/ui/DashboardCard.ui';
 import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
@@ -23,7 +23,6 @@ import { StockUpdaterPopup } from '@features/dashboard/ui/StockUpdater.popup';
 import { PopupType } from '@entites/Dialog';
 import { sortBy, reverse } from 'lodash';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
-import { useDeleteMyStock } from '@features/mystock/api/mystock.api';
 import { StockSiseUpdaterPopup } from '@features/dashboard/ui/StockSiseUpdater.popup';
 
 const StyledPage = styled(PageContainer, {
@@ -42,7 +41,7 @@ const DashboardPage = () => {
 	const [sort, setSort] = useState<string>();
 
 	const { data, refetch } = useSelectDashboard();
-	const { mutateAsync: deleteData } = useDeleteMyStock()
+	const { mutateAsync: deleteData } = useDeleteDashboard()
 
 	const titleOptions = useMemo(() => {
 		return SelectOptions();

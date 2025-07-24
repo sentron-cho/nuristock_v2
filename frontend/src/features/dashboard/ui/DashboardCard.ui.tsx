@@ -54,8 +54,6 @@ export const DashboardCard = ({
 		};
 	}, [siseData]);
 
-	console.log({ sise });
-
 	const values = useMemo(() => {
 		const buyAvg = data?.ecount ? Math.round(data.sprice / data.ecount) : 0;
 		const buyText = data?.ecount ? `${withCommas(data.ecount)} x ${withCommas(buyAvg)}` : '';

@@ -11,7 +11,7 @@ import { styled } from '@stitches/react';
 import clsx from 'clsx';
 import { SearchFieldForm } from '@entites/SearchFieldForm';
 import { MarketItemType } from '@features/market/api/market.dto';
-import { useCreateMyStock } from '@features/mystock/api/mystock.api';
+import { useCreateDashboard } from '@features/dashboard/api/dashboard.api';
 import { IconEdit } from '@entites/Icons';
 import { FormField } from '@entites/FormField';
 import { TextInputForm } from '@entites/TextInputForm';
@@ -59,7 +59,7 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 	const [selected, setSelected] = useState<MarketItemType>();
 
 	const { data, isPending } = useSelectMarket();
-	const { mutateAsync: createData } = useCreateMyStock();
+	const { mutateAsync: createData } = useCreateDashboard();
 
 	const list = useMemo(() => {
 		const items = data?.value?.map((a) => ({ text: `${a?.name}(${a?.code})`, id: a?.code }));
@@ -81,8 +81,6 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 		if (isOk) {
 			forms?.handleSubmit(
 				async (values) => {
-					console.log('[success]', { values });
-
 					// 검색 필드 미 입력시
 					if (!values?.search) {
 						return forms.setError('search', { message: ST.INPUT_SEARCH });
@@ -97,9 +95,9 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 					showToast('registered');
 					onClose?.(isOk);
 				},
-				(error) => {
-					console.error('[error]', { error });
-				}
+				// (error) => {
+				// 	console.error('[error]', { error });
+				// }
 			)();
 		} else {
 			onClose(false);

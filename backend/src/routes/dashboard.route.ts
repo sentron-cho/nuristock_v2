@@ -36,7 +36,46 @@ const dashboardRoute = (fastify: FastifyInstance) => {
       }
 
     } catch (error) {
-      reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.ROOT }));
+      reply.status(500).send(withError(error as SqlError, { tag: URL.DASHBOARD.ROOT }));
+    }
+  });
+
+  // 보유종목 추가
+  fastify.post(URL.DASHBOARD.ROOT, async (req, reply) => {
+    console.log(`[API:CALL]`, { url: `${URL.DASHBOARD.ROOT}`, body: req.body });
+    const { code, name } = req.body as Record<string, string>;
+
+    try {
+      const res = await fastify.db.query(`INSERT INTO dashboard (code, name) VALUES ('${code}', '${name}');`);
+      reply.status(200).send({ value: code });
+    } catch (error) {
+      reply.status(500).send(withError(error as SqlError, { tag: URL.DASHBOARD.ROOT }));
+    }
+  });
+
+  // 보유종목 삭제
+  fastify.delete(URL.DASHBOARD.ROOT, async (req, reply) => {
+    console.log(`[API:CALL]`, { url: `${URL.DASHBOARD.ROOT}`, query: req.query });
+    const { code, name } = req.query as Record<string, string>;
+
+    try {
+      const res = await fastify.db.query(`DELETE FROM dashboard WHERE code='${code}';`);
+      reply.status(200).send({ value: code });
+    } catch (error) {
+      reply.status(500).send(withError(error as SqlError, { tag: URL.DASHBOARD.ROOT }));
+    }
+  });
+
+  // 보유종목 수정
+  fastify.put(URL.DASHBOARD.ROOT, async (req, reply) => {
+    console.log(`[API:CALL]`, { url: `${URL.DASHBOARD.ROOT}`, query: req.body });
+    const { code, name } = req.body as Record<string, string>;
+
+    try {
+      const res = await fastify.db.query(`UPDATE dashboard SET name = '${name}' WHERE code = '${code}';`);
+      reply.status(200).send({ value: code });
+    } catch (error) {
+      reply.status(500).send(withError(error as SqlError, { tag: URL.DASHBOARD.ROOT }));
     }
   });
 

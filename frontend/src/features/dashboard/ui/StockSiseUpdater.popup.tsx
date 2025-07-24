@@ -34,9 +34,6 @@ export const StockSiseUpdaterPopup = ({ item, onClose }: { item?: DataType; onCl
 	const { mutateAsync: updateData } = useUpdateMarketSise();
 
 	const onClickClose = (isOk: boolean) => {
-		console.log(forms?.getValues());
-
-		// if (!forms?.formState?.isDirty) return onClose(false);
 		if (!isOk) return onClose(false);
 
 		forms?.handleSubmit(
@@ -57,15 +54,13 @@ export const StockSiseUpdaterPopup = ({ item, onClose }: { item?: DataType; onCl
 					erate: Number(((ecost / sise) * 100).toFixed(2)),
 				};
 
-				console.log(params);
-
 				params && (await updateData(params));
 				showToast('updated');
 				onClose?.(isOk);
 			},
-			(error) => {
-				console.log('[error]', { error });
-			}
+			// (error) => {
+			// 	console.log('[error]', { error });
+			// }
 		)();
 	};
 

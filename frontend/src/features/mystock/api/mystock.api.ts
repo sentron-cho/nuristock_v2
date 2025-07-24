@@ -15,29 +15,29 @@ export const useSelectMyStock = (code: string) => {
 	});
 };
 
-export const useCreateMyStock = () => {
-	return useMutation({
-		mutationKey: ['MYSTOCK-C01'],
-		mutationFn: async (data: MarketItemType) => {
-			return await api.post(API.MYSTOCK, data);
-		},
-	});
-};
+// export const useCreateMyStock = () => {
+// 	return useMutation({
+// 		mutationKey: ['MYSTOCK-C01'],
+// 		mutationFn: async (data: MarketItemType) => {
+// 			return await api.post(API.MYSTOCK, data);
+// 		},
+// 	});
+// };
 
-export const useDeleteMyStock = () => {
-	return useMutation({
-		mutationKey: ['MYSTOCK-D01'],
-		mutationFn: async (code: string) => {
-			return await api.delete(API.MYSTOCK, { params: { code } });
-		},
-	});
-};
+// export const useDeleteMyStock = () => {
+// 	return useMutation({
+// 		mutationKey: ['MYSTOCK-D01'],
+// 		mutationFn: async (code: string) => {
+// 			return await api.delete(API.MYSTOCK, { params: { code } });
+// 		},
+// 	});
+// };
 
-export const useUpdateMyStock = () => {
-	return useMutation({
-		mutationKey: ['MYSTOCK-U01'],
-		mutationFn: async (data: MarketItemType) => {
-			return await api.put(API.MYSTOCK, data);
-		},
-	});
-};
+// export const useUpdateMyStock = () => {
+// 	return useMutation({
+// 		mutationKey: ['MYSTOCK-U01'],
+// 		mutationFn: async (data: MarketItemType) => {
+// 			return await api.put(API.MYSTOCK, data);
+// 		},
+// 	});
+// };

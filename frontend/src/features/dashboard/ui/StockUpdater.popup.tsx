@@ -5,9 +5,8 @@ import { ST } from '@shared/config/kor.lang';
 import { DashboardItemType as DataType } from '@features/dashboard/api/dashboard.dto';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useUpdateMyStock } from '@features/mystock/api/mystock.api';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
-import { useMemo } from 'react';
+import { useUpdateDashboard } from '../api/dashboard.api';
 
 export const StockUpdaterPopup = ({ item, onClose }: { item?: DataType; onClose: (isOk: boolean) => void }) => {
 	const { showToast } = useCommonHook();
@@ -23,16 +22,9 @@ export const StockUpdaterPopup = ({ item, onClose }: { item?: DataType; onClose:
 		shouldFocusError: true,
 	});
 
-	useMemo(() => {
-		
-	}, [])
-
-	const { mutateAsync: updateData } = useUpdateMyStock();
+	const { mutateAsync: updateData } = useUpdateDashboard();
 
 	const onClickClose = (isOk: boolean) => {
-		console.log(forms?.getValues());
-
-		// if (!forms?.formState?.isDirty) return onClose(false);
 		if (!isOk) return onClose(false);
 
 		forms?.handleSubmit(
