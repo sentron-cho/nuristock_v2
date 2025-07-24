@@ -79,11 +79,13 @@ const TextField: React.FC<TextInputProps> = ({
 	...props
 }) => {
 	const [innerError, setInnerError] = useState<string>();
+	const [isComposing, setIsComposing] = useState(false);
 
 	const isError = useMemo(() => error || !!innerError, [error, innerError]);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		let value = e?.target?.value?.toString();
+		console.log({ value });
 
 		if (withComma) {
 			value = withCommas(withCommas(value, true))?.toString() || value;
@@ -112,11 +114,15 @@ const TextField: React.FC<TextInputProps> = ({
 						readOnly: readOnly,
 						disabled: disabled,
 						...(props?.slotProps?.input || {}),
-						onFocus: (e) => {
-							if (!readOnly) e.target.select();
-						},
 					},
 				}}
+				onFocus={(e) => {
+					if (!readOnly && !isComposing) {
+						setTimeout(() => e.target.select(), 0); // IME 처리 후 실행
+					}
+				}}
+				onCompositionStart={() => setIsComposing(true)}
+				onCompositionEnd={() => setIsComposing(false)}
 				fullWidth
 				onBeforeInput={(e) => {
 					const target = e.target as HTMLInputElement;

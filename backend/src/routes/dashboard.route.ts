@@ -9,7 +9,7 @@ function safeStringify(obj: any) {
 
 const dashboardRoute = (fastify: FastifyInstance) => {
   fastify.get(URL.DASHBOARD.ROOT, async (req, reply) => {
-    console.log(`[API:CALL]`, { url: `${URL.DASHBOARD.ROOT}` });
+    console.log(`[API:CALL]`, { url: `${URL.DASHBOARD.ROOT}`, req: req.hostname });
 
     try {
       const result = await fastify.db.query("SELECT * FROM dashboard");

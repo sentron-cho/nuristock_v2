@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
 import { styled } from '@styles/stitches.config';
-// import { StatsForm } from '@features/StatsForm.ui';
 import {
 	DashboardSummaryData as SummaryData,
 	DashboardTitleOptions as SelectOptions,
@@ -9,7 +8,6 @@ import {
 import {
 	DashboardItemType,
 	DashboardItemType as DataType,
-	// DashboardResponse as ResponseType,
 } from '@features/dashboard/api/dashboard.dto';
 import { useSelectDashboard } from '@features/dashboard/api/dashboard.api';
 import { DashboardCard } from '@features/dashboard/ui/DashboardCard.ui';
@@ -25,6 +23,7 @@ import { StockUpdaterPopup } from '@features/dashboard/ui/StockUpdater.popup';
 import { PopupType } from '@entites/Dialog';
 import { sortBy, reverse } from 'lodash';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
+import { useDeleteMyStock } from '@features/mystock/api/mystock.api';
 
 const StyledPage = styled(PageContainer, {
 	'.card-list': {
@@ -42,6 +41,7 @@ const DashboardPage = () => {
 	const [sort, setSort] = useState<string>();
 
 	const { data, refetch } = useSelectDashboard();
+	const { mutateAsync: deleteData } = useDeleteMyStock()
 
 	const titleOptions = useMemo(() => {
 		return SelectOptions();
@@ -69,12 +69,16 @@ const DashboardPage = () => {
 	);
 
 	const summaryData = useMemo(() => {
-		const captal = (list as DashboardItemType[])?.map(a => a.kprice)?.reduce((a, b) => a + b, 0);
-		const sell = data?.sise ? (list as DashboardItemType[])?.map(a => {
-			const v = data?.sise?.find(b => b.code === a.code)?.sise as number
-			return a.kcount * v;
-		})?.reduce((a, b) => a + b, 0) : '';
-		const sonic = sell && captal && (sell - captal);
+		const captal = (list as DashboardItemType[])?.map((a) => a.kprice)?.reduce((a, b) => a + b, 0);
+		const sell = data?.sise
+			? (list as DashboardItemType[])
+					?.map((a) => {
+						const v = data?.sise?.find((b) => b.code === a.code)?.sise as number;
+						return a.kcount * v;
+					})
+					?.reduce((a, b) => a + b, 0)
+			: '';
+		const sonic = sell && captal && sell - captal;
 
 		const values: string[] = [captal?.toString() || '', sell?.toString() || '', sonic?.toString() || ''];
 		return SummaryData(values);
@@ -104,15 +108,12 @@ const DashboardPage = () => {
 	}, [list, sort]);
 
 	const onClick = (eid?: string, item?: DataType) => {
-		let data = item;
-
 		if (eid === EID.SELECT) {
 			navigate(`${URL.MYSTOCK}/${item?.code}`);
 		} else if (eid === EID.ADD) {
 			setPopup({
 				type: 'insert',
 				onClose: (isOk: boolean) => {
-					console.log(isOk);
 					setPopup(undefined);
 					isOk && refetch();
 				},
@@ -122,45 +123,29 @@ const DashboardPage = () => {
 				type: 'update',
 				item: item,
 				onClose: (isOk: boolean) => {
-					console.log(isOk);
-					// data != null &&
-					// 	actions.doUpdate(API.DASHBOARD, data).then(({ result }) => {
-					// 		const array = [...this.state.list];
-					// 		const item = array.find((item) => item.stockid === result.rowid);
-					// 		if (item) {
-					// 			item.name = result.name;
-					// 			this.setState({ list: array, update: new Date() });
-					// 		}
-					// 		// this.doReload(() => this.doLoadSise());
-					// 	});
+					isOk && refetch();
 					setPopup(undefined);
 				},
 			});
 		} else if (eid === EID.DELETE) {
 			showConfirm({
 				content: ST.WANT_TO_DELETE,
-				onClose: (isOk) => {
-					if (isOk) {
-						// 	const value = { state: STAT.D, rowid: String(data.stockid) };
-						// 	actions.doDelete(API.DASHBOARD, value).then(({ code, result }) => {
-						// 		this.setState({ alert: { show: true, code: code, key: new Date() } });
-						// 		this.doReload();
-						// 	});
-
+				onClose: async (isOk) => {
+					if (isOk && item?.code) {
+						await deleteData(item.code);
+						refetch();
 						showToast('info', ST.DELETEED);
 					}
 				},
 			});
 		} else if (eid === 'naver') {
-			window.open(`${URL.REST.NAVER}?code=${data?.code.replace('A', '')}`);
+			window.open(`${URL.REST.NAVER}?code=${item?.code.replace('A', '')}`);
 		} else if (eid === 'daum') {
-			window.open(`${URL.REST.DAUM}${data?.code}`);
+			window.open(`${URL.REST.DAUM}${item?.code}`);
 		} else if (eid === 'daily') {
 			// actions.go(URL.DAILY, { rowid: data.code });
 		}
 	};
-
-	// if(isPending) return 'Loading...'
 
 	return (
 		<>

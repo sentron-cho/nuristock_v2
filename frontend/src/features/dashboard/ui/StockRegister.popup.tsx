@@ -147,8 +147,6 @@ const SelectionItemInfo = ({
 		const state = item?.state?.toUpperCase() === 'CLOSE' ? ST.CLOSE_STOCK : '';
 		const type = item?.type?.toUpperCase() === 'KOSPI' ? ST.KOSPI : ST.KOSDAQ;
 
-		console.log(item);
-
 		if (item.state?.toUpperCase() === 'OPEN') return type;
 		else return state;
 	}, [item]);

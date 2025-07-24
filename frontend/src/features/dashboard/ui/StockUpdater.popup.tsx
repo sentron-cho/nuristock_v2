@@ -5,46 +5,53 @@ import { ST } from '@shared/config/kor.lang';
 import { DashboardItemType as DataType } from '@features/dashboard/api/dashboard.dto';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useUpdateMyStock } from '@features/mystock/api/mystock.api';
+import { useCommonHook } from '@shared/hooks/useCommon.hook';
+import { useMemo } from 'react';
 
 export const StockUpdaterPopup = ({ item, onClose }: { item?: DataType; onClose: (isOk: boolean) => void }) => {
+	const { showToast } = useCommonHook();
+
 	const forms = useForm<{ title: string }>({
-		defaultValues: { title: item?.name },
+		defaultValues: { title: '' },
+		values: { title: item?.name || '' },
 		resolver: zodResolver(
 			z.object({
-				title: z.string().nonempty({ message: ST.PLEASE_INPUT }),
+				title: z.string({ message: ST.PLEASE_INPUT }).nonempty(),
 			})
 		),
+		shouldFocusError: true,
 	});
-	console.log(item);
+
+	useMemo(() => {
+		
+	}, [])
+
+	const { mutateAsync: updateData } = useUpdateMyStock();
 
 	const onClickClose = (isOk: boolean) => {
+		console.log(forms?.getValues());
+
+		// if (!forms?.formState?.isDirty) return onClose(false);
+		if (!isOk) return onClose(false);
+
 		forms?.handleSubmit(
-			(forms) => {
-				console.log('[success]', { forms });
+			async (field) => {
+				if (!forms?.formState.dirtyFields) return onClose(false);
+
+				item?.code && (await updateData({ code: item.code, name: field?.title }));
+				showToast('updated');
 				onClose?.(isOk);
-			},
+			}
 			// (error) => {
 			// 	console.log('[error]', { error });
 			// }
 		)();
-
-		onClose?.(isOk);
-	};
-
-	const onClearError = (id: string) => {
-		forms?.clearErrors(id as never);
 	};
 
 	return (
 		<Dialog title={ST.UPDATE} onClose={onClickClose}>
-			<TextInputForm
-				label={ST.STOCK_TITLE}
-				size='small'
-				id='title'
-				formMethod={forms}
-				onClearError={onClearError}
-				maxLength={10}
-			/>
+			<TextInputForm autoFocus id='title' label={ST.STOCK_TITLE} size='small' formMethod={forms} maxLength={20} />
 		</Dialog>
 	);
 };

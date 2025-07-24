@@ -1,8 +1,8 @@
 import { ProfitResponse, ProfitYearsResponse } from './profit.dto';
 import { mock as mockData } from './mock/profit.list';
 import { mock as mockYears } from './mock/profit.years';
-// import { mock as mockDate } from './mock/profit.date';
 import { useQuery } from '@tanstack/react-query';
+// import api from '@shared/api/axios.config';
 
 export const useSelectProfit = () => {
 	return useQuery<unknown, Error, ProfitResponse>({
