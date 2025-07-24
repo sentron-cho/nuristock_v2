@@ -54,6 +54,8 @@ export const DashboardCard = ({
 		};
 	}, [siseData]);
 
+	console.log({ sise });
+
 	const values = useMemo(() => {
 		const buyAvg = data?.ecount ? Math.round(data.sprice / data.ecount) : 0;
 		const buyText = data?.ecount ? `${withCommas(data.ecount)} x ${withCommas(buyAvg)}` : '';
@@ -85,6 +87,8 @@ export const DashboardCard = ({
 	const type = valueOfPlusMinus(values?.sonic);
 	const active = data.kprice > 0;
 	const history = data.sprice || data.kprice;
+
+	const siseUpdown = valueOfPlusMinus(sise.ecost);
 
 	// const icon = sise?.updown === 'down' ? 'arrowdn' : sise?.updown === 'up' ? 'arrowup' : '';
 
@@ -167,16 +171,16 @@ export const DashboardCard = ({
 						<Button className='daum' eid='daum' icon={<IconLaunch />} size='small' title='Daum' onClick={handleClick} />
 					</Flex>
 
-					{sise && sise?.erate && (
+					{sise && sise?.sise && (
 						<Flex className={'sise'} direction={'column'} align={'end'} flex={1} gap={8}>
 							<Text className='time' text={sise.time} size={'xxs'} />
 
-							<Flex className={clsx('price', type)} gap={4} onClick={handleSiseClick} width={'fit-content'}>
+							<Flex className={clsx('price', siseUpdown)} gap={4} onClick={handleSiseClick} width={'fit-content'}>
 								<Text text={withCommas(sise?.sise)} />
 								<Flex className={clsx({ icon: !!sise?.updown })}>
 									{sise?.updown === EID.UP && <IconUp fontSize='small' />}
 									{sise?.updown === EID.DOWN && <IconDown fontSize='small' />}
-									{sise?.erate !== 0 && <Text text={withCommas(sise?.ecost)} />}
+									{sise?.ecost !== undefined && <Text text={withCommas(sise?.ecost)} />}
 								</Flex>
 								<Text text={`(${sise?.erate}%)`} />
 							</Flex>

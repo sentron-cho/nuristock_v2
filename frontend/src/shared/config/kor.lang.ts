@@ -173,6 +173,7 @@ const KOR = {
 	INPUT_SEARCH: '종목명 또는 코드 입력',
 	SELECT_SEARCH: '추가할 종목 선택하세요.',
 	MARKET: '거래소',
+	UPDATE_TIME: '업데이트 일시',
 
 	// DASHBOARD: {
 	// 	ADD: '종목 추가',

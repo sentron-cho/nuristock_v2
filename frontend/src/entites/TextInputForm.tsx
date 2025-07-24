@@ -85,8 +85,6 @@ const TextField: React.FC<TextInputProps> = ({
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		let value = e?.target?.value?.toString();
-		console.log({ value });
-
 		if (withComma) {
 			value = withCommas(withCommas(value, true))?.toString() || value;
 		}

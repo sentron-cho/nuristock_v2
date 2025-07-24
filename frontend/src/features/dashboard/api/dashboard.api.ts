@@ -8,8 +8,6 @@ export const useSelectDashboard = () => {
 		queryKey: ['DASHBOARD-R01'],
 		queryFn: async (): Promise<DashboardResponse> => {
 			const main = await api.get(API.DASHBOARD);
-			console.log(main);
-			// const sise = await api.get(API.DASHBOARD_SISE);
 			return main.data;
 		},
 		// queryFn: async () => {

@@ -17,6 +17,10 @@ export const valueOfPlusMinus = (a: number = 0, b: number = 0) => {
 	return a === b ? EID.NONE : a < b ? EID.MINUS : EID.PLUS;
 };
 
+export const valueOfUpDown = (a: number = 0, b: number = 0) => {
+	return a === b ? '' : a < b ? EID.DOWN : EID.UP;
+};
+
 export const withCommas = (v?: number | string, isRemove?: boolean) => {
 	if (isRemove) {
 		let temp = v?.toString()?.replace(/,/gi, '');

@@ -39,7 +39,6 @@ export const EID = {
 	UPDATE: 'update',
 	FIND: 'find',
 	SEARCH: 'search',
-	DIC: 'dic',
 	MENU: 'menu',
 	HOME: 'home',
 	PAGE: 'page',
@@ -60,6 +59,7 @@ export const EID = {
 	MAX: 'max',
 	UP: 'up',
 	DOWN: 'down',
+	SISE: 'sise',
 };
 
 export const KEY = {

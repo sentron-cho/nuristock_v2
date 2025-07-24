@@ -9,7 +9,23 @@ export interface MarketResponse {
 	value?: MarketItemType[];
 }
 
+export interface MarketSiseDataType {
+	code: string;
+	sise: number;
+	time: string;
+	type: string;
+	updown: string;
+	name: string;
+	erate: number;
+	ecost: number;
+	utime: string;
+}
 
-// export interface MyStockSiseResponse {
-// 	value?: MyStockSiseItemType;
-// }
+export interface MarketSiseUpdateDataType {
+	code: string;
+	stime: string;
+	updown: string;
+	sise: number;
+	erate: number;
+	ecost: number;
+}

@@ -1,3 +1,5 @@
+import { MarketSiseDataType } from '@features/market/api/market.dto';
+
 export interface DashboardItemType {
 	stockid: number;
 	userid: number;
@@ -14,6 +16,8 @@ export interface DashboardItemType {
 
 	sonic?: number;
 	sonicRate?: number;
+	sise?: number;
+	siseSonic?: number;
 }
 
 export interface DashboardResponse {
@@ -21,17 +25,7 @@ export interface DashboardResponse {
 	sise?: DashboardSiseItemType[];
 }
 
-export interface DashboardSiseItemType {
-	code: string;
-	sise: number;
-	time: string;
-	name: string;
-	type: string;
-	updown: string;
-	erate: number;
-	ecost: number;
-	utime: string;
-}
+export type DashboardSiseItemType = MarketSiseDataType;
 
 // export interface DashboardSiseResponse {
 // 	value?: DashboardSiseItemType[];

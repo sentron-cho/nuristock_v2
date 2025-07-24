@@ -6,8 +6,8 @@ import {
 	DashboardTitleOptions as SelectOptions,
 } from '@features/dashboard/config/Dashbord.data';
 import {
-	DashboardItemType,
 	DashboardItemType as DataType,
+	DashboardSiseItemType as SiseItemType
 } from '@features/dashboard/api/dashboard.dto';
 import { useSelectDashboard } from '@features/dashboard/api/dashboard.api';
 import { DashboardCard } from '@features/dashboard/ui/DashboardCard.ui';
@@ -24,6 +24,7 @@ import { PopupType } from '@entites/Dialog';
 import { sortBy, reverse } from 'lodash';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { useDeleteMyStock } from '@features/mystock/api/mystock.api';
+import { StockSiseUpdaterPopup } from '@features/dashboard/ui/StockSiseUpdater.popup';
 
 const StyledPage = styled(PageContainer, {
 	'.card-list': {
@@ -69,9 +70,9 @@ const DashboardPage = () => {
 	);
 
 	const summaryData = useMemo(() => {
-		const captal = (list as DashboardItemType[])?.map((a) => a.kprice)?.reduce((a, b) => a + b, 0);
+		const captal = (list as DataType[])?.map((a) => a.kprice)?.reduce((a, b) => a + b, 0);
 		const sell = data?.sise
-			? (list as DashboardItemType[])
+			? (list as DataType[])
 					?.map((a) => {
 						const v = data?.sise?.find((b) => b.code === a.code)?.sise as number;
 						return a.kcount * v;
@@ -97,11 +98,9 @@ const DashboardPage = () => {
 		} else if (sort === 'sonicRate') {
 			// 손익율
 			return reverse(sortBy(list, 'sonicRate'));
-			// return reverse([...sortBy(rest, 'sonicRate'), ...sortBy(keeps, 'sonicRate')]);
 		} else if (sort === 'sonicCost') {
 			// 손익금액
 			return reverse(sortBy(list, 'sonic'));
-			// return reverse([...sortBy(rest, 'sonic'), ...sortBy(keeps, 'sonic')]);
 		} else {
 			return list;
 		}
@@ -110,23 +109,6 @@ const DashboardPage = () => {
 	const onClick = (eid?: string, item?: DataType) => {
 		if (eid === EID.SELECT) {
 			navigate(`${URL.MYSTOCK}/${item?.code}`);
-		} else if (eid === EID.ADD) {
-			setPopup({
-				type: 'insert',
-				onClose: (isOk: boolean) => {
-					setPopup(undefined);
-					isOk && refetch();
-				},
-			});
-		} else if (eid === EID.EDIT) {
-			setPopup({
-				type: 'update',
-				item: item,
-				onClose: (isOk: boolean) => {
-					isOk && refetch();
-					setPopup(undefined);
-				},
-			});
 		} else if (eid === EID.DELETE) {
 			showConfirm({
 				content: ST.WANT_TO_DELETE,
@@ -144,6 +126,15 @@ const DashboardPage = () => {
 			window.open(`${URL.REST.DAUM}${item?.code}`);
 		} else if (eid === 'daily') {
 			// actions.go(URL.DAILY, { rowid: data.code });
+		} else if(eid) { // eid === EID.ADD || eid === EID.EDIT || eid === EID.SISE
+			setPopup({
+				type: eid,
+				item: data?.sise?.find((b) => b.code === item?.code),
+				onClose: (isOk: boolean) => {
+					setPopup(undefined);
+					isOk && refetch();
+				},
+			});
 		}
 	};
 
@@ -171,10 +162,9 @@ const DashboardPage = () => {
 				</Flex>
 			</StyledPage>
 
-			{popup?.type === EID.INSERT && <StockRegisterPopup onClose={popup?.onClose} />}
-			{popup?.type === EID.UPDATE && <StockUpdaterPopup item={popup?.item as DataType} onClose={popup?.onClose} />}
-
-			{/* {popup?.type === 'append' && <Alert onClose={() => setPopup(undefined)} />} */}
+			{popup?.type === EID.ADD && <StockRegisterPopup onClose={popup?.onClose} />}
+			{popup?.type === EID.EDIT && <StockUpdaterPopup item={popup?.item as DataType} onClose={popup?.onClose} />}
+			{popup?.type === EID.SISE && <StockSiseUpdaterPopup item={popup?.item as SiseItemType} onClose={popup?.onClose} />}
 		</>
 	);
 };
