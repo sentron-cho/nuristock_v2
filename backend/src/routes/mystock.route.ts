@@ -2,6 +2,8 @@ import { SqlError } from "mariadb/*";
 import URL from "../types/url.js";
 import { FastifyInstance } from "fastify";
 import { withError } from "../lib/error.js";
+import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
+import { MyStockKeepCreateType } from "../types/mystock.type.js";
 
 const mystockRoute = (fastify: FastifyInstance) => {
   // 보유종목 목록 조회
@@ -33,59 +35,61 @@ const mystockRoute = (fastify: FastifyInstance) => {
     }
   });
 
-  // // 보유종목 시세 조회
-  // fastify.get(URL.MYSTOCK.SISE, async (req, reply) => {
-  //   console.log(`[API:CALL]`, { url: `${URL.MYSTOCK.SISE}`, req: req.headers });
-  //   const { code } = req.query as { code?: string };
+  // 주식 매수
+  fastify.post(URL.MYSTOCK.BUY, async (req, reply) => {
+    console.log(`[API:CALL]`, { url: `${URL.MYSTOCK.ROOT}`, body: req.body });
+    const { code, scost, count } = req.body as MyStockKeepCreateType;
 
-  //   try {
-  //     const sise = await fastify.db.query(
-  //       `SELECT code, stime as time, sise, updown  FROM market WHERE code='${code}';`
-  //     );
-  //     return {
-  //       code: 200,
-  //       value: {
-  //         ...(sise?.[0] || {}),
-  //       },
-  //     };
-  //   } catch (error) {
-  //     reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.ROOT }));
-  //   }
-  // });
+    try {
+      await fastify.db.query(`INSERT INTO keeps ${makeInsertSet(req.body as Record<string, string>)};`);
 
-  // // 보유종목 추가
-  // fastify.post(URL.MYSTOCK.ROOT, async (req, reply) => {
-  //   console.log(`[API:CALL]`, { url: `${URL.MYSTOCK.ROOT}`, body: req.body });
-  //   const { code, name } = req.body as Record<string, string>;
+      const mystock = await fastify.db.query(`SELECT * FROM dashboard WHERE code='${code}';`);
+      const dashboardData = {
+        kcount: Number(mystock?.[0]?.kcount) + Number(count),
+        kprice: Number(mystock?.[0]?.kprice) + Number(scost * count),
+      } as Record<string, unknown>;
 
-  //   try {
-  //     const res = await fastify.db.query(`INSERT INTO dashboard (code, name) VALUES ('${code}', '${name}');`);
-  //     reply.status(200).send({ value: code });
-  //   } catch (error) {
-  //     reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.ROOT }));
-  //   }
-  // });
+      await fastify.db.query(`UPDATE dashboard SET ${makeUpdateSet(dashboardData)} WHERE code='${code}';`);
 
-  // // 보유종목 삭제
+      reply.status(200).send({ value: code });
+    } catch (error) {
+      reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.ROOT }));
+    }
+  });
+
+  // 주식 매수
+  fastify.post(URL.MYSTOCK.SELL, async (req, reply) => {
+    console.log(`[API:CALL]`, { url: `${URL.MYSTOCK.ROOT}`, body: req.body });
+    const { code, name } = req.body as Record<string, string>;
+
+    try {
+      const res = await fastify.db.query(`INSERT INTO keeps (code, name) VALUES ('${code}', '${name}');`);
+      reply.status(200).send({ value: code });
+    } catch (error) {
+      reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.ROOT }));
+    }
+  });
+
+  // // 보유주식 삭제
   // fastify.delete(URL.MYSTOCK.ROOT, async (req, reply) => {
   //   console.log(`[API:CALL]`, { url: `${URL.MYSTOCK.ROOT}`, query: req.query });
   //   const { code, name } = req.query as Record<string, string>;
 
   //   try {
-  //     const res = await fastify.db.query(`DELETE FROM dashboard WHERE code='${code}';`);
+  //     const res = await fastify.db.query(`DELETE FROM keeps WHERE code='${code}';`);
   //     reply.status(200).send({ value: code });
   //   } catch (error) {
   //     reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.ROOT }));
   //   }
   // });
 
-  // // 보유종목 수정
+  // // 보유주식 수정
   // fastify.put(URL.MYSTOCK.ROOT, async (req, reply) => {
   //   console.log(`[API:CALL]`, { url: `${URL.MYSTOCK.ROOT}`, query: req.body });
   //   const { code, name } = req.body as Record<string, string>;
 
   //   try {
-  //     const res = await fastify.db.query(`UPDATE dashboard SET name = '${name}' WHERE code = '${code}';`);
+  //     const res = await fastify.db.query(`UPDATE keeps SET name = '${name}' WHERE code = '${code}';`);
   //     reply.status(200).send({ value: code });
   //   } catch (error) {
   //     reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.ROOT }));

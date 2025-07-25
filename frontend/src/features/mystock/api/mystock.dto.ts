@@ -1,11 +1,20 @@
 export interface MyStockItemType {
-	stockid: number;
+	code: string;
 	name: string;
 }
 
+export interface MyStockKeepCreateType {
+	rowid?: number;
+	code: string;
+	sdate: string;
+	scost: number;
+	count: number;
+}
+
+
 export interface MyStockKeepType {
 	rowid: number;
-	stockid: number;
+	code: string;
 	sdate: string;
 	scost: number;
 	count: number;
@@ -32,7 +41,7 @@ export interface MyStockListType {
 }
 
 export interface MyStockResponse {
-	value?: MyStockItemType[];
+	value?: MyStockItemType;
 	keeps?: MyStockKeepType[];
 	sells?: MyStockSellType[];
 	stocks?: MyStockListType[];

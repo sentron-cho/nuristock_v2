@@ -40,7 +40,7 @@ const MyStockPage = () => {
 	const [popup, setPopup] = useState<PopupType & { type: 'buy' | 'sell' }>();
 	const [viewType, setViewType] = useState<'keep' | 'trade'>('keep');
 
-	const { data } = useSelectMyStock(param?.id || '');
+	const { data, refetch } = useSelectMyStock(param?.id || '');
 
 	const titleOptions = useMemo(() => {
 		return SelectOptions();
@@ -80,15 +80,17 @@ const MyStockPage = () => {
 				setPopup({
 					type: 'sell',
 					item: { ...item, sise: data?.sise?.sise },
-					onClose: () => {
+					onClose: (isOk) => {
+						isOk && refetch();
 						setPopup(undefined);
 					},
 				});
 		} else if (eid === 'buy') {
 			setPopup({
 				type: 'buy',
-				item: { ...item, sise: data?.sise?.sise },
-				onClose: () => {
+				item: { code: data?.value?.code, sise: data?.sise?.sise },
+				onClose: (isOk) => {
+					isOk && refetch();
 					setPopup(undefined);
 				},
 			});

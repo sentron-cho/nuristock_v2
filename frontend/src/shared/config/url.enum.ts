@@ -30,6 +30,7 @@ export const API = {
   DASHBOARD_SISE: `${API_ROOT}/dashboard/sise`,
 	MYSTOCK: `${API_ROOT}/mystock`,
 	MYSTOCK_SISE: `${API_ROOT}/mystock/sise`,
+	MYSTOCK_BUY: `${API_ROOT}/mystock/buy`,
 	MYSTOCK_SELL: `${API_ROOT}/mystock/sell`,
 	STOCK: `${API_ROOT}/stock`,
 	MARKET: `${API_ROOT}/market`,

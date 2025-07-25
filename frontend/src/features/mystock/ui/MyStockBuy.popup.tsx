@@ -7,11 +7,12 @@ import Flex from '@entites/Flex';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { styled } from '@styles/stitches.config';
-import { useEffect } from 'react';
 import { DatePickerForm } from '@entites/DatePickerForm';
 import dayjs from 'dayjs';
-import { withCommas } from '@shared/libs/utils.lib';
+import { toNumber, withCommas } from '@shared/libs/utils.lib';
 import { Schema, useCommonHook } from '@shared/hooks/useCommon.hook';
+import { useCreateMyStockBuy } from '../api/mystock.api';
+import { DATE_DB_FORMAT } from '@shared/config/common.constant';
 
 const StyledForm = styled(Flex, {
 	input: {
@@ -34,16 +35,26 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: TreadType; onClose: 
 		shouldFocusError: true,
 	});
 
-	useEffect(() => {
-		setTimeout(() => forms?.setFocus('cost'), 200);
-	}, [forms]);
+	const { mutateAsync: createData } = useCreateMyStockBuy();
+
+	// useEffect(() => {
+	// 	setTimeout(() => forms?.setFocus('cost'), 200);
+	// }, [forms]);
 
 	const onClickClose = (isOk: boolean) => {
 		if (isOk) {
 			forms?.handleSubmit(
-				(values) => {
-					const params = { ...values, date: dayjs(values?.date).format('YYYY-MM-DD') };
-					console.log('[success]', { values, params });
+				async (fields) => {
+					if (!item?.code) return showToast('error', ST.ERROR_UNKNOWN);
+
+					const params = {
+						code: item.code,
+						scost: Number(toNumber(fields.cost)),
+						count: Number(toNumber(fields.count)),
+						sdate: dayjs(fields?.date).format(DATE_DB_FORMAT),
+					};
+
+					await createData(params);
 					showToast('registered');
 					onClose?.(isOk);
 				}
@@ -68,7 +79,7 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: TreadType; onClose: 
 					formMethod={forms}
 					maxLength={12}
 					withComma
-					focused
+					autoFocus
 					align='right'
 				/>
 				<TextInputForm
