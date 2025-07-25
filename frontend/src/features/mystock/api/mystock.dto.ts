@@ -11,6 +11,10 @@ export interface MyStockKeepCreateType {
 	count: number;
 }
 
+export interface MyStockSellCreateType extends MyStockKeepCreateType {
+	edate: string;
+	ecost: number;
+}
 
 export interface MyStockKeepType {
 	rowid: number;
@@ -22,7 +26,7 @@ export interface MyStockKeepType {
 	ctime: string;
 }
 
-export interface MyStockTreadType extends MyStockKeepType {	
+export interface MyStockTreadType extends MyStockKeepType {
 	sise?: number;
 }
 

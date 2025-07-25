@@ -11,8 +11,9 @@ import { DatePickerForm } from '@entites/DatePickerForm';
 import dayjs from 'dayjs';
 import { toNumber, withCommas } from '@shared/libs/utils.lib';
 import { Schema, useCommonHook } from '@shared/hooks/useCommon.hook';
-import { useCreateMyStockBuy } from '../api/mystock.api';
+import { useCreateMyStockBuy, useUpdateMyStockBuy } from '../api/mystock.api';
 import { DATE_DB_FORMAT } from '@shared/config/common.constant';
+import { useMemo } from 'react';
 
 const StyledForm = styled(Flex, {
 	input: {
@@ -23,8 +24,14 @@ const StyledForm = styled(Flex, {
 export const MyStockBuyPopup = ({ item, onClose }: { item?: TreadType; onClose: (isOk: boolean) => void }) => {
 	const { showToast } = useCommonHook();
 
+	const isEditMode = useMemo(() => !!item?.rowid, [item]);
+
+	console.log({ isEditMode, item });
+
 	const forms = useForm({
-		defaultValues: { date: new Date(), cost: withCommas(item?.sise), count: '' },
+		defaultValues: isEditMode
+			? { date: dayjs(item?.sdate).toDate(), cost: withCommas(item?.scost), count: withCommas(item?.count) }
+			: { date: new Date(), cost: withCommas(item?.sise), count: '' },
 		resolver: zodResolver(
 			z.object({
 				date: Schema.DefaultDate,
@@ -36,10 +43,7 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: TreadType; onClose: 
 	});
 
 	const { mutateAsync: createData } = useCreateMyStockBuy();
-
-	// useEffect(() => {
-	// 	setTimeout(() => forms?.setFocus('cost'), 200);
-	// }, [forms]);
+	const { mutateAsync: updateData } = useUpdateMyStockBuy();
 
 	const onClickClose = (isOk: boolean) => {
 		if (isOk) {
@@ -48,13 +52,19 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: TreadType; onClose: 
 					if (!item?.code) return showToast('error', ST.ERROR_UNKNOWN);
 
 					const params = {
+						rowid: item?.rowid,
 						code: item.code,
 						scost: Number(toNumber(fields.cost)),
 						count: Number(toNumber(fields.count)),
 						sdate: dayjs(fields?.date).format(DATE_DB_FORMAT),
 					};
 
-					await createData(params);
+					if (isEditMode) {
+						await updateData(params);
+					} else {
+						await createData(params);
+					}
+
 					showToast('registered');
 					onClose?.(isOk);
 				}
@@ -68,7 +78,7 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: TreadType; onClose: 
 	};
 
 	return (
-		<Dialog title={ST.BUY} onClose={onClickClose}>
+		<Dialog title={`${ST.BUY}(${isEditMode ? ST.UPDATE : ST.ADD})`} onClose={onClickClose}>
 			<StyledForm direction={'column'} gap={20}>
 				<DatePickerForm id='date' label={ST.BUY_DATE} placeholder={ST.IN_DATE} formMethod={forms} align='right' />
 				<TextInputForm

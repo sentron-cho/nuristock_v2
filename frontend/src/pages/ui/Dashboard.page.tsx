@@ -7,7 +7,7 @@ import {
 } from '@features/dashboard/config/Dashbord.data';
 import {
 	DashboardItemType as DataType,
-	DashboardSiseItemType as SiseItemType
+	DashboardSiseItemType as SiseItemType,
 } from '@features/dashboard/api/dashboard.dto';
 import { useDeleteDashboard, useSelectDashboard } from '@features/dashboard/api/dashboard.api';
 import { DashboardCard } from '@features/dashboard/ui/DashboardCard.ui';
@@ -41,10 +41,14 @@ const DashboardPage = () => {
 	const [sort, setSort] = useState<string>();
 
 	const { data, refetch } = useSelectDashboard();
-	const { mutateAsync: deleteData } = useDeleteDashboard()
+	const { mutateAsync: deleteData } = useDeleteDashboard();
 
 	const titleOptions = useMemo(() => {
 		return SelectOptions();
+	}, []);
+
+	useEffect(() => {
+		refetch();
 	}, []);
 
 	useEffect(() => setSort(titleOptions?.[0]?.value), [titleOptions]);
@@ -125,7 +129,8 @@ const DashboardPage = () => {
 			window.open(`${URL.REST.DAUM}${item?.code}`);
 		} else if (eid === 'daily') {
 			// actions.go(URL.DAILY, { rowid: data.code });
-		} else if(eid) { // eid === EID.ADD || eid === EID.EDIT || eid === EID.SISE
+		} else if (eid) {
+			// eid === EID.ADD || eid === EID.EDIT || eid === EID.SISE
 			setPopup({
 				type: eid,
 				item: data?.sise?.find((b) => b.code === item?.code),
@@ -163,7 +168,9 @@ const DashboardPage = () => {
 
 			{popup?.type === EID.ADD && <StockRegisterPopup onClose={popup?.onClose} />}
 			{popup?.type === EID.EDIT && <StockUpdaterPopup item={popup?.item as DataType} onClose={popup?.onClose} />}
-			{popup?.type === EID.SISE && <StockSiseUpdaterPopup item={popup?.item as SiseItemType} onClose={popup?.onClose} />}
+			{popup?.type === EID.SISE && (
+				<StockSiseUpdaterPopup item={popup?.item as SiseItemType} onClose={popup?.onClose} />
+			)}
 		</>
 	);
 };

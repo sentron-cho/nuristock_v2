@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
 import { styled } from '@styles/stitches.config';
 import {
@@ -11,7 +11,7 @@ import {
 	MyStockSellType,
 	MyStockTreadType as TreadType,
 } from '@features/mystock/api/mystock.dto';
-import { useSelectMyStock } from '@features/mystock/api/mystock.api';
+import { useDeleteMyStockBuy, useDeleteMyStockSell, useSelectMyStock } from '@features/mystock/api/mystock.api';
 import { MyStcokCardList } from '@features/mystock/ui/MyStockCard.ui';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { EID } from '@shared/config/default.config';
@@ -25,6 +25,7 @@ import { reverse, sortBy } from 'lodash';
 import { SelectForm } from '@entites/SelectForm';
 import { OptionType } from '@shared/config/common.type';
 import { URL } from '@shared/config/url.enum';
+import { useCommonHook } from '@shared/hooks/useCommon.hook';
 
 const StyledPage = styled(PageContainer, {
 	'.card-list': {
@@ -35,12 +36,16 @@ const StyledPage = styled(PageContainer, {
 
 const MyStockPage = () => {
 	const navigate = useNavigate();
+	const { showToast, showConfirm } = useCommonHook();
+
 	const param = useParams();
 
-	const [popup, setPopup] = useState<PopupType & { type: 'buy' | 'sell' }>();
+	const [popup, setPopup] = useState<PopupType & { type: PopupType['type'] | 'buy' | 'sell' }>();
 	const [viewType, setViewType] = useState<'keep' | 'trade'>('keep');
 
 	const { data, refetch } = useSelectMyStock(param?.id || '');
+	const { mutateAsync: deleteDataBuy } = useDeleteMyStockBuy();
+	const { mutateAsync: deleteDataSell } = useDeleteMyStockSell();
 
 	const titleOptions = useMemo(() => {
 		return SelectOptions();
@@ -73,8 +78,6 @@ const MyStockPage = () => {
 	}, [data]);
 
 	const onClick = (eid?: string, item?: KeepType) => {
-		console.log({ eid, item });
-
 		if (eid === EID.SELECT || eid === 'sell') {
 			viewType === 'keep' &&
 				setPopup({
@@ -87,7 +90,7 @@ const MyStockPage = () => {
 				});
 		} else if (eid === 'buy') {
 			setPopup({
-				type: 'buy',
+				type: eid,
 				item: { code: data?.value?.code, sise: data?.sise?.sise },
 				onClose: (isOk) => {
 					isOk && refetch();
@@ -95,9 +98,27 @@ const MyStockPage = () => {
 				},
 			});
 		} else if (eid === EID.EDIT) {
-			console.log('[edit]');
+			setPopup({
+				type: viewType === 'keep' ? 'buy' : 'sell',
+				item: { ...item, code: data?.value?.code, sise: data?.sise?.sise },
+				onClose: (isOk) => {
+					isOk && refetch();
+					setPopup(undefined);
+				},
+			});
 		} else if (eid === EID.DELETE) {
-			console.log('[delete]');
+			showConfirm({
+				content: ST.WANT_TO_DELETE,
+				onClose: async (isOk) => {
+					if (isOk && item?.code) {
+						viewType === 'keep' && (await deleteDataBuy({ rowid: item.rowid, code: item.code }));
+						viewType === 'trade' && (await deleteDataSell({ rowid: item.rowid, code: item.code }));
+
+						refetch();
+						showToast('info', ST.DELETEED);
+					}
+				},
+			});
 		} else if (eid === 'calc') {
 			console.log('[calc]');
 		}

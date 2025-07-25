@@ -56,7 +56,7 @@ const dashboardRoute = (fastify: FastifyInstance) => {
   // 보유종목 삭제
   fastify.delete(URL.DASHBOARD.ROOT, async (req, reply) => {
     console.log(`[API:CALL]`, { url: `${URL.DASHBOARD.ROOT}`, query: req.query });
-    const { code, name } = req.query as Record<string, string>;
+    const { code } = req.query as Record<string, string>;
 
     try {
       const res = await fastify.db.query(`DELETE FROM dashboard WHERE code='${code}';`);

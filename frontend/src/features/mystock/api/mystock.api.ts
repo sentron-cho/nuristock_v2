@@ -1,4 +1,4 @@
-import { MyStockKeepCreateType, MyStockResponse } from './mystock.dto';
+import { MyStockKeepCreateType, MyStockResponse, MyStockSellCreateType } from './mystock.dto';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { API } from '@shared/config/url.enum';
 import { MarketItemType } from '@features/market/api/market.dto';
@@ -28,28 +28,60 @@ export const useCreateMyStockBuy = () => {
 // 주식 매도(매도 추가)
 export const useCreateMyStockSell = () => {
 	return useMutation({
-		mutationKey: ['MYSTOCK-C01'],
-		mutationFn: async (data: MyStockKeepCreateType) => {
+		mutationKey: ['MYSTOCK-C02'],
+		mutationFn: async (data: MyStockSellCreateType) => {
 			return await api.post(API.MYSTOCK_SELL, data);
 		},
 	});
 };
 
-
-export const useDeleteMyStock = () => {
+// 매수 주식 삭제
+export const useDeleteMyStockBuy = () => {
 	return useMutation({
 		mutationKey: ['MYSTOCK-D01'],
-		mutationFn: async (code: string) => {
-			return await api.delete(API.MYSTOCK, { params: { code } });
+		mutationFn: async (params: { rowid: number; code: string }) => {
+			return await api.delete(API.MYSTOCK_BUY, { params });
 		},
 	});
 };
 
-export const useUpdateMyStock = () => {
+// 매도 주식 삭제
+export const useDeleteMyStockSell = () => {
+	return useMutation({
+		mutationKey: ['MYSTOCK-D02'],
+		mutationFn: async (params: { rowid: number; code: string }) => {
+			return await api.delete(API.MYSTOCK_SELL, { params });
+		},
+	});
+};
+
+// 주식 매수(매수 수정)
+export const useUpdateMyStockBuy = () => {
 	return useMutation({
 		mutationKey: ['MYSTOCK-U01'],
 		mutationFn: async (data: MyStockKeepCreateType) => {
-			return await api.put(API.MYSTOCK, data);
+			return await api.put(API.MYSTOCK_BUY, data);
 		},
 	});
 };
+
+
+// 주식 매도(매도 수정)
+export const useUpdateMyStockSell = () => {
+	return useMutation({
+		mutationKey: ['MYSTOCK-U02'],
+		mutationFn: async (data: MyStockSellCreateType) => {
+			return await api.put(API.MYSTOCK_BUY, data);
+		},
+	});
+};
+
+
+// export const useUpdateMyStock = () => {
+// 	return useMutation({
+// 		mutationKey: ['MYSTOCK-U01'],
+// 		mutationFn: async (data: MyStockKeepCreateType) => {
+// 			return await api.put(API.MYSTOCK, data);
+// 		},
+// 	});
+// };

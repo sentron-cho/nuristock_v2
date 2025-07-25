@@ -44,7 +44,7 @@ interface DialogProps extends Omit<MuiDialogProps, 'open'> {
 }
 
 export interface PopupType {
-	type: 'insert' | 'update' | 'append' | string;
+	type: 'add' | 'edit' | 'append' | string;
 	item?: FieldValues;
 	onClose: (isOk: boolean, item?: FieldValues) => void;
 }

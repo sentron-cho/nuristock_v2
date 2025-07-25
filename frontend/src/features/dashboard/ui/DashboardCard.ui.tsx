@@ -52,7 +52,7 @@ export const DashboardCard = ({
 			time: `${siseTitle}(${dayjs(siseItem?.time).format('MM.DD HH:MM')})`,
 			price: siseTotal,
 		};
-	}, [siseData]);
+	}, [siseData, data]);
 
 	const values = useMemo(() => {
 		const buyAvg = data?.ecount ? Math.round(data.sprice / data.ecount) : 0;
