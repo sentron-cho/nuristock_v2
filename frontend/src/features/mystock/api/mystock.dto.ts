@@ -24,6 +24,7 @@ export interface MyStockKeepType {
 	count: number;
 	utime: string;
 	ctime: string;
+	mode?: string;
 }
 
 export interface MyStockTreadType extends MyStockKeepType {
@@ -31,6 +32,7 @@ export interface MyStockTreadType extends MyStockKeepType {
 }
 
 export interface MyStockSellType extends MyStockKeepType {
+	sise?: number;
 	edate: string;
 	ecost: number;
 }

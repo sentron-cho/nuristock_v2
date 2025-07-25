@@ -26,8 +26,6 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: TreadType; onClose: 
 
 	const isEditMode = useMemo(() => !!item?.rowid, [item]);
 
-	console.log({ isEditMode, item });
-
 	const forms = useForm({
 		defaultValues: isEditMode
 			? { date: dayjs(item?.sdate).toDate(), cost: withCommas(item?.scost), count: withCommas(item?.count) }

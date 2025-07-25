@@ -5,3 +5,8 @@ export interface MyStockKeepCreateType {
 	scost: number;
 	count: number;
 }
+
+export interface MyStockSellCreateType extends MyStockKeepCreateType {
+	edate: string;
+	ecost: number;
+}

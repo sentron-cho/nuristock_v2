@@ -1,44 +1,55 @@
 import { TextInputForm } from '@entites/TextInputForm';
 import { Dialog } from '@entites/Dialog';
 import { FieldValues, useForm, UseFormReturn } from 'react-hook-form';
-import { MyStockTreadType as TreadType } from '../api/mystock.dto';
+import { MyStockSellType as SellDataType } from '../api/mystock.dto';
 import { styled } from '@styles/stitches.config';
 import Flex from '@entites/Flex';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { DatePickerForm } from '@entites/DatePickerForm';
 import dayjs from 'dayjs';
-import { withCommas } from '@shared/libs/utils.lib';
+import { toNumber, withCommas } from '@shared/libs/utils.lib';
 import { Schema, useCommonHook } from '@shared/hooks/useCommon.hook';
 import { ST } from '@shared/config/kor.lang';
 import { Text } from '@entites/Text';
+import { DATE_DB_FORMAT } from '@shared/config/common.constant';
+import { useCreateMyStockSell, useUpdateMyStockSell } from '../api/mystock.api';
 
 const StyledForm = styled(Flex, {
-	input: {
-		// textAlign: 'right',
-	},
+	input: {},
 });
 
-export const MyStockSellPopup = ({ item, onClose }: { item?: TreadType; onClose: (isOk: boolean) => void }) => {
-	console.log('[MyStockSellPopup]', { item });
-
+export const MyStockSellPopup = ({ item, onClose }: { item?: SellDataType; onClose: (isOk: boolean) => void }) => {
 	const { showToast } = useCommonHook();
 
+	const isEditMode = useMemo(() => item?.mode === 'edit', [item]);
+
+	console.log({ item });
+
 	const forms = useForm({
-		defaultValues: {
-			buyCost: withCommas(item?.scost),
-			buyCount: withCommas(item?.count),
-			buyDate: item?.sdate,
-			sellDate: new Date(),
-			sellCost: withCommas(item?.sise),
-			sellCount: withCommas(item?.count),
-		},
+		defaultValues: isEditMode
+			? {
+					buyCost: withCommas(item?.scost),
+					buyCount: withCommas(item?.count),
+					buyDate: dayjs(item?.sdate).toDate(),
+					sellDate: dayjs(item?.edate).toDate(),
+					sellCost: withCommas(item?.ecost),
+					sellCount: withCommas(item?.count),
+				}
+			: {
+					buyCost: withCommas(item?.scost),
+					buyCount: withCommas(item?.count),
+					buyDate: dayjs(item?.sdate).toDate(),
+					sellDate: new Date(),
+					sellCost: withCommas(item?.sise),
+					sellCount: withCommas(item?.count),
+				},
 		resolver: zodResolver(
 			z.object({
 				buyCost: z.string().optional(),
 				buyCount: z.string().optional(),
-				buyDate: z.string().optional(),
+				buyDate: z.date().optional(),
 				sellDate: Schema.DefaultDate,
 				sellCost: Schema.DefaultNumber,
 				sellCount: Schema.DefaultNumber,
@@ -47,16 +58,37 @@ export const MyStockSellPopup = ({ item, onClose }: { item?: TreadType; onClose:
 		shouldFocusError: true,
 	});
 
-	useEffect(() => {
-		setTimeout(() => forms?.setFocus('sellCost'), 200);
-	}, [forms]);
+	const { mutateAsync: createData } = useCreateMyStockSell();
+	const { mutateAsync: updateData } = useUpdateMyStockSell();
+
+	// useEffect(() => {
+	// 	setTimeout(() => forms?.setFocus('sellCost'), 200);
+	// }, [forms]);
 
 	const onClickClose = (isOk: boolean) => {
 		if (isOk) {
 			forms?.handleSubmit(
-				(values) => {
-					const params = { ...values, date: dayjs(values?.sellDate).format('YYYY-MM-DD') };
-					console.log('[success]', { values, params });
+				async (fields) => {
+					if (!item?.code) return showToast('error', ST.ERROR_UNKNOWN);
+
+					const params = {
+						rowid: item?.rowid,
+						code: item.code,
+						sdate: dayjs(fields?.buyDate).format(DATE_DB_FORMAT),
+						edate: dayjs(fields?.sellDate).format(DATE_DB_FORMAT),
+						scost: Number(toNumber(fields.buyCost)),
+						ecost: Number(toNumber(fields.sellCost)),
+						count: Number(toNumber(fields.sellCount)),
+					};
+
+					console.log({fields, params});
+
+					if (isEditMode) {
+						await updateData(params);
+					} else {
+						await createData(params);
+					}
+
 					showToast('registered');
 					onClose?.(isOk);
 				}
@@ -112,6 +144,7 @@ const ContentsForm = <T extends FieldValues>({
 					size='small'
 					withComma
 					align='right'
+					autoFocus={!isBuy}
 					formMethod={formMethod}
 				/>
 				<TextInputForm

@@ -78,16 +78,15 @@ const MyStockPage = () => {
 	}, [data]);
 
 	const onClick = (eid?: string, item?: KeepType) => {
-		if (eid === EID.SELECT || eid === 'sell') {
-			viewType === 'keep' &&
-				setPopup({
-					type: 'sell',
-					item: { ...item, sise: data?.sise?.sise },
-					onClose: (isOk) => {
-						isOk && refetch();
-						setPopup(undefined);
-					},
-				});
+		if ((viewType === 'keep' && eid === EID.SELECT) || eid === 'sell') {
+			setPopup({
+				type: 'sell',
+				item: { ...item, sise: data?.sise?.sise, mode: 'new' },
+				onClose: (isOk) => {
+					isOk && refetch();
+					setPopup(undefined);
+				},
+			});
 		} else if (eid === 'buy') {
 			setPopup({
 				type: eid,
@@ -100,7 +99,7 @@ const MyStockPage = () => {
 		} else if (eid === EID.EDIT) {
 			setPopup({
 				type: viewType === 'keep' ? 'buy' : 'sell',
-				item: { ...item, code: data?.value?.code, sise: data?.sise?.sise },
+				item: { ...item, code: data?.value?.code, sise: data?.sise?.sise, mode: 'edit' },
 				onClose: (isOk) => {
 					isOk && refetch();
 					setPopup(undefined);
@@ -161,7 +160,7 @@ const MyStockPage = () => {
 			</StyledPage>
 
 			{popup?.type === 'buy' && <MyStockBuyPopup item={popup?.item as TreadType} onClose={popup.onClose} />}
-			{popup?.type === 'sell' && <MyStockSellPopup item={popup?.item as TreadType} onClose={popup.onClose} />}
+			{popup?.type === 'sell' && <MyStockSellPopup item={popup?.item as MyStockSellType} onClose={popup.onClose} />}
 		</>
 	);
 };

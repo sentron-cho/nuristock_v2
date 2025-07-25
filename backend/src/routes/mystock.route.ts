@@ -3,7 +3,7 @@ import URL from "../types/url.js";
 import { FastifyInstance } from "fastify";
 import { withError } from "../lib/error.js";
 import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
-import { MyStockKeepCreateType } from "../types/mystock.type.js";
+import { MyStockKeepCreateType, MyStockSellCreateType } from "../types/mystock.type.js";
 
 const mystockRoute = (fastify: FastifyInstance) => {
   // 보유종목 목록 조회
@@ -40,13 +40,27 @@ const mystockRoute = (fastify: FastifyInstance) => {
       console.log("[updateDashboardKeep]", { code });
       if (!code) throw new Error("is not stock code");
 
-      const mystock = await fastify.db.query(
-        `SELECT SUM(scost * count) AS scost, SUM(count) AS count FROM keeps WHERE code = '${code}'`
+      const keeps = await fastify.db.query(
+        `SELECT SUM(scost * count) AS sprice, SUM(count) AS count FROM keeps WHERE code = '${code}'`
+      );
+
+      const sells = await fastify.db.query(
+        `SELECT SUM(scost * count) AS sprice, SUM(count) as count, SUM(ecost * count) AS eprice FROM sells WHERE code = '${code}'`
       );
 
       const dashboardData = isSell
-        ? { kcount: Number(mystock?.[0]?.count), kprice: Number(mystock?.[0]?.scost) }
-        : { kcount: Number(mystock?.[0]?.count), kprice: Number(mystock?.[0]?.scost) };
+        ? {
+            kcount: Number(keeps?.[0]?.count), // 보유 수량
+            kprice: Number(keeps?.[0]?.sprice), // 보유 금액
+
+            ecount: Number(sells?.[0]?.count), // 매도/매도 수량
+            eprice: Number(sells?.[0]?.eprice), // 매도 금액
+            sprice: Number(sells?.[0]?.sprice), // 매수 금액
+          }
+        : {
+            kcount: Number(keeps?.[0]?.count), // 보유 수량
+            kprice: Number(keeps?.[0]?.sprice), // 보유 금액
+          };
 
       await fastify.db.query(`UPDATE dashboard SET ${makeUpdateSet(dashboardData)} WHERE code='${code}';`);
     } catch (error) {
@@ -54,7 +68,7 @@ const mystockRoute = (fastify: FastifyInstance) => {
     }
   };
 
-  // 주식 매수
+  // 주식 매수 추가
   fastify.post(URL.MYSTOCK.BUY, async (req, reply) => {
     const { code } = req.body as MyStockKeepCreateType;
 
@@ -80,10 +94,10 @@ const mystockRoute = (fastify: FastifyInstance) => {
     }
   });
 
-  // 매수 주식 편집
+  // 매수 주식 수정
   fastify.put(URL.MYSTOCK.BUY, async (req, reply) => {
     console.log(req.body);
-    const { code, rowid } = req.body as Record<string, string>;
+    const { code, rowid } = req.body as MyStockKeepCreateType;
 
     try {
       if (!rowid)
@@ -101,22 +115,26 @@ const mystockRoute = (fastify: FastifyInstance) => {
     }
   });
 
-  // 주식 매도
+  // 주식 매도 추가
   fastify.post(URL.MYSTOCK.SELL, async (req, reply) => {
-    const { code, name } = req.body as Record<string, string>;
+    const { code, rowid } = req.body as MyStockSellCreateType;
 
     try {
-      await fastify.db.query(`INSERT INTO sells (code, name) VALUES ('${code}', '${name}');`);
+      const params = JSON.parse(JSON.stringify(req?.body))
+      delete params['rowid'];
+
+      await fastify.db.query(`INSERT INTO sells ${makeInsertSet(params as Record<string, string>)};`);
+      await fastify.db.query(`DELETE from keeps WHERE rowid=${rowid};`);
       await updateDashboardKeep(code, true);
       reply.status(200).send({ value: code });
     } catch (error) {
-      reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.SELL }));
+      reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.BUY }));
     }
   });
 
   // 매도 주식 삭제
   fastify.delete(URL.MYSTOCK.SELL, async (req, reply) => {
-    const { rowid, code } = req.query as MyStockKeepCreateType;
+    const { rowid, code } = req.query as MyStockSellCreateType;
 
     try {
       await fastify.db.query(`DELETE FROM sells WHERE rowid=${rowid};`);
@@ -127,31 +145,26 @@ const mystockRoute = (fastify: FastifyInstance) => {
     }
   });
 
-  // // 보유주식 삭제
-  // fastify.delete(URL.MYSTOCK.ROOT, async (req, reply) => {
-  //   console.log(`[API:CALL]`, { url: `${URL.MYSTOCK.ROOT}`, query: req.query });
-  //   const { code, name } = req.query as Record<string, string>;
+  // 매도 주식 수정
+  fastify.put(URL.MYSTOCK.SELL, async (req, reply) => {
+    console.log(req.body);
+    const { code, rowid } = req.body as MyStockSellCreateType;
 
-  //   try {
-  //     const res = await fastify.db.query(`DELETE FROM keeps WHERE code='${code}';`);
-  //     reply.status(200).send({ value: code });
-  //   } catch (error) {
-  //     reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.ROOT }));
-  //   }
-  // });
+    try {
+      if (!rowid)
+        return reply
+          .status(500)
+          .send(withError({ code: "ER_NOT_ROWID", sqlMessage: "is not rowid!" } as SqlError, { tag: URL.MYSTOCK.BUY }));
 
-  // // 보유주식 수정
-  // fastify.put(URL.MYSTOCK.ROOT, async (req, reply) => {
-  //   console.log(`[API:CALL]`, { url: `${URL.MYSTOCK.ROOT}`, query: req.body });
-  //   const { code, name } = req.body as Record<string, string>;
-
-  //   try {
-  //     const res = await fastify.db.query(`UPDATE keeps SET name = '${name}' WHERE code = '${code}';`);
-  //     reply.status(200).send({ value: code });
-  //   } catch (error) {
-  //     reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.ROOT }));
-  //   }
-  // });
+      await fastify.db.query(
+        `UPDATE sells SET ${makeUpdateSet(req.body as Record<string, unknown>)} WHERE rowid ='${rowid}';`
+      );
+      await updateDashboardKeep(code, true);
+      reply.status(200).send({ value: rowid });
+    } catch (error) {
+      reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.BUY }));
+    }
+  });
 };
 
 export default mystockRoute;
