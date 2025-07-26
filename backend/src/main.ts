@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import dashboardRoute from "./routes/dashboard.route.js";
 import mystockRoute from "./routes/mystock.route.js";
 import marketRoute from "./routes/market.route.js";
+import profitRoute from "./routes/profit.route.js";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ await fastify.register(dbPlugin);
 await fastify.register(dashboardRoute);
 await fastify.register(mystockRoute);
 await fastify.register(marketRoute);
+await fastify.register(profitRoute);
 
 fastify.get("/", async (req, reply) => {
   return { hello: "world" };

@@ -38,7 +38,7 @@ export const API = {
 	MARKET_COUNT: `${API_ROOT}/market/vcount`,
 	INVEST: `${API_ROOT}/invest`,
 	PROFIT: `${API_ROOT}/profit`,
-	PROFIT_LIST: `${API_ROOT}/profit/list`,
+	PROFIT_YEARS: `${API_ROOT}/profit/years`,
   
 	// APPINFO: `${API_ROOT}/appinfo`,
 	// TOKEN: `${API_ROOT}/token`,

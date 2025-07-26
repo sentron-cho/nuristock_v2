@@ -5,6 +5,7 @@ import { Table } from '@entites/Table';
 import { styled } from '@stitches/react';
 import clsx from 'clsx';
 import { Text } from '@entites/Text';
+import { reverse, sortBy } from 'lodash';
 
 const StyledTable = styled(Flex, {
 	marginTop: '20px',
@@ -23,37 +24,23 @@ interface SubTableListProps {
 }
 
 export const SubTableList: React.FC<SubTableListProps> = ({ headers, selected, loading, data, filter }) => {
-  console.log({ filter, data });
-
-  // const [dataList, setDataList] = useState<ProfitItemType[]>();
-  
-  // const filterKey = useMemo(() => {
-  //   if (filter === 'codes') return 'name';
-  //   else if (filter === 'months') return 'sdate';
-  //   else return 'sdate';
-  // }, [filter]);
-
 	if (!selected || !headers || filter === 'all') return null;
 
 	return (
 		<StyledTable className={clsx('sub-table-list')} direction={'column'} gap={20}>
-      {selected?.map((name) => {
-        // const item = data?.find(a => a?.name === name);
-        // const filterCode = item?.name;
-        const parsedName = filter === 'codes' ? name : name?.replace(/-/g, '');
-        const subItems = data?.filter(a => {
-          return filter === 'codes' ? a?.name === parsedName : a?.edate?.includes(parsedName);
-        });
-
-        console.log({parsedName, subItems});
+			{selected?.map((name) => {
+				const parsedName = filter === 'codes' ? name : name?.replace(/-/g, '');
+				const subItems = data?.filter((a) => {
+					return filter === 'codes' ? a?.name === parsedName : a?.edate?.includes(parsedName);
+				});
 
 				return (
-          <Flex direction={'column'} gap={4}>
-            <Text text={name} />
+					<Flex direction={'column'} gap={10}>
+						<Text text={name} />
 						<Table
 							rowKey={'rowid'}
 							headers={headers}
-							data={subItems}
+							data={reverse(sortBy(subItems, ['stime']))}
 							loading={loading}
 							pending={loading}
 						/>

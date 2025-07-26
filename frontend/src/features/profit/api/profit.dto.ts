@@ -1,12 +1,8 @@
-export interface ProfitItemType {
-	rowid: number;
-	utime: string;
-	code: string;
+import { MyStockKeepType } from "@features/mystock/api/mystock.dto";
+
+export interface ProfitItemType extends MyStockKeepType {
 	name: string;
 	stockid: number;
-	count?: number;
-	scost?: number;
-	sdate?: string;
 	ecost?: number;
 	edate?: string;
 	sonic?: number;
