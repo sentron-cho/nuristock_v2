@@ -101,7 +101,7 @@ export const KeepContents = ({ data, sise }: { data: KeepType; sise?: SiseType }
 		};
 
 		const buy = makeSise(data, 0, ST.BUY);
-		const sell = makeSise({ ...data, scost: sise?.sise || 0 }, 0, ST.SELL);
+		const sell = makeSise({ ...data, scost: sise?.sise || data?.scost }, 0, ST.SELL);
 
 		const keepDate = valueOfDateDiff(data.sdate, new Date());
 		const soinc = sell.value - buy.value;
@@ -126,7 +126,7 @@ export const KeepContents = ({ data, sise }: { data: KeepType; sise?: SiseType }
 		};
 	}, [data, sise]);
 
-	const type = valueOfPlusMinus(sise?.sise, data.scost);
+	const type = valueOfPlusMinus(sise?.sise, sise?.sise ? data.scost : 0);
 
 	return (
 		<>

@@ -1,52 +1,70 @@
 import URL from "../types/url.js";
 import { FastifyInstance } from "fastify";
-import { mock as mockData } from "../mock/dashboard/dashboard.list.js";
 import { withError } from "../lib/error.js";
 import { SqlError } from "mariadb/*";
-// import { mock as mockSise } from "../mock/dashboard/dashboard.sise.js";
-
-function safeStringify(obj: any) {
-  return JSON.stringify(obj, (_, value) => (typeof value === "bigint" ? value.toString() : value));
-}
+import { makeUpdateSet } from "../lib/db.util.js";
+import { DashboardCreateType } from "../types/dashboard.type.js";
 
 const dashboardRoute = (fastify: FastifyInstance) => {
-  fastify.get(URL.DASHBOARD.ROOT, async (req, reply) => {
-    console.log(`[API:CALL]`, { url: `${URL.DASHBOARD.ROOT}`, req: req.hostname });
-
+  fastify.get(URL.DASHBOARD.ROOT, async (_req, reply) => {
     try {
       const dashboard = await fastify.db.query("SELECT * FROM dashboard");
 
       if (dashboard) {
-        const codes = dashboard.map((a) => `'${a.code}'`).join(','); // ✅ 문자열로 변환
+        const codes = dashboard.map((a) => `'${a.code}'`).join(","); // ✅ 문자열로 변환
         const sise = await fastify.db.query(`SELECT * FROM market WHERE code in (${codes})`);
-        
-        console.log("[DB Select]", { dashboard: dashboard?.length, sise: sise?.length });
-  
+
         return {
-          code: 200,
           value: dashboard,
           sise: sise,
         };
       } else {
         return {
-          code: 200,
           value: dashboard,
           sise: undefined,
         };
       }
-
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.DASHBOARD.ROOT }));
     }
   });
 
+  // 보유 주식 데이터 업데이트
+  const updateDashboardKeep = async (code: string) => {
+    try {
+      if (!code) throw new Error("is not stock code");
+
+      const keeps = await fastify.db.query(
+        `SELECT SUM(scost * count) AS sprice, SUM(count) AS count FROM keeps WHERE code = '${code}'`
+      );
+
+      const sells = await fastify.db.query(
+        `SELECT SUM(scost * count) AS sprice, SUM(count) as count, SUM(ecost * count) AS eprice FROM sells WHERE code = '${code}'`
+      );
+
+      const dashboardData = {
+        kcount: Number(keeps?.[0]?.count), // 보유 수량
+        kprice: Number(keeps?.[0]?.sprice), // 보유 금액
+
+        ecount: Number(sells?.[0]?.count), // 매도/매도 수량
+        eprice: Number(sells?.[0]?.eprice), // 매도 금액
+        sprice: Number(sells?.[0]?.sprice), // 매수 금액
+      };
+
+      await fastify.db.query(`UPDATE dashboard SET ${makeUpdateSet(dashboardData)} WHERE code='${code}';`);
+    } catch (error) {
+      throw error;
+    }
+  };
+
   // 보유종목 추가
   fastify.post(URL.DASHBOARD.ROOT, async (req, reply) => {
-    console.log(`[API:CALL]`, { url: `${URL.DASHBOARD.ROOT}`, body: req.body });
-    const { code, name } = req.body as Record<string, string>;
-
     try {
-      const res = await fastify.db.query(`INSERT INTO dashboard (code, name) VALUES ('${code}', '${name}');`);
+      const { code, name } = req.body as DashboardCreateType;
+
+      await fastify.db.query(`INSERT INTO dashboard (code, name) VALUES ('${code}', '${name}');`);
+      await updateDashboardKeep(code);
+
       reply.status(200).send({ value: code });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.DASHBOARD.ROOT }));
@@ -55,11 +73,10 @@ const dashboardRoute = (fastify: FastifyInstance) => {
 
   // 보유종목 삭제
   fastify.delete(URL.DASHBOARD.ROOT, async (req, reply) => {
-    console.log(`[API:CALL]`, { url: `${URL.DASHBOARD.ROOT}`, query: req.query });
-    const { code } = req.query as Record<string, string>;
-
     try {
-      const res = await fastify.db.query(`DELETE FROM dashboard WHERE code='${code}';`);
+      const { code } = req.query as DashboardCreateType;
+
+      await fastify.db.query(`DELETE FROM dashboard WHERE code='${code}';`);
       reply.status(200).send({ value: code });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.DASHBOARD.ROOT }));
@@ -68,10 +85,10 @@ const dashboardRoute = (fastify: FastifyInstance) => {
 
   // 보유종목 수정
   fastify.put(URL.DASHBOARD.ROOT, async (req, reply) => {
-    console.log(`[API:CALL]`, { url: `${URL.DASHBOARD.ROOT}`, query: req.body });
-    const { code, name } = req.body as Record<string, string>;
-
+    
     try {
+      const { code, name } = req.body as DashboardCreateType;
+
       const res = await fastify.db.query(`UPDATE dashboard SET name = '${name}' WHERE code = '${code}';`);
       reply.status(200).send({ value: code });
     } catch (error) {
@@ -79,49 +96,12 @@ const dashboardRoute = (fastify: FastifyInstance) => {
     }
   });
 
-  // fastify.get(URL.DASHBOARD.SISE, async (req, reply) => {
-  //   console.log(`[API:CALL]`, { url: `${URL.DASHBOARD.SISE}` });
-
-  //   try {
-  //     const result = await fastify.db.query("SELECT * FROM market");
-  //     console.log("[DB Select]", { db: fastify.db, result: result?.length });
-
-  //     // reply
-  //     //   .code(200)
-  //     //   .header("Content-Type", "application/json")
-  //     //   .send(
-  //     //     JSON.parse(
-  //     //       safeStringify({
-  //     //         code: 200,
-  //     //         value: result,
-  //     //       })
-  //     //     )
-  //     //   );
-
-  //     // return mockData;
-  //     return {
-  //       code: 200,
-  //       value: result,
-  //       total: result.length,
-  //     };
-  //   } catch (error) {
-  //     console.error("[DASHBOARD ERROR]", error); // ← 여기 로그 확인
-  //     reply.status(500).send({ code: 500, message: "DB 조회 실패" });
-  //   }
-
-  //   // return mockSise;
-  // });
-
-    // 보유종목 시세 수정
+  // 보유종목 시세 수정
   fastify.put(URL.DASHBOARD.SISE, async (req, reply) => {
-    console.log(`[API:CALL]`, { url: `${URL.MYSTOCK.SISE}`, query: req.body });
-    const { code, sise, updown } = req.body as Record<string, string>;
-
     try {
-      // `SELECT code, stime as time, sise, updown  FROM market WHERE code='${code}';`
-      const res = await fastify.db.query(
-        `UPDATE market SET sise = '${sise}', updown='${updown}' WHERE code = '${code}';`
-      );
+      const { code, sise, updown } = req.body as DashboardCreateType;
+
+      await fastify.db.query(`UPDATE market SET sise = '${sise}', updown='${updown}' WHERE code = '${code}';`);
       reply.status(200).send({ value: code });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.ROOT }));

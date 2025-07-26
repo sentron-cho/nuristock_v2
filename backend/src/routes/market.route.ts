@@ -8,16 +8,14 @@ import { makeUpdateSet } from "../lib/db.util.js";
 const marketRoute = (fastify: FastifyInstance) => {
   // 종목 전체 목록 조회
   fastify.get(URL.MARKET.ROOT, async (req, reply) => {
-    console.log(`[API:CALL]`, { url: `${URL.MYSTOCK.ROOT}`, query: req.query });
-
     try {
-      const list = await fastify.db.query(`SELECT code, name, type, state FROM market`);
-      console.log("[DB Select]", { keeps: list?.length });
-
-      return {
-        code: 200,
-        value: list as MarketSelectDataType[],
-      };
+      const { all = false } = req.query as MarketSiseUpdateDataType;
+      let query = `SELECT code, name, type, state, sise, updown, erate, ecost, stime FROM market`;
+      if (!all) {
+        query += ` WHERE state != 'close'`;
+      }
+      const list = await fastify.db.query(query);
+      return { value: list as MarketSelectDataType[] };
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.MARKET.ROOT }));
     }
@@ -25,10 +23,8 @@ const marketRoute = (fastify: FastifyInstance) => {
 
   // 종목 시세 수정
   fastify.put(URL.MARKET.SISE, async (req, reply) => {
-    console.log(`[API:CALL]`, { url: `${URL.MARKET.SISE}`, query: req.body });
-    const { code } = req.body as MarketSiseUpdateDataType;
-
     try {
+      const { code } = req.body as MarketSiseUpdateDataType;
       await fastify.db.query(
         `UPDATE market SET ${makeUpdateSet(req.body as Record<string, unknown>)} WHERE code = '${code}';`
       );

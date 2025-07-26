@@ -3,6 +3,12 @@ export interface MarketItemType {
 	name: string;
 	state?: string;
 	type?: string;
+	stime: string;
+	updown: string;
+	sise: number;
+	erate: number;
+	ecost: number;
+	utime?: string;
 }
 
 export interface MarketResponse {

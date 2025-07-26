@@ -25,7 +25,6 @@ export const MyStcokCardList = ({
 	onClick?: (eid?: string, item?: KeepType | SellType) => void;
 	sise?: SiseType;
 }) => {
-
 	if (!list?.length) return <NoData />;
 
 	return (
@@ -60,7 +59,7 @@ export const MyStockCard = ({
 		onClick?.(eid, data);
 	};
 
-	const type = valueOfPlusMinus(sise?.sise, data.scost);
+	const type = valueOfPlusMinus(sise?.sise, sise?.sise ? data.scost : 0);
 
 	// const handleSiseClick = (e: React.MouseEvent) => {
 	// 	e.stopPropagation();

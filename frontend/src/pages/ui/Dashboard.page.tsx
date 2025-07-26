@@ -166,8 +166,13 @@ const DashboardPage = () => {
 				</Flex>
 			</StyledPage>
 
+			{/* 종목 추가 팝업 */}
 			{popup?.type === EID.ADD && <StockRegisterPopup onClose={popup?.onClose} />}
+
+			{/* 보유종목 수정 팝업 */}
 			{popup?.type === EID.EDIT && <StockUpdaterPopup item={popup?.item as DataType} onClose={popup?.onClose} />}
+
+			{/* 시세 수정 팝업 */}
 			{popup?.type === EID.SISE && (
 				<StockSiseUpdaterPopup item={popup?.item as SiseItemType} onClose={popup?.onClose} />
 			)}

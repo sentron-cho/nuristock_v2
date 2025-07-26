@@ -15,6 +15,7 @@ import { useCreateDashboard } from '@features/dashboard/api/dashboard.api';
 import { IconEdit } from '@entites/Icons';
 import { FormField } from '@entites/FormField';
 import { TextInputForm } from '@entites/TextInputForm';
+import { toCost, withCommas } from '@shared/libs/utils.lib';
 
 const StyledDialog = styled(Dialog, {
 	overflow: 'hidden',
@@ -48,7 +49,7 @@ const StyledDialog = styled(Dialog, {
 			width: 'unset',
 			flex: 1,
 			marginRight: 10,
-		}
+		},
 	},
 });
 
@@ -94,7 +95,7 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 					await createData({ ...selected, name: forms?.getValues('title') || selected?.name });
 					showToast('registered');
 					onClose?.(isOk);
-				},
+				}
 				// (error) => {
 				// 	console.error('[error]', { error });
 				// }
@@ -153,6 +154,8 @@ const SelectionItemInfo = ({
 		setEditMode((prev) => !prev);
 	};
 
+	console.log({ item });
+
 	return (
 		<Flex className='stock-info' direction={'column'} justify={'start'} align={'start'} height={'100%'} gap={4}>
 			<FormField size='md' className={item?.state} label={ST.MARKET} text={market} />
@@ -166,6 +169,7 @@ const SelectionItemInfo = ({
 
 				<IconEdit fontSize='small' onClick={onClickEdit} />
 			</Flex>
+			<FormField size='md' label={ST.SISE} text={toCost(item.sise, true)} />
 		</Flex>
 	);
 };

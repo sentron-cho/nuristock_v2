@@ -4,13 +4,14 @@ import { FastifyInstance } from "fastify";
 import { withError } from "../lib/error.js";
 import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
 import { MyStockKeepCreateType, MyStockSellCreateType } from "../types/mystock.type.js";
+import dayjs from 'dayjs';
 
 const mystockRoute = (fastify: FastifyInstance) => {
   // 보유종목 목록 조회
   fastify.get(URL.MYSTOCK.ROOT, async (req, reply) => {
-    const { code } = req.query as { code?: string };
-
     try {
+      const { code } = req.query as { code?: string };
+
       const mystocks = await fastify.db.query(`SELECT * FROM dashboard`);
       const stock = await fastify.db.query(`SELECT code, name FROM dashboard WHERE code='${code}'`);
       const keeps = await fastify.db.query(`SELECT * FROM keeps WHERE code='${code}'`);
@@ -20,10 +21,7 @@ const mystockRoute = (fastify: FastifyInstance) => {
       );
 
       return {
-        code: 200,
-        value: {
-          ...(stock?.[0] || {}),
-        },
+        value: { ...(stock?.[0] || {}) },
         keeps: keeps,
         sells: sells,
         stocks: mystocks,
@@ -37,7 +35,6 @@ const mystockRoute = (fastify: FastifyInstance) => {
   // 보유 주식 데이터 업데이트
   const updateDashboardKeep = async (code: string, isSell = false) => {
     try {
-      console.log("[updateDashboardKeep]", { code });
       if (!code) throw new Error("is not stock code");
 
       const keeps = await fastify.db.query(
@@ -70,11 +67,31 @@ const mystockRoute = (fastify: FastifyInstance) => {
 
   // 주식 매수 추가
   fastify.post(URL.MYSTOCK.BUY, async (req, reply) => {
-    const { code } = req.body as MyStockKeepCreateType;
-
     try {
+      const { code, scost, sdate } = req.body as MyStockKeepCreateType;
+
+      const sise = await fastify.db.query(`SELECT sise  FROM market WHERE code='${code}';`);
+
+      if (!sise?.[0]?.sise) {
+        
+        console.log({ sise, sdate, scost, stime: dayjs(sdate).format('YYYYMMDDHHmmss') });
+
+        const params = {
+          stime: dayjs(sdate).format('YYYYMMDDHHmmss'),
+          sise: scost,
+          updown: "",
+          erate: 0,
+          ecost: 0,
+        };
+
+        await fastify.db.query(
+          `UPDATE market SET ${makeUpdateSet(params as Record<string, unknown>)} WHERE code = '${code}';`
+        );
+      }
+
       await fastify.db.query(`INSERT INTO keeps ${makeInsertSet(req.body as Record<string, string>)};`);
       await updateDashboardKeep(code);
+
       reply.status(200).send({ value: code });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.BUY }));
@@ -83,9 +100,9 @@ const mystockRoute = (fastify: FastifyInstance) => {
 
   // 매수 주식 삭제
   fastify.delete(URL.MYSTOCK.BUY, async (req, reply) => {
-    const { rowid, code } = req.query as MyStockKeepCreateType;
-
     try {
+      const { rowid, code } = req.query as MyStockKeepCreateType;
+
       await fastify.db.query(`DELETE FROM keeps WHERE rowid=${rowid};`);
       await updateDashboardKeep(code);
       reply.status(200).send({ value: code });
@@ -96,10 +113,9 @@ const mystockRoute = (fastify: FastifyInstance) => {
 
   // 매수 주식 수정
   fastify.put(URL.MYSTOCK.BUY, async (req, reply) => {
-    console.log(req.body);
-    const { code, rowid } = req.body as MyStockKeepCreateType;
-
     try {
+      const { code, rowid } = req.body as MyStockKeepCreateType;
+
       if (!rowid)
         return reply
           .status(500)
@@ -117,11 +133,11 @@ const mystockRoute = (fastify: FastifyInstance) => {
 
   // 주식 매도 추가
   fastify.post(URL.MYSTOCK.SELL, async (req, reply) => {
-    const { code, rowid } = req.body as MyStockSellCreateType;
-
     try {
-      const params = JSON.parse(JSON.stringify(req?.body))
-      delete params['rowid'];
+      const { code, rowid } = req.body as MyStockSellCreateType;
+
+      const params = JSON.parse(JSON.stringify(req?.body));
+      delete params["rowid"];
 
       await fastify.db.query(`INSERT INTO sells ${makeInsertSet(params as Record<string, string>)};`);
       await fastify.db.query(`DELETE from keeps WHERE rowid=${rowid};`);
@@ -134,9 +150,9 @@ const mystockRoute = (fastify: FastifyInstance) => {
 
   // 매도 주식 삭제
   fastify.delete(URL.MYSTOCK.SELL, async (req, reply) => {
-    const { rowid, code } = req.query as MyStockSellCreateType;
-
     try {
+      const { rowid, code } = req.query as MyStockSellCreateType;
+
       await fastify.db.query(`DELETE FROM sells WHERE rowid=${rowid};`);
       await updateDashboardKeep(code, true);
       reply.status(200).send({ value: code });
@@ -147,10 +163,9 @@ const mystockRoute = (fastify: FastifyInstance) => {
 
   // 매도 주식 수정
   fastify.put(URL.MYSTOCK.SELL, async (req, reply) => {
-    console.log(req.body);
-    const { code, rowid } = req.body as MyStockSellCreateType;
-
     try {
+      const { code, rowid } = req.body as MyStockSellCreateType;
+
       if (!rowid)
         return reply
           .status(500)

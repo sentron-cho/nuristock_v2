@@ -159,7 +159,10 @@ const MyStockPage = () => {
 				/>
 			</StyledPage>
 
+			{/* 매수 팝업 */}
 			{popup?.type === 'buy' && <MyStockBuyPopup item={popup?.item as TreadType} onClose={popup.onClose} />}
+
+			{/* 매도 팝업 */}
 			{popup?.type === 'sell' && <MyStockSellPopup item={popup?.item as MyStockSellType} onClose={popup.onClose} />}
 		</>
 	);

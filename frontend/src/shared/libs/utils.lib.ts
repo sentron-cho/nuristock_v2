@@ -35,7 +35,8 @@ export const toNumber = (v?: string) => {
 	return withCommas(v, true);
 };
 
-export const toCost = (v?: number | string) => {
+export const toCost = (v?: number | string, showZero?: boolean) => {
+	if(showZero) return `${v ? withCommas(v) : 0} ${COST.WON}`;
 	return `${withCommas(v)} ${COST.WON}`;
 };
 
