@@ -22,8 +22,8 @@ export const Headers = ({ filter }: { filter?: string }): ColumnsType => {
 	const items: ColumnsType = [
 		{
 			title: title,
-			dataIndex: 'name',
-			key: 'name',
+			dataIndex: 'title',
+			key: 'title',
 			align: 'left',
 			defaultSortOrder: 'ascend',
 			sortDirections: sortDirections('asc'),
@@ -38,17 +38,27 @@ export const Headers = ({ filter }: { filter?: string }): ColumnsType => {
 			hidden: hidden,
 		},
 		{
-			title: TITLE.SDATE, dataIndex: 'sdate', key: 'sdate', align: 'center', hidden: hidden,
-			render: RenderDate, sorter: (a, b) => String(a.sdate).localeCompare(b.sdate),
+			title: TITLE.SDATE,
+			dataIndex: 'sdate',
+			key: 'sdate',
+			align: 'center',
+			hidden: hidden,
+			render: RenderDate,
+			sorter: (a, b) => String(a.sdate).localeCompare(b.sdate),
 		},
 		{
-			title: TITLE.EDATE, dataIndex: 'edate', key: 'edate', align: 'center', hidden: hidden,
-			render: RenderDate, sorter: (a, b) => String(a.edate).localeCompare(b.edate),
+			title: TITLE.EDATE,
+			dataIndex: 'edate',
+			key: 'edate',
+			align: 'center',
+			hidden: hidden,
+			render: RenderDate,
+			sorter: (a, b) => String(a.edate).localeCompare(b.edate),
 		},
 		{
 			title: TITLE.SPRICE,
-			dataIndex: 'scost',
-			key: 'scost',
+			dataIndex: 'sprice',
+			key: 'sprice',
 			align: 'right',
 			render: (v, row) => {
 				const color = getCostColorType(row?.sonic);
@@ -57,8 +67,8 @@ export const Headers = ({ filter }: { filter?: string }): ColumnsType => {
 		},
 		{
 			title: TITLE.EPRICE,
-			dataIndex: 'ecost',
-			key: 'scost',
+			dataIndex: 'eprice',
+			key: 'eprice',
 			align: 'right',
 			render: (v, row) => {
 				const color = getCostColorType(row?.sonic);
@@ -72,10 +82,11 @@ export const Headers = ({ filter }: { filter?: string }): ColumnsType => {
 			align: 'right',
 			render: (v, row) => {
 				// const sonic = row?.ecost - row?.scost;
-				const cost = Math.round((row?.sonic / row?.scost) * 100);
+				console.log({ row });
+				const cost = Math.round((row?.sonic / row?.sprice) * 100);
 				const color = getCostColorType(cost);
-
-				return RenderCost(!isNaN(cost) ? cost?.toFixed(1) : v, { color });
+				const value = !isNaN(cost) ? cost?.toFixed(1) : v;
+				return RenderCost(value, { color });
 			},
 			sortDirections: sortDirections('desc'),
 			sorter: (a, b) => Math.round((a?.sonic / a?.scost) * 100) - Math.round((b?.sonic / b?.scost) * 100),
@@ -87,10 +98,10 @@ export const Headers = ({ filter }: { filter?: string }): ColumnsType => {
 			align: 'right',
 			render: (v, row) => {
 				// const sonic = row?.ecost - row?.scost;
-				const cost = Math.round((row?.sonic / row?.scost) * 100);
+				const cost = Math.round((row?.sonic / row?.sprice) * 100);
 				const color = getCostColorType(cost);
-
-				return RenderCost(!isNaN(cost) ? cost?.toFixed(1) : v, { color });
+				const value = !isNaN(cost) ? cost?.toFixed(1) : v;
+				return RenderCost(value, { color });
 			},
 		},
 		{

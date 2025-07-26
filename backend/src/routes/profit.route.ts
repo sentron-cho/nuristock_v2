@@ -13,10 +13,12 @@ const profitRoute = (fastify: FastifyInstance) => {
     try {
       console.log("[CALL]", req.query);
 
-      const { year = dayjs().format("YYYY") } = req.query as ProfitSearchParams;
+      const { year } = req.query as ProfitSearchParams;
+
+      const where = year ? `WHERE YEAR(k.edate) = ${year}` : '';
 
       const sells = await fastify.db.query(
-        `SELECT m.name as name, k.* FROM sells k JOIN dashboard m ON k.code = m.code WHERE YEAR(k.edate) = ${year}`
+        `SELECT m.name as name, k.* FROM sells k JOIN dashboard m ON k.code = m.code ${where}`
       );
 
       return { value: sells };

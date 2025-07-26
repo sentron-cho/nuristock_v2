@@ -24,6 +24,8 @@ export interface MyStockKeepType {
 	count: number;
 	utime: string;
 	ctime: string;
+	sprice?: number;
+	eprice?: number;
 	mode?: string;
 }
 

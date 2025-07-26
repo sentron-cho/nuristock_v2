@@ -9,7 +9,7 @@ export const StyledTable = styled(Flex, {
 		'&.selection': {
 			tr: {
 				cursor: 'pointer',
-			}
+			},
 		},
 
 		'.ant-table-thead': {
@@ -67,6 +67,14 @@ export const StyledTable = styled(Flex, {
 
 			'.ant-table-column-sort': {
 				backgroundColor: '$white',
+			},
+
+			'.ant-table-cell-row-hover, .active': {
+				backgroundColor: '$gray300',
+
+				'.ant-table-column-sort': {
+					backgroundColor: '$gray300',
+				},
 			},
 		},
 

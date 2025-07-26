@@ -6,3 +6,5 @@ export const DATE_TIME_FORMAT = `${DATE_FORMAT} ${TIME_FORMAT}`;
 export const DATE_DB_FORMAT = 'YYYYMMDD';
 export const TIME_DB_FORMAT = 'HHmmss';
 export const DATE_TIME_DB_FORMAT = `${DATE_DB_FORMAT}${TIME_DB_FORMAT}`;
+
+export const SELECT_ALL = { value: 'all', label: 'ALL' }

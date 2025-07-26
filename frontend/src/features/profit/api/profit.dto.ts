@@ -6,6 +6,7 @@ export interface ProfitItemType extends MyStockKeepType {
 	ecost?: number;
 	edate?: string;
 	sonic?: number;
+	title?: string;
 }
 
 export interface ProfitResponse {

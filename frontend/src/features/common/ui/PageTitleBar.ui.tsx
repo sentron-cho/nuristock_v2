@@ -18,6 +18,7 @@ const StyledFlex = styled(Flex, {
 		borderBottom: '1px solid $gray700',
 		// boxShadow: '0px 2px 1px -1px rgba(0,0,0,0.2)',
 		padding: '$8',
+		minHeight: '44px',
 		// marginTop: '$4',
 
 		'.left': {
