@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import { FieldValues, useForm } from 'react-hook-form';
 import { SelectOptionType } from '@entites/SelectForm';
 import { SELECT_ALL } from '@shared/config/common.constant';
+import { SummaryData } from './config/Profit.data';
 
 export type FILTER_TYPE = 'codes' | 'months' | 'days' | 'all';
 
@@ -34,15 +35,17 @@ export const useProfitTable = (initialData?: DataType[], initialYears?: YearsTyp
 	// 메인 데이터 초기화
 	useEffect(() => {
 		const items = cloneDeep(initialData)?.map((a) => {
+			const sprice = (a?.scost || 0) * (a?.count || 0);
+			const eprice = (a?.ecost || 0) * (a?.count || 0);
 			return {
 				...a,
-				eprice: (a?.ecost || 0) * (a?.count || 0),
-				sprice: (a?.scost || 0) * (a?.count || 0),
-				sonic: ((a?.ecost || 0) - (a?.scost || 0)) * (a?.count || 0),
+				eprice,
+				sprice,
+				sonic: (eprice || 0) - (sprice || 0),
 			};
 		});
 
-		console.log(items);
+		// console.log(items);
 
 		setData(items);
 	}, [initialData]);
@@ -61,7 +64,6 @@ export const useProfitTable = (initialData?: DataType[], initialYears?: YearsTyp
 		let tempData;
 
 		if (filter === 'all') {
-			console.log({ parsedData });
 			tempData = parsedData;
 		} else {
 			const filteredKey = 'name';
@@ -78,24 +80,23 @@ export const useProfitTable = (initialData?: DataType[], initialYears?: YearsTyp
 					} else {
 						curr['title'] = curr[filteredKey];
 					}
-					// console.log({ key, filteredKey });
 
 					// 초기화
 					if (!acc[key]) {
-						acc[key] = { ...curr, sonic: 0, scost: 0, ecost: 0, count: 0 } as DataType;
+						acc[key] = { ...curr, sonic: 0, scost: 0, ecost: 0, sprice: 0, eprice: 0, count: 0 } as DataType;
 					}
 
-					acc[key].scost = (acc[key].scost || 0) + (curr.scost || 0) * (curr.count || 0);
-					acc[key].ecost = (acc[key].ecost || 0) + (curr.ecost || 0) * (curr.count || 0);
+					acc[key].scost = (acc[key].scost || 0) + (curr.scost || 0);
+					acc[key].ecost = (acc[key].ecost || 0) + (curr.ecost || 0);
 					acc[key].count = (acc[key].count || 0) + (curr.count || 0);
+					acc[key].sprice = (acc[key].sprice || 0) + (curr.sprice || 0);
+					acc[key].eprice = (acc[key].eprice || 0) + (curr.eprice || 0);
 					acc[key].edate = curr.edate;
 
 					return acc;
 				},
 				{} as Record<string, DataType>
 			);
-
-			console.log({ tempData });
 
 			tempData = Object.values(tempData).map((item) => {
 				if (item?.eprice && item?.sprice) {
@@ -107,48 +108,29 @@ export const useProfitTable = (initialData?: DataType[], initialYears?: YearsTyp
 					return item;
 				}
 			});
-
-			// const result = Object.values(grouped).map((item) => {
-			// 	if (item?.scost && item?.ecost && item?.count) {
-			// 		return {
-			// 			...item,
-			// 			sonic: item.ecost - item.scost,
-			// 		};
-			// 	} else {
-			// 		return item;
-			// 	}
-			// });
-
-			// console.log({ result });
-			// setFilteredData(result);
-			// // return sortBy(result, ['code']);
-			// // return result;
-			// setLoading(false);
 		}
 
-		// const result = Object.values(tempData).map((item) => {
-		// 	if (item?.scost && item?.ecost && item?.count) {
-		// 		return {
-		// 			...item,
-		// 			sonic: item.ecost - item.scost,
-		// 		};
-		// 	} else {
-		// 		return item;
-		// 	}
-		// });
-
-		console.log({ tempData });
 		setFilteredData(tempData);
 		setLoading(false);
-
-		// return sortBy(result, ['code']);
-		// return result;
 	}, [filter, parsedData]);
 
+	const summaryData = useMemo(() => {
+		const vCodes = (parsedData as DataType[])
+			?.map((a) => Number(a.eprice) - Number(a.sprice))
+			?.reduce((a, b) => a + b, 0);
+		const values: string[] = [
+			vCodes?.toString() || '',
+			vCodes?.toString() || '',
+			vCodes?.toString() || '',
+			vCodes?.toString() || '',
+		];
+		return SummaryData(values);
+	}, [parsedData]);
+
 	useEffect(() => {
-		const sonic = filteredData?.map((a) => a?.sonic || 0)?.reduce((a, b) => a + b, 0);
+		const sonic = parsedData?.map((a) => a?.sonic || 0)?.reduce((a, b) => a + b, 0);
 		setTotal(Number(sonic));
-	}, [filteredData]);
+	}, [parsedData]);
 
 	// 선택된 row 추가
 	const setSelectedRow = (row: DataType) => {
@@ -185,6 +167,8 @@ export const useProfitTable = (initialData?: DataType[], initialYears?: YearsTyp
 	};
 
 	const changeFilter = (value: FILTER_TYPE) => {
+		if (value === filter) return;
+
 		setLoading(true);
 		setFilteredData(undefined);
 		setFilter(value);
@@ -193,6 +177,7 @@ export const useProfitTable = (initialData?: DataType[], initialYears?: YearsTyp
 	return {
 		formMethod,
 		filteredData,
+		summaryData,
 		data: parsedData,
 		years,
 		loading,

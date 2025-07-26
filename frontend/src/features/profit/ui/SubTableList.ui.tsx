@@ -28,14 +28,14 @@ export const SubTableList: React.FC<SubTableListProps> = ({ headers, selected, l
 
 	return (
 		<StyledTable className={clsx('sub-table-list')} direction={'column'} gap={20}>
-			{selected?.map((name) => {
+			{selected?.map((name, index) => {
 				const parsedName = filter === 'codes' ? name : name?.replace(/-/g, '');
 				const subItems = data?.filter((a) => {
 					return filter === 'codes' ? a?.name === parsedName : a?.edate?.includes(parsedName);
 				});
 
 				return (
-					<Flex direction={'column'} gap={10}>
+					<Flex key={index} direction={'column'} gap={10}>
 						<Text text={name} />
 						<Table
 							rowKey={'rowid'}

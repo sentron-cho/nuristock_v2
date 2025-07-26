@@ -4,12 +4,12 @@ import { RenderCost, RenderDate, RenderPrice } from '@shared/libs/tableRender.li
 import { getCostColorType, sortDirections } from '@shared/libs/utils.lib';
 import { ColumnsType } from 'antd/es/table';
 
-export const SummaryData = (): SummaryDataType[] => {
+export const SummaryData = (values: string[]): SummaryDataType[] => {
 	return [
-		{ id: 'codes', label: ST.PER_CODES, value: '123456789' },
-		{ id: 'months', label: ST.PER_MONTHS, value: '123456789' },
-		{ id: 'days', label: ST.PER_DAYS, value: '123456789' },
-		{ id: 'all', label: ST.ALL, value: '123456789' },
+		{ id: 'codes', label: ST.PER_CODES, value: values?.[0] },
+		{ id: 'months', label: ST.PER_MONTHS, value: values?.[1] },
+		{ id: 'days', label: ST.PER_DAYS, value: values?.[2] },
+		{ id: 'all', label: ST.ALL, value: values?.[3] },
 	];
 };
 
@@ -81,8 +81,6 @@ export const Headers = ({ filter }: { filter?: string }): ColumnsType => {
 			key: 'sonicRate',
 			align: 'right',
 			render: (v, row) => {
-				// const sonic = row?.ecost - row?.scost;
-				console.log({ row });
 				const cost = Math.round((row?.sonic / row?.sprice) * 100);
 				const color = getCostColorType(cost);
 				const value = !isNaN(cost) ? cost?.toFixed(1) : v;
@@ -97,7 +95,6 @@ export const Headers = ({ filter }: { filter?: string }): ColumnsType => {
 			key: 'sonicRateYear',
 			align: 'right',
 			render: (v, row) => {
-				// const sonic = row?.ecost - row?.scost;
 				const cost = Math.round((row?.sonic / row?.sprice) * 100);
 				const color = getCostColorType(cost);
 				const value = !isNaN(cost) ? cost?.toFixed(1) : v;

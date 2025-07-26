@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
-import { SummaryData, Headers } from '@features/profit/config/Profit.data';
+import { Headers } from '@features/profit/config/Profit.data';
 import { SummaryDataType } from '@features/common/ui/SummaryBar.ui';
 import { styled } from '@styles/stitches.config';
 import { useSelectProfit, useSelectProfitYears } from '@features/profit/api/profit.api';
@@ -43,6 +43,7 @@ const ProfitPage = () => {
 	const {
 		loading,
 		formMethod,
+		summaryData,
 		data,
 		years,
 		filteredData: list,
@@ -54,10 +55,6 @@ const ProfitPage = () => {
 		setSelectedRow,
 		clearSelectedRow,
 	} = useProfitTable(profitData?.value, yearsData?.value);
-
-	const summaryData = useMemo(() => {
-		return SummaryData();
-	}, []);
 
 	const headers = useMemo(() => Headers({ filter }), [filter]);
 
@@ -80,9 +77,9 @@ const ProfitPage = () => {
 		console.log('[onClickTitleBar]');
 	};
 
-	const onChangeTitleBar = (value: string) => {
-		console.log('[onClickTitleBar]', { value });
-	};
+	// const onChangeTitleBar = (value: string) => {
+	// 	console.log('[onClickTitleBar]', { value });
+	// };
 
 	const onRowClick = (record: TableRecordType) => {
 		setSelectedRow(record as ProfitItemType);

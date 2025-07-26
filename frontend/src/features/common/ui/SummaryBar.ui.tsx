@@ -3,7 +3,8 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
 import { toCost } from '@shared/libs/utils.lib';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { isEqual } from 'lodash';
 
 export interface SummaryDataType {
 	id: string;
@@ -58,13 +59,19 @@ export const SummaryBar = ({
 	onClick?: (item: SummaryDataType) => void;
 }) => {
 	const [active, setActive] = useState<string>();
+	const [ids, setIds] = useState<string[]>();
 
-	useEffect(() => setActive(data?.length ? data?.[0]?.id : ''), [data]);
+	useEffect(() => {
+		const curIds = data?.map((a) => a.id);
+		!isEqual(ids, curIds) && setIds(data?.map((a) => a.id));
+	}, [data]);
+
+	useEffect(() => setActive(ids?.length ? ids?.[0] : ''), [ids]);
 
 	const onClickItem = (item: SummaryDataType) => {
 		setActive(item.id);
 		onClick?.(item);
-	}
+	};
 
 	return (
 		<StyledForm className={clsx('stats-form')} css={{ height }}>
@@ -74,10 +81,13 @@ export const SummaryBar = ({
 						<Flex
 							key={`stats-${index}`}
 							className={clsx('li', { hover: !!onClick, active: onClick && active === item?.id })}
-							onClick={() => onClickItem(item)}>
+							onClick={() => onClickItem(item)}
+						>
 							<Flex className='box' direction={'column'}>
 								<Typography className='title'>{item.label}</Typography>
-								<Typography className='text' height={18}>{item.value ? toCost(item.value) : ''}</Typography>
+								<Typography className='text' height={18}>
+									{item.value ? toCost(item.value) : ''}
+								</Typography>
 							</Flex>
 						</Flex>
 					);

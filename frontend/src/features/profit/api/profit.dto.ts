@@ -1,4 +1,4 @@
-import { MyStockKeepType } from "@features/mystock/api/mystock.dto";
+import { MyStockKeepType } from '@features/mystock/api/mystock.dto';
 
 export interface ProfitItemType extends MyStockKeepType {
 	name: string;
@@ -7,6 +7,8 @@ export interface ProfitItemType extends MyStockKeepType {
 	edate?: string;
 	sonic?: number;
 	title?: string;
+	sprice?: number;
+	eprice?: number;
 }
 
 export interface ProfitResponse {
