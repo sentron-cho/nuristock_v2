@@ -8,7 +8,7 @@
 	"scripts": {
 		"dev": "vite --mode dev --open",
 		"prod": "vite --mode prod",
-		"build": "tsc -b && vite build",
+		"build": "tsc -b && vite build --mode prod",
 		"serve": "vite preview --port 80 --open",
 		"lint": "eslint .",
 		"preview": "vite preview"

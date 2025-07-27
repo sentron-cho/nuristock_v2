@@ -18,7 +18,8 @@ const fastify = Fastify({
 
 await fastify.register(cors, {
   // origin: '*', //process.env.FRONT_END_ORIGIN,
-  origin: process.env.FRONT_END_ORIGIN || true,
+  // origin: process.env.FRONT_END_ORIGIN || true,
+  origin: true,
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // ✅ DELETE 추가
 });

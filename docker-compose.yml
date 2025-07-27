@@ -12,6 +12,8 @@ services:
     working_dir: /app
     volumes:
       - ./backend:/app
+    env_file:
+      - ./backend/.env.prod
     environment:
       - NODE_ENV=production
 
