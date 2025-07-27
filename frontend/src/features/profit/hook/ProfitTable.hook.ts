@@ -64,7 +64,7 @@ export const useProfitTable = (initialData?: DataType[], initialYears?: YearsTyp
 		let tempData;
 
 		if (filter === 'all') {
-			tempData = parsedData;
+			tempData = parsedData?.map(a => ({...a, title: a?.name}));
 		} else {
 			const filteredKey = 'name';
 
