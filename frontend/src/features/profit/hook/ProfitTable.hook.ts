@@ -149,6 +149,11 @@ export const useProfitTable = (initialData?: DataType[], initialYears?: YearsTyp
 		setSelectedRows(undefined);
 	};
 
+	const clear = () => {
+		setSelectedRows(undefined);
+		formMethod.reset();
+	}
+
 	// console.log('[useProfitTable]', { filteredData, data });
 
 	const rowClassName = (row: FieldValues) => {
@@ -189,5 +194,6 @@ export const useProfitTable = (initialData?: DataType[], initialYears?: YearsTyp
 		rowClassName,
 		setSelectedRow,
 		clearSelectedRow,
+		clear,
 	};
 };

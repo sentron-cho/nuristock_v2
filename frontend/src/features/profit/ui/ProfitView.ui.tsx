@@ -47,7 +47,8 @@ export const ProfitView = ({
 		rowClassName,
 		setFilter,
 		setSelectedRow,
-		clearSelectedRow,
+    // clearSelectedRow,
+    clear,
 	} = useProfitTable(profitData, yearsData);
 
 	const headers = useMemo(() => Headers({ filter: viewType }), [viewType]);
@@ -55,7 +56,7 @@ export const ProfitView = ({
 	useEffect(() => viewType && setFilter(viewType), [viewType]);
 
 	const onClickTitleBar = () => {
-    clearSelectedRow();
+    clear();
 	};
 
 	// const onChangeTitleBar = (value: string) => {
