@@ -7,16 +7,18 @@ import mystockRoute from "./routes/mystock.route.js";
 import marketRoute from "./routes/market.route.js";
 import profitRoute from "./routes/profit.route.js";
 
-dotenv.config();
+// dotenv.config({ path: '.env' });
 
 const fastify = Fastify({
+  logger: true,
   serializerOpts: {
     bigint: "string", // 🔥 핵심 설정
   },
 });
 
 await fastify.register(cors, {
-  origin: process.env.FRONT_END_ORIGIN,
+  // origin: '*', //process.env.FRONT_END_ORIGIN,
+  origin: process.env.FRONT_END_ORIGIN || true,
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // ✅ DELETE 추가
 });
@@ -36,8 +38,8 @@ fastify.get("/", async (req, reply) => {
 
 const start = async () => {
   try {
-    await fastify.listen({ port: 3300 });
-    console.log("[START] http://localhost:3300");
+    await fastify.listen({ port: 3000, host: "0.0.0.0" });
+    console.log("[START] http://localhost:3000");
   } catch (err) {
     console.error("[START ERROR] 서버 시작 오류:", err);
     process.exit(1);

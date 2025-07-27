@@ -1,29 +1,35 @@
-# FROM node:20
-# WORKDIR /app
-# COPY package*.json ./
-# RUN npm install
-# COPY . .
-# RUN npm run build
-# EXPOSE 3030
-# CMD ["node", "dist/index.js"]
+# 1️⃣ 빌드 스테이지 (TypeScript -> JavaScript)
+FROM node:20 AS builder
 
-# 1️⃣ Node.js 베이스 이미지 사용
-FROM node:20
-
-# 2️⃣ 작업 디렉토리 설정
+# 작업 디렉토리 설정
 WORKDIR /app
 
-# 3️⃣ 종속성 파일 복사
+# 의존성 파일 복사 및 설치
 COPY package*.json ./
-
-# 4️⃣ 패키지 설치
 RUN npm install
 
-# 5️⃣ 소스 코드 전체 복사
+# 소스 복사
 COPY . .
+RUN npm run build
 
-# 6️⃣ 포트 지정 (Fastify 기본 포트: 3000)
-EXPOSE 3300
 
-# 7️⃣ 앱 실행
-CMD ["npm", "run", "start"]
+# 2️⃣ 런타임 스테이지 (최소한의 이미지 사용 가능: node:20-slim 등)
+FROM node:20
+
+WORKDIR /app
+
+# 프로덕션 의존성만 설치
+COPY package*.json ./
+RUN npm install --omit=dev
+
+# ✅ 환경 변수 파일 복사
+COPY .env.prod .env
+
+# 빌드 결과물 복사
+COPY --from=builder /app/dist ./dist
+
+# 포트 설정
+EXPOSE 3000
+
+# 앱 실행 (Fastify 엔트리포인트)
+CMD ["node", "dist/main.js"]

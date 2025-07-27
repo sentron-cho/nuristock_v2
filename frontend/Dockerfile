@@ -45,4 +45,4 @@ RUN chown 750 /etc/nginx/conf.d/default.conf
 RUN chown 750 /var/log/nginx/
 RUN chown 750 /var/log/nginx/*
 
-EXPOSE 3300
+EXPOSE 80
