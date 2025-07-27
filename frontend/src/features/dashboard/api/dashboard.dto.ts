@@ -37,3 +37,8 @@ export interface StockSiseType {
 	stime?: string;
 	sise: number;
 }
+
+export interface MyStockUpdateType {
+	code: string,
+	name: string,
+}

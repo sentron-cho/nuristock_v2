@@ -1,4 +1,4 @@
-import { DashboardResponse } from './dashboard.dto';
+import { DashboardResponse, MyStockUpdateType } from './dashboard.dto';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { API } from '@shared/config/url.enum';
 import api from '@shared/api/axios.config';
@@ -40,7 +40,7 @@ export const useDeleteDashboard = () => {
 export const useUpdateDashboard = () => {
 	return useMutation({
 		mutationKey: ['DASHBOARD-U01'],
-		mutationFn: async (data: MarketItemType) => {
+		mutationFn: async (data: MyStockUpdateType) => {
 			return await api.put(API.DASHBOARD, data);
 		},
 	});

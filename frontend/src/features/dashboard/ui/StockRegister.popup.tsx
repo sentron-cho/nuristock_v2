@@ -15,7 +15,7 @@ import { useCreateDashboard } from '@features/dashboard/api/dashboard.api';
 import { IconEdit } from '@entites/Icons';
 import { FormField } from '@entites/FormField';
 import { TextInputForm } from '@entites/TextInputForm';
-import { toCost, withCommas } from '@shared/libs/utils.lib';
+import { toCost } from '@shared/libs/utils.lib';
 
 const StyledDialog = styled(Dialog, {
 	overflow: 'hidden',

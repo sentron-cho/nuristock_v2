@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
 import { toCost } from '@shared/libs/utils.lib';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { isEqual } from 'lodash';
 
 export interface SummaryDataType {

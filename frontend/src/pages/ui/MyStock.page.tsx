@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
 import { styled } from '@styles/stitches.config';
 import {
