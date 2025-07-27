@@ -1,0 +1,46 @@
+echo "nuristock install stating(version: $1 $2)....."
+
+if [ -n "$1" ]; then
+   echo "docker install check...."
+   docker=$(docker -v)
+   str="command not found"
+
+   #echo $docker
+
+   if [ -n "$2" ]; then
+      echo "docker is not installed!"
+      echo "docker installing...."
+      yum -y update
+      yum install -y yum-utils device-mapper-persistent-data lvm2
+      yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+      yum install docker-ce
+      systemctl enable docker.service
+      systemctl start docker.service
+      curl -L "https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      chmod +x /usr/local/bin/docker-compose
+   else
+      echo "$docker is installed!"
+   fi
+
+   echo "nuristock:$1 docker image download...."
+   docker pull sentron/nuristock:$1
+   docker image prune -f
+   docker image tag sentron/nuristock:$1 sentron/nuristock
+   docker rm -f nuristock
+
+   echo "nuristock:$1 docker network create...."
+   docker network create -d bridge nurionet
+
+   echo "nuristock:$1 docker image run...."
+
+   pwd=$0
+   path=${pwd//nuristock.ins/docker-compose.yml}
+   echo $path  
+   
+   docker-compose -f $path up -d
+
+   docker restart nuristock
+else
+   echo "input version tag"
+fi
+

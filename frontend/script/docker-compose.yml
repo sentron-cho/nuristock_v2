@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  nuristock:
+    image: sentron/nuristock
+    container_name: nuristock
+    restart: always
+    ports:
+      - "5000:5050"
+    volumes:
+      - /home/nurio/nuristock/public:/nurio/nuristock/public:rw
+      - /home/nurio/nuristock/log:/nurio/nuristock/log:rw
+      - /home/nurio/nuristock/webset:/nurio/nuristock/webset:rw
+      - /home/proxy:/nurio/proxy
+    environment:
+      - VIRTUAL_HOST=stock.nurioweb.co.kr
+      - VIRTUAL_PORT=5050
+      - LETSENCRYPT_HOST=stock.nurioweb.co.kr
+      - LETSCRYPT_EMAIL=nurioweb@gmail.com
+
+networks:
+  default:
+    external:
+      name: nurionet
