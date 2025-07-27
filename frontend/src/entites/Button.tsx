@@ -1,10 +1,11 @@
+import { IconButton } from '@mui/material';
 import MuiButton, { ButtonProps as MuiButtonProps } from '@mui/material/Button';
 import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
 import { useMemo } from 'react';
 
 export interface ButtonProps extends Omit<MuiButtonProps, 'onClick'> {
-	buttonType?: 'text' | 'fill' | 'outline';
+	buttonType?: 'text' | 'fill' | 'outline' | 'icon';
 	onClick?: (eid?: string) => void;
 	eid?: string;
 	icon?: React.ReactNode;
@@ -47,7 +48,8 @@ export const Button = ({
 	...props
 }: ButtonProps) => {
 	const variant = useMemo(() => {
-		if (buttonType === 'text') return 'text';
+		if (buttonType === 'icon') return 'text';
+		else if (buttonType === 'text') return 'text';
 		else if (buttonType === 'outline') return 'outlined';
 		else return 'contained'; // fill
 	}, [buttonType]);
@@ -56,6 +58,14 @@ export const Button = ({
 		e.stopPropagation();
 		onClick?.(eid);
 	};
+
+	if (buttonType === 'icon') {
+		return (
+			<IconButton size={size} onClick={onClickButton} className={clsx('btn', className)}>
+				{icon}
+			</IconButton>
+		);
+	}
 
 	return (
 		<StyledButton

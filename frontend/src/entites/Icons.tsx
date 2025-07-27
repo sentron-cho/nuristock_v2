@@ -13,6 +13,7 @@ import IconArrowDown from '@mui/icons-material/ArrowDownward';
 import IconPlayArrow from '@mui/icons-material/PlayArrow';
 import IconClear from '@mui/icons-material/Clear';
 import IconSearch from '@mui/icons-material/Search';
+import IconRefresh from '@mui/icons-material/Refresh';
 
 const StyledUp = styled(IconPlayArrow, {
 	color: '$plus',
@@ -48,5 +49,6 @@ export {
 	IconArrowUp,
 	IconArrowDown,
 	IconClear,
-	IconSearch
+	IconSearch,
+	IconRefresh
 };

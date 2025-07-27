@@ -1,11 +1,11 @@
 import { cloneDeep, reverse, sortBy } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
-import { ProfitItemType as DataType, ProfitYearsItemType as YearsType } from './api/profit.dto';
+import { ProfitItemType as DataType, ProfitYearsItemType as YearsType } from '../api/profit.dto';
 import dayjs from 'dayjs';
 import { FieldValues, useForm } from 'react-hook-form';
 import { SelectOptionType } from '@entites/SelectForm';
 import { SELECT_ALL } from '@shared/config/common.constant';
-import { SummaryData } from './config/Profit.data';
+import { SummaryData } from '../config/Profit.data';
 
 export type FILTER_TYPE = 'codes' | 'months' | 'days' | 'all';
 
