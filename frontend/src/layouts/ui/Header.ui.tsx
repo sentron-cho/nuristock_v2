@@ -9,6 +9,7 @@ import IconLogo from '@mui/icons-material/MonetizationOn';
 import { StyledHeader } from '../style/Header.style';
 import { ST } from '@shared/config/kor.lang';
 import { URL } from '@shared/config/url.enum';
+import { SCREEN } from '@shared/config/default.config';
 
 // === Component ===
 const Header: React.FC = () => {
@@ -20,7 +21,7 @@ const Header: React.FC = () => {
 	useEffect(() => {
 		const handleResize = () => {
 			const width = window.innerWidth;
-			width > 640 && isOpen && setOpen(false);
+			width > SCREEN.MOBILE && isOpen && setOpen(false);
 		};
 
 		window.addEventListener('resize', handleResize);

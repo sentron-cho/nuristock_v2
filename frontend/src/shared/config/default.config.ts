@@ -1,13 +1,7 @@
 export const SCREEN = {
-	MOBILE: 800,
-	TABLET: 1024,
+	MOBILE: 640,
+	// TABLET: 800,
 	PC: 1280,
-
-	ST: {
-		MOBILE: 's-mobile',
-		TABLET: 's-tablet',
-		PC: 's-pc',
-	},
 };
 
 export const STAT = {
