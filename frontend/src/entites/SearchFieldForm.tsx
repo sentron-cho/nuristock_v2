@@ -46,14 +46,17 @@ type SearchFieldFormProps<T extends FieldValues = FieldValues> = TextInputFormPr
 	onClear?: () => void;
 };
 
-export const SearchFieldForm = <T extends FieldValues = FieldValues>(props: SearchFieldFormProps<T>) => {
+export const SearchFieldForm = <T extends FieldValues = FieldValues>({
+	onClear,
+	...props
+}: SearchFieldFormProps<T>) => {
 	const id = useMemo(() => (props?.name || props.id) as Path<T>, [props?.name, props.id]);
 	const searchValue = props?.formMethod?.getValues(id) || props?.value;
 	const error = props?.error || props?.formMethod?.getFieldState(id)?.error;
 
-	const onClear = () => {
+	const onClickClear = () => {
 		props?.formMethod?.resetField(id);
-		props?.onClear?.();
+		onClear?.();
 	};
 
 	return (
@@ -69,9 +72,9 @@ export const SearchFieldForm = <T extends FieldValues = FieldValues>(props: Sear
 					input: {
 						endAdornment: (
 							<Flex className={clsx('buttons')}>
-								{searchValue?.length && <IconClear className={clsx('icon-clear')} fontSize='small' onClick={onClear} />}
+								{searchValue?.length && <IconClear className={clsx('icon-clear')} fontSize='small' onClick={onClickClear} />}
 								{!searchValue?.length && (
-									<IconSearch className={clsx('icon-search')} fontSize='small' onClick={onClear} />
+									<IconSearch className={clsx('icon-search')} fontSize='small' onClick={onClickClear} />
 								)}
 							</Flex>
 						),

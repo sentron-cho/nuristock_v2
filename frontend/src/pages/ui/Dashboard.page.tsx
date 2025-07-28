@@ -18,7 +18,10 @@ import { URL } from '@shared/config/url.enum';
 import { EID } from '@shared/config/default.config';
 import { ST } from '@shared/config/kor.lang';
 import { IconAdd } from '@entites/Icons';
-import { useNavigate } from 'react-router-dom';
+import {
+	// useLocation,
+	useNavigate
+} from 'react-router-dom';
 import { StockUpdaterPopup } from '@features/dashboard/ui/StockUpdater.popup';
 import { PopupType } from '@entites/Dialog';
 import { sortBy, reverse } from 'lodash';
@@ -34,6 +37,7 @@ const StyledPage = styled(PageContainer, {
 
 const DashboardPage = () => {
 	const navigate = useNavigate();
+	// const location = useLocation();
 
 	const { showToast, showConfirm } = useCommonHook();
 
@@ -135,6 +139,8 @@ const DashboardPage = () => {
 				type: eid,
 				item: data?.sise?.find((b) => b.code === item?.code),
 				onClose: (isOk: boolean) => {
+					// console.log({ location });
+					// navigate(-1); // push로 넣었던 dummy state pop
 					setPopup(undefined);
 					isOk && refetch();
 				},

@@ -70,8 +70,9 @@ export const Dialog = ({
 
 		// 브라우저 뒤로가기 시 팝업 닫기
 		const handlePopState = () => {
+			console.log({ location });
+			location?.state?.modal && navigate(-1); // push로 넣었던 dummy state pop
 			onClose?.(false);
-			navigate(-1); // push로 넣었던 dummy state pop
 		};
 
 		// popstate 이벤트 수동으로 감지
