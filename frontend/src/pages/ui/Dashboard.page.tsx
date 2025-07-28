@@ -150,7 +150,9 @@ const DashboardPage = () => {
 					selectProps={{
 						options: titleOptions,
 						defaultValue: titleOptions?.[0]?.value,
+						value: sort,
 						onChange: setSort,
+						width: 100,
 					}}
 					buttonProps={{
 						eid: EID.ADD,

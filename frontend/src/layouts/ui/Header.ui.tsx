@@ -56,10 +56,13 @@ const Header: React.FC = () => {
 						<Flex
 							className='box'
 							width={'fit-content'}
-							onClick={() => navigate('/')}
+							onClick={() => {
+								setOpen(false);
+								navigate('/');
+							}}
 						>
 							<IconLogo fontSize='medium' />
-							<Typography className='title'>{'주식 다이어리'}</Typography>
+							<Typography className='title'>{ST.STOCK_DIARY}</Typography>
 						</Flex>
 					</Flex>
 					<button

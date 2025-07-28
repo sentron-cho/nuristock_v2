@@ -140,6 +140,7 @@ const MyStockPage = () => {
 						defaultValue: titleOptions?.[0]?.value,
 						value: viewType,
 						onChange: onChangeTitleBar,
+						width: 100,
 					}}
 					buttonProps={{
 						eid: 'buy',

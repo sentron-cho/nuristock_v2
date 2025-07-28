@@ -1,4 +1,5 @@
 const KOR = {
+	STOCK_DIARY: '주식 다이어리',
 	OK: '확인',
 	CANCEL: '취소',
 	SAVE: '저장',

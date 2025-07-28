@@ -2,6 +2,7 @@ import { styled } from '@styles/stitches.config';
 
 export const StyledHeader = styled('div', {
 	'.header-bar': {
+		userSelect: 'none',
 		position: 'sticky',
 		top: 0,
 		left: 0,
@@ -40,6 +41,8 @@ export const StyledHeader = styled('div', {
 			},
 
 			'.menu-button': {
+				position: 'absolute',
+				right: 0,
 				background: 'none',
 				border: 'none',
 				color: 'white',
@@ -82,8 +85,8 @@ export const StyledHeader = styled('div', {
 		'.menu-bg': {
 			flex: 1,
 			backgroundColor: '$black',
-      opacity: '0.1',
-      width: '100%',
+			opacity: '0.1',
+			width: '100%',
 		},
 
 		'@sm': {
