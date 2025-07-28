@@ -13,6 +13,7 @@ export interface SummaryDataType {
 }
 
 const StyledForm = styled(Flex, {
+	userSelect: 'none',
 	backgroundColor: '$gray800',
 	position: 'sticky',
 	color: '$white',
