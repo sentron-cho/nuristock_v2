@@ -1,4 +1,4 @@
-import { TextInputForm } from '@entites/TextInputForm';
+import { NumberInputForm, TextInputForm } from '@entites/TextInputForm';
 import { Dialog } from '@entites/Dialog';
 import { useForm } from 'react-hook-form';
 import { ST } from '@shared/config/kor.lang';
@@ -68,30 +68,24 @@ export const StockSiseUpdaterPopup = ({ item, onClose }: { item?: DataType; onCl
 		<Dialog title={`${item?.name}(${item?.code})`} onClose={onClickClose}>
 			<Flex direction={'column'} gap={24}>
 				<TextInputForm
-					id={`time`}
+					id={`stime`}
 					disabled={true}
 					label={ST.UPDATE_TIME}
 					size='small'
 					align='right'
 					formMethod={forms}
 				/>
-				<TextInputForm
-					withComma
+				<NumberInputForm
 					autoFocus
 					id='sise'
 					label={ST.SISE}
-					size='small'
 					maxLength={10}
-					align='right'
 					formMethod={forms}
 				/>
-				<TextInputForm
-					withComma
+				<NumberInputForm
 					id='ecost'
 					label={ST.ECOST}
-					size='small'
 					maxLength={10}
-					align='right'
 					formMethod={forms}
 				/>
 			</Flex>

@@ -5,6 +5,7 @@ import { Tooltip } from '@entites/Tooltip';
 import clsx from 'clsx';
 import { withCommas } from '@shared/libs/utils.lib';
 import { StyledTextInputForm } from './TextInputForm.style';
+import { ST } from '@shared/config/kor.lang';
 
 export type TextInputFormProps<T extends FieldValues = FieldValues> = TextInputProps & {
 	name?: keyof T;
@@ -139,5 +140,26 @@ const TextField: React.FC<TextInputProps> = ({
 			{message && <Tooltip message={message} color={error ? 'error' : 'action'} />}
 			{innerError && <Tooltip message={innerError} color={'error'} />}
 		</StyledTextInputForm>
+	);
+};
+
+export const NumberInputForm = <T extends FieldValues = FieldValues>(props: TextInputFormProps<T>) => {
+	return (
+		<TextInputForm
+			placeholder={ST.IN_NUMBER}
+			withComma
+			size='small'
+			align='right'
+			inputMode='numeric'
+			slotProps={{
+				input: {
+					inputProps: {
+						inputMode: 'numeric',
+						pattern: '[0-9]*',
+					},
+				},
+			}}
+			{...props}
+		/>
 	);
 };

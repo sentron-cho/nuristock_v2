@@ -1,4 +1,4 @@
-import { TextInputForm } from '@entites/TextInputForm';
+import { NumberInputForm } from '@entites/TextInputForm';
 import { Dialog } from '@entites/Dialog';
 import { useForm } from 'react-hook-form';
 import { MyStockTreadType as TreadType } from '../api/mystock.dto';
@@ -79,28 +79,19 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: TreadType; onClose: 
 		<Dialog title={`${ST.BUY}(${isEditMode ? ST.UPDATE : ST.ADD})`} onClose={onClickClose}>
 			<StyledForm direction={'column'} gap={20}>
 				<DatePickerForm id='date' label={ST.BUY_DATE} placeholder={ST.IN_DATE} formMethod={forms} align='right' />
-				<TextInputForm
+				<NumberInputForm
 					id='cost'
 					label={ST.BUY_COST}
-					placeholder={ST.IN_NUMBER}
-					size='small'
 					formMethod={forms}
 					maxLength={12}
-					withComma
 					autoFocus
-					align='right'
 				/>
-				<TextInputForm
+				<NumberInputForm
 					id='count'
 					label={ST.STOCK_COUNT}
-					placeholder={ST.IN_NUMBER}
-					size='small'
 					formMethod={forms}
 					maxLength={8}
-					withComma
 					focused
-					align='right'
-					// slotProps={{ input: { type: 'number' } }}
 				/>
 			</StyledForm>
 		</Dialog>

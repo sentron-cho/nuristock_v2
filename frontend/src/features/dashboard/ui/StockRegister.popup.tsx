@@ -21,6 +21,7 @@ const StyledDialog = styled(Dialog, {
 	overflow: 'hidden',
 
 	'.list-layer': {
+		marginTop: '$10',
 		height: '300px',
 	},
 
@@ -119,8 +120,8 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 		<StyledDialog className='stock-register' title={ST.STOCK_APPEND} onClose={onClickClose}>
 			{!list?.length || (isPending && 'Loading...')}
 			{!isPending && (
-				<Flex direction={'column'} gap={0} className={clsx('popup-contents')}>
-					<SearchFieldForm id={'search'} formMethod={forms} onClear={onClear} />
+				<Flex direction={'column'} gap={0} className={clsx('popup-contents')} align={'start'}>
+					<SearchFieldForm id={'search'} formMethod={forms} onClear={onClear} autoFocus />
 					<Flex className='list-layer'>
 						{selected && <SelectionItemInfo item={selected} formMethod={forms} />}
 						{!selected && <ListForm searchValue={search} size='small' items={filtered} onSelect={onSelect} />}
@@ -153,8 +154,6 @@ const SelectionItemInfo = ({
 	const onClickEdit = () => {
 		setEditMode((prev) => !prev);
 	};
-
-	console.log({ item });
 
 	return (
 		<Flex className='stock-info' direction={'column'} justify={'start'} align={'start'} height={'100%'} gap={4}>

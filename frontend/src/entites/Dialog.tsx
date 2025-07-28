@@ -89,7 +89,7 @@ export const Dialog = ({
 			<DialogTitle title={title} onClose={onCancel} />
 
 			<DialogContent dividers>
-				<Flex className='contents'>{children}</Flex>
+				<Flex className='contents' direction={'column'}>{children}</Flex>
 			</DialogContent>
 
 			<DialogActions>

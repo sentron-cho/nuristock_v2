@@ -1,4 +1,4 @@
-import { TextInputForm } from '@entites/TextInputForm';
+import { NumberInputForm } from '@entites/TextInputForm';
 import { Dialog } from '@entites/Dialog';
 import { FieldValues, useForm, UseFormReturn } from 'react-hook-form';
 import { MyStockSellType as SellDataType } from '../api/mystock.dto';
@@ -24,8 +24,6 @@ export const MyStockSellPopup = ({ item, onClose }: { item?: SellDataType; onClo
 	const { showToast } = useCommonHook();
 
 	const isEditMode = useMemo(() => item?.mode === 'edit', [item]);
-
-	console.log({ item });
 
 	const forms = useForm({
 		defaultValues: isEditMode
@@ -81,7 +79,7 @@ export const MyStockSellPopup = ({ item, onClose }: { item?: SellDataType; onClo
 						count: Number(toNumber(fields.sellCount)),
 					};
 
-					console.log({fields, params});
+					console.log({ fields, params });
 
 					if (isEditMode) {
 						await updateData(params);
@@ -124,41 +122,37 @@ const ContentsForm = <T extends FieldValues>({
 	const isBuy = useMemo(() => type === 'buy', [type]);
 
 	return (
-		<Flex direction={'column'} gap={10}>
+		<Flex direction={'column'} gap={8}>
 			<Text bold text={isBuy ? ST.BUY : ST.SELL} />
-			<DatePickerForm
-				id={`${type}Date`}
-				disabled={isBuy}
-				defaultValue={dayjs(new Date())}
-				label={isBuy ? ST.BUY_DATE : ST.SELL_DATE}
-				placeholder={ST.IN_DATE}
-				align='right'
-				formMethod={formMethod}
-			/>
-			<Flex direction={'row'} gap={10}>
-				<TextInputForm
-					id={`${type}Cost`}
+			<Flex direction={'column'} gap={20}>
+				<DatePickerForm
+					id={`${type}Date`}
 					disabled={isBuy}
-					focused={!isBuy}
-					label={isBuy ? ST.BUY_COST : ST.SELL_COST}
-					size='small'
-					withComma
+					defaultValue={dayjs(new Date())}
+					label={isBuy ? ST.BUY_DATE : ST.SELL_DATE}
+					placeholder={ST.IN_DATE}
 					align='right'
-					autoFocus={!isBuy}
 					formMethod={formMethod}
 				/>
-				<TextInputForm
-					id={`${type}Count`}
-					disabled={isBuy}
-					focused={!isBuy}
-					label={ST.STOCK_COUNT}
-					placeholder={ST.IN_NUMBER}
-					size='small'
-					withComma
-					align='right'
-					maxLength={8}
-					formMethod={formMethod}
-				/>
+				<Flex direction={'row'} gap={10}>
+					<NumberInputForm
+						id={`${type}Cost`}
+						disabled={isBuy}
+						focused={!isBuy}
+						label={isBuy ? ST.BUY_COST : ST.SELL_COST}
+						autoFocus={!isBuy}
+						formMethod={formMethod}
+						maxLength={12}
+					/>
+					<NumberInputForm
+						id={`${type}Count`}
+						disabled={isBuy}
+						focused={!isBuy}
+						label={ST.STOCK_COUNT}
+						formMethod={formMethod}
+						maxLength={8}
+					/>
+				</Flex>
 			</Flex>
 		</Flex>
 	);
