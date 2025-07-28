@@ -19,7 +19,7 @@ export const Title = ({ title, className }: { title: string, className?: string 
 	);
 };
 
-export const SubTitle = ({ title, className }: { title: string, className: string }) => {
+export const SubTitle = ({ title, className }: { title: string, className?: string }) => {
 	return (
 		<StyledTitle fontWeight={'bold'} fontSize={'medium'} className={clsx('sut-title', className)}>
 			{title}

@@ -30,6 +30,8 @@ export const useCommonHook = () => {
 			width > SCREEN.MOBILE ? setScreen(SCREEN_TYPE.PC) : setScreen(SCREEN_TYPE.MOBILE);
 		};
 
+		handleResize();
+
 		window.addEventListener('resize', handleResize);
 		return () => window.removeEventListener('resize', handleResize);
 	}, []);

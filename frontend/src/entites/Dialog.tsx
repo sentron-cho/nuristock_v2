@@ -13,8 +13,9 @@ import {
 	DialogProps as MuiDialogProps,
 } from '@mui/material';
 import { styled } from '@styles/stitches.config';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect } from 'react';
 import { FieldValues } from 'react-hook-form';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const StyledDialog = styled(MuiDialog, {
 	'.contents': {
@@ -60,12 +61,35 @@ export const Dialog = ({
 	const theme = useTheme();
 	const isFullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
+	const navigate = useNavigate();
+	const location = useLocation();
+
+	useEffect(() => {
+		// 팝업이 열릴 때 현재 위치에 dummy state를 추가
+		navigate(location.pathname, { replace: false, state: { modal: true } });
+
+		// 브라우저 뒤로가기 시 팝업 닫기
+		const handlePopState = () => {
+			onClose?.(false);
+			navigate(-1); // push로 넣었던 dummy state pop
+		};
+
+		// popstate 이벤트 수동으로 감지
+		window.addEventListener('popstate', handlePopState);
+
+		return () => {
+			// 언마운트 시 이벤트 제거
+			window.removeEventListener('popstate', handlePopState);
+		};
+	}, []);
+
 	const onOk = () => {
 		onClose(true);
 	};
 
 	const onCancel = () => {
 		onClose(false);
+		navigate(-1); // push로 넣었던 dummy state pop
 	};
 
 	const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -89,7 +113,9 @@ export const Dialog = ({
 			<DialogTitle title={title} onClose={onCancel} />
 
 			<DialogContent dividers>
-				<Flex className='contents' direction={'column'}>{children}</Flex>
+				<Flex className='contents' direction={'column'}>
+					{children}
+				</Flex>
 			</DialogContent>
 
 			<DialogActions>
