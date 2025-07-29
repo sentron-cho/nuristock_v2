@@ -18,7 +18,7 @@ export interface MarketResponse {
 export interface MarketSiseDataType {
 	code: string;
 	sise: number;
-	time: string;
+	stime: string;
 	type: string;
 	updown: string;
 	name: string;

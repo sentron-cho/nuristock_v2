@@ -4,6 +4,7 @@ import URL from "../types/url.js";
 import { FastifyInstance } from "fastify";
 import { MarketSelectDataType, MarketSiseUpdateDataType } from "../types/market.type.js";
 import { makeUpdateSet } from "../lib/db.util.js";
+import { FieldValues } from "../types/common.type.js";
 
 const marketRoute = (fastify: FastifyInstance) => {
   // 종목 전체 목록 조회
@@ -26,7 +27,7 @@ const marketRoute = (fastify: FastifyInstance) => {
     try {
       const { code } = req.body as MarketSiseUpdateDataType;
       await fastify.db.query(
-        `UPDATE market SET ${makeUpdateSet(req.body as Record<string, unknown>)} WHERE code = '${code}';`
+        `UPDATE market SET ${makeUpdateSet(req.body as FieldValues)} WHERE code = '${code}';`
       );
       reply.status(200).send({ value: code });
     } catch (error) {

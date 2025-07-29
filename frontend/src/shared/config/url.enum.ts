@@ -27,7 +27,6 @@ const API_ROOT = '/api/v1';
 
 export const API = {
 	DASHBOARD: `${API_ROOT}/dashboard`,
-  DASHBOARD_SISE: `${API_ROOT}/dashboard/sise`,
 	MYSTOCK: `${API_ROOT}/mystock`,
 	MYSTOCK_SISE: `${API_ROOT}/mystock/sise`,
 	MYSTOCK_BUY: `${API_ROOT}/mystock/buy`,

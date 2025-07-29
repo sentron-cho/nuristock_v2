@@ -11,8 +11,6 @@ export interface DashboardItemType {
 	eprice: number;
 	sprice: number;
 	showyn: string;
-	utime: string;
-	ctime: string;
 
 	sonic?: number;
 	sonicRate?: number;

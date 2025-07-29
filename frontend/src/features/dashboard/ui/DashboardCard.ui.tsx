@@ -31,7 +31,6 @@ export const DashboardCard = ({
 
 	const sise = useMemo(() => {
 		const siseItem = siseData?.find((a) => a.code === data.code);
-		// console.log({ siseItem });
 
 		if (!siseItem?.sise) return { total: '', text: '', time: '', price: 0 };
 
@@ -39,7 +38,7 @@ export const DashboardCard = ({
 		const sisePercent = `[${((siseTotal / data.kprice) * 100 - 100).toFixed(0)} %]`;
 		const siseText =
 			data.kcount > 0 ? `[${withCommas(data?.kcount)} x ${withCommas(siseItem?.sise)}${ST.WON}] ${sisePercent}` : '';
-		const siseTitle = siseItem?.time?.length > LONG_TIME_FORMAT_LENGTH ? ST.SISE : ST.SISE_END;
+		const siseTitle = siseItem?.stime?.length > LONG_TIME_FORMAT_LENGTH ? ST.SISE : ST.SISE_END;
 
 		return {
 			// ...siseItem,
@@ -49,7 +48,7 @@ export const DashboardCard = ({
 			updown: siseItem.updown,
 			total: `${withCommas(siseTotal)}`,
 			text: siseText,
-			time: `${siseTitle}(${dayjs(siseItem?.time).format('MM.DD HH:MM')})`,
+			time: `${siseTitle}(${dayjs(siseItem?.stime).format('MM.DD HH:mm')})`,
 			price: siseTotal,
 		};
 	}, [siseData, data]);
@@ -157,6 +156,7 @@ export const DashboardCard = ({
 
 				{/* foot */}
 				<Flex className='foot' justify={'between'}>
+					{/* 네이버, 다음 버튼 */}
 					<Flex gap={8} width={200}>
 						<Button
 							className='naver'
@@ -169,6 +169,7 @@ export const DashboardCard = ({
 						<Button className='daum' eid='daum' icon={<IconLaunch />} size='small' title='Daum' onClick={handleClick} />
 					</Flex>
 
+					{/* 시세 정보 표시 */}
 					{sise && sise?.sise && (
 						<Flex className={'sise'} direction={'column'} align={'end'} flex={1} gap={8}>
 							<Text className='time' text={sise.time} size={'xxs'} />

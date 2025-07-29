@@ -4,7 +4,8 @@ import { FastifyInstance } from "fastify";
 import { withError } from "../lib/error.js";
 import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
 import { MyStockKeepCreateType, MyStockSellCreateType } from "../types/mystock.type.js";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
+import { FieldValues } from "../types/common.type.js";
 
 const mystockRoute = (fastify: FastifyInstance) => {
   // 보유종목 목록 조회
@@ -72,12 +73,10 @@ const mystockRoute = (fastify: FastifyInstance) => {
 
       const sise = await fastify.db.query(`SELECT sise  FROM market WHERE code='${code}';`);
 
+      // 시세가 없을 경우
       if (!sise?.[0]?.sise) {
-        
-        console.log({ sise, sdate, scost, stime: dayjs(sdate).format('YYYYMMDDHHmmss') });
-
         const params = {
-          stime: dayjs(sdate).format('YYYYMMDDHHmmss'),
+          stime: dayjs(sdate).format("YYYYMMDDHHmmss"),
           sise: scost,
           updown: "",
           erate: 0,
@@ -85,7 +84,16 @@ const mystockRoute = (fastify: FastifyInstance) => {
         };
 
         await fastify.db.query(
-          `UPDATE market SET ${makeUpdateSet(params as Record<string, unknown>)} WHERE code = '${code}';`
+          `UPDATE market SET ${makeUpdateSet(params as FieldValues)} WHERE code = '${code}';`
+        );
+      } else {
+        // 시세 업데이트
+        const params = {
+          stime: dayjs().format("YYYYMMDDHHmmss"),
+          sise: scost,
+        };
+        await fastify.db.query(
+          `UPDATE market SET ${makeUpdateSet(params as FieldValues)} WHERE code = '${code}';`
         );
       }
 
@@ -122,7 +130,7 @@ const mystockRoute = (fastify: FastifyInstance) => {
           .send(withError({ code: "ER_NOT_ROWID", sqlMessage: "is not rowid!" } as SqlError, { tag: URL.MYSTOCK.BUY }));
 
       await fastify.db.query(
-        `UPDATE keeps SET ${makeUpdateSet(req.body as Record<string, unknown>)} WHERE rowid ='${rowid}';`
+        `UPDATE keeps SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`
       );
       await updateDashboardKeep(code);
       reply.status(200).send({ value: rowid });
@@ -134,7 +142,7 @@ const mystockRoute = (fastify: FastifyInstance) => {
   // 주식 매도 추가
   fastify.post(URL.MYSTOCK.SELL, async (req, reply) => {
     try {
-      const { code, rowid } = req.body as MyStockSellCreateType;
+      const { code, rowid, ecost } = req.body as MyStockSellCreateType;
 
       const params = JSON.parse(JSON.stringify(req?.body));
       delete params["rowid"];
@@ -142,6 +150,16 @@ const mystockRoute = (fastify: FastifyInstance) => {
       await fastify.db.query(`INSERT INTO sells ${makeInsertSet(params as Record<string, string>)};`);
       await fastify.db.query(`DELETE from keeps WHERE rowid=${rowid};`);
       await updateDashboardKeep(code, true);
+
+      // 시세 업데이트
+      const siseParams = {
+        stime: dayjs().format("YYYYMMDDHHmmss"),
+        sise: ecost,
+      };
+      await fastify.db.query(
+        `UPDATE market SET ${makeUpdateSet(siseParams as FieldValues)} WHERE code = '${code}';`
+      );
+
       reply.status(200).send({ value: code });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.BUY }));
@@ -172,7 +190,7 @@ const mystockRoute = (fastify: FastifyInstance) => {
           .send(withError({ code: "ER_NOT_ROWID", sqlMessage: "is not rowid!" } as SqlError, { tag: URL.MYSTOCK.BUY }));
 
       await fastify.db.query(
-        `UPDATE sells SET ${makeUpdateSet(req.body as Record<string, unknown>)} WHERE rowid ='${rowid}';`
+        `UPDATE sells SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`
       );
       await updateDashboardKeep(code, true);
       reply.status(200).send({ value: rowid });

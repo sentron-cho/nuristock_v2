@@ -14,7 +14,7 @@ import dayjs from 'dayjs';
 import Flex from '@entites/Flex';
 import { CardLineFiled } from '@features/common/ui/CardLineField.ui';
 
-export const TradeContents = ({ data, sise }: { data: SellType, sise?: SiseType }) => {
+export const TradeContents = ({ data, sise }: { data: SellType; sise?: SiseType }) => {
 	const values = useMemo(() => {
 		const makeTrade = (data: SellType, type?: 'sell' | 'buy') => {
 			const cost = type === 'buy' ? data?.scost : data?.ecost;
@@ -32,7 +32,7 @@ export const TradeContents = ({ data, sise }: { data: SellType, sise?: SiseType 
 
 		const keepDate = valueOfDateDiff(data.sdate, data.edate);
 		const soinc = sell.value - buy.value;
-		const rate = Number((soinc / sell?.value) * 100).toFixed(1);
+		const rate = Number((soinc / buy?.value) * 100).toFixed(1);
 
 		const days = Math.abs(dayjs(data.sdate).diff(dayjs(data.edate), 'day'));
 		const target = days < 365 ? 1 : Number((Number(days) / 365).toFixed(1));
@@ -58,7 +58,13 @@ export const TradeContents = ({ data, sise }: { data: SellType, sise?: SiseType 
 	return (
 		<>
 			<Flex className='head' justify='between'>
-				<CardContentHead sise={sise} type={type} title={values?.soinc?.toString()} rate={values?.rate} date={data?.ctime} />
+				<CardContentHead
+					sise={sise}
+					type={type}
+					title={values?.soinc?.toString()}
+					rate={values?.rate}
+					date={data?.edate}
+				/>
 			</Flex>
 
 			<Flex gap={8} className='body' direction='column' justify='start'>
@@ -105,7 +111,7 @@ export const KeepContents = ({ data, sise }: { data: KeepType; sise?: SiseType }
 
 		const keepDate = valueOfDateDiff(data.sdate, new Date());
 		const soinc = sell.value - buy.value;
-		const rate = Number((soinc / sell?.value) * 100).toFixed(1);
+		const rate = Number((soinc / buy?.value) * 100).toFixed(1);
 
 		const siseMap = [-50, -40, -30, -20, -10, -5, 0, 5, 10, 20, 30, 40, 50];
 		const index = siseMap.findIndex((v) => v > Math.round(Number(rate)));
@@ -131,7 +137,13 @@ export const KeepContents = ({ data, sise }: { data: KeepType; sise?: SiseType }
 	return (
 		<>
 			<Flex className='head' justify='between'>
-				<CardContentHead sise={sise} type={type} title={values?.soinc?.toString()} rate={values?.rate} date={data?.ctime} />
+				<CardContentHead
+					sise={sise}
+					type={type}
+					title={values?.soinc?.toString()}
+					rate={values?.rate}
+					date={data?.sdate}
+				/>
 			</Flex>
 
 			<Flex gap={8} className='body' direction='column' justify='start'>
@@ -139,12 +151,14 @@ export const KeepContents = ({ data, sise }: { data: KeepType; sise?: SiseType }
 					{/* 매수/현재가 매도시 */}
 					<Flex className='trade-info' direction='column' align='start' gap={10}>
 						<CardLineFiled {...values.buy} value={withCommas(values?.buy.value)} />
-						{sise && <CardLineFiled
-							{...values.sell}
-							value={withCommas(values.sell.value)}
-							type={type}
-							suffix={{ text: '', value: ST.WON }}
-						/>}
+						{sise && (
+							<CardLineFiled
+								{...values.sell}
+								value={withCommas(values.sell.value)}
+								type={type}
+								suffix={{ text: '', value: ST.WON }}
+							/>
+						)}
 					</Flex>
 					{/* 예상 */}
 					<Flex className={clsx('cast-info', type)} direction='column' align='start' gap={10}>

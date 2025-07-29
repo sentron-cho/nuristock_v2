@@ -22,8 +22,6 @@ export interface MyStockKeepType {
 	sdate: string;
 	scost: number;
 	count: number;
-	utime: string;
-	ctime: string;
 	mode?: string;
 }
 

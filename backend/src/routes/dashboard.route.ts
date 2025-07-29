@@ -85,7 +85,6 @@ const dashboardRoute = (fastify: FastifyInstance) => {
 
   // 보유종목 수정
   fastify.put(URL.DASHBOARD.ROOT, async (req, reply) => {
-    
     try {
       const { code, name } = req.body as DashboardCreateType;
 
@@ -97,16 +96,24 @@ const dashboardRoute = (fastify: FastifyInstance) => {
   });
 
   // 보유종목 시세 수정
-  fastify.put(URL.DASHBOARD.SISE, async (req, reply) => {
-    try {
-      const { code, sise, updown } = req.body as DashboardCreateType;
+  // fastify.put(URL.DASHBOARD.SISE, async (req, reply) => {
+  //   try {
+  //     const { code, sise, updown } = req.body as DashboardCreateType;
 
-      await fastify.db.query(`UPDATE market SET sise = '${sise}', updown='${updown}' WHERE code = '${code}';`);
-      reply.status(200).send({ value: code });
-    } catch (error) {
-      reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.ROOT }));
-    }
-  });
+  //     // const params = {
+  //     //   stime: dayjs(sdate).format("YYYYMMDDHHmmss"),
+  //     //   sise: scost,
+  //     //   updown: updown,
+  //     //   erate: 0,
+  //     //   ecost: 0,
+  //     // };
+
+  //     await fastify.db.query(`UPDATE market SET sise = '${sise}', updown='${updown}' WHERE code = '${code}';`);
+  //     reply.status(200).send({ value: code });
+  //   } catch (error) {
+  //     reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.ROOT }));
+  //   }
+  // });
 };
 
 export default dashboardRoute;
