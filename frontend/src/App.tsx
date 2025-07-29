@@ -25,14 +25,6 @@ const App = () => {
 					<QueryClientProvider client={queryClient}>
 						<LocalizationProvider dateAdapter={AdapterDayjs}>
 							<RouterProvider router={router} />
-							{/* <Suspense
-								fallback={
-									<Box display='flex' justifyContent='center' alignItems='center' minHeight='100vh'>
-										<CircularProgress />
-									</Box>
-								}
-							>
-							</Suspense> */}
 						</LocalizationProvider>
 					</QueryClientProvider>
 				</ToastProvider>

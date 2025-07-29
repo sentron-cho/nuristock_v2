@@ -1,10 +1,7 @@
 import { useMemo, useState } from 'react';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
 import { styled } from '@styles/stitches.config';
-import {
-	MyStockSummaryData as SummaryData,
-	MyStockTitleOptions as SelectOptions,
-} from '@features/mystock/config/MyStock.data';
+import { MyStockSummaryData as SummaryData } from '@features/mystock/config/MyStock.data';
 import {
 	MyStockKeepType as KeepType,
 	MyStockKeepType,
@@ -17,15 +14,15 @@ import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { EID } from '@shared/config/default.config';
 import { ST } from '@shared/config/kor.lang';
 import { IconAdd } from '@entites/Icons';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { MyStockBuyPopup } from '@features/mystock/ui/MyStockBuy.popup';
 import { MyStockSellPopup } from '@features/mystock/ui/MyStockSell.popup';
 import { PopupType } from '@entites/Dialog';
 import { reverse, sortBy } from 'lodash';
-import { SelectForm } from '@entites/SelectForm';
 import { OptionType } from '@shared/config/common.type';
 import { URL } from '@shared/config/url.enum';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
+import { SummaryDataType } from '@features/common/ui/SummaryBar.ui';
 
 const StyledPage = styled(PageContainer, {
 	'.card-list': {
@@ -36,20 +33,22 @@ const StyledPage = styled(PageContainer, {
 
 const MyStockPage = () => {
 	const navigate = useNavigate();
+	const param = useParams();
+	const [search] = useSearchParams();
+
 	const { showToast, showConfirm } = useCommonHook();
 
-	const param = useParams();
-
 	const [popup, setPopup] = useState<PopupType & { type: PopupType['type'] | 'buy' | 'sell' }>();
-	const [viewType, setViewType] = useState<'keep' | 'trade'>('keep');
+
+	const type = search?.get('type') as string;
+	const viewType: 'trade' | 'keep' = useMemo(() => {
+		console.log({ type });
+		return type === 'sell' || type === 'sonic' ? 'trade' : 'keep';
+	}, [param, type]);
 
 	const { data, refetch } = useSelectMyStock(param?.id || '');
 	const { mutateAsync: deleteDataBuy } = useDeleteMyStockBuy();
 	const { mutateAsync: deleteDataSell } = useDeleteMyStockSell();
-
-	const titleOptions = useMemo(() => {
-		return SelectOptions();
-	}, []);
 
 	const keepList = useMemo(() => reverse(sortBy(data?.keeps, 'sdate')), [data]);
 	const sellList = useMemo(() => reverse(sortBy(data?.sells, 'edate')), [data]);
@@ -76,6 +75,19 @@ const MyStockPage = () => {
 		];
 		return SummaryData(values);
 	}, [data]);
+
+	const onClickSummary = (item?: SummaryDataType) => {
+		navigate(`${URL.MYSTOCK}/${param?.id}?type=${item?.id}`);
+		// switch (item?.id) {
+		// 	case 'buy':
+		// 	case 'keep':
+		// 		break;
+		// 	case 'sell':
+		// 	case 'sonic':
+		// 		navigate(`${URL.MYSTOCK}/${param?.id}?type=trade`);
+		// 		break;
+		// }
+	};
 
 	const onClick = (eid?: string, item?: KeepType) => {
 		if ((viewType === 'keep' && eid === EID.SELECT) || eid === 'sell') {
@@ -123,24 +135,25 @@ const MyStockPage = () => {
 		}
 	};
 
-	const onChangeTitleBar = (value: string) => {
-		setViewType(value as 'keep' | 'trade');
-	};
-
 	const onChangeStock = (value: string) => {
 		navigate(`${URL.MYSTOCK}/${value}`);
 	};
 
 	return (
 		<>
-			<StyledPage summaryData={summaryData}>
+			<StyledPage
+				// defaultValue={viewType === 'keep' ? 'buy' : 'sell'}
+				value={type || 'buy'}
+				summaryData={summaryData}
+				onClickSummary={onClickSummary}
+			>
 				<PageTitleBar
+					title={viewType === 'keep' ? ST.KEEP_LIST : ST.TRADE_LIST}
 					selectProps={{
-						options: titleOptions,
-						defaultValue: titleOptions?.[0]?.value,
-						value: viewType,
-						onChange: onChangeTitleBar,
-						width: 100,
+						options: stocks,
+						value: selected,
+						onChange: onChangeStock,
+						border: false,
 					}}
 					buttonProps={{
 						eid: 'buy',
@@ -148,9 +161,7 @@ const MyStockPage = () => {
 						title: ST.BUY,
 						onClick: onClick,
 					}}
-				>
-					<SelectForm options={stocks} size='medium' border={false} defaultValue={selected} onChange={onChangeStock} />
-				</PageTitleBar>
+				/>
 
 				<MyStcokCardList
 					viewType={viewType}

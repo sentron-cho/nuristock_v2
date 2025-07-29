@@ -4,7 +4,6 @@ import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
 import { toCost } from '@shared/libs/utils.lib';
 import { useEffect, useState } from 'react';
-import { isEqual } from 'lodash';
 
 export interface SummaryDataType {
 	id: string;
@@ -54,20 +53,30 @@ export const SummaryBar = ({
 	data,
 	height = '60px',
 	onClick,
+	defaultValue,
+	value,
 }: {
 	data?: SummaryDataType[];
 	height?: string | number;
 	onClick?: (item: SummaryDataType) => void;
+	value?: string;
+	defaultValue?: string;
 }) => {
-	const [active, setActive] = useState<string>();
-	const [ids, setIds] = useState<string[]>();
+	const [active, setActive] = useState<string | undefined>(defaultValue || data?.[0]?.id);
 
 	useEffect(() => {
-		const curIds = data?.map((a) => a.id);
-		!isEqual(ids, curIds) && setIds(data?.map((a) => a.id));
-	}, [data]);
+		setActive(value);
+	}, [value]);
+	// const [ids, setIds] = useState<string[]>();
 
-	useEffect(() => setActive(ids?.length ? ids?.[0] : ''), [ids]);
+	// console.log({active, defaultValue})
+
+	// useEffect(() => {
+	// 	const curIds = data?.map((a) => a.id);
+	// 	!isEqual(ids, curIds) && setIds(data?.map((a) => a.id));
+	// }, [data]);
+
+	// useEffect(() => setActive(ids?.length ? ids?.[0] : ''), [ids]);
 
 	const onClickItem = (item: SummaryDataType) => {
 		setActive(item.id);

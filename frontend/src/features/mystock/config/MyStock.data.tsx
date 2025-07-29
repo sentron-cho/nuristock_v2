@@ -4,10 +4,10 @@ import { ST } from '@shared/config/kor.lang';
 
 export const MyStockSummaryData = (values?: string[]): SummaryDataType[] => {
 	return [
-		{ id: '1', label: ST.BUY, value: values?.[0] || '' },
-		{ id: '2', label: ST.SELL, value: values?.[1] || '' },
-		{ id: '3', label: ST.KEEP_COST, value: values?.[2] || '' },
-		{ id: '4', label: ST.SONIC, value: values?.[3] || '' },
+		{ id: 'buy', label: ST.BUY, value: values?.[0] || '' },
+		{ id: 'sell', label: ST.SELL, value: values?.[1] || '' },
+		{ id: 'keep', label: ST.KEEP_COST, value: values?.[2] || '' },
+		{ id: 'sonic', label: ST.SONIC, value: values?.[3] || '' },
 	];
 };
 
