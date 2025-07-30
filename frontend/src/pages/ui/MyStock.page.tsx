@@ -9,7 +9,7 @@ import {
 	MyStockTreadType as TreadType,
 } from '@features/mystock/api/mystock.dto';
 import { useDeleteMyStockBuy, useDeleteMyStockSell, useSelectMyStock } from '@features/mystock/api/mystock.api';
-import { MyStcokCardList } from '@features/mystock/ui/MyStockCard.ui';
+import { MyStcokKeepList, MyStcokTradeList } from '@features/mystock/ui/MyStockCard.ui';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { EID } from '@shared/config/default.config';
 import { ST } from '@shared/config/kor.lang';
@@ -57,7 +57,7 @@ const MyStockPage = () => {
 	const { mutateAsync: deleteDataSell } = useDeleteMyStockSell();
 
 	const keepList = useMemo(() => reverse(sortBy(data?.keeps, 'sdate')), [data]);
-	const sellList = useMemo(() => reverse(sortBy(data?.sells, 'edate')), [data]);
+	const tradeList = useMemo(() => reverse(sortBy(data?.sells, 'edate')), [data]);
 	const stocks = useMemo(
 		() =>
 			sortBy(
@@ -175,16 +175,16 @@ const MyStockPage = () => {
 						{!!keepList?.length && (
 							<Flex direction={'column'}>
 								<Title className='card-title' title={ST.KEEP_LIST} />
-								<MyStcokCardList viewType={'keep'} list={keepList} sise={data?.sise} onClick={onClickKeep} />
+								<MyStcokKeepList list={keepList} sise={data?.sise} onClick={onClickKeep} />
 							</Flex>
 						)}
 
 						{/* 거래내역 */}
-						{!!sellList?.length && (
+						{!!tradeList?.length && (
 							<Flex direction={'column'}>
 								<Title className='card-title' title={ST.TRADE_LIST} />
 								<Flex className='card-list'>
-									<MyStcokCardList viewType={'trade'} list={sellList} sise={data?.sise} onClick={onClickTrade} />
+									<MyStcokTradeList list={tradeList} sise={data?.sise} onClick={onClickTrade} />
 								</Flex>
 							</Flex>
 						)}

@@ -4,7 +4,7 @@ import {
 	MyStockSellType as SellType,
 	MyStockSiseItemType as SiseType,
 } from '../api/mystock.dto';
-import { valueOfPlusMinus } from '@shared/libs/utils.lib';
+import { toCost, valueOfPlusMinus } from '@shared/libs/utils.lib';
 import clsx from 'clsx';
 import { Button } from '@entites/Button';
 import { EID } from '@shared/config/default.config';
@@ -13,26 +13,128 @@ import Flex from '@entites/Flex';
 import { KeepContents, TradeContents } from './MyStockCardContents.ui';
 import { StyledCard } from '../style/MyStockCard.style';
 import { Text } from '@entites/Text';
+import { useMemo } from 'react';
+import dayjs from 'dayjs';
+import { reverse, sortBy } from 'lodash';
+import { SubTitle } from '@entites/Title';
+import { styled } from '@styles/stitches.config';
 
-export const MyStcokCardList = ({
-	viewType,
+export const MyStcokKeepList = ({
 	list,
 	onClick,
 	sise,
 }: {
-	viewType: 'keep' | 'trade';
-	list?: KeepType[] | SellType[];
-	onClick?: (eid?: string, item?: KeepType | SellType) => void;
+	list?: KeepType[];
+	onClick?: (eid?: string, item?: KeepType) => void;
 	sise?: SiseType;
 }) => {
 	if (!list?.length) return <NoData />;
 
 	return (
-		<Flex className='card-list'>
+		<Flex className={'card-list'}>
 			{list?.map((item) => (
-				<MyStockCard viewType={viewType} key={item.rowid} data={item} sise={sise} onClick={onClick} />
+				<MyStockCard
+					viewType={'keep'}
+					key={item.rowid}
+					data={item}
+					sise={sise}
+					onClick={(eid, item) => onClick?.(eid, item as KeepType)}
+				/>
 			))}
 		</Flex>
+	);
+};
+
+const StyledFlex = styled(Flex, {
+	'&.trade': {
+		'.trade-sub-title': {
+			width: '100%',
+			background: '$bgcolor',
+			// color: '$white',
+			textAlign: 'center',
+			height: '40px',
+			lineHeight: '40px',
+			position: 'sticky',
+			top: '40px',
+			zIndex: 10,
+
+			'.sum': {
+				'&.plus': {
+					color: '$plus',
+				},
+
+				'&.minus': {
+					color: '$minus',
+				},
+			},
+		},
+	},
+});
+
+export const MyStcokTradeList = ({
+	list,
+	onClick,
+	sise,
+}: {
+	list?: SellType[];
+	onClick?: (eid?: string, item?: SellType) => void;
+	sise?: SiseType;
+}) => {
+	if (!list?.length) return <NoData />;
+
+	const groupedByYear = useMemo(() => {
+		return list.reduce(
+			(acc, item) => {
+				const year = dayjs(item.edate).format('YYYY'); // '20241104' → '2024'
+				if (!acc[year]) {
+					acc[year] = [];
+				}
+				acc[year].push(item);
+				return acc;
+			},
+			{} as Record<string, typeof list>
+		);
+	}, [list]);
+
+	console.log(groupedByYear);
+
+	const years = useMemo(() => {
+		return reverse(sortBy(Object.keys(groupedByYear)));
+	}, [groupedByYear]);
+
+	return (
+		<StyledFlex className={'trade'} direction={'column'} gap={20}>
+			{years?.map((year) => {
+				const items = groupedByYear?.[year];
+				const sum = items
+					?.map((a) => Number(a?.ecost) * Number(a?.count) - Number(a?.scost) * Number(a?.count))
+					?.reduce((a, b) => a + b, 0);
+				const type = valueOfPlusMinus(sum);
+
+				return (
+					<Flex direction={'column'}>
+						{/* 년도 */}
+						<Flex className={clsx('trade-sub-title')} width={200} gap={10} justify={'center'}>
+							<SubTitle width={60} className={clsx('year')} title={`${year}${ST.YEAR}`} />
+							<SubTitle className={clsx('sum', type)} title={`${toCost(sum)}`} />
+						</Flex>
+
+						{/* 내역 */}
+						<Flex className='card-list'>
+							{items?.map((item) => (
+								<MyStockCard
+									viewType={'trade'}
+									key={item.rowid}
+									data={item}
+									sise={sise}
+									onClick={(eid, item) => onClick?.(eid, item as SellType)}
+								/>
+							))}
+						</Flex>
+					</Flex>
+				);
+			})}
+		</StyledFlex>
 	);
 };
 
