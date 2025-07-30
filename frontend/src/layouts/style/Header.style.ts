@@ -9,7 +9,7 @@ export const StyledHeader = styled('div', {
 		height: '40px',
 		backgroundColor: '$gray900',
 		color: '$white',
-		zIndex: 1100,
+		zIndex: 1200,
 
 		'.nav': {
 			display: 'flex',
