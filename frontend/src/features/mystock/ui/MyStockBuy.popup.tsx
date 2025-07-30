@@ -63,7 +63,7 @@ export const MyStockBuyPopup = ({ item, onClose }: { item?: TreadType; onClose: 
 						await createData(params);
 					}
 
-					showToast('registered');
+					// showToast('registered');
 					onClose?.(isOk);
 				}
 				// (error) => {

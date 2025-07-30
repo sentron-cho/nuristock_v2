@@ -55,7 +55,7 @@ export const StockSiseUpdaterPopup = ({ item, onClose }: { item?: DataType; onCl
 				};
 
 				params && (await updateData(params));
-				showToast('updated');
+				// showToast('updated');
 				onClose?.(isOk);
 			},
 			// (error) => {

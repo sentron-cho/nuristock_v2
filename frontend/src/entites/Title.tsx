@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { Typography, TypographyProps } from '@mui/material';
 import { styled } from '@stitches/react';
 import clsx from 'clsx';
 
@@ -8,20 +8,22 @@ const StyledTitle = styled(Typography, {
 	},
 	'.plus': {
 		color: '$plus',
-	}
-})
+	},
+});
 
-export const Title = ({ title, className }: { title: string, className?: string }) => {
+export interface TitleProps extends TypographyProps {}
+
+export const Title = ({ title, className, ...props }: TitleProps) => {
 	return (
-		<StyledTitle fontWeight={'bold'} fontSize={'large'} className={clsx('title', className)}>
+		<StyledTitle {...props} fontWeight={'bold'} fontSize={'large'} className={clsx('title', className)}>
 			{title}
 		</StyledTitle>
 	);
 };
 
-export const SubTitle = ({ title, className }: { title: string, className?: string }) => {
+export const SubTitle = ({ title, className, ...props }: TitleProps) => {
 	return (
-		<StyledTitle fontWeight={'bold'} fontSize={'medium'} className={clsx('sut-title', className)}>
+		<StyledTitle {...props} fontWeight={'bold'} fontSize={'medium'} className={clsx('sut-title', className)}>
 			{title}
 		</StyledTitle>
 	);

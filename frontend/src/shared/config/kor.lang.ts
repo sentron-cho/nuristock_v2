@@ -175,6 +175,7 @@ const KOR = {
 	SELECT_SEARCH: '추가할 종목 선택하세요.',
 	MARKET: '거래소',
 	UPDATE_TIME: '업데이트 일시',
+	NO_DATA: '내역이 없습니다.',
 
 	// DASHBOARD: {
 	// 	ADD: '종목 추가',

@@ -39,7 +39,7 @@ export const MyStcokCardList = ({
 const NoData = () => {
 	return (
 		<Flex height={'100%'} justify={'center'}>
-			<Text size='lg' text='거래 내역이 없습니다.' color='textDisabled' />
+			<Text size='lg' text={ST.NO_HISTORY} color='textDisabled' />
 		</Flex>
 	);
 };
@@ -60,11 +60,6 @@ export const MyStockCard = ({
 	};
 
 	const type = valueOfPlusMinus(sise?.sise, sise?.sise ? data.scost : 0);
-
-	// const handleSiseClick = (e: React.MouseEvent) => {
-	// 	e.stopPropagation();
-	// 	onClick?.('sise', data);
-	// };
 
 	return (
 		<StyledCard className={clsx('card', type, viewType, { sm: !history })}>

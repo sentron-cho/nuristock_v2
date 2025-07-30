@@ -14,7 +14,7 @@ import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { EID } from '@shared/config/default.config';
 import { ST } from '@shared/config/kor.lang';
 import { IconAdd } from '@entites/Icons';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { MyStockBuyPopup } from '@features/mystock/ui/MyStockBuy.popup';
 import { MyStockSellPopup } from '@features/mystock/ui/MyStockSell.popup';
 import { PopupType } from '@entites/Dialog';
@@ -22,29 +22,35 @@ import { reverse, sortBy } from 'lodash';
 import { OptionType } from '@shared/config/common.type';
 import { URL } from '@shared/config/url.enum';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
-import { SummaryDataType } from '@features/common/ui/SummaryBar.ui';
+import Flex from '@entites/Flex';
+import { Title } from '@entites/Title';
 
 const StyledPage = styled(PageContainer, {
-	'.card-list': {
-		flexWrap: 'wrap',
-		gap: '$0',
+	'.contents-layer': {
+		'.card-title': {
+			position: 'sticky',
+			top: 0,
+			textAlign: 'center',
+			zIndex: 1000,
+			lineHeight: '32px',
+			backgroundColor: '$bgcolor',
+			padding: '4px',
+		},
+
+		'.card-list': {
+			flexWrap: 'wrap',
+			gap: '$0',
+		},
 	},
 });
 
 const MyStockPage = () => {
 	const navigate = useNavigate();
 	const param = useParams();
-	const [search] = useSearchParams();
 
-	const { showToast, showConfirm } = useCommonHook();
+	const { showConfirm } = useCommonHook();
 
 	const [popup, setPopup] = useState<PopupType & { type: PopupType['type'] | 'buy' | 'sell' }>();
-
-	const type = search?.get('type') as string;
-	const viewType: 'trade' | 'keep' = useMemo(() => {
-		console.log({ type });
-		return type === 'sell' || type === 'sonic' ? 'trade' : 'keep';
-	}, [param, type]);
 
 	const { data, refetch } = useSelectMyStock(param?.id || '');
 	const { mutateAsync: deleteDataBuy } = useDeleteMyStockBuy();
@@ -76,21 +82,8 @@ const MyStockPage = () => {
 		return SummaryData(values);
 	}, [data]);
 
-	const onClickSummary = (item?: SummaryDataType) => {
-		navigate(`${URL.MYSTOCK}/${param?.id}?type=${item?.id}`);
-		// switch (item?.id) {
-		// 	case 'buy':
-		// 	case 'keep':
-		// 		break;
-		// 	case 'sell':
-		// 	case 'sonic':
-		// 		navigate(`${URL.MYSTOCK}/${param?.id}?type=trade`);
-		// 		break;
-		// }
-	};
-
-	const onClick = (eid?: string, item?: KeepType) => {
-		if ((viewType === 'keep' && eid === EID.SELECT) || eid === 'sell') {
+	const onClickKeep = (eid?: string, item?: KeepType) => {
+		if ((eid === EID.SELECT) || eid === 'sell') {
 			setPopup({
 				type: 'sell',
 				item: { ...item, sise: data?.sise?.sise, mode: 'new' },
@@ -110,7 +103,7 @@ const MyStockPage = () => {
 			});
 		} else if (eid === EID.EDIT) {
 			setPopup({
-				type: viewType === 'keep' ? 'buy' : 'sell',
+				type: 'buy',
 				item: { ...item, code: data?.value?.code, sise: data?.sise?.sise, mode: 'edit' },
 				onClose: (isOk) => {
 					isOk && refetch();
@@ -122,16 +115,35 @@ const MyStockPage = () => {
 				content: ST.WANT_TO_DELETE,
 				onClose: async (isOk) => {
 					if (isOk && item?.code) {
-						viewType === 'keep' && (await deleteDataBuy({ rowid: item.rowid, code: item.code }));
-						viewType === 'trade' && (await deleteDataSell({ rowid: item.rowid, code: item.code }));
-
+						await deleteDataBuy({ rowid: item.rowid, code: item.code })
 						refetch();
-						showToast('info', ST.DELETEED);
+						// showToast('info', ST.DELETEED);
 					}
 				},
 			});
-		} else if (eid === 'calc') {
-			console.log('[calc]');
+		}
+	};
+
+	const onClickTrade = (eid?: string, item?: KeepType) => {
+		if (eid === EID.EDIT) {
+			setPopup({
+				type: 'sell',
+				item: { ...item, code: data?.value?.code, sise: data?.sise?.sise, mode: 'edit' },
+				onClose: (isOk) => {
+					isOk && refetch();
+					setPopup(undefined);
+				},
+			});
+		} else if (eid === EID.DELETE) {
+			showConfirm({
+				content: ST.WANT_TO_DELETE,
+				onClose: async (isOk) => {
+					if (isOk && item?.code) {
+						await deleteDataSell({ rowid: item.rowid, code: item.code });
+						refetch();
+					}
+				},
+			});
 		}
 	};
 
@@ -141,34 +153,43 @@ const MyStockPage = () => {
 
 	return (
 		<>
-			<StyledPage
-				// defaultValue={viewType === 'keep' ? 'buy' : 'sell'}
-				value={type || 'buy'}
-				summaryData={summaryData}
-				onClickSummary={onClickSummary}
-			>
-				<PageTitleBar
-					title={viewType === 'keep' ? ST.KEEP_LIST : ST.TRADE_LIST}
-					selectProps={{
-						options: stocks,
-						value: selected,
-						onChange: onChangeStock,
-						border: false,
-					}}
-					buttonProps={{
-						eid: 'buy',
-						icon: <IconAdd />,
-						title: ST.BUY,
-						onClick: onClick,
-					}}
-				/>
+			<StyledPage summaryData={summaryData}>
+				<Flex direction={'column'}>
+					<PageTitleBar
+						selectProps={{
+							options: stocks,
+							value: selected,
+							onChange: onChangeStock,
+							border: false,
+						}}
+						buttonProps={{
+							eid: 'buy',
+							icon: <IconAdd />,
+							title: ST.BUY,
+							onClick: onClickKeep,
+						}}
+					/>
 
-				<MyStcokCardList
-					viewType={viewType}
-					list={viewType === 'keep' ? keepList : sellList}
-					sise={data?.sise}
-					onClick={onClick}
-				/>
+					<Flex className='contents-layer' direction={'column'}>
+						{/* 보유현황 */}
+						{!!keepList?.length && (
+							<Flex direction={'column'}>
+								<Title className='card-title' title={ST.KEEP_LIST} />
+								<MyStcokCardList viewType={'keep'} list={keepList} sise={data?.sise} onClick={onClickKeep} />
+							</Flex>
+						)}
+
+						{/* 거래내역 */}
+						{!!sellList?.length && (
+							<Flex direction={'column'}>
+								<Title className='card-title' title={ST.TRADE_LIST} />
+								<Flex className='card-list'>
+									<MyStcokCardList viewType={'trade'} list={sellList} sise={data?.sise} onClick={onClickTrade} />
+								</Flex>
+							</Flex>
+						)}
+					</Flex>
+				</Flex>
 			</StyledPage>
 
 			{/* 매수 팝업 */}

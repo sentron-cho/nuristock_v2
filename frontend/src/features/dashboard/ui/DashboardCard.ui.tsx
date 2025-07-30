@@ -19,10 +19,12 @@ const LONG_TIME_FORMAT_LENGTH = 8;
 export const DashboardCard = ({
 	data,
 	siseData,
+	sortType,
 	onClick,
 }: {
 	data: DataType;
 	siseData?: SiseType[];
+	sortType?: string;
 	onClick?: (eid?: string, item?: DataType) => void;
 }) => {
 	const handleClick = (eid?: string) => {
@@ -114,7 +116,7 @@ export const DashboardCard = ({
 				</Flex>
 
 				{/* body */}
-				<Flex gap={8} className='body' direction='column' justify={history ? 'start' : 'center'}>
+				<Flex gap={8} className={clsx('body', sortType)} direction='column' justify={history ? 'start' : 'center'}>
 					{history ? (
 						<Flex direction={'column'}>
 							{/* 매수/매도/손익 */}
@@ -122,7 +124,7 @@ export const DashboardCard = ({
 								<CardLineFiled title={ST.BUY} text={values?.buyText} value={withCommas(data.sprice)} />
 								<CardLineFiled title={ST.SELL} text={values?.sellText} value={withCommas(data.eprice)} />
 								<CardLineFiled
-									className={valueOfPlusMinus(values?.sonic)}
+									className={clsx(valueOfPlusMinus(values?.sonic))}
 									title={ST.SONIC}
 									text={values?.sonicText}
 									suffix={{ text: '%', value: ST.WON }}
@@ -133,7 +135,12 @@ export const DashboardCard = ({
 							{/* 보유/예상/예상수익 */}
 							{active && (
 								<Flex className='keep-info' direction='column' align='start' gap={10}>
-									<CardLineFiled title={ST.KEEP} text={values?.keepText} value={withCommas(data.kprice)} />
+									<CardLineFiled
+										className={clsx('keep-cost')}
+										title={ST.KEEP}
+										text={values?.keepText}
+										value={withCommas(data.kprice)}
+									/>
 									<CardLineFiled
 										title={ST.KEEP_SISE}
 										text={sise.text}
@@ -142,7 +149,7 @@ export const DashboardCard = ({
 										suffix={{ value: ST.WON }}
 									/>
 									<CardLineFiled
-										title={ST.SELL_SISE}
+										title={ST.SISE_SONIC}
 										value={withCommas(sise.price - data.kprice)}
 										type={values?.stype}
 									/>

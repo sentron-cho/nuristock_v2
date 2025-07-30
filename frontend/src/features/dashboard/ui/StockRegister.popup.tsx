@@ -55,7 +55,7 @@ const StyledDialog = styled(Dialog, {
 });
 
 export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => void }) => {
-	const { showToast, showAlert } = useCommonHook();
+	const { showAlert } = useCommonHook();
 
 	const forms = useForm<FieldValues>({ defaultValues: { search: '', title: '' } });
 	const [selected, setSelected] = useState<MarketItemType>();
@@ -94,7 +94,7 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 					}
 
 					await createData({ ...selected, name: forms?.getValues('title') || selected?.name });
-					showToast('registered');
+					// showToast('registered');
 					onClose?.(isOk);
 				}
 				// (error) => {

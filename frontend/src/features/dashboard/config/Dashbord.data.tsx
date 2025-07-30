@@ -12,10 +12,10 @@ export const DashboardSummaryData = (values?: string[]): SummaryDataType[] => {
 
 export const DashboardTitleOptions = (): SelectOptionType[] => {
 	return [
-		{ label: ST.KEEP_COST, value: 'keepCost' },
-		{ label: ST.SONIC, value: 'sonic' },
-		{ label: ST.SONIC_COST, value: 'sonicCost' },
-		{ label: ST.SONIC_RATE, value: 'sonicRate' },
-		{ label: ST.TITLE, value: 'title' },
+		{ label: ST.KEEP_COST, value: 'keepCost' }, // 보유 금액
+		{ label: ST.SISE_SONIC, value: 'siseSonic' }, // 현재 시세 손익 금액
+		{ label: ST.SONIC_COST, value: 'sonicCost' }, // 매수/매도 손익 금액
+		{ label: ST.SONIC_RATE, value: 'sonicRate' }, // 매수/매도 손익율
+		{ label: ST.TITLE, value: 'title' }, // 제목
 	];
 };

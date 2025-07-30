@@ -29,7 +29,7 @@ const StyledDialog = styled(Dialog, {
   },
 
 	'.contents': {
-		minHeight: '100px',
+		minHeight: '60px',
     maxHeight: '400px',
 	},
 });

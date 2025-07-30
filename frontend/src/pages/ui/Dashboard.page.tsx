@@ -20,18 +20,29 @@ import { ST } from '@shared/config/kor.lang';
 import { IconAdd } from '@entites/Icons';
 import {
 	// useLocation,
-	useNavigate
+	useNavigate,
 } from 'react-router-dom';
 import { StockUpdaterPopup } from '@features/dashboard/ui/StockUpdater.popup';
 import { PopupType } from '@entites/Dialog';
 import { sortBy, reverse } from 'lodash';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { StockSiseUpdaterPopup } from '@features/dashboard/ui/StockSiseUpdater.popup';
+import { Title } from '@entites/Title';
 
 const StyledPage = styled(PageContainer, {
-	'.card-list': {
-		flexWrap: 'wrap',
-		gap: '$0',
+	'.contents-layer': {
+		'.card-title': {
+			position: 'sticky',
+			top: 0,
+			textAlign: 'center',
+			zIndex: 1000,
+			lineHeight: '42px',
+		},
+
+		'.card-list': {
+			flexWrap: 'wrap',
+			gap: '$0',
+		},
 	},
 });
 
@@ -92,25 +103,37 @@ const DashboardPage = () => {
 		return SummaryData(values);
 	}, [list, data]);
 
-	const sortedList = useMemo(() => {
-		if (sort === 'keepCost') {
-			return reverse(sortBy(list, 'kprice'));
-		} else if (sort === 'title') {
-			return sortBy(list, 'name');
-		} else if (sort === 'sonic') {
-			// 손익
-			const keeps = list?.filter((a) => a.kcount);
-			const rest = list?.filter((a) => !a.kcount);
-			return reverse([...sortBy(rest, 'siseSonic'), ...sortBy(keeps, 'siseSonic')]);
-		} else if (sort === 'sonicRate') {
+	const makeCardList = (type?: string, arrays?: DataType[]) => {
+		if (type === 'keepCost') {
+			return reverse(sortBy(arrays, 'kprice'));
+		} else if (type === 'title') {
+			return sortBy(arrays, 'name');
+		} else if (type === 'siseSonic') {
+			// 예상손익
+			return reverse(sortBy(arrays, 'siseSonic'));
+		} else if (type === 'sonicRate') {
 			// 손익율
-			return reverse(sortBy(list, 'sonicRate'));
-		} else if (sort === 'sonicCost') {
+			return reverse(sortBy(arrays, 'sonicRate'));
+		} else if (type === 'sonicCost') {
 			// 손익금액
-			return reverse(sortBy(list, 'sonic'));
+			return reverse(sortBy(arrays, 'sonic'));
 		} else {
-			return list;
+			return arrays;
 		}
+	};
+
+	const sortedKeeps = useMemo(() => {
+		return makeCardList(
+			sort,
+			list?.filter((a) => a.kcount)
+		);
+	}, [list, sort]);
+
+	const sortedTrades = useMemo(() => {
+		return makeCardList(
+			sort === 'siseSonic' ? 'sonicRate' : sort,
+			list?.filter((a) => !a.kcount)
+		);
 	}, [list, sort]);
 
 	const onClick = (eid?: string, item?: DataType) => {
@@ -151,26 +174,45 @@ const DashboardPage = () => {
 	return (
 		<>
 			<StyledPage summaryData={summaryData}>
-				<PageTitleBar
-					title={ST.KEEP_STOCK}
-					selectProps={{
-						options: titleOptions,
-						defaultValue: titleOptions?.[0]?.value,
-						value: sort,
-						onChange: setSort,
-						width: 100,
-					}}
-					buttonProps={{
-						eid: EID.ADD,
-						icon: <IconAdd />,
-						title: ST.ADD,
-						onClick: onClick,
-					}}
-				/>
-				<Flex className='card-list'>
-					{sortedList?.map((item) => (
-						<DashboardCard key={item.code} data={item} siseData={data?.sise} onClick={onClick} />
-					))}
+				<Flex direction={'column'}>
+					<PageTitleBar
+						// title={ST.KEEP_STOCK}
+						selectProps={{
+							options: titleOptions,
+							defaultValue: titleOptions?.[0]?.value,
+							value: sort,
+							onChange: setSort,
+							width: 100,
+						}}
+						buttonProps={{
+							eid: EID.ADD,
+							icon: <IconAdd />,
+							title: ST.ADD,
+							onClick: onClick,
+						}}
+					/>
+
+					<Flex className='contents-layer' direction={'column'}>
+						{/* 보유 종목 */}
+						<Flex direction={'column'}>
+							<Title className='card-title' title={ST.KEEP_STOCK} />
+							<Flex className='card-list'>
+								{sortedKeeps?.map((item) => (
+									<DashboardCard sortType={sort} key={item.code} data={item} siseData={data?.sise} onClick={onClick} />
+								))}
+							</Flex>
+						</Flex>
+
+						{/* 미보유 종목 */}
+						<Flex direction={'column'}>
+							<Title className='card-title' title={ST.TRADE_LIST} />
+							<Flex className='card-list'>
+								{sortedTrades?.map((item) => (
+									<DashboardCard sortType={sort} key={item.code} data={item} siseData={data?.sise} onClick={onClick} />
+								))}
+							</Flex>
+						</Flex>
+					</Flex>
 				</Flex>
 			</StyledPage>
 

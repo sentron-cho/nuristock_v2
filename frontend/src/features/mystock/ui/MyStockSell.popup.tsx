@@ -87,7 +87,7 @@ export const MyStockSellPopup = ({ item, onClose }: { item?: SellDataType; onClo
 						await createData(params);
 					}
 
-					showToast('registered');
+					// showToast('registered');
 					onClose?.(isOk);
 				}
 				// (error) => {

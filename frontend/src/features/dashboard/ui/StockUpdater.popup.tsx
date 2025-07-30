@@ -5,11 +5,11 @@ import { ST } from '@shared/config/kor.lang';
 import { DashboardItemType as DataType } from '@features/dashboard/api/dashboard.dto';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { useUpdateDashboard } from '../api/dashboard.api';
+// import { useCommonHook } from '@shared/hooks/useCommon.hook';
 
 export const StockUpdaterPopup = ({ item, onClose }: { item?: DataType; onClose: (isOk: boolean) => void }) => {
-	const { showToast } = useCommonHook();
+	// const { showToast } = useCommonHook();
 
 	const forms = useForm<{ title: string }>({
 		defaultValues: { title: '' },
@@ -32,7 +32,7 @@ export const StockUpdaterPopup = ({ item, onClose }: { item?: DataType; onClose:
 				if (!forms?.formState.dirtyFields) return onClose(false);
 
 				item?.code && (await updateData({ code: item.code, name: field?.title }));
-				showToast('updated');
+				// showToast('updated');
 				onClose?.(isOk);
 			}
 			// (error) => {
