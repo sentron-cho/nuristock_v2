@@ -69,7 +69,7 @@ export const StyledHeader = styled('div', {
 		width: '100vw',
 		height: 'calc(100% - 40px)',
 		flexDirection: 'column',
-		zIndex: 1000,
+		zIndex: 1200,
 
 		'.menu-li': {
 			paddingBottom: '$8',

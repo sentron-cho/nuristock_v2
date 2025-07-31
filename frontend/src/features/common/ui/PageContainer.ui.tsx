@@ -22,7 +22,7 @@ const StyledContainer = styled('div', {
 			height: '100%',
 
 			'& > *': {
-				paddingBottom: '60px',
+				paddingBottom: '100px',
 			},
 		},
 	},

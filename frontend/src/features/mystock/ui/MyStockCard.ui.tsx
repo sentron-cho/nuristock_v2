@@ -47,9 +47,15 @@ export const MyStcokKeepList = ({
 
 const StyledFlex = styled(Flex, {
 	'&.trade': {
+		backgroundColor: '$gray800',
+
+		'.box': {
+			backgroundColor: '$gray100',
+		},
+
 		'.trade-sub-title': {
 			width: '100%',
-			background: '$bgcolor',
+			background: '$gray400',
 			// color: '$white',
 			textAlign: 'center',
 			height: '40px',
@@ -67,6 +73,13 @@ const StyledFlex = styled(Flex, {
 					color: '$minus',
 				},
 			},
+		},
+
+		'@md': {
+			'.trade-sub-title': {
+				justifyContent: 'space-between',
+				padding: '0 10px',
+			}
 		},
 	},
 });

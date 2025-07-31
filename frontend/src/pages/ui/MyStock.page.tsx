@@ -32,9 +32,16 @@ const StyledPage = styled(PageContainer, {
 			top: 0,
 			textAlign: 'center',
 			zIndex: 1000,
-			lineHeight: '32px',
+			lineHeight: '34px',
 			backgroundColor: '$bgcolor',
 			padding: '4px',
+			color: '$primaryhover',
+			fontWeight: '$bold',
+			fontSize: '20px',
+
+			'&.trade': {
+				color: '$black',
+			}
 		},
 
 		'.card-list': {
@@ -174,7 +181,7 @@ const MyStockPage = () => {
 						{/* 보유현황 */}
 						{!!keepList?.length && (
 							<Flex direction={'column'}>
-								<Title className='card-title' title={ST.KEEP_LIST} />
+								<Title className='card-title keep' title={ST.KEEP_LIST} />
 								<MyStcokKeepList list={keepList} sise={data?.sise} onClick={onClickKeep} />
 							</Flex>
 						)}
@@ -182,7 +189,7 @@ const MyStockPage = () => {
 						{/* 거래내역 */}
 						{!!tradeList?.length && (
 							<Flex direction={'column'}>
-								<Title className='card-title' title={ST.TRADE_LIST} />
+								<Title className='card-title trade' title={ST.TRADE_LIST} />
 								<Flex className='card-list'>
 									<MyStcokTradeList list={tradeList} sise={data?.sise} onClick={onClickTrade} />
 								</Flex>
