@@ -64,7 +64,7 @@ export const { styled, css, globalCss, theme, createTheme, config } = createStit
 			minus: '#0066CC',
 			select: '#f6f8fa',
 			back: '#202020a0',
-			
+
 			bgcolor: '#f5f7fa',
 		},
 		fontWeights: {
@@ -91,7 +91,9 @@ export const { styled, css, globalCss, theme, createTheme, config } = createStit
 			64: '64px',
 		},
 		fonts: {
-			body: 'system-ui, sans-serif',
+			body: `'Pretendard', 'Noto Sans KR', 'Spoqa Han Sans Neo', sans-serif`,
+			mono: `'Roboto Mono', monospace`,
+			number: `'Roboto Mono', monospace`,
 		},
 		fontSizes: {
 			xxs: '10px',

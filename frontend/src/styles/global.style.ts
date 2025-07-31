@@ -4,14 +4,25 @@ export const globalStyles = globalCss({
 	'*': {
 		boxSizing: 'border-box',
 	},
-	body: {
+
+	'html, body': {
 		margin: 0,
 		padding: 0,
-		fontFamily: '$body',
+		fontFamily: '$body !important',
 		backgroundColor: '#fff',
 		color: '$gray900',
 		overflow: 'hidden',
+		WebkitFontSmoothing: 'antialiased',
 		// overflowY: 'auto',
+	},
+
+	'.contents-wrap, .MuiTypography-root': {
+		fontFamily: '$body !important',
+	},
+
+	'.number': {
+		fontFamily: '$number !important',
+		fontWeight: 'bold !important',
 	},
 
 	'.MuiTooltip-popper': {

@@ -19,7 +19,7 @@ export const useProfitData = (initialData?: DataType[], initialYears?: YearDataT
       const eprice = (a?.ecost || 0) * (a?.count || 0);
       const sonic = (eprice || 0) - (sprice || 0);
 
-      console.log({a, sonic})
+      // console.log({a, sonic})
 			return {
 				...a,
 				eprice,

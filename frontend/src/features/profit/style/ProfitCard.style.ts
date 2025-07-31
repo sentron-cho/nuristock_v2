@@ -25,11 +25,23 @@ export const StyledCard = styled(Card, {
 			overflow: 'hidden',
 			height: '100%',
 			padding: '$4',
-      paddingBottom: '$10',
-      minHeight: '120px',
+			paddingBottom: '$10',
+			minHeight: '120px',
+
+
+			'.names': {
+
+			},
+
+			'.years': {
+			},
 
 			'.head, .body': {
 				padding: '0 $4',
+
+				'&.bar': {
+					borderTop: '1px solid $gray300',
+				}
 			},
 
 			'.trade-info, .keep-info, .cast-info': {
@@ -43,6 +55,8 @@ export const StyledCard = styled(Card, {
 			'.head': {
 				height: '40px',
 				borderBottom: '1px solid $gray300',
+				// backgroundColor: '$gray300',
+				// color: '$primaryhover',
 
 				'.date': {
 					color: '$gray700',

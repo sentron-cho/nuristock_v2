@@ -11,13 +11,12 @@ import { EID } from '@shared/config/default.config';
 import { IconButton, IconType } from '@entites/IconButton';
 import Flex from '@entites/Flex';
 import { KeepContents, TradeContents } from './MyStockCardContents.ui';
-import { StyledCard } from '../style/MyStockCard.style';
+import { StyledCard, StyledTradeCard } from '../style/MyStockCard.style';
 import { Text } from '@entites/Text';
 import { useMemo } from 'react';
 import dayjs from 'dayjs';
 import { reverse, sortBy } from 'lodash';
 import { SubTitle } from '@entites/Title';
-import { styled } from '@styles/stitches.config';
 
 export const MyStcokKeepList = ({
 	list,
@@ -45,44 +44,6 @@ export const MyStcokKeepList = ({
 	);
 };
 
-const StyledFlex = styled(Flex, {
-	'&.trade': {
-		backgroundColor: '$gray800',
-
-		'.box': {
-			backgroundColor: '$gray100',
-		},
-
-		'.trade-sub-title': {
-			width: '100%',
-			background: '$gray400',
-			// color: '$white',
-			textAlign: 'center',
-			height: '40px',
-			lineHeight: '40px',
-			position: 'sticky',
-			top: '40px',
-			zIndex: 10,
-
-			'.sum': {
-				'&.plus': {
-					color: '$plus',
-				},
-
-				'&.minus': {
-					color: '$minus',
-				},
-			},
-		},
-
-		'@md': {
-			'.trade-sub-title': {
-				justifyContent: 'space-between',
-				padding: '0 10px',
-			}
-		},
-	},
-});
 
 export const MyStcokTradeList = ({
 	list,
@@ -116,7 +77,7 @@ export const MyStcokTradeList = ({
 	}, [groupedByYear]);
 
 	return (
-		<StyledFlex className={'trade'} direction={'column'} gap={20}>
+		<StyledTradeCard className={'trade'} direction={'column'} gap={20}>
 			{years?.map((year) => {
 				const items = groupedByYear?.[year];
 				const sum = items
@@ -147,7 +108,7 @@ export const MyStcokTradeList = ({
 					</Flex>
 				);
 			})}
-		</StyledFlex>
+		</StyledTradeCard>
 	);
 };
 

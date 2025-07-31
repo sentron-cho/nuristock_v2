@@ -1,3 +1,4 @@
+import Flex from '@entites/Flex';
 import Card from '@mui/material/Card';
 import { styled } from '@styles/stitches.config';
 
@@ -85,5 +86,44 @@ export const StyledCard = styled(Card, {
 	},
 	'@md': {
 		width: '100%',
+	},
+});
+
+export const StyledTradeCard = styled(Flex, {
+	'&.trade': {
+		backgroundColor: '$gray800',
+
+		'.box': {
+			backgroundColor: '$gray100',
+		},
+
+		'.trade-sub-title': {
+			width: '100%',
+			background: '$gray400',
+			// color: '$white',
+			textAlign: 'center',
+			height: '40px',
+			lineHeight: '40px',
+			position: 'sticky',
+			top: '40px',
+			zIndex: 10,
+
+			'.sum': {
+				'&.plus': {
+					color: '$plus',
+				},
+
+				'&.minus': {
+					color: '$minus',
+				},
+			},
+		},
+
+		'@md': {
+			'.trade-sub-title': {
+				justifyContent: 'space-between',
+				padding: '0 10px',
+			}
+		},
 	},
 });
