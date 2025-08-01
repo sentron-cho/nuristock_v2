@@ -21,9 +21,9 @@ const StyledContainer = styled('div', {
 			margin: 'auto',
 			height: '100%',
 
-			'& > *': {
-				paddingBottom: '100px',
-			},
+			// '& > *': {
+			// 	paddingBottom: '100px',
+			// },
 		},
 	},
 

@@ -31,12 +31,15 @@ import { Title } from '@entites/Title';
 
 const StyledPage = styled(PageContainer, {
 	'.contents-layer': {
+		paddingBottom: '100px',
+		
 		'.card-title': {
 			position: 'sticky',
 			top: 0,
 			textAlign: 'center',
 			zIndex: 1000,
 			lineHeight: '42px',
+			backgroundColor: '$bgcolor'
 		},
 
 		'.card-list': {
@@ -176,7 +179,7 @@ const DashboardPage = () => {
 			<StyledPage summaryData={summaryData}>
 				<Flex direction={'column'}>
 					<PageTitleBar
-						// title={ST.KEEP_STOCK}
+						title={ST.KEEP_STOCK}
 						selectProps={{
 							options: titleOptions,
 							defaultValue: titleOptions?.[0]?.value,
@@ -195,7 +198,7 @@ const DashboardPage = () => {
 					<Flex className='contents-layer' direction={'column'}>
 						{/* 보유 종목 */}
 						<Flex direction={'column'}>
-							<Title className='card-title' title={ST.KEEP_STOCK} />
+							{/* <Title className='card-title' title={ST.KEEP_STOCK} /> */}
 							<Flex className='card-list'>
 								{sortedKeeps?.map((item) => (
 									<DashboardCard sortType={sort} key={item.code} data={item} siseData={data?.sise} onClick={onClick} />

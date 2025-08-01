@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 export interface SummaryDataType {
 	id: string;
 	label: string;
-	value: string;
+	value?: string;
 }
 
 const StyledForm = styled(Flex, {
@@ -95,9 +95,9 @@ export const SummaryBar = ({
 						>
 							<Flex className='box' direction={'column'}>
 								<Typography className='title'>{item.label}</Typography>
-								<Typography className='text' height={18}>
+								{<Typography className='text' height={18}>
 									{item.value ? toCost(item.value) : ''}
-								</Typography>
+								</Typography>}
 							</Flex>
 						</Flex>
 					);

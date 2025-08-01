@@ -77,7 +77,7 @@ export const MyStcokTradeList = ({
 	}, [groupedByYear]);
 
 	return (
-		<StyledTradeCard className={'trade'} direction={'column'} gap={20}>
+		<StyledTradeCard className={'trade-layer'} direction={'column'} gap={20}>
 			{years?.map((year) => {
 				const items = groupedByYear?.[year];
 				const sum = items

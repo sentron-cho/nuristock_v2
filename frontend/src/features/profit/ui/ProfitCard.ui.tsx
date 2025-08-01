@@ -9,17 +9,15 @@ import { useMemo } from 'react';
 import dayjs from 'dayjs';
 import { reverse, sortBy } from 'lodash';
 import { ST } from '@shared/config/kor.lang';
+import { useNavigate } from 'react-router-dom';
+import { URL } from '@shared/config/url.enum';
 
 export const ProfitCard = ({
 	data,
-	// onClick,
 }: {
 	data?: DataType[]; // 년도별 데이터
-	// onClick?: (eid?: string) => void;
 }) => {
-	// const handleClick = (eid?: string) => {
-	// 	onClick?.(eid);
-	// };
+	const navigate = useNavigate();
 
 	const makeSumData = (columnKey: 'name' | 'month' = 'name') => {
 		return data?.reduce(
@@ -61,7 +59,6 @@ export const ProfitCard = ({
 			item?.name && (array[item.name] = item);
 		});
 
-		console.log({ array });
 		return array;
 	}, [data]);
 
@@ -78,16 +75,17 @@ export const ProfitCard = ({
 		return yearData ? reverse(sortBy(Object.keys(yearData))) : [];
 	}, [yearData]);
 
-	console.log({ nameData, nameList });
-
-	// const type = valueOfPlusMinus(item.sum, 0);
+	
+	const onClick = (eid: 'code' | 'month') => {
+		navigate(`${URL.PROFIT}/${eid}`);
+	};
 
 	return (
 		<StyledCard className={clsx('card')}>
 			<Flex className={clsx('box')} direction='column' gap={10}>
 				{/* 종목별 */}
 				<Flex className='names' direction={'column'} gap={10}>
-					<Flex className='head' justify={'between'}>
+					<Flex className='head' justify={'between'} onClick={() => onClick('code')}>
 						<SubTitle title={ST.PER_CODES} width={'100%'} textAlign={'center'} />
 					</Flex>
 
@@ -107,7 +105,7 @@ export const ProfitCard = ({
 
 				{/* 월별 */}
 				<Flex className='years' direction={'column'} gap={10}>
-					<Flex className='head bar' justify={'between'}>
+					<Flex className='head bar' justify={'between'} onClick={() => onClick('code')}>
 						<SubTitle title={ST.PER_MONTHS} width={'100%'} textAlign={'center'} />
 					</Flex>
 

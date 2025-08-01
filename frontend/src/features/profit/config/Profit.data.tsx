@@ -4,12 +4,11 @@ import { RenderCost, RenderDate, RenderPrice } from '@shared/libs/tableRender.li
 import { getCostColorType, sortDirections } from '@shared/libs/utils.lib';
 import { ColumnsType } from 'antd/es/table';
 
-export const SummaryData = (values: string[]): SummaryDataType[] => {
+export const SummaryData = (values?: string[]): SummaryDataType[] => {
 	return [
-		{ id: 'codes', label: ST.PER_CODES, value: values?.[0] },
-		{ id: 'months', label: ST.PER_MONTHS, value: values?.[1] },
-		{ id: 'days', label: ST.PER_DAYS, value: values?.[2] },
-		{ id: 'all', label: ST.ALL, value: values?.[3] },
+		{ id: 'up', label: ST.SONIC_UP, value: values?.[0] },
+		{ id: 'down', label: ST.SONIC_DN, value: values?.[1] },
+		{ id: 'sum', label: ST.SUM, value: values?.[2] },
 	];
 };
 

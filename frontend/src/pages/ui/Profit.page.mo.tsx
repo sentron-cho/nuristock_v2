@@ -1,11 +1,9 @@
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
-import { SummaryDataType } from '@features/common/ui/SummaryBar.ui';
 import { styled } from '@styles/stitches.config';
 import { useSelectProfit, useSelectProfitYears } from '@features/profit/api/profit.api';
 import Flex from '@entites/Flex';
 import { ProfitCard } from '@features/profit/ui/ProfitCard.ui';
 import { useProfitData } from '@features/profit/hook/ProfitData.hook';
-import { SummaryData } from '@features/profit/config/Profit.data';
 import { SubTitle } from '@entites/Title';
 import clsx from 'clsx';
 import { toCost, valueOfPlusMinus } from '@shared/libs/utils.lib';
@@ -15,9 +13,15 @@ import dayjs from 'dayjs';
 
 const StyledPage = styled(PageContainer, {
 	'&.profit': {
+		'.view-box': {
+			paddingBottom: '100px',
+			// background: '$gray400',
+		},
+
 		'.card-sub-title': {
 			width: '100%',
 			background: '$bgcolor',
+			borderBottom: '1px solid $gray500',
 			textAlign: 'center',
 			height: '40px',
 			lineHeight: '40px',
@@ -63,13 +67,13 @@ export const ProfitPageMo = () => {
 
 	// console.log({ groupedByYear });
 
-	const onClickSummary = (item?: SummaryDataType) => {
-		console.log(item);
-	};
+	// const onClickSummary = (item?: SummaryDataType) => {
+	// 	console.log(item);
+	// };
 
 	return (
-		<StyledPage className='profit' summaryData={SummaryData(summary)} onClickSummary={onClickSummary}>
-			<Flex direction={'column'} gap={20}>
+		<StyledPage className='profit' summaryData={summary}>
+			<Flex className='view-box' direction={'column'} gap={20}>
 				{years?.map((item) => {
 					const type = valueOfPlusMinus(Number(item.sum));
 

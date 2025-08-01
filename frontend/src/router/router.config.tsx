@@ -10,6 +10,7 @@ import MarketPage from '../pages/ui/Market.page';
 import InvestmentPage from '../pages/ui/Investment.page';
 import MyStockPage from '@page/ui/MyStock.page';
 import DividendPage from '@page/ui/Dividend.page';
+import ProfitPerCode from '@page/ui/ProfitPerCode.page';
 
 const router = createBrowserRouter([
   {
@@ -37,7 +38,10 @@ const router = createBrowserRouter([
       {
         path: 'profit',
         element: <PageLayout />,
-        children: [{ index: true, element: <ProfitPage /> }],
+        children: [
+          { index: true, element: <ProfitPage /> },
+          { path: 'code', element: <ProfitPerCode /> }
+        ],
       },
       {
         path: 'market',

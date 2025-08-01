@@ -1,6 +1,7 @@
 import { cloneDeep, reverse, sortBy } from 'lodash';
 import { useMemo } from 'react';
 import { ProfitItemType as DataType, ProfitYearsItemType as YearDataType } from '../api/profit.dto';
+import { SummaryData } from '../config/Profit.data';
 
 export const useProfitData = (initialData?: DataType[], initialYears?: YearDataType[]) => {
 	// 년도별 데이터 초기화
@@ -32,14 +33,22 @@ export const useProfitData = (initialData?: DataType[], initialYears?: YearDataT
 	}, [initialData]);
 
 	const summary = useMemo(() => {
-		const vCodes = (data as DataType[])?.map((a) => Number(a.eprice) - Number(a.sprice))?.reduce((a, b) => a + b, 0);
-		const values: string[] = [
-			vCodes?.toString() || '',
-			vCodes?.toString() || '',
-			vCodes?.toString() || '',
-			vCodes?.toString() || '',
-		];
-		return values;
+		const list = (data as DataType[])?.map((a) => Number(a.eprice) - Number(a.sprice));
+
+		const up = list?.filter(a => a > 0)?.reduce((a, b) => a + b, 0);
+		const down = list?.filter(a => a < 0)?.reduce((a, b) => a + b, 0);
+		const total = list?.reduce((a, b) => a + b, 0);;
+
+		return SummaryData([up?.toString(), down?.toString(), total?.toString()]);
+
+		// const vCodes = (data as DataType[])?.map((a) => Number(a.eprice) - Number(a.sprice))?.reduce((a, b) => a + b, 0);
+		// const values: string[] = [
+		// 	vCodes?.toString() || '',
+		// 	vCodes?.toString() || '',
+		// 	vCodes?.toString() || '',
+		// 	vCodes?.toString() || '',
+		// ];
+		// return values;
 	}, [data]);
 
 	return {

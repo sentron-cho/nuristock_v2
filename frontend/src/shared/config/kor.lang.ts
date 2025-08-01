@@ -78,8 +78,8 @@ const KOR = {
 	UNIT: '단위',
 	MANWON: '만원',
 	SONIC: '손익',
-	SONIC_UP: '이익',
-	SONIC_DN: '손해',
+	SONIC_UP: '손익',
+	SONIC_DN: '손절',
 	TRADE: '거래',
 	COST: '단가',
 	PRICE: '금액',
@@ -113,6 +113,7 @@ const KOR = {
 	ECOST: '등락',
 	KOSPI: '코스피',
 	KOSDAQ: '코스닥',
+	SUM: '총계',
 
 	NO_SERVICE: '서비스 준비중',
 

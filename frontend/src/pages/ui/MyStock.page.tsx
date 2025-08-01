@@ -35,18 +35,21 @@ const StyledPage = styled(PageContainer, {
 			lineHeight: '34px',
 			backgroundColor: '$bgcolor',
 			padding: '4px',
-			color: '$primaryhover',
-			fontWeight: '$bold',
-			fontSize: '20px',
 
 			'&.trade': {
 				color: '$black',
-			}
+			},
 		},
 
 		'.card-list': {
 			flexWrap: 'wrap',
 			gap: '$0',
+		},
+
+		'.content-trade': {
+			'.trade-layer': {
+				paddingBottom: '100px',
+			},
 		},
 	},
 });
@@ -90,7 +93,7 @@ const MyStockPage = () => {
 	}, [data]);
 
 	const onClickKeep = (eid?: string, item?: KeepType) => {
-		if ((eid === EID.SELECT) || eid === 'sell') {
+		if (eid === EID.SELECT || eid === 'sell') {
 			setPopup({
 				type: 'sell',
 				item: { ...item, sise: data?.sise?.sise, mode: 'new' },
@@ -122,7 +125,7 @@ const MyStockPage = () => {
 				content: ST.WANT_TO_DELETE,
 				onClose: async (isOk) => {
 					if (isOk && item?.code) {
-						await deleteDataBuy({ rowid: item.rowid, code: item.code })
+						await deleteDataBuy({ rowid: item.rowid, code: item.code });
 						refetch();
 						// showToast('info', ST.DELETEED);
 					}
@@ -163,6 +166,7 @@ const MyStockPage = () => {
 			<StyledPage summaryData={summaryData}>
 				<Flex direction={'column'}>
 					<PageTitleBar
+						title={ST.KEEP_LIST}
 						selectProps={{
 							options: stocks,
 							value: selected,
@@ -181,18 +185,16 @@ const MyStockPage = () => {
 						{/* 보유현황 */}
 						{!!keepList?.length && (
 							<Flex direction={'column'}>
-								<Title className='card-title keep' title={ST.KEEP_LIST} />
+								{/* <Title className='card-title keep' title={ST.KEEP_LIST} /> */}
 								<MyStcokKeepList list={keepList} sise={data?.sise} onClick={onClickKeep} />
 							</Flex>
 						)}
 
 						{/* 거래내역 */}
 						{!!tradeList?.length && (
-							<Flex direction={'column'}>
+							<Flex className='content-trade' direction={'column'}>
 								<Title className='card-title trade' title={ST.TRADE_LIST} />
-								<Flex className='card-list'>
-									<MyStcokTradeList list={tradeList} sise={data?.sise} onClick={onClickTrade} />
-								</Flex>
+								<MyStcokTradeList list={tradeList} sise={data?.sise} onClick={onClickTrade} />
 							</Flex>
 						)}
 					</Flex>

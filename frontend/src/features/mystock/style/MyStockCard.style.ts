@@ -90,7 +90,7 @@ export const StyledCard = styled(Card, {
 });
 
 export const StyledTradeCard = styled(Flex, {
-	'&.trade': {
+	'&.trade-layer': {
 		backgroundColor: '$gray800',
 
 		'.box': {

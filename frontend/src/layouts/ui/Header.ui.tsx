@@ -31,8 +31,8 @@ const Header: React.FC = () => {
 	const menu = useMemo(() => {
 		return [
 			{ value: URL.ROOT, label: ST.MENU.DASHBOARD },
-			{ value: URL.MARKET, label: ST.MENU.MARKET },
 			{ value: URL.PROFIT, label: ST.MENU.PROFIT },
+			{ value: URL.MARKET, label: ST.MENU.MARKET },
 			{ value: URL.DIVIDEND, label: ST.MENU.DIVIDEND },
 			{ value: URL.INVEST, label: ST.MENU.INVEST },
 		];
