@@ -112,10 +112,7 @@ const SearchText = ({ search, text }: { search?: string; text?: string }) => {
 
 	const start = search ? text.indexOf(search) : -1;
 	if (start < 0 || !search) return text;
-
 	const end = start + search.length;
-
-	// console.log({ start, end, text });
 
 	return (
 		<>
@@ -149,10 +146,6 @@ const StandardList: React.FC<ListFormProps> = (props) => {
 const VitualList: React.FC<ListFormProps> = (props) => {
 	const { items, vitualProps, height, onSelect, selected } = props;
 	const { itemSize = 40 } = vitualProps || {};
-
-	// const handleItemClick = (value: string) => {
-	// 	console.log('Clicked item index:', value);
-	// };
 
 	return (
 		<FixedSizeList

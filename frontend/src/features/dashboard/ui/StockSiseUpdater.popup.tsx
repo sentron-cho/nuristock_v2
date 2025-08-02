@@ -36,32 +36,27 @@ export const StockSiseUpdaterPopup = ({ item, onClose }: { item?: DataType; onCl
 	const onClickClose = (isOk: boolean) => {
 		if (!isOk) return onClose(false);
 
-		forms?.handleSubmit(
-			async (field) => {
-				if (!forms?.formState.dirtyFields) return onClose(false);
+		forms?.handleSubmit(async (field) => {
+			if (!forms?.formState.dirtyFields) return onClose(false);
 
-				if (!item || !field) return showToast('error', ST.ERROR_UNKNOWN);
+			if (!item || !field) return showToast('error', ST.ERROR_UNKNOWN);
 
-				const sise = Number(toNumber(field.sise));
-				const ecost = Number(toNumber(field.ecost));
+			const sise = Number(toNumber(field.sise));
+			const ecost = Number(toNumber(field.ecost));
 
-				const params = {
-					sise: sise,
-					ecost: ecost,
-					stime: dayjs(field.stime).format(DATE_TIME_DB_FORMAT),
-					code: item.code,
-					updown: valueOfUpDown(ecost, 0),
-					erate: Number(((ecost / sise) * 100).toFixed(2)),
-				};
+			const params = {
+				sise: sise,
+				ecost: ecost,
+				stime: dayjs(field.stime).format(DATE_TIME_DB_FORMAT),
+				code: item.code,
+				updown: valueOfUpDown(ecost, 0),
+				erate: Number(((ecost / sise) * 100).toFixed(2)),
+			};
 
-				params && (await updateData(params));
-				// showToast('updated');
-				onClose?.(isOk);
-			},
-			// (error) => {
-			// 	console.log('[error]', { error });
-			// }
-		)();
+			params && (await updateData(params));
+			// showToast('updated');
+			onClose?.(isOk);
+		})();
 	};
 
 	return (
@@ -75,19 +70,8 @@ export const StockSiseUpdaterPopup = ({ item, onClose }: { item?: DataType; onCl
 					align='right'
 					formMethod={forms}
 				/>
-				<NumberInputForm
-					autoFocus
-					id='sise'
-					label={ST.SISE}
-					maxLength={10}
-					formMethod={forms}
-				/>
-				<NumberInputForm
-					id='ecost'
-					label={ST.ECOST}
-					maxLength={10}
-					formMethod={forms}
-				/>
+				<NumberInputForm autoFocus id='sise' label={ST.SISE} maxLength={10} formMethod={forms} />
+				<NumberInputForm id='ecost' label={ST.ECOST} maxLength={10} formMethod={forms} />
 			</Flex>
 		</Dialog>
 	);

@@ -57,7 +57,6 @@ export const Table = ({
 			const { scrollWidth } = ref.current as HTMLElement;
 			setTableWidth(scrollWidth);
 			const width = window.innerWidth;
-			console.log({ width, table: scrollWidth });
 		};
 
 		window.addEventListener('resize', handleResize);

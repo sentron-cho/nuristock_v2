@@ -59,10 +59,6 @@ export const ProfitView = ({
     clear();
 	};
 
-	// const onChangeTitleBar = (value: string) => {
-	// 	console.log('[onClickTitleBar]', { value });
-	// };
-
 	const onRowClick = (record: TableRecordType) => {
 		setSelectedRow(record as ProfitItemType);
 	};
@@ -76,8 +72,6 @@ export const ProfitView = ({
 					options: years,
 					id: 'year',
 					formMethod: formMethod,
-					// defaultValue: yearsSelect?.[0]?.value,
-					// onChange: onChangeTitleBar,
 				}}
 				buttonProps={{
           // title: ST.CLEAR,

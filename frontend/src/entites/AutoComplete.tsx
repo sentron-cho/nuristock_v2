@@ -103,8 +103,6 @@ const AutoComplete = <SelectOptionType,>({
 						placeholder={placeholder}
 						error={error}
 						onFocus={(e) => {
-							console.log(e.target.select());
-
 							if (!readOnly) e.target.select();
 						}}
 					/>

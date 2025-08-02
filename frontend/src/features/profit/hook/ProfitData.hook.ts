@@ -11,7 +11,7 @@ export const useProfitData = (initialData?: DataType[], initialYears?: YearDataT
 	// 	const items = initialYears?.map((a) => ({ value: a?.year, label: a?.year }) as SelectOptionType);
 	// 	return reverse(sortBy(items, 'value'));
 	// }, [initialYears]);
-	
+
 	const years = useMemo(() => {
 		return reverse(sortBy(initialYears, 'year'));
 	}, [initialYears]);
@@ -23,7 +23,6 @@ export const useProfitData = (initialData?: DataType[], initialYears?: YearDataT
 			const eprice = (a?.ecost || 0) * (a?.count || 0);
 			const sonic = (eprice || 0) - (sprice || 0);
 
-			// console.log({a, sonic})
 			return {
 				...a,
 				eprice,
@@ -126,18 +125,12 @@ export const useProfitData = (initialData?: DataType[], initialYears?: YearDataT
 			}
 		});
 
-		const total = Object.values(monthPrice).reduce((a, b) => a + b, 0);
-
-		console.log({ data, monthPrice });
-
-		return total;
+		return Object.values(monthPrice).reduce((a, b) => a + b, 0);
 	};
 
-		// 년도별 누적 투자금액
+	// 년도별 누적 투자금액
 	const createTotal = (data?: DataType[], columnkey: string = 'sprice') => {
-		const total = data?.map(a => (a as FieldValues)?.[columnkey]).reduce((a, b) => a + b, 0);
-		console.log({ total });
-		return total;
+		return data?.map((a) => (a as FieldValues)?.[columnkey]).reduce((a, b) => a + b, 0);
 	};
 
 	// const accPrice = useMemo(() => {

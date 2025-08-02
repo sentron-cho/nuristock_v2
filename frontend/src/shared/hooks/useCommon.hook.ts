@@ -8,7 +8,6 @@ import { ST } from '@shared/config/kor.lang';
 import { useEffect, useState } from 'react';
 import { SCREEN } from '@shared/config/default.config';
 import { useNavigate } from 'react-router-dom';
-import { useSwipeable } from 'react-swipeable';
 
 const SCREEN_TYPE = {
 	MOBILE: 'mobile',

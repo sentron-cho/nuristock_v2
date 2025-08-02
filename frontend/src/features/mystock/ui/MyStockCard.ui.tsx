@@ -70,8 +70,6 @@ export const MyStcokTradeList = ({
 		);
 	}, [list]);
 
-	console.log(groupedByYear);
-
 	const years = useMemo(() => {
 		return reverse(sortBy(Object.keys(groupedByYear)));
 	}, [groupedByYear]);

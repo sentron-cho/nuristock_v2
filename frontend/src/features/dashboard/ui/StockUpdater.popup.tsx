@@ -27,18 +27,13 @@ export const StockUpdaterPopup = ({ item, onClose }: { item?: DataType; onClose:
 	const onClickClose = (isOk: boolean) => {
 		if (!isOk) return onClose(false);
 
-		forms?.handleSubmit(
-			async (field) => {
-				if (!forms?.formState.dirtyFields) return onClose(false);
+		forms?.handleSubmit(async (field) => {
+			if (!forms?.formState.dirtyFields) return onClose(false);
 
-				item?.code && (await updateData({ code: item.code, name: field?.title }));
-				// showToast('updated');
-				onClose?.(isOk);
-			}
-			// (error) => {
-			// 	console.log('[error]', { error });
-			// }
-		)();
+			item?.code && (await updateData({ code: item.code, name: field?.title }));
+			// showToast('updated');
+			onClose?.(isOk);
+		})();
 	};
 
 	return (

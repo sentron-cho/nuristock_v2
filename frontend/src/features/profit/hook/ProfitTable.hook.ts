@@ -28,10 +28,6 @@ export const useProfitTable = (initialData?: DataType[], initialYears?: YearsTyp
 		return reverse(sortBy([...(items || []), SELECT_ALL], 'value'));
 	}, [initialYears]);
 
-	useEffect(() => {
-		console.log(selectedYear);
-	}, [selectedYear]);
-
 	// 메인 데이터 초기화
 	useEffect(() => {
 		const items = cloneDeep(initialData)?.map((a) => {
@@ -44,8 +40,6 @@ export const useProfitTable = (initialData?: DataType[], initialYears?: YearsTyp
 				sonic: (eprice || 0) - (sprice || 0),
 			};
 		});
-
-		// console.log(items);
 
 		setData(items);
 	}, [initialData]);
@@ -154,10 +148,7 @@ export const useProfitTable = (initialData?: DataType[], initialYears?: YearsTyp
 		formMethod.reset();
 	}
 
-	// console.log('[useProfitTable]', { filteredData, data });
-
 	const rowClassName = (row: FieldValues) => {
-		// console.log({ filter, row, selectedRows });
 		if (filter === 'all') {
 			return '';
 		} else if (filter === 'codes') {

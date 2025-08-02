@@ -79,20 +79,14 @@ export const MyStockSellPopup = ({ item, onClose }: { item?: SellDataType; onClo
 						count: Number(toNumber(fields.sellCount)),
 					};
 
-					console.log({ fields, params });
-
 					if (isEditMode) {
 						await updateData(params);
 					} else {
 						await createData(params);
 					}
 
-					// showToast('registered');
 					onClose?.(isOk);
 				}
-				// (error) => {
-				// 	console.error('[error]', { error });
-				// }
 			)();
 		} else {
 			onClose?.(false);

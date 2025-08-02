@@ -165,8 +165,6 @@ const DashboardPage = () => {
 				type: eid,
 				item: data?.sise?.find((b) => b.code === item?.code),
 				onClose: (isOk: boolean) => {
-					// console.log({ location });
-					// navigate(-1); // push로 넣었던 dummy state pop
 					setPopup(undefined);
 					isOk && refetch();
 				},

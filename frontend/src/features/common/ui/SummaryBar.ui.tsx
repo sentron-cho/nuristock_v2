@@ -67,16 +67,6 @@ export const SummaryBar = ({
 	useEffect(() => {
 		setActive(value);
 	}, [value]);
-	// const [ids, setIds] = useState<string[]>();
-
-	// console.log({active, defaultValue})
-
-	// useEffect(() => {
-	// 	const curIds = data?.map((a) => a.id);
-	// 	!isEqual(ids, curIds) && setIds(data?.map((a) => a.id));
-	// }, [data]);
-
-	// useEffect(() => setActive(ids?.length ? ids?.[0] : ''), [ids]);
 
 	const onClickItem = (item: SummaryDataType) => {
 		setActive(item.id);

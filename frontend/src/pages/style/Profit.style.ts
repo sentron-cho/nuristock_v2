@@ -1,4 +1,3 @@
-import Flex from '@entites/Flex';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
 import { styled } from '@styles/stitches.config';
 
