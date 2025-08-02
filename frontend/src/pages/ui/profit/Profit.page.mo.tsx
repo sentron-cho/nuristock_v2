@@ -14,6 +14,7 @@ import { styled } from '@styles/stitches.config';
 import { StyledCard } from '@features/profit/style/ProfitCard.style';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { unset } from 'lodash';
+import { SlideWrapper } from '@entites/SliderWrapper';
 
 const StyledPage = styled(StyledProfitPage, {
 	'.button': {
@@ -24,7 +25,7 @@ const StyledPage = styled(StyledProfitPage, {
 		'.left': {
 			right: unset,
 			left: 0,
-		}
+		},
 	},
 
 	'.card': {
@@ -39,10 +40,6 @@ const StyledPage = styled(StyledProfitPage, {
 						'&.title': {
 							fontSize: '16px',
 						},
-
-						// '&.rate': {
-						// 	fontSize:'14px',
-						// }
 					},
 				},
 			},
@@ -56,7 +53,7 @@ export const ProfitPageMo = () => {
 	const { data: profitData } = useSelectProfit();
 
 	const { summary, data, createSumData } = useProfitData(profitData?.value, yearsData?.value);
-	const { handlerSwipe, activePage, setActivePage } = useCommonHook();
+	const { activePage, setActivePage } = useCommonHook();
 
 	const onClick = (eid: string) => {
 		navigate(`${URL.PROFIT}/${eid}`);
@@ -72,46 +69,40 @@ export const ProfitPageMo = () => {
 		return items && sortedByKey(Object.values(items), 'sonic', true);
 	}, [data]);
 
-	// const handlers = useSwipeable({
-	// 	onSwipedLeft: () => setActiveIndex((prev) => Math.min(prev + 1, 1)),
-	// 	onSwipedRight: () => setActiveIndex((prev) => Math.max(prev - 1, 0)),
-	// 	trackMouse: true,
-	// });
-
 	return (
-		<StyledPage className={clsx('profit', 'main')} summaryData={summary} {...handlerSwipe}>
+		<StyledPage className={clsx('profit', 'main')} summaryData={summary}>
 			<Flex className='view-box' direction={'column'} gap={20}>
-				{/* 연도별 */}
-				{activePage === 0 && (
-					<Flex direction={'column'}>
-						<Flex className={clsx('card-sub-title')} gap={10} justify={'center'}>
-							<SubTitle flex={1} align='center' className={clsx('year')} title={ST.PER_YEARS} />
-							<SubTitle className={clsx('button')} title={ST.PER_CODES} onClick={() => setActivePage(1)} />
+				<SlideWrapper active={activePage} >
+					<>
+						{/* 연도별 */}
+						<Flex direction={'column'} justify={'center'}>
+							<Flex className={clsx('card-sub-title')} gap={10} justify={'center'}>
+								<SubTitle flex={1} align='center' className={clsx('year')} title={ST.PER_YEARS} />
+								<SubTitle className={clsx('button')} title={ST.PER_CODES} onClick={() => setActivePage(1)} />
+							</Flex>
+
+							<StyledCard className={clsx('card')} onClick={() => onClick('year')}>
+								<Flex className={clsx('box')} direction='column' gap={10}>
+									<ProfitCardField className='years' data={years} />
+								</Flex>
+							</StyledCard>
 						</Flex>
 
-						<StyledCard className={clsx('card')} onClick={() => onClick('year')}>
-							<Flex className={clsx('box')} direction='column' gap={10}>
-								<ProfitCardField className='years' data={years} />
+						{/* 종목별 */}
+						<Flex direction={'column'}>
+							<Flex className={clsx('card-sub-title')} gap={10} justify={'center'}>
+								<SubTitle className={clsx('button', 'left')} title={ST.PER_YEARS} onClick={() => setActivePage(0)} />
+								<SubTitle flex={1} align='center' className={clsx('year')} title={ST.PER_CODES} />
 							</Flex>
-						</StyledCard>
-					</Flex>
-				)}
 
-				{/* 종목별 */}
-				{activePage === 1 && (
-					<Flex direction={'column'}>
-						<Flex className={clsx('card-sub-title')} gap={10} justify={'center'}>
-							<SubTitle className={clsx('button', 'left')} title={ST.PER_YEARS} onClick={() => setActivePage(0)} />
-							<SubTitle flex={1} align='center' className={clsx('year')} title={ST.PER_CODES} />
+							<StyledCard className={clsx('card')} onClick={() => onClick('code')}>
+								<Flex className={clsx('box')} direction='column' gap={10}>
+									<ProfitCardField className='names' data={names} />
+								</Flex>
+							</StyledCard>
 						</Flex>
-
-						<StyledCard className={clsx('card')} onClick={() => onClick('code')}>
-							<Flex className={clsx('box')} direction='column' gap={10}>
-								<ProfitCardField className='names' data={names} />
-							</Flex>
-						</StyledCard>
-					</Flex>
-				)}
+					</>
+				</SlideWrapper>
 			</Flex>
 		</StyledPage>
 	);

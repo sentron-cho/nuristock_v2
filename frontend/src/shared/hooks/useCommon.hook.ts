@@ -44,12 +44,6 @@ export const useCommonHook = () => {
 		navagate(-1);
 	};
 
-	const handlerSwipe = useSwipeable({
-		onSwipedLeft: () => setActivePage((prev) => Math.min(prev + 1, 1)),
-		onSwipedRight: () => setActivePage((prev) => Math.max(prev - 1, 0)),
-		trackMouse: true,
-	});
-
 	const toast = useToast();
 	const alert = useAlert();
 	const confirm = useConfirm();
@@ -63,7 +57,6 @@ export const useCommonHook = () => {
 		...confirm,
 		navagate,
 		onBack,
-		handlerSwipe,
 		activePage,
 		setActivePage,
 	};
