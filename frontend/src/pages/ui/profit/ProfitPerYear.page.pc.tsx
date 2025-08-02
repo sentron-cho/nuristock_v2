@@ -27,7 +27,7 @@ const StyledPage = styled(PageContainer, {
   },
 });
 
-export const ProfitPagePc = () => {
+export const ProfitPerYearPagePc = () => {
   // const [loading, setLoading] = useState<boolean>(false);
 
   const [filter, setFilter] = useState<FILTER_TYPE>('codes');

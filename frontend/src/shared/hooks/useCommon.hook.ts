@@ -8,6 +8,7 @@ import { ST } from '@shared/config/kor.lang';
 import { useEffect, useState } from 'react';
 import { SCREEN } from '@shared/config/default.config';
 import { useNavigate } from 'react-router-dom';
+import { useSwipeable } from 'react-swipeable';
 
 const SCREEN_TYPE = {
 	MOBILE: 'mobile',
@@ -25,6 +26,7 @@ export const Schema = {
 export const useCommonHook = () => {
 	const navagate = useNavigate();
 	const [screen, setScreen] = useState<string>(SCREEN_TYPE.PC);
+	const [activePage, setActivePage] = useState(0);
 
 	useEffect(() => {
 		const handleResize = () => {
@@ -40,7 +42,13 @@ export const useCommonHook = () => {
 
 	const onBack = () => {
 		navagate(-1);
-	}
+	};
+
+	const handlerSwipe = useSwipeable({
+		onSwipedLeft: () => setActivePage((prev) => Math.min(prev + 1, 1)),
+		onSwipedRight: () => setActivePage((prev) => Math.max(prev - 1, 0)),
+		trackMouse: true,
+	});
 
 	const toast = useToast();
 	const alert = useAlert();
@@ -55,5 +63,8 @@ export const useCommonHook = () => {
 		...confirm,
 		navagate,
 		onBack,
+		handlerSwipe,
+		activePage,
+		setActivePage,
 	};
 };

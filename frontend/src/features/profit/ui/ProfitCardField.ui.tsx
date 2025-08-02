@@ -71,9 +71,9 @@ export const ProfitCardField = ({
 					const type = valueOfPlusMinus(sonic, 0);
 					return (
 						<Flex className={clsx(type, 'row')} direction={'row'} justify={'between'}>
-							<Text text={title} flex={1} />
+							<Text className='title' text={title} flex={1} />
 							<Text className='rate' size='xs' align='right' text={`${sonicRate} %`} />
-							<Text text={toCost(sonic)} flex={1} align={'right'} />
+							<Text className='value' text={toCost(sonic)} flex={1} align={'right'} />
 						</Flex>
 					);
 				})}

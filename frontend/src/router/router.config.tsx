@@ -2,15 +2,15 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import PageLayout from '../layouts/ui/PageLayout.ui';
 import DashboardPage from '../pages/ui/Dashboard.page';
-import NotFoundPage from '../pages/ui/NotFound.page';
-import StockPage from '../pages/ui/Stock.page';
-import ProfitPage from '../pages/ui/Profit.page';
+import NotFoundPage from '../pages/ui/common/NotFound.page';
 import MarketPage from '../pages/ui/Market.page';
 import InvestmentPage from '../pages/ui/Investment.page';
 import MyStockPage from '@page/ui/MyStock.page';
 import DividendPage from '@page/ui/Dividend.page';
-import ProfitPerCode from '@page/ui/ProfitPerCode.page';
 import DiaryPage from '@page/ui/Diary.page';
+import ProfitPage from '../pages/ui/profit/Profit.page';
+import ProfitPerCodePage from '@page/ui/profit/ProfitPerCode.page';
+import ProfitPerYearPage from '../pages/ui/profit/ProfitPerYear.page';
 
 const router = createBrowserRouter([
 	{
@@ -36,16 +36,12 @@ const router = createBrowserRouter([
 				children: [{ index: true, element: <DiaryPage /> }],
 			},
 			{
-				path: 'stock',
-				element: <PageLayout />,
-				children: [{ index: true, element: <StockPage /> }],
-			},
-			{
 				path: 'profit',
 				element: <PageLayout />,
 				children: [
 					{ index: true, element: <ProfitPage /> },
-					{ path: 'code', element: <ProfitPerCode /> },
+					{ path: 'year', element: <ProfitPerYearPage /> },
+					{ path: 'code', element: <ProfitPerCodePage /> },
 				],
 			},
 			{

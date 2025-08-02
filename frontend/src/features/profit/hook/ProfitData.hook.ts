@@ -11,6 +11,7 @@ export const useProfitData = (initialData?: DataType[], initialYears?: YearDataT
 	// 	const items = initialYears?.map((a) => ({ value: a?.year, label: a?.year }) as SelectOptionType);
 	// 	return reverse(sortBy(items, 'value'));
 	// }, [initialYears]);
+	
 	const years = useMemo(() => {
 		return reverse(sortBy(initialYears, 'year'));
 	}, [initialYears]);

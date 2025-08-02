@@ -9,14 +9,14 @@ import { ST } from '@shared/config/kor.lang';
 import { Text } from '@entites/Text';
 import { StyledProfitPage } from '@page/style/Profit.style';
 
-export const ProfitPageMo = () => {
+export const ProfitPerYearPageMo = () => {
 	const { data: yearsData } = useSelectProfitYears();
 	const { data: profitData } = useSelectProfit();
 
 	const { summary, years, groupedByYear, createTotal } = useProfitData(profitData?.value, yearsData?.value);
 
 	return (
-		<StyledProfitPage className={clsx('profit')} summaryData={summary}>
+		<StyledProfitPage className={clsx('profit', 'per-year')} summaryData={summary}>
 			<Flex className='view-box' direction={'column'} gap={20}>
 				{years?.map((item) => {
 					const type = valueOfPlusMinus(Number(item.sum));
@@ -28,7 +28,13 @@ export const ProfitPageMo = () => {
 						<Flex direction={'column'}>
 							<Flex className={clsx('card-sub-title')} gap={10} justify={'center'}>
 								<SubTitle flex={1} align='left' className={clsx('year')} title={`${item.year}${ST.YEAR}`} />
-								<Text size='xs' flex={2} align='center' className={clsx('total')} text={`${toCost(total)} [${rate}%]`} />
+								<Text
+									size='xs'
+									flex={2}
+									align='center'
+									className={clsx('total')}
+									text={`${toCost(total)} [${rate}%]`}
+								/>
 								<Text bold flex={1} align='right' className={clsx('sum', type)} text={`${toCost(item.sum)}`} />
 							</Flex>
 

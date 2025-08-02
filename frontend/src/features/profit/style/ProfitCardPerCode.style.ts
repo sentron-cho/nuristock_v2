@@ -1,82 +1,82 @@
-import Card from '@mui/material/Card';
-import { styled } from '@styles/stitches.config';
+// import Card from '@mui/material/Card';
+// import { styled } from '@styles/stitches.config';
 
-export const StyledCard = styled(Card, {
-	width: '100%',
-	boxShadow: 'unset !important',
-	padding: '$4',
+// export const StyledCard = styled(Card, {
+// 	width: '100%',
+// 	boxShadow: 'unset !important',
+// 	padding: '$4',
 
-	'&.card': {
-		backgroundColor: 'transparent',
+// 	'&.card': {
+// 		backgroundColor: 'transparent',
 
-		'.plus': {
-			color: '$plus',
-		},
+// 		'.plus': {
+// 			color: '$plus',
+// 		},
 
-		'.minus': {
-			color: '$minus',
-		},
+// 		'.minus': {
+// 			color: '$minus',
+// 		},
 
-		'.box': {
-			backgroundColor: '$white',
-			borderRadius: '$sm',
-			border: '1px solid rgba(0,0,0,0.05)',
-			boxShadow: 'var(--Paper-shadow);',
-			overflow: 'hidden',
-			height: '100%',
-			padding: '$4',
-			paddingBottom: '$10',
-			minHeight: '120px',
+// 		'.box': {
+// 			backgroundColor: '$white',
+// 			borderRadius: '$sm',
+// 			border: '1px solid rgba(0,0,0,0.05)',
+// 			boxShadow: 'var(--Paper-shadow);',
+// 			overflow: 'hidden',
+// 			height: '100%',
+// 			padding: '$4',
+// 			paddingBottom: '$10',
+// 			minHeight: '120px',
 
-			'.names': {},
+// 			'.names': {},
 
-			'.years': {},
+// 			'.years': {},
 
-			'.head, .body': {
-				padding: '0 $4',
+// 			'.head, .body': {
+// 				padding: '0 $4',
 
-				'&.bar': {
-					borderTop: '1px solid $gray300',
-				},
-			},
+// 				'&.bar': {
+// 					borderTop: '1px solid $gray300',
+// 				},
+// 			},
 
-			'.trade-info, .keep-info, .cast-info': {
-				'&.keep-info, &.cast-info': {
-					borderTop: '1px solid $gray300',
-				},
+// 			'.trade-info, .keep-info, .cast-info': {
+// 				'&.keep-info, &.cast-info': {
+// 					borderTop: '1px solid $gray300',
+// 				},
 
-				padding: '8px',
-			},
+// 				padding: '8px',
+// 			},
 
-			'.head': {
-				height: '40px',
-				borderBottom: '1px solid $gray300',
+// 			'.head': {
+// 				height: '40px',
+// 				borderBottom: '1px solid $gray300',
 
-				'.date': {
-					color: '$gray700',
-				},
-			},
+// 				'.date': {
+// 					color: '$gray700',
+// 				},
+// 			},
 
-			'.body': {
-				flex: 1,
+// 			'.body': {
+// 				flex: 1,
 
-				'.row': {
-					position: 'relative',
-					'.rate': {
-						position: 'absolute',
-						transform: 'translateX(50%)',
-						right: '52%',
-						width: '60px',
-						textAlign: 'right',
-					},
-				},
-			},
-		},
+// 				'.row': {
+// 					position: 'relative',
+// 					'.rate': {
+// 						position: 'absolute',
+// 						transform: 'translateX(50%)',
+// 						right: '52%',
+// 						width: '60px',
+// 						textAlign: 'right',
+// 					},
+// 				},
+// 			},
+// 		},
 
-		'&.active': {
-			'.box': {
-				borderColor: '$gray700',
-			},
-		},
-	},
-});
+// 		'&.active': {
+// 			'.box': {
+// 				borderColor: '$gray700',
+// 			},
+// 		},
+// 	},
+// });

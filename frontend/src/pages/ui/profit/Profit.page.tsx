@@ -1,4 +1,3 @@
-import { ProfitPagePc } from './Profit.page.pc';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { ProfitPageMo } from './Profit.page.mo';
 
@@ -8,7 +7,7 @@ const ProfitPage = () => {
 	return (
 		<>
 			{isMobile && <ProfitPageMo />}
-			{!isMobile && <ProfitPagePc />}
+			{!isMobile && <ProfitPageMo />}
 		</>
 	);
 };

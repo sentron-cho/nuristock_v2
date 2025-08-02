@@ -1,12 +1,12 @@
 import clsx from 'clsx';
 import { ProfitItemType as DataType } from '../api/profit.dto';
-import { StyledCard } from '../style/ProfitCardPerCode.style';
 import Flex from '@entites/Flex';
 import { ST } from '@shared/config/kor.lang';
 import { useMemo } from 'react';
 import { useProfitData } from '../hook/ProfitData.hook';
 import { sortedByKey } from '@shared/libs/sort.lib';
 import { ProfitCardField } from './ProfitCardField.ui';
+import { StyledCard } from '../style/ProfitCard.style';
 
 export const ProfitCardPerCode = ({
 	data,
