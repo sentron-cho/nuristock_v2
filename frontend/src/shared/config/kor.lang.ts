@@ -151,11 +151,13 @@ const KOR = {
 	SONIC_RATE: '손익율',
 
 	PER_CODES: '종목별',
+	PER_YEARS: '연도별',
 	PER_MONTHS: '월별',
 	PER_DAYS: '일별',
 
 	MENU: {
 		DASHBOARD: '메인',
+		DIARY: '다이어리',
 		MARKET: '종목검색',
 		PROFIT: '투자손익',
 		INVEST: '가치투자',

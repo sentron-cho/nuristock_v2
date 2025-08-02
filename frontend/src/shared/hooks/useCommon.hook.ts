@@ -7,6 +7,7 @@ import { withCommas } from '@shared/libs/utils.lib';
 import { ST } from '@shared/config/kor.lang';
 import { useEffect, useState } from 'react';
 import { SCREEN } from '@shared/config/default.config';
+import { useNavigate } from 'react-router-dom';
 
 const SCREEN_TYPE = {
 	MOBILE: 'mobile',
@@ -22,6 +23,7 @@ export const Schema = {
 };
 
 export const useCommonHook = () => {
+	const navagate = useNavigate();
 	const [screen, setScreen] = useState<string>(SCREEN_TYPE.PC);
 
 	useEffect(() => {
@@ -36,6 +38,10 @@ export const useCommonHook = () => {
 		return () => window.removeEventListener('resize', handleResize);
 	}, []);
 
+	const onBack = () => {
+		navagate(-1);
+	}
+
 	const toast = useToast();
 	const alert = useAlert();
 	const confirm = useConfirm();
@@ -47,5 +53,7 @@ export const useCommonHook = () => {
 		...toast,
 		...alert,
 		...confirm,
+		navagate,
+		onBack,
 	};
 };

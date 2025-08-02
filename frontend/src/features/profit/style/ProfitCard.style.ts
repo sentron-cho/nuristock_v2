@@ -9,13 +9,13 @@ export const StyledCard = styled(Card, {
 	'&.card': {
 		backgroundColor: 'transparent',
 
-		'.plus': {
-			color: '$plus',
-		},
+		// '.plus': {
+		// 	color: '$plus',
+		// },
 
-		'.minus': {
-			color: '$minus',
-		},
+		// '.minus': {
+		// 	color: '$minus',
+		// },
 
 		'.box': {
 			backgroundColor: '$white',
@@ -27,45 +27,6 @@ export const StyledCard = styled(Card, {
 			padding: '$4',
 			paddingBottom: '$10',
 			minHeight: '120px',
-
-
-			'.names': {
-
-			},
-
-			'.years': {
-			},
-
-			'.head, .body': {
-				padding: '0 $4',
-
-				'&.bar': {
-					borderTop: '1px solid $gray300',
-				}
-			},
-
-			'.trade-info, .keep-info, .cast-info': {
-				'&.keep-info, &.cast-info': {
-					borderTop: '1px solid $gray300',
-				},
-
-				padding: '8px',
-			},
-
-			'.head': {
-				height: '40px',
-				borderBottom: '1px solid $gray300',
-				// backgroundColor: '$gray300',
-				// color: '$primaryhover',
-
-				'.date': {
-					color: '$gray700',
-				},
-			},
-
-			'.body': {
-				flex: 1,
-			},
 		},
 
 		'&.active': {

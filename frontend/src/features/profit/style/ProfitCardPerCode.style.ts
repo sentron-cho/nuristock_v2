@@ -28,20 +28,16 @@ export const StyledCard = styled(Card, {
 			paddingBottom: '$10',
 			minHeight: '120px',
 
+			'.names': {},
 
-			'.names': {
-
-			},
-
-			'.years': {
-			},
+			'.years': {},
 
 			'.head, .body': {
 				padding: '0 $4',
 
 				'&.bar': {
 					borderTop: '1px solid $gray300',
-				}
+				},
 			},
 
 			'.trade-info, .keep-info, .cast-info': {
@@ -55,8 +51,6 @@ export const StyledCard = styled(Card, {
 			'.head': {
 				height: '40px',
 				borderBottom: '1px solid $gray300',
-				// backgroundColor: '$gray300',
-				// color: '$primaryhover',
 
 				'.date': {
 					color: '$gray700',
@@ -65,6 +59,17 @@ export const StyledCard = styled(Card, {
 
 			'.body': {
 				flex: 1,
+
+				'.row': {
+					position: 'relative',
+					'.rate': {
+						position: 'absolute',
+						transform: 'translateX(50%)',
+						right: '52%',
+						width: '60px',
+						textAlign: 'right',
+					},
+				},
 			},
 		},
 

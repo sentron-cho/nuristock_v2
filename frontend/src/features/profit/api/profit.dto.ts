@@ -9,6 +9,7 @@ export interface ProfitItemType extends MyStockKeepType {
 	title?: string;
 	sprice?: number;
 	eprice?: number;
+	sonicRate?: number;
 }
 
 export interface ProfitResponse {
