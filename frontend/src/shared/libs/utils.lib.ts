@@ -36,7 +36,7 @@ export const toNumber = (v?: string) => {
 };
 
 export const toCost = (v?: number | string, showZero?: boolean) => {
-	if(showZero) return `${v ? withCommas(v) : 0} ${COST.WON}`;
+	if (showZero) return `${v ? withCommas(v) : 0} ${COST.WON}`;
 	return `${withCommas(v)} ${COST.WON}`;
 };
 
@@ -96,4 +96,17 @@ export const valueOfDateDiff = (start?: string | Date, end?: string | Date): str
 	const days = diffDays % 365;
 
 	return `${years > 0 ? `${years}년 ` : ''}${days}일`;
+};
+
+// 오늘 일자가 주말인지 체크
+export const isWeekend = (date?: string | Date): boolean => {
+	const day = dayjs(date).toDate().getDay();
+	return day === 0 || day === 6;
+};
+
+// 날자로 요일 가져오기
+export const valueOfweek = (date?: string | Date): string => {
+	const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
+	const day = dayjs(date).toDate().getDay();
+	return weekDays[day];
 };

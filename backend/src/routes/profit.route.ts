@@ -2,9 +2,6 @@ import { SqlError } from "mariadb/*";
 import URL from "../types/url.js";
 import { FastifyInstance } from "fastify";
 import { withError } from "../lib/error.js";
-import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
-import { MyStockKeepCreateType, MyStockSellCreateType } from "../types/mystock.type.js";
-import dayjs from "dayjs";
 import { ProfitSearchParams } from "../types/profit.type.js";
 
 const profitRoute = (fastify: FastifyInstance) => {

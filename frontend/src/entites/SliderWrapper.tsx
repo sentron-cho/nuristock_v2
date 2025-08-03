@@ -9,7 +9,7 @@ export const StyledSlideWrapper = styled(Flex, {
 	width: '100%',
 
 	'& > div': {
-		width: '100vw',
+		width: '100%',
 		flexShrink: 0,
 	},
 });
@@ -37,8 +37,16 @@ export const Dot = styled('div', {
 	},
 });
 
-export const SlideWrapper = ({ children, active }: { children?: ReactNode; active?: number }) => {
-	const [activePage, setActivePage] = useState(0);
+export interface SlideWrapperProps {
+	children?: ReactNode;
+	active?: number;
+	max?: number;
+	defaultValue?: number;
+	onChange?: (activePage: number) => void
+}
+
+export const SlideWrapper = ({ children, active, max = 1, defaultValue = 0, onChange }: SlideWrapperProps) => {
+	const [activePage, setActivePage] = useState<number>(defaultValue);
 	const [show, setShow] = useState(false);
 
 	useEffect(() => {
@@ -51,11 +59,18 @@ export const SlideWrapper = ({ children, active }: { children?: ReactNode; activ
 	const handlerSwipe = useSwipeable({
 		onSwipedLeft: () => {
 			onShow();
-			setActivePage((prev) => Math.min(prev + 1, 1));
+			console.log();
+			const next = Math.min(activePage + 1, max);
+			console.log(next);
+			setActivePage(next);
+			onChange?.(next);
 		},
 		onSwipedRight: () => {
 			onShow();
-			setActivePage((prev) => Math.max(prev - 1, 0));
+			const next = Math.max(activePage - 1, 0);
+			console.log(next);
+			setActivePage(next);
+			onChange?.(next);
 		},
 		trackMouse: true,
 	});

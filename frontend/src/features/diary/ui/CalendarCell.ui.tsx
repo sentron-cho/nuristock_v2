@@ -1,50 +1,70 @@
 // src/pages/CalendarCell.tsx
-import { styled } from "@styles/stitches.config";
-import dayjs from "dayjs";
+import Flex from '@entites/Flex';
+import { Text } from '@entites/Text';
+import { ST } from '@shared/config/kor.lang';
+import { isWeekend } from '@shared/libs/utils.lib';
+import { styled } from '@styles/stitches.config';
+import clsx from 'clsx';
+import dayjs from 'dayjs';
+import { useMemo } from 'react';
 
-const Cell = styled("div", {
-  padding: "8px",
-  borderRadius: "6px",
-  textAlign: "center",
-  cursor: "pointer",
-  fontSize: 14,
-  variants: {
-    isCurrentMonth: {
-      true: { opacity: 1 },
-      false: { opacity: 0.4 },
-    },
-    selected: {
-      true: { backgroundColor: "#1976d2", color: "white" },
-      false: {},
-    },
-  },
+const StyledCell = styled(Flex, {
+  borderTop: '1px solid $gray500',
+	// borderTop: '1px solid $gray500',
+	// borderRadius: '$sm',
+	height: '60px',
+	padding: '$4',
+	textAlign: 'center',
+	cursor: 'pointer',
+
+	// '.text': {
+	// 	fontSize: 10,
+	// 	lineHeight: 1.2,
+	// },
+
+	variants: {
+		isCurrentMonth: {
+			true: { opacity: 1 },
+			false: { opacity: 0.4 },
+		},
+		selected: {
+			true: { backgroundColor: '$lightyellow' },
+			false: {},
+		},
+	},
 });
 
-const Mark = styled("div", {
-  fontSize: 10,
-  lineHeight: 1.2,
-});
+export type CalendarTypeData = { buy?: number; sell?: number };
 
-type Props = {
-  date: dayjs.Dayjs;
-  isCurrentMonth: boolean;
-  selected?: boolean;
-  data?: { buy?: boolean; sell?: boolean };
-  onClick: () => void;
+type CalendarCellProps = {
+	date: string | Date;
+	isCurrentMonth: boolean;
+	selected?: boolean;
+	data?: CalendarTypeData;
+	today?: boolean;
+	onClick: () => void;
 };
 
-export const CalendarCell = ({ date, data, onClick, isCurrentMonth, selected }: Props) => {
-  return (
-    <Cell
-      isCurrentMonth={isCurrentMonth}
-      selected={selected}
-      onClick={onClick}
-    >
-      {date.date()}
-      <div>
-        {data?.buy && <Mark>매수 ↑</Mark>}
-        {data?.sell && <Mark>매도 ↓</Mark>}
-      </div>
-    </Cell>
-  );
+export const CalendarCell = ({ date, data, onClick, isCurrentMonth, selected }: CalendarCellProps) => {
+	const weekend = useMemo(() => {
+		return isWeekend(date);
+	}, [date]);
+
+	return (
+		<StyledCell
+			className={clsx('cell', { weekend })}
+			direction={'column'}
+			isCurrentMonth={isCurrentMonth}
+			selected={selected}
+			onClick={onClick}
+			gap={8}
+		>
+			<Text className='title' text={dayjs(date).date()} />
+
+			<Flex className='text' direction={'column'} gap={2}>
+				{data?.buy && <Text size='xs' text={`${ST.BUY}(${data?.buy})`} />}
+				{data?.sell && <Text size='xs' text={`${ST.SELL}(${data?.sell})`} />}
+			</Flex>
+		</StyledCell>
+	);
 };

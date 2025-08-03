@@ -8,7 +8,7 @@ import { useProfitTable } from '@features/profit/hook/ProfitTable.hook';
 import { getCostColorType, toCost } from '@shared/libs/utils.lib';
 import { ProfitItemType, ProfitYearsItemType } from '@features/profit/api/profit.dto';
 import { SubTableList } from '@features/profit/ui/SubTableList.ui';
-import { FILTER_TYPE } from '../hook/ProfitTable.hook.back';
+import { FILTER_TYPE } from '../hook/ProfitTable.hook';
 import clsx from 'clsx';
 import { styled } from '@stitches/react';
 import { IconRefresh } from '@entites/Icons';

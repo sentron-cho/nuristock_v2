@@ -7,7 +7,7 @@ import MarketPage from '../pages/ui/Market.page';
 import InvestmentPage from '../pages/ui/Investment.page';
 import MyStockPage from '@page/ui/MyStock.page';
 import DividendPage from '@page/ui/Dividend.page';
-import DiaryPage from '@page/ui/Diary.page';
+import DiaryPage from '@page/ui/diary/Diary.page';
 import ProfitPage from '../pages/ui/profit/Profit.page';
 import ProfitPerCodePage from '@page/ui/profit/ProfitPerCode.page';
 import ProfitPerYearPage from '../pages/ui/profit/ProfitPerYear.page';
