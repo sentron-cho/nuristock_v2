@@ -97,7 +97,7 @@ const mystockRoute = (fastify: FastifyInstance) => {
         );
       }
 
-      await fastify.db.query(`INSERT INTO keeps ${makeInsertSet(req.body as Record<string, string>)};`);
+      await fastify.db.query(`INSERT INTO keeps ${makeInsertSet(req.body as FieldValues)};`);
       await updateDashboardKeep(code);
 
       reply.status(200).send({ value: code });
