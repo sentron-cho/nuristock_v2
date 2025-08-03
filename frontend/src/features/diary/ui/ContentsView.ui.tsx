@@ -15,11 +15,17 @@ const StyledFlex = styled(Flex, {
 	paddingBottom: '100px',
 
 	'.contents-title-bar': {
-		padding: '$4 $10',
 		backgroundColor: '$lightyellow',
 		position: 'sticky',
 		top: 0,
 		zIndex: 1,
+		height: '40px',
+
+		'.icon': {
+			width: '80px',
+			height: '100%',
+			padding: '4px',
+		},
 	},
 
 	'.contents-form': {
@@ -110,7 +116,7 @@ const ContentsForm = ({
 	return (
 		<Flex className={clsx('contents-form', type, className)} direction='column' gap={4} align={'start'}>
 			<SubTitle width={'100%'} textAlign={'center'} fontSize={'small'} title={type === 'trade' ? ST.SELL : ST.BUY} />
-			<Flex className='line' direction={'column'} justify={'between'} align={'start'} gap={type === 'keep'? 8 : 12}>
+			<Flex className='line' direction={'column'} justify={'between'} align={'start'} gap={type === 'keep' ? 8 : 12}>
 				{data?.map((item) => {
 					const { name, sonic, sprice, scost, ecost, count, sonicRate } = item;
 					const updown = valueOfPlusMinus(sonic);

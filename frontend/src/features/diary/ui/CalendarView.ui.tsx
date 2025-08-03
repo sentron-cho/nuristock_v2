@@ -9,12 +9,16 @@ import clsx from 'clsx';
 
 const StyledFlex = styled(Flex, {
 	'&.diary-view': {
-		paddingTop: '$20',
+		// paddingTop: '$20',
 		// background: '$gray300',
 
 		'.cal-title-bar': {
+			height: '40px',
+
 			'.icon': {
 				width: '80px',
+				height: '100%',
+				padding: '4px'
 			},
 		},
 
