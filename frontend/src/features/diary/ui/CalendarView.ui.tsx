@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { styled } from '@styles/stitches.config';
 import { CalendarCell, CalendarTypeData } from './CalendarCell.ui';
 import dayjs from 'dayjs';
-import { useFormContext } from 'react-hook-form';
 import Flex from '@entites/Flex';
 import { SubTitle, Title } from '@entites/Title';
 import { IconArrowLeft, IconArrowRight } from '@entites/Icons';
@@ -11,6 +10,7 @@ import clsx from 'clsx';
 const StyledFlex = styled(Flex, {
 	'&.diary-view': {
 		paddingTop: '$20',
+		// background: '$gray300',
 
 		'.cal-title-bar': {
 			'.icon': {
@@ -25,7 +25,7 @@ const StyledFlex = styled(Flex, {
 			gridTemplateColumns: 'repeat(7, 1fr)',
 			gap: 2,
 			borderTop: '1px solid $gray400',
-			borderBottom: '1px solid $gray400',
+			borderBottom: '1px solid $gray700',
 
 			'.head': {
 				paddingBottom: '10px',
@@ -39,22 +39,15 @@ const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
 export const CalendarView = ({
 	data,
-	date = dayjs(),
+	date: today = dayjs(),
+	onChangeMonth,
+	onChangeDate,
 }: {
 	data?: Record<string, CalendarTypeData>;
-	date?: string | dayjs.Dayjs;
+	date?: dayjs.Dayjs;
+	onChangeMonth?: (value?: dayjs.Dayjs) => void;
+	onChangeDate?: (value?: dayjs.Dayjs) => void;
 }) => {
-	const [selectedDate, setSelectedDate] = useState<string>(dayjs(date).format('YYYY-MM-DD'));
-  const [today, setToday] = useState<dayjs.Dayjs>(dayjs(date));
-  
-  useEffect(() => { 
-    const value = dayjs(date);
-    setToday(value);
-    setSelectedDate(value.format('YYYY-MM-DD'));
-  }, [date]);
-
-	const forms = useFormContext();
-
 	const dates = useMemo(() => {
 		const start = today.startOf('month').startOf('week');
 		const end = today.endOf('month').endOf('week');
@@ -67,18 +60,8 @@ export const CalendarView = ({
 		return dateArray;
 	}, [today]);
 
-	console.log({ selectedDate });
-
-	// const parsedData = useMemo(() => {
-	//   if (!data) return undefined;
-
-	//   const items = Object.entries(data)?.filter((a) => dayjs(a?.[0]).format('YYYYMM') === dayjs(today).format('YYYYMM'));
-	//   console.log({ today: dayjs(today).format('YYYYMM'), items });
-	//   return items;
-	// }, [data, today]);
-
-	const onChangeMonth = (eid: 'prev' | 'next' | 'now') => {
-		let selected: dayjs.Dayjs = dayjs(selectedDate);
+	const onChange = (eid: 'prev' | 'next' | 'now') => {
+		let selected: dayjs.Dayjs = dayjs(today);
 		switch (eid) {
 			case 'prev':
 				selected = dayjs(selected).add(-1, 'month');
@@ -91,30 +74,21 @@ export const CalendarView = ({
 				break;
 		}
 
-		setToday(selected);
-		forms?.setValue('month', selected);
-		// setSelectedDate(dayjs(selected).format('YYYY-MM-DD'));
-
-		onSelect(dayjs(selected).format('YYYY-MM-DD'));
-	};
-
-	const onSelect = (date: string) => {
-		setSelectedDate(date);
-		forms?.setValue('date', date);
+		onChangeMonth?.(dayjs(selected));
 	};
 
 	return (
 		<StyledFlex className='diary-view' direction={'column'} gap={8}>
 			<Flex className='cal-title-bar' justify={'center'} align={'center'}>
-				<IconArrowLeft className='icon' onClick={() => onChangeMonth('prev')} />
+				<IconArrowLeft className='icon' onClick={() => onChange('prev')} />
 				<Title
 					align='center'
 					className='title'
 					title={dayjs(today).format('YYYY년 MM월')}
 					flex={1}
-					onClick={() => onChangeMonth('now')}
+					onClick={() => onChange('now')}
 				/>
-				<IconArrowRight className='icon' onClick={() => onChangeMonth('next')} />
+				<IconArrowRight className='icon' onClick={() => onChange('next')} />
 			</Flex>
 
 			<div className={'cal-view'}>
@@ -132,9 +106,9 @@ export const CalendarView = ({
 							date={date?.toDate()}
 							isCurrentMonth={date.month() === today.month()}
 							today={date.format('YYYY-MM-DD') === formatDate}
-							selected={selectedDate === formatDate}
+							selected={dayjs(today).format('YYYY-MM-DD') === formatDate}
 							data={data?.[formatDate]} // 매수/매도 정보
-							onClick={() => onSelect(formatDate)}
+							onClick={() => onChangeDate?.(date)}
 						/>
 					);
 				})}

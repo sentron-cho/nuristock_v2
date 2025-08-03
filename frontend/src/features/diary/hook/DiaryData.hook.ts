@@ -14,12 +14,14 @@ export const useDiaryData = (initialKeepData?: DataType[], initialTradeData?: Da
 			const sprice = (a?.scost || 0) * (a?.count || 0);
 			const eprice = (a?.ecost || 0) * (a?.count || 0);
 			const sonic = (eprice || 0) - (sprice || 0);
+			const sonicRate = Number(((Number(sonic) / Number(sprice)) * 100)?.toFixed(1));
 
 			return {
 				...a,
 				eprice,
 				sprice,
 				sonic,
+				sonicRate,
 			};
 		});
 
@@ -31,12 +33,14 @@ export const useDiaryData = (initialKeepData?: DataType[], initialTradeData?: Da
 			const sprice = (a?.scost || 0) * (a?.count || 0);
 			const eprice = (a?.ecost || 0) * (a?.count || 0);
 			const sonic = (eprice || 0) - (sprice || 0);
+			const sonicRate = Number(((Number(sonic) / Number(sprice)) * 100)?.toFixed(1));
 
 			return {
 				...a,
 				eprice,
 				sprice,
 				sonic,
+				sonicRate,
 			};
 		});
 

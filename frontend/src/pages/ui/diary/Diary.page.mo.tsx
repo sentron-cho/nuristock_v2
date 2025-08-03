@@ -8,12 +8,15 @@ import { ContentsView } from '@features/diary/ui/ContentsView.ui';
 import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
-import { useEffect, useMemo, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { useMemo, useState } from 'react';
 import { useSwipeable } from 'react-swipeable';
 
 const StyledPage = styled(PageContainer, {
 	height: '100vh',
+
+	'.view-box': {
+		height: '100%',
+	},
 
 	'.weekend': {
 		color: '$error',
@@ -21,48 +24,22 @@ const StyledPage = styled(PageContainer, {
 });
 
 export const DiaryPageMo = () => {
-	const [search, setSearch] = useState<string>(dayjs().format('YYYY'));
 	const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
 
-	const forms = useForm();
-
-	const { data: diaryData } = useSelectDiary(search);
+	const { data: diaryData } = useSelectDiary();
 	const { summary, countPerDays, keeps, trades } = useDiaryData(diaryData?.keep, diaryData?.trade);
 
-	const formSelectedDate = forms.watch('date');
-	const selectedMonth = forms.watch('month');
-
-	useEffect(() => {
-		setSelectedDate(formSelectedDate);
-	}, [formSelectedDate]);
-
-	useEffect(() => {
-		const now = dayjs(selectedMonth).format('YYYY');
-		search != now && setSearch(now);
-	}, [selectedMonth]);
-
-	// useEffect(() => {
-	// 	console.log('[Search]', { search, selectedDate: dayjs(selectedDate).format('YYYY-MM-DD') });
-	// }, [search, selectedDate]);
-
-	const selected = useMemo(() => {
-		if (!selectedDate) return;
-
-		const sell = trades?.filter((a) => dayjs(a.edate).format('YYYYMMDD') === dayjs(selectedDate).format('YYYYMMDD'));
-		const buy = keeps?.filter((a) => dayjs(a.sdate).format('YYYYMMDD') === dayjs(selectedDate).format('YYYYMMDD'));
-		// console.log({ sell, buy });
-		return { selectedDate, sell, buy };
-	}, [selectedDate]);
-
+	// 캘린더 데이터(1년 매수/매도 카운트)
 	const calendarData = useMemo(() => {
+		const year = dayjs(selectedDate).format('YYYY');
 		const temps: Record<string, CalendarTypeData> = {};
 
 		const arrayBuys = Object.entries(countPerDays?.buys)?.filter((item) => {
-			return dayjs(item?.[0]).format('YYYY') === search;
+			return dayjs(item?.[0]).format('YYYY') === year;
 		});
 
 		const arraySells = Object.entries(countPerDays?.sells)?.filter((item) => {
-			return dayjs(item?.[0]).format('YYYY') === search;
+			return dayjs(item?.[0]).format('YYYY') === year;
 		});
 
 		arrayBuys?.forEach((a) => {
@@ -75,9 +52,18 @@ export const DiaryPageMo = () => {
 		});
 
 		return temps;
-	}, [countPerDays, search]);
+	}, [countPerDays, selectedDate]);
 
-	const handlerSwipe = useSwipeable({
+	// 컨텐츠 데이터(해당날자 매수/매도 정보)
+	const contentsData = useMemo(() => {
+		if (!selectedDate) return;
+
+		const sell = trades?.filter((a) => dayjs(a.edate).format('YYYYMMDD') === dayjs(selectedDate).format('YYYYMMDD'));
+		const buy = keeps?.filter((a) => dayjs(a.sdate).format('YYYYMMDD') === dayjs(selectedDate).format('YYYYMMDD'));
+		return { selectedDate, sell, buy };
+	}, [selectedDate]);
+
+	const handlerMonthSwipe = useSwipeable({
 		onSwipedLeft: () => {
 			setSelectedDate(dayjs(selectedDate).add(1, 'month'));
 		},
@@ -87,15 +73,41 @@ export const DiaryPageMo = () => {
 		trackMouse: true,
 	});
 
+	const handlerDateSwipe = useSwipeable({
+		onSwipedLeft: () => {
+			setSelectedDate(dayjs(selectedDate).add(1, 'day'));
+		},
+		onSwipedRight: () => {
+			setSelectedDate(dayjs(selectedDate).add(-1, 'day'));
+		},
+		trackMouse: true,
+	});
+
+	const onChangeDate = (value?: dayjs.Dayjs) => {
+		value && setSelectedDate(value);
+	};
+
+	const onChangeMonth = (value?: dayjs.Dayjs) => {
+		value && setSelectedDate(value);
+	};
+
 	return (
 		<StyledPage className={clsx('diary', 'main')} summaryData={summary}>
-			<Flex className='view-box' direction={'column'} gap={2} {...handlerSwipe}>
-				<FormProvider {...forms}>
-					<Flex direction={'column'}>
-						<CalendarView data={calendarData} date={selectedDate} />
-						<ContentsView data={selected} date={selectedDate} />
-					</Flex>
-				</FormProvider>
+			<Flex className='view-box' direction={'column'} align={'start'}>
+				{/* 캘린더 뷰 */}
+				<Flex {...handlerMonthSwipe} flex={1}>
+					<CalendarView
+						data={calendarData}
+						date={selectedDate}
+						onChangeMonth={onChangeMonth}
+						onChangeDate={onChangeDate}
+					/>
+				</Flex>
+
+				{/* 컨텐츠 뷰 */}
+				<Flex {...handlerDateSwipe} flex={1}>
+					<ContentsView data={contentsData} date={selectedDate} onChangeDate={onChangeDate} />
+				</Flex>
 			</Flex>
 		</StyledPage>
 	);
