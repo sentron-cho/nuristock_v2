@@ -1,12 +1,12 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import dbPlugin from "./plugins/db.js"; // 🔥 DB 플러그인 추가
-import dotenv from "dotenv";
 import dashboardRoute from "./routes/dashboard.route.js";
 import mystockRoute from "./routes/mystock.route.js";
 import marketRoute from "./routes/market.route.js";
 import profitRoute from "./routes/profit.route.js";
 import diaryRoute from "./routes/diary.route.js";
+import { startStockCollector } from "./crawler/stockCollector.js";
 
 // dotenv.config({ path: '.env' });
 
@@ -34,6 +34,13 @@ await fastify.register(mystockRoute);
 await fastify.register(marketRoute);
 await fastify.register(profitRoute);
 await fastify.register(diaryRoute);
+
+
+// 크롤링 작업 시작
+fastify.ready().then(() => {
+  startStockCollector(fastify); // DB 주입
+});
+// startStockCollector();
 
 fastify.get("/", async (req, reply) => {
   return { hello: "world" };

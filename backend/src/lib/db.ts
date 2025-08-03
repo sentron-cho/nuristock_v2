@@ -24,12 +24,12 @@ export const db = {
     let conn;
     try {
       conn = await pool.getConnection();
-      console.log("[DB CONN] ====> ", {
-        host: process.env.DB_HOST,
-        user: process.env.DB_USER,
-        database: process.env.DB_NAME,
-        origin: process.env.FRONT_END_ORIGIN,
-      });
+      // console.log("[DB CONN] ====> ", {
+      //   host: process.env.DB_HOST,
+      //   user: process.env.DB_USER,
+      //   database: process.env.DB_NAME,
+      //   origin: process.env.FRONT_END_ORIGIN,
+      // });
 
       const result = await conn.query(sql, values);
       return result as T[];

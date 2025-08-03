@@ -2,7 +2,7 @@ import URL from "../types/url.js";
 import { FastifyInstance } from "fastify";
 import { withError } from "../lib/error.js";
 import { SqlError } from "mariadb/*";
-import { makeUpdateSet } from "../lib/db.util.js";
+import { getNaverPrice, makeUpdateSet } from "../lib/db.util.js";
 import { DashboardCreateType } from "../types/dashboard.type.js";
 
 const dashboardRoute = (fastify: FastifyInstance) => {
@@ -13,6 +13,9 @@ const dashboardRoute = (fastify: FastifyInstance) => {
       if (dashboard) {
         const codes = dashboard.map((a) => `'${a.code}'`).join(","); // ✅ 문자열로 변환
         const sise = await fastify.db.query(`SELECT * FROM market WHERE code in (${codes})`);
+
+        const values = await getNaverPrice(dashboard?.map((a) => a.code)?.[0]?.replace("A", ""));
+        console.log({ codes, values });
 
         return {
           value: dashboard,

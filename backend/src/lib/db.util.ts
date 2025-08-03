@@ -1,3 +1,6 @@
+import axios from 'axios';
+import * as cheerio from 'cheerio';
+
 export const makeUpdateSet = (values?: Record<string, unknown>) => {
   if (!values) return "";
 
@@ -18,4 +21,27 @@ export const makeInsertSet = (values?: Record<string, unknown>) => {
     .join(", ");
 
   return ` (${columns}) VALUES (${params})`;
+};
+
+export const getNaverPrice = async (code: string) => {
+  try {
+    const url = `https://finance.naver.com/item/main.nhn?code=${code}`;
+    const { data } = await axios.get(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0', // 봇 차단 우회
+      },
+    });
+
+    const $ = cheerio.load(data);
+    const priceText = $('.no_today .blind').first().text();
+
+    console.log({url, priceText});
+
+    return {
+      code,
+      price: Number(priceText.replace(/,/g, '')),
+    };
+  } catch (error) {
+    throw new Error('크롤링 실패');
+  }
 };
