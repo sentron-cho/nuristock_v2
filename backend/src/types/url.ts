@@ -22,6 +22,9 @@ export const URL = {
   DIARY: {
     ROOT: `${ROOT_URL}/diary`,
   },
+  DIVIDEND: {
+    ROOT: `${ROOT_URL}/dividend`,
+  },
 };
 
 export default URL;

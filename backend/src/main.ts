@@ -7,6 +7,7 @@ import marketRoute from "./routes/market.route.js";
 import profitRoute from "./routes/profit.route.js";
 import diaryRoute from "./routes/diary.route.js";
 import { startStockCollector } from "./crawler/stockCollector.js";
+import dividendRoute from "./routes/dividend.route.js";
 
 // dotenv.config({ path: '.env' });
 
@@ -34,7 +35,7 @@ await fastify.register(mystockRoute);
 await fastify.register(marketRoute);
 await fastify.register(profitRoute);
 await fastify.register(diaryRoute);
-
+await fastify.register(dividendRoute);
 
 // 크롤링 작업 시작
 fastify.ready().then(() => {
