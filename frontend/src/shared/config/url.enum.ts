@@ -40,6 +40,7 @@ export const API = {
 	INVEST: `${API_ROOT}/invest`,
 	PROFIT: `${API_ROOT}/profit`,
 	PROFIT_YEARS: `${API_ROOT}/profit/years`,
+	DIVIDEND: `${API_ROOT}/dividend`,
   
 	// APPINFO: `${API_ROOT}/appinfo`,
 	// TOKEN: `${API_ROOT}/token`,

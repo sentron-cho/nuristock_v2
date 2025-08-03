@@ -12,11 +12,11 @@ import { IconButton, IconType } from '@entites/IconButton';
 import Flex from '@entites/Flex';
 import { KeepContents, TradeContents } from './MyStockCardContents.ui';
 import { StyledCard, StyledTradeCard } from '../style/MyStockCard.style';
-import { Text } from '@entites/Text';
 import { useMemo } from 'react';
 import dayjs from 'dayjs';
 import { reverse, sortBy } from 'lodash';
 import { SubTitle } from '@entites/Title';
+import { NoData } from '@entites/NoData';
 
 export const MyStcokKeepList = ({
 	list,
@@ -43,7 +43,6 @@ export const MyStcokKeepList = ({
 		</Flex>
 	);
 };
-
 
 export const MyStcokTradeList = ({
 	list,
@@ -107,14 +106,6 @@ export const MyStcokTradeList = ({
 				);
 			})}
 		</StyledTradeCard>
-	);
-};
-
-const NoData = () => {
-	return (
-		<Flex height={'100%'} justify={'center'}>
-			<Text size='lg' text={ST.NO_HISTORY} color='textDisabled' />
-		</Flex>
 	);
 };
 

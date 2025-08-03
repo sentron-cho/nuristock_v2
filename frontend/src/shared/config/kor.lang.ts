@@ -104,7 +104,8 @@ const KOR = {
 	TOMONTH: '이번달',
 	SELECT_IS_FILE: '파일을 선택하세요',
 	PHONE: '연락처',
-	SHARE: '배당',
+	DIVIDEND: '배당',
+	DIVIDEND_HISTORY: '배당 내역',
 	PER_SONIC: '종목별 손익',
 	SISE_SONIC: '예상손익',
 	CLOSE_STOCK: '상장폐지',
@@ -179,6 +180,9 @@ const KOR = {
 	MARKET: '거래소',
 	UPDATE_TIME: '업데이트 일시',
 	NO_DATA: '내역이 없습니다.',
+
+	STOCK_PER_COST: '주당금액',
+	DIVIDEND_TOTAL: '배당금액(세후)',
 
 	// DASHBOARD: {
 	// 	ADD: '종목 추가',
