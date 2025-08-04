@@ -35,7 +35,7 @@ const getNaverStockPrice = async (code: string) => {
       ecost: updown === "down" ? ecost * -1 : ecost,
       erate: updown === "down" ? erate * -1 : erate,
       updown: updown,
-      stime: dayjs().format("YYYYMMDDHHmmss"),
+      stime: dayjs().tz('Asia/Seoul').format("YYYYMMDDHHmmss"),
     };
   } catch (error) {
     console.error(`[ERROR] ${code} 시세 가져오기 실패`, error);
