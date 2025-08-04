@@ -6,6 +6,7 @@ export interface DividendItemType {
 	cost: number;
 	count: number;
 	price: number;
+	title?: string;
 }
 
 export interface DividendStockType {

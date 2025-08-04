@@ -4,12 +4,11 @@ import { Card as MuiCard } from '@mui/material';
 import { styled } from '@styles/stitches.config';
 
 export const StyledCard = styled(MuiCard, {
-	width: '33.33333%',
-	height: '240px',
-	boxShadow: 'unset !important',
-	padding: '$4',
-
 	'&.card': {
+		width: '33.33333%',
+		height: '240px',
+		boxShadow: 'unset !important',
+		padding: '$4',
 		backgroundColor: 'transparent',
 
 		'.box': {
@@ -58,14 +57,19 @@ export const StyledCard = styled(MuiCard, {
 				borderColor: '$gray700',
 			},
 		},
-	},
 
-	'@lg': {
-		width: '50%',
-	},
-	
-	'@md': {
-		width: '100%',
+		'@lg': {
+			'&.card': {
+				width: '50%',
+			},
+		},
+
+		'@md': {
+			'&.card': {
+				width: '100%',
+				height: 'unset',
+			},
+		},
 	},
 });
 

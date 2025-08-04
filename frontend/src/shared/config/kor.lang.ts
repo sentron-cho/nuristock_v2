@@ -115,6 +115,7 @@ const KOR = {
 	KOSPI: '코스피',
 	KOSDAQ: '코스닥',
 	SUM: '총계',
+	TAX: '제세금',
 
 	NO_SERVICE: '서비스 준비중',
 
@@ -182,7 +183,8 @@ const KOR = {
 	NO_DATA: '내역이 없습니다.',
 
 	STOCK_PER_COST: '주당금액',
-	DIVIDEND_TOTAL: '배당금액(세후)',
+	DIVIDEND_SUM: '배당금',
+	DIVIDEND_TOTAL: '배당금(세후)',
 
 	// DASHBOARD: {
 	// 	ADD: '종목 추가',

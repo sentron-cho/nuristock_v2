@@ -120,7 +120,7 @@ export const DashboardCard = ({
 					{history ? (
 						<Flex direction={'column'}>
 							{/* 매수/매도/손익 */}
-							<Flex className='trade-info' direction='column' align='start' gap={10}>
+							<Flex className='trade-info' direction='column' align='start'>
 								<CardLineFiled title={ST.BUY} text={values?.buyText} value={withCommas(data.sprice)} />
 								<CardLineFiled title={ST.SELL} text={values?.sellText} value={withCommas(data.eprice)} />
 								<CardLineFiled
@@ -134,7 +134,7 @@ export const DashboardCard = ({
 
 							{/* 보유/예상/예상수익 */}
 							{active && (
-								<Flex className='keep-info' direction='column' align='start' gap={10}>
+								<Flex className='keep-info' direction='column' align='start'>
 									<CardLineFiled
 										className={clsx('keep-cost')}
 										title={ST.KEEP}

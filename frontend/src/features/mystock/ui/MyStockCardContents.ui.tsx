@@ -70,13 +70,13 @@ export const TradeContents = ({ data, sise }: { data: SellType; sise?: SiseType 
 			<Flex gap={8} className='body' direction='column' justify='start'>
 				<Flex className='layout' direction={'column'} flex={1}>
 					{/* 매수/매도 */}
-					<Flex className='trade-info' direction='column' align='start' gap={10}>
+					<Flex className='trade-info' direction='column' align='start'>
 						<CardLineFiled {...values.buy} value={withCommas(values?.buy.value)} />
 						<CardLineFiled className={type} {...values.sell} value={withCommas(values?.sell.value)} />
 					</Flex>
 
 					{/* 연수익/보유일 */}
-					<Flex className='keep-info' direction='column' align='start' gap={10} flex={1}>
+					<Flex className='keep-info' direction='column' align='start' flex={1}>
 						<CardLineFiled
 							className={type}
 							{...values.trade}
@@ -149,7 +149,7 @@ export const KeepContents = ({ data, sise }: { data: KeepType; sise?: SiseType }
 			<Flex gap={8} className='body' direction='column' justify='start'>
 				<Flex className='layout' direction={'column'} flex={1}>
 					{/* 매수/현재가 매도시 */}
-					<Flex className='trade-info' direction='column' align='start' gap={10}>
+					<Flex className='trade-info' direction='column' align='start'>
 						<CardLineFiled {...values.buy} value={withCommas(values?.buy.value)} />
 						{sise && (
 							<CardLineFiled
@@ -161,7 +161,7 @@ export const KeepContents = ({ data, sise }: { data: KeepType; sise?: SiseType }
 						)}
 					</Flex>
 					{/* 예상 */}
-					<Flex className={clsx('cast-info', type)} direction='column' align='start' gap={10}>
+					<Flex className={clsx('cast-info', type)} direction='column' align='start'>
 						<CardLineFiled
 							className='cast'
 							{...values.siseA}
@@ -182,7 +182,7 @@ export const KeepContents = ({ data, sise }: { data: KeepType; sise?: SiseType }
 						/>
 					</Flex>
 					{/* 보유일 */}
-					<Flex className='keep-info' direction='column' align='start' gap={10} flex={1}>
+					<Flex className='keep-info' direction='column' align='start' flex={1}>
 						<CardLineFiled title={ST.KEEP_DATE} value={values?.keepDate} suffix={{}} />
 					</Flex>
 				</Flex>

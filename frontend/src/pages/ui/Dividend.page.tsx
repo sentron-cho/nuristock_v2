@@ -2,7 +2,6 @@ import { styled } from '@styles/stitches.config';
 import { PageContainer } from '../../features/common/ui/PageContainer.ui';
 import { useMemo, useState } from 'react';
 import { useSelectDividend as useSelect } from '@features/dividend/api/dividend.api';
-import { DividenSummaryData as SummaryData } from '@features/dividend/config/Dividen.data';
 import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { IconAdd } from '@entites/Icons';
@@ -12,6 +11,8 @@ import { DividendRegisterPopup as RegisterPopup } from '@features/dividend/ui/Di
 import { PopupType } from '@entites/Dialog';
 import { DividendItemType as DataType } from '@features/dividend/api/dividend.dto';
 import { DividendList } from '@features/dividend/ui/DividendCard.ui';
+import { useDividendData } from '@features/dividend/hook/Dividend.hook';
+import { sortedByKey } from '@shared/libs/sort.lib';
 
 const StyledPage = styled(PageContainer, {
 	'.contents-layer': {
@@ -47,11 +48,11 @@ const DividendPage = () => {
 
 	const { data, refetch } = useSelect();
 
-	const list = useMemo(() => data?.value, [data]);
-	const stocks = useMemo(() => data?.stock, [data]);
+	const { data: list, stocks, summary, createSumData, groupedByYear } = useDividendData(data);
 
-	const summaryData = useMemo(() => {
-		return SummaryData();
+	const years = useMemo(() => {
+		const items = createSumData(list, 'year');
+		return items && sortedByKey(Object.values(items), 'title', true);
 	}, [data]);
 
 	const onClick = (eid?: string) => {
@@ -67,13 +68,21 @@ const DividendPage = () => {
 		}
 	};
 
-	const onClickItem = (eid?: string, item?: DataType) => {
-		console.log({ eid, item });
+	const onClickItem = (item?: DataType) => {
+		console.log({ item });
+		setPopup({
+			type: EID.EDIT,
+			item: item,
+			onClose: (isOk) => {
+				isOk && refetch();
+				setPopup(undefined);
+			},
+		});
 	};
 
 	return (
 		<>
-			<StyledPage summaryData={summaryData}>
+			<StyledPage summaryData={summary}>
 				<Flex direction={'column'}>
 					<PageTitleBar
 						title={ST.DIVIDEND_HISTORY}
@@ -92,18 +101,20 @@ const DividendPage = () => {
 					/>
 
 					<Flex className='contents-layer' direction={'column'}>
-						{/* 보유현황 */}
-						{!!list?.length && (
+						{/* 년도별 배당금액 */}
+						{!!years?.length && (
 							<Flex direction={'column'}>
-								{/* <Title className='card-title keep' title={ST.KEEP_LIST} /> */}
-								<DividendList list={list} onClick={onClickItem} />
+								<DividendList years={years} list={groupedByYear} onClick={onClick} onClickItem={onClickItem} />
 							</Flex>
 						)}
 					</Flex>
 				</Flex>
 			</StyledPage>
 
-			{popup?.type === 'add' && (
+			{popup?.type === EID.ADD && (
+				<RegisterPopup stocks={stocks} item={popup?.item as DataType} onClose={popup.onClose} />
+			)}
+			{popup?.type === EID.EDIT && (
 				<RegisterPopup stocks={stocks} item={popup?.item as DataType} onClose={popup.onClose} />
 			)}
 		</>
