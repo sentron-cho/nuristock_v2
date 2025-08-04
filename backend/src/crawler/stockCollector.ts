@@ -1,10 +1,9 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { FastifyInstance } from "fastify";
-import { MarketSiseUpdateDataType } from "../types/market.type";
 import { FieldValues } from "../types/common.type";
-import dayjs from "dayjs";
 import { makeUpdateSet } from "../lib/db.util.js";
+import dayjs from "../lib/dayjs.js";
 
 // const stocks = ["A000270", "A003490", "A005380", "A005490"];
 
@@ -61,16 +60,25 @@ const INTERVAL_TIME = 5 * 60 * 1000; // 5분마다
 // 주식 현재가 시세 크롤링
 export const startStockCollector = (fastify: FastifyInstance) => {
   const fetchAllStocks = async () => {
-    const now = new Date();
-    const hour = now.getHours();
-    const day = now.getDay();
+    const now = dayjs().tz('Asia/Seoul');
+    const hour = now.hour();
+    const day = now.day();
 
     // ⛔️ 토/일요일 제외
     const isWeekend = day === 0 || day === 6;
 
+    // console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}]`, {
+    //   now: now.format("YYYY-MM-DD HH:mm:ss"),
+    //   hour,
+    //   day,
+    //   isWeekend,
+    //   ok: !isWeekend && hour >= START_TIME && hour < END_TIME,
+    //   INTERVAL_TIME,
+    // });
+
     // 오전 8시 ~ 오후 8시 (20시) 사이에만 실행
     if (!isWeekend && hour >= START_TIME && hour < END_TIME) {
-      console.log(`[${now.toISOString()}] 시세 수집 시작, 크롤링`);
+      console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}] 시세 수집 시작, 크롤링`);
       const data = await fastify.db.query("SELECT code FROM dashboard");
       const codes = data?.map((a) => a?.code?.replace("A", ""));
 
@@ -93,6 +101,7 @@ export const startStockCollector = (fastify: FastifyInstance) => {
   };
 
   // 최초 실행
+  console.log(`[${dayjs().tz('Asia/Seoul').format("YYYY-MM-DD HH:mm:ss")}] start crawler!!!!!`);
   fetchAllStocks();
 
   // 1분마다 실행

@@ -29,8 +29,10 @@
     "mysql2": "^3.14.1",
     "prisma": "^6.11.1",
     "sequelize": "^6.37.7",
+    "timezone": "^1.0.23",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "utc": "^0.1.0"
   },
   "devDependencies": {
     "@types/cheerio": "^1.0.0",
