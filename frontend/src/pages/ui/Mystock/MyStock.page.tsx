@@ -1,10 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
 import { styled } from '@styles/stitches.config';
-import { MyStockSummaryData as SummaryData } from '@features/mystock/config/MyStock.data';
 import {
 	MyStockKeepType as KeepType,
-	MyStockKeepType,
 	MyStockSellType,
 	MyStockTreadType as TreadType,
 } from '@features/mystock/api/mystock.dto';
@@ -14,19 +12,28 @@ import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { EID } from '@shared/config/default.config';
 import { ST } from '@shared/config/kor.lang';
 import { IconAdd } from '@entites/Icons';
-import { useNavigate, useParams } from 'react-router-dom';
 import { MyStockBuyPopup } from '@features/mystock/ui/MyStockBuy.popup';
 import { MyStockSellPopup } from '@features/mystock/ui/MyStockSell.popup';
 import { PopupType } from '@entites/Dialog';
-import { reverse, sortBy } from 'lodash';
-import { OptionType } from '@shared/config/common.type';
 import { URL } from '@shared/config/url.enum';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import Flex from '@entites/Flex';
 import { Title } from '@entites/Title';
+import { useMyStockHook } from '@features/mystock/hook/MyStock.hook';
+import { useNavigate, useParams } from 'react-router-dom';
+import clsx from 'clsx';
+import { useSwipeable } from 'react-swipeable';
 
 const StyledPage = styled(PageContainer, {
 	'.contents-layer': {
+		'.slide-page': {
+			display: 'none',
+
+			'&.active': {
+				display: 'flex',
+			},
+		},
+
 		'.card-title': {
 			position: 'sticky',
 			top: 0,
@@ -57,40 +64,28 @@ const StyledPage = styled(PageContainer, {
 const MyStockPage = () => {
 	const navigate = useNavigate();
 	const param = useParams();
-
 	const { showConfirm } = useCommonHook();
 
 	const [popup, setPopup] = useState<PopupType & { type: PopupType['type'] | 'buy' | 'sell' }>();
 
 	const { data, refetch } = useSelectMyStock(param?.id || '');
+
+	const { activePage, setActivePage, keepList, tradeList, selected, summaryData, stocks } = useMyStockHook(data);
+
 	const { mutateAsync: deleteDataBuy } = useDeleteMyStockBuy();
 	const { mutateAsync: deleteDataSell } = useDeleteMyStockSell();
 
-	const keepList = useMemo(() => reverse(sortBy(data?.keeps, 'sdate')), [data]);
-	const tradeList = useMemo(() => reverse(sortBy(data?.sells, 'edate')), [data]);
-	const stocks = useMemo(
-		() =>
-			sortBy(
-				data?.stocks?.map((a) => ({ value: a?.code, label: a?.name }) as OptionType),
-				'label'
-			),
-		[data]
-	);
-	const selected = useMemo(() => stocks?.find((a) => a.value === param?.id)?.value, [stocks, param]);
-
-	const summaryData = useMemo(() => {
-		const buy = (data?.sells as MyStockSellType[])?.map((a) => a.scost * a.count)?.reduce((a, b) => a + b, 0);
-		const sell = (data?.sells as MyStockSellType[])?.map((a) => a.ecost * a.count)?.reduce((a, b) => a + b, 0);
-		const keep = (data?.keeps as MyStockKeepType[])?.map((a) => a.scost * a.count)?.reduce((a, b) => a + b, 0);
-		const sonic = buy && sell && sell - buy;
-		const values: string[] = [
-			buy?.toString() || '',
-			sell?.toString() || '',
-			keep?.toString() || '',
-			sonic?.toString() || '',
-		];
-		return SummaryData(values);
-	}, [data]);
+	const handlerSwipe = useSwipeable({
+		onSwipedLeft: () => {
+			const next = Math.min(activePage + 1, 1);
+			setActivePage(next);
+		},
+		onSwipedRight: () => {
+			const next = Math.max(activePage - 1, 0);
+			setActivePage(next);
+		},
+		trackMouse: true,
+	});
 
 	const onClickKeep = (eid?: string, item?: KeepType) => {
 		if (eid === EID.SELECT || eid === 'sell') {
@@ -166,7 +161,7 @@ const MyStockPage = () => {
 			<StyledPage summaryData={summaryData}>
 				<Flex direction={'column'}>
 					<PageTitleBar
-						title={ST.KEEP_LIST}
+						title={activePage === 0 ? ST.KEEP_LIST : ST.TRADE_LIST}
 						selectProps={{
 							options: stocks,
 							value: selected,
@@ -181,22 +176,26 @@ const MyStockPage = () => {
 						}}
 					/>
 
-					<Flex className='contents-layer' direction={'column'}>
-						{/* 보유현황 */}
-						{!!keepList?.length && (
-							<Flex direction={'column'}>
-								{/* <Title className='card-title keep' title={ST.KEEP_LIST} /> */}
-								<MyStcokKeepList list={keepList} sise={data?.sise} onClick={onClickKeep} />
-							</Flex>
-						)}
+					<Flex className='contents-layer' direction={'column'} {...handlerSwipe}>
+						<Flex className={clsx('slide-page', { active: activePage === 0 })} direction={'column'}>
+							{/* 보유현황 */}
+							{!!keepList?.length && (
+								<Flex direction={'column'}>
+									{/* <Title className='card-title keep' title={ST.KEEP_LIST} /> */}
+									<MyStcokKeepList list={keepList} sise={data?.sise} onClick={onClickKeep} />
+								</Flex>
+							)}
+						</Flex>
 
-						{/* 거래내역 */}
-						{!!tradeList?.length && (
-							<Flex className='content-trade' direction={'column'}>
-								<Title className='card-title trade' title={ST.TRADE_LIST} />
-								<MyStcokTradeList list={tradeList} sise={data?.sise} onClick={onClickTrade} />
-							</Flex>
-						)}
+						<Flex className={clsx('slide-page', { active: activePage === 1 })} direction={'column'}>
+							{/* 거래내역 */}
+							{!!tradeList?.length && (
+								<Flex className='content-trade' direction={'column'}>
+									{/* <Title className='card-title trade' title={ST.TRADE_LIST} /> */}
+									<MyStcokTradeList list={tradeList} sise={data?.sise} onClick={onClickTrade} />
+								</Flex>
+							)}
+						</Flex>
 					</Flex>
 				</Flex>
 			</StyledPage>
