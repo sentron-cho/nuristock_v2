@@ -35,7 +35,7 @@ export const StyledCard = styled(Card, {
 				flex: 1,
 
 				'.trade-info, .keep-info': {
-					'&.keep-info': {
+					'&.trade-info': {
 						borderTop: '1px solid $gray300',
 					},
 
@@ -46,22 +46,6 @@ export const StyledCard = styled(Card, {
 					borderTop: '1px solid $gray300',
 					paddingTop: '$10',
         },
-        
-        // // 보유 금액
-        // '&.keepCost': {
-        //   '.keep-cost': {
-        //     borderBottom: '1px solid #00ff1554',
-        //     // backgroundColor: '#00ff1554',
-        //   }
-        //   // '.keep-cost .title': {
-        //   //   borderBottom: '1px solid #ff5656c2',
-        //   //   // backgroundColor: '#00ff1554',
-        //   // }
-        // },
-        // '.siseSonic': {},
-        // '.sonicCost': {},
-        // '.sonicRate': {},
-        // '.title': {},
 			},
 
 			'.foot': {

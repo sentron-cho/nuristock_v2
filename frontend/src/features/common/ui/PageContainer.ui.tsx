@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState, type ComponentProps, type ReactNo
 import { SummaryBar, SummaryDataType } from './SummaryBar.ui';
 import Flex from '@entites/Flex';
 import { IconArrowUp } from '@entites/Icons';
+import { useLocation, useNavigationType } from 'react-router-dom';
 
 const StyledContainer = styled('div', {
 	boxSizing: 'border-box',
@@ -67,18 +68,58 @@ export const PageContainer = ({
 	const titleBarHeight = useMemo(() => 40, []);
 	const summaryHeight = useMemo(() => (summaryData ? 60 : 0), [summaryData]);
 
+	const navigationType = useNavigationType();
+	const location = useLocation();
+	// 현재 pathname을 key로 사용
+	const key = location.pathname;
+
+	// ✅ 새로고침 여부 판단
+	// const isReload = performance?.navigation?.type === 1;
+
 	// ✅ 스크롤 이벤트 감지
 	useEffect(() => {
 		const scrollEl = scrollRef.current;
 		if (!scrollEl) return;
 
+		let timeout: ReturnType<typeof setTimeout> | null = null;
+
 		const onScroll = () => {
 			setShowScrollTop(scrollEl.scrollTop > 100);
+
+			if (timeout) {
+				clearTimeout(timeout);
+			}
+
+			// ⏱ 디바운스로 100ms 후 저장
+			timeout = setTimeout(() => {
+				sessionStorage.setItem(`scroll-position:${key}`, scrollEl.scrollTop.toString());
+				console.log('[스크롤 저장]', scrollEl.scrollTop);
+			}, 100);
 		};
 
 		scrollEl.addEventListener('scroll', onScroll);
+
 		return () => scrollEl.removeEventListener('scroll', onScroll);
 	}, []);
+
+	useEffect(() => {
+		console.log({ navigationType });
+		
+		const key = location.pathname;
+		const scrollEl = document.querySelector('.scroll-view');
+
+		// if (isReload && scrollEl) {
+		// 	scrollEl.scrollTo({ top: 0, behavior: 'auto' });
+		// 	sessionStorage.removeItem(`scroll-position:${key}`);
+		// 	return;
+		// }
+
+		const savedY = sessionStorage.getItem(`scroll-position:${key}`);
+		if (navigationType === 'POP' && scrollEl && savedY) {
+			scrollEl.scrollTo({ top: parseInt(savedY, 10), behavior: 'auto' });
+			console.log('[스크롤 복원]', savedY);
+		}
+	}, [location, navigationType]);
 
 	// ✅ 맨 위로 이동 함수
 	const scrollToTop = () => {

@@ -8,7 +8,7 @@ import { ContentsView } from '@features/diary/ui/ContentsView.ui';
 import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useSwipeable } from 'react-swipeable';
 
 const StyledPage = styled(PageContainer, {
@@ -24,10 +24,8 @@ const StyledPage = styled(PageContainer, {
 });
 
 export const DiaryPageMo = () => {
-	const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
-
 	const { data: diaryData } = useSelectDiary();
-	const { summary, countPerDays, keeps, trades } = useDiaryData(diaryData?.keep, diaryData?.trade);
+	const { summary, countPerDays, keeps, trades, selectedDate, setSelectedDate } = useDiaryData(diaryData?.keep, diaryData?.trade);
 
 	// 캘린더 데이터(1년 매수/매도 카운트)
 	const calendarData = useMemo(() => {
@@ -63,6 +61,7 @@ export const DiaryPageMo = () => {
 		return { selectedDate, sell, buy };
 	}, [selectedDate]);
 
+	// 월 전환 스와이프
 	const handlerMonthSwipe = useSwipeable({
 		onSwipedLeft: () => {
 			setSelectedDate(dayjs(selectedDate).add(1, 'month'));
@@ -73,6 +72,7 @@ export const DiaryPageMo = () => {
 		trackMouse: true,
 	});
 
+	// 일 전환 스와이프
 	const handlerDateSwipe = useSwipeable({
 		onSwipedLeft: () => {
 			setSelectedDate(dayjs(selectedDate).add(1, 'day'));

@@ -119,19 +119,6 @@ export const DashboardCard = ({
 				<Flex gap={8} className={clsx('body', sortType)} direction='column' justify={history ? 'start' : 'center'}>
 					{history ? (
 						<Flex direction={'column'}>
-							{/* 매수/매도/손익 */}
-							<Flex className='trade-info' direction='column' align='start'>
-								<CardLineFiled title={ST.BUY} text={values?.buyText} value={withCommas(data.sprice)} />
-								<CardLineFiled title={ST.SELL} text={values?.sellText} value={withCommas(data.eprice)} />
-								<CardLineFiled
-									className={clsx(valueOfPlusMinus(values?.sonic))}
-									title={ST.SONIC}
-									text={values?.sonicText}
-									suffix={{ text: '%', value: ST.WON }}
-									value={withCommas(values?.sonic)}
-								/>
-							</Flex>
-
 							{/* 보유/예상/예상수익 */}
 							{active && (
 								<Flex className='keep-info' direction='column' align='start'>
@@ -155,6 +142,19 @@ export const DashboardCard = ({
 									/>
 								</Flex>
 							)}
+
+							{/* 매수/매도/손익 */}
+							<Flex className='trade-info' direction='column' align='start'>
+								<CardLineFiled title={ST.BUY} text={values?.buyText} value={withCommas(data.sprice)} />
+								<CardLineFiled title={ST.SELL} text={values?.sellText} value={withCommas(data.eprice)} />
+								<CardLineFiled
+									className={clsx(valueOfPlusMinus(values?.sonic))}
+									title={ST.SONIC}
+									text={values?.sonicText}
+									suffix={{ text: '%', value: ST.WON }}
+									value={withCommas(values?.sonic)}
+								/>
+							</Flex>
 						</Flex>
 					) : (
 						<div className='noitem'>{ST.NO_HISTORY}</div>

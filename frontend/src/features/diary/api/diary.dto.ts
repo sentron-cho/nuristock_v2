@@ -10,6 +10,7 @@ export interface DiaryItemType extends MyStockKeepType {
 	sprice?: number;
 	eprice?: number;
 	sonicRate?: number;
+	type?: string;
 }
 
 export interface DiaryResponse {

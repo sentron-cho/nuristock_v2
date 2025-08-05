@@ -1,14 +1,15 @@
 import { cloneDeep } from 'lodash';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { DiaryItemType as DataType } from '../api/diary.dto';
 import { SummaryData } from '../config/Diary.data';
 import dayjs from 'dayjs';
-import { FieldValues } from 'react-hook-form';
 
 export type CountPerDayType = { date: string; count: number };
 
 export const useDiaryData = (initialKeepData?: DataType[], initialTradeData?: DataType[]) => {
-	// 메인 데이터 초기화
+	const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
+
+	// 거래내역 데이터
 	const trades = useMemo(() => {
 		const items = cloneDeep(initialTradeData)?.map((a) => {
 			const sprice = (a?.scost || 0) * (a?.count || 0);
@@ -22,44 +23,37 @@ export const useDiaryData = (initialKeepData?: DataType[], initialTradeData?: Da
 				sprice,
 				sonic,
 				sonicRate,
+				type: 'trade',
 			};
 		});
 
 		return items;
 	}, [initialTradeData]);
 
+	// 보유내역 데이터
 	const keeps = useMemo(() => {
 		const items = cloneDeep(initialKeepData)?.map((a) => {
 			const sprice = (a?.scost || 0) * (a?.count || 0);
 			const eprice = (a?.ecost || 0) * (a?.count || 0);
-			const sonic = (eprice || 0) - (sprice || 0);
-			const sonicRate = Number(((Number(sonic) / Number(sprice)) * 100)?.toFixed(1));
 
 			return {
 				...a,
 				eprice,
 				sprice,
-				sonic,
-				sonicRate,
+				edate: undefined,
+				sonic: 0,
+				sonicRate: 0,
+				type: 'keep',
 			};
 		});
 
 		return items;
 	}, [initialKeepData]);
 
+	// 거래 내역 + 보유 내역 데이터
 	const data = useMemo(() => {
 		return [...(keeps || []), ...(trades || [])];
 	}, [keeps, trades]);
-
-	const summary = useMemo(() => {
-		const list = (keeps as DataType[])?.map((a) => Number(a.eprice) - Number(a.sprice));
-
-		const up = list?.filter((a) => a > 0)?.reduce((a, b) => a + b, 0);
-		const down = list?.filter((a) => a < 0)?.reduce((a, b) => a + b, 0);
-		const total = list?.reduce((a, b) => a + b, 0);
-
-		return SummaryData([up?.toString(), down?.toString(), total?.toString()]);
-	}, [keeps]);
 
 	// 날자별 건수 데이터 생성
 	const countPerDays = useMemo(() => {
@@ -89,16 +83,6 @@ export const useDiaryData = (initialKeepData?: DataType[], initialTradeData?: Da
 		return { buys, sells };
 	}, [keeps, trades]);
 
-	// const getCountPerDays = (year?: string) => {
-	// 	const arrayBuys = Object.entries(countPerDays?.buys)?.filter((item) => {
-	// 		return dayjs(item?.[0]).format('YYYY') === year;
-	// 	});
-
-	// 	const arraySells = Object.entries(countPerDays?.buys)?.filter((item) => {
-	// 		return dayjs(item?.[0]).format('YYYY') === year;
-	// 	});
-	// };
-
 	// 년도별 데이터 추출
 	const groupedByYear = useMemo(() => {
 		return data?.reduce(
@@ -108,6 +92,21 @@ export const useDiaryData = (initialKeepData?: DataType[], initialTradeData?: Da
 					acc[year] = [];
 				}
 				acc[year].push(item);
+				return acc;
+			},
+			{} as Record<string, typeof data>
+		);
+	}, [data]);
+
+	// 월별 데이터 추출
+	const groupedByMonth = useMemo(() => {
+		return data?.reduce(
+			(acc, item) => {
+				const month = item['edate'] ? dayjs(item['edate']).format('YYYYMM') : dayjs(item['sdate']).format('YYYYMM'); // '20241104' → '2024'
+				if (!acc[month]) {
+					acc[month] = [];
+				}
+				acc[month].push(item);
 				return acc;
 			},
 			{} as Record<string, typeof data>
@@ -127,30 +126,21 @@ export const useDiaryData = (initialKeepData?: DataType[], initialTradeData?: Da
 		);
 	}, [data]);
 
-	// 년도별 누적 투자금액
-	const createAccPrice = (data?: DataType[]) => {
-		const columnkey = 'YYYY';
-		const monthPrice: Record<string, number> = {};
+	// 요약 정보
+	const summary = useMemo(() => {
+		const monthData = groupedByMonth?.[dayjs(selectedDate).format('YYYYMM')];
 
-		data?.forEach((item) => {
-			const start = dayjs(item.sdate, columnkey);
-			const end = dayjs(item.edate, columnkey);
+		console.log({ groupedByMonth, monthData });
 
-			for (let d = start; d.isBefore(end) || d.isSame(end); d = d.add(1, 'month')) {
-				const key = d.format(columnkey);
-				// const prev = monthPrice[key] || 0;
-				// if (!monthPrice[key]) monthPrice[key] = {};
-				monthPrice[key] = (monthPrice[key] || 0) + (item?.sprice || 0);
-			}
-		});
+		const buys = monthData?.filter((a) => a.type === 'keep');
+		const sells = monthData?.filter((a) => a.type === 'trade');
 
-		return Object.values(monthPrice).reduce((a, b) => a + b, 0);
-	};
+		const buySum = buys?.map((a) => a.sprice)?.reduce((a, b) => a + b, 0);
+		const sellSum = sells?.map((a) => a.eprice)?.reduce((a, b) => a + b, 0);
+		const sonic = sells?.map((a) => a.eprice - a.sprice)?.reduce((a, b) => a + b, 0);
 
-	// 년도별 누적 투자금액
-	const createTotal = (data?: DataType[], columnkey: string = 'sprice') => {
-		return data?.map((a) => (a as FieldValues)?.[columnkey]).reduce((a, b) => a + b, 0);
-	};
+		return SummaryData([buySum?.toString() || '0', sellSum?.toString() || '0', sonic?.toString() || '0']);
+	}, [groupedByMonth, selectedDate]);
 
 	return {
 		data,
@@ -158,10 +148,10 @@ export const useDiaryData = (initialKeepData?: DataType[], initialTradeData?: Da
 		keeps,
 		summary,
 		countPerDays,
-		// getCountPerDays,
 		groupedByYear,
+		groupedByMonth,
 		groupedByName,
-		createAccPrice,
-		createTotal,
+		selectedDate,
+		setSelectedDate,
 	};
 };
