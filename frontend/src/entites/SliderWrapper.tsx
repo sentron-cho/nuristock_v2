@@ -59,16 +59,13 @@ export const SlideWrapper = ({ children, active, max = 1, defaultValue = 0, onCh
 	const handlerSwipe = useSwipeable({
 		onSwipedLeft: () => {
 			onShow();
-			console.log();
 			const next = Math.min(activePage + 1, max);
-			console.log(next);
 			setActivePage(next);
 			onChange?.(next);
 		},
 		onSwipedRight: () => {
 			onShow();
 			const next = Math.max(activePage - 1, 0);
-			console.log(next);
 			setActivePage(next);
 			onChange?.(next);
 		},

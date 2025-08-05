@@ -27,10 +27,6 @@ export const DashboardCard = ({
 	sortType?: string;
 	onClick?: (eid?: string, item?: DataType) => void;
 }) => {
-	const handleClick = (eid?: string) => {
-		onClick?.(eid, data);
-	};
-
 	const sise = useMemo(() => {
 		const siseItem = siseData?.find((a) => a.code === data.code);
 
@@ -86,14 +82,15 @@ export const DashboardCard = ({
 	const type = valueOfPlusMinus(values?.sonic);
 	const active = data.kprice > 0;
 	const history = data.sprice || data.kprice;
-
 	const siseUpdown = valueOfPlusMinus(sise.ecost);
-
-	// const icon = sise?.updown === 'down' ? 'arrowdn' : sise?.updown === 'up' ? 'arrowup' : '';
 
 	const handleSiseClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		onClick?.('sise', data);
+	};
+
+	const handleClick = (eid?: string) => {
+		onClick?.(eid, data);
 	};
 
 	return (
