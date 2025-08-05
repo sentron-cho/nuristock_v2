@@ -18,7 +18,6 @@ import { PopupType } from '@entites/Dialog';
 import { URL } from '@shared/config/url.enum';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import Flex from '@entites/Flex';
-import { Title } from '@entites/Title';
 import { useMyStockHook } from '@features/mystock/hook/MyStock.hook';
 import { useNavigate, useParams } from 'react-router-dom';
 import clsx from 'clsx';
