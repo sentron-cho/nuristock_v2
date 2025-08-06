@@ -2,6 +2,7 @@ import { styled } from '@styles/stitches.config';
 
 export const StyledFooter = styled('div', {
 	'&.footer-bar': {
+		userSelect: 'none',
 		position: 'fixed',
 		bottom: 0,
 		left: 0,
