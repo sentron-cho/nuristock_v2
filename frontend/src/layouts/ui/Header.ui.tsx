@@ -8,8 +8,8 @@ import IconMenuOpen from '@mui/icons-material/MenuOpen';
 import IconLogo from '@mui/icons-material/MonetizationOn';
 import { StyledHeader } from '../style/Header.style';
 import { ST } from '@shared/config/kor.lang';
-import { URL } from '@shared/config/url.enum';
 import { SCREEN } from '@shared/config/default.config';
+import { Menus } from '@layouts/data/menu.data';
 
 // === Component ===
 const Header: React.FC = () => {
@@ -28,27 +28,14 @@ const Header: React.FC = () => {
 		return () => window.removeEventListener('resize', handleResize);
 	}, [isOpen]);
 
-	const menu = useMemo(() => {
-		return [
-			{ value: URL.ROOT, label: ST.MENU.DASHBOARD },
-			{ value: URL.DIARY, label: ST.MENU.DIARY },
-			{ value: URL.PROFIT, label: ST.MENU.PROFIT },
-			{ value: URL.MARKET, label: ST.MENU.MARKET },
-			{ value: URL.DIVIDEND, label: ST.MENU.DIVIDEND },
-			{ value: URL.INVEST, label: ST.MENU.INVEST },
-		];
-	}, []);
+	const menu = useMemo(() => Menus(), []);
 
 	return (
 		<StyledHeader>
 			<Flex className='header-bar' justify={'center'} width={'100vw'}>
 				<nav className='nav'>
 					{menu?.map((a) => (
-						<Link
-							key={a.value}
-							to={a.value}
-							className={clsx('link', { active: a.value === pathname })}
-						>
+						<Link key={a.value} to={a.value} className={clsx('link', { active: a.value === pathname })}>
 							{a.label}
 						</Link>
 					))}
@@ -67,15 +54,8 @@ const Header: React.FC = () => {
 							<Typography className='title'>{ST.STOCK_DIARY}</Typography>
 						</Flex>
 					</Flex>
-					<button
-						className='menu-button'
-						onClick={() => setOpen((prev) => !prev)}
-					>
-						{isOpen ? (
-							<IconMenuOpen fontSize={'large'} />
-						) : (
-							<IconMenu fontSize={'large'} />
-						)}
+					<button className='menu-button' onClick={() => setOpen((prev) => !prev)}>
+						{isOpen ? <IconMenuOpen fontSize={'large'} /> : <IconMenu fontSize={'large'} />}
 					</button>
 				</Flex>
 			</Flex>
@@ -84,8 +64,8 @@ const Header: React.FC = () => {
 				<Flex className='mobile-menu' direction={'column'}>
 					<Flex gap={4} className='menu-li' direction={'column'} align={'start'}>
 						{menu?.map((a) => (
-              <Link
-                key={a.value}
+							<Link
+								key={a.value}
 								to={a.value}
 								className={clsx('link', { active: a.value === pathname })}
 								onClick={() => setOpen(false)}
@@ -94,7 +74,7 @@ const Header: React.FC = () => {
 							</Link>
 						))}
 					</Flex>
-					<div className='menu-bg' onClick={() => setOpen(false)}/>
+					<div className='menu-bg' onClick={() => setOpen(false)} />
 				</Flex>
 			)}
 		</StyledHeader>

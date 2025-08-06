@@ -24,17 +24,16 @@ const StyledContainer = styled('div', {
 			height: '100%',
 
 			'.contents-layer': {
-				paddingBottom: '100px',
 				minHeight: '100vh',
 
-			// 	'.card-title': {
-			// 		position: 'sticky',
-			// 		top: 0,
-			// 		textAlign: 'center',
-			// 		zIndex: 1000,
-			// 		lineHeight: '42px',
-			// 		backgroundColor: '$black',
-			// 	},
+				// 	'.card-title': {
+				// 		position: 'sticky',
+				// 		top: 0,
+				// 		textAlign: 'center',
+				// 		zIndex: 1000,
+				// 		lineHeight: '42px',
+				// 		backgroundColor: '$black',
+				// 	},
 
 				'.card-list': {
 					flexWrap: 'wrap',
@@ -48,9 +47,18 @@ const StyledContainer = styled('div', {
 		'.scroll-view': {
 			padding: '0',
 			paddingBottom: '$10',
+
+			'.contents-wrap': {
+				'.contents-layer': {
+					paddingBottom: '150px',
+				},
+			},
+
+			'.scroll-top': {
+				marginBottom: 44,
+			}
 		},
 	},
-	// height: 'calc(100vh - 60px)',
 });
 
 type PageContainerProps = ComponentProps<typeof StyledContainer> & {
@@ -172,7 +180,7 @@ export const PageContainer = ({
 
 				{/* ✅ 스크롤 Top 버튼 */}
 				{/* {showScrollTop && <ScrollTopButton onClick={scrollToTop}>↑</ScrollTopButton>} */}
-				{showScrollTop && <ScrollTopButton fontSize='large' onClick={scrollToTop} />}
+				{showScrollTop && <ScrollTopButton className='scroll-top' fontSize='large' onClick={scrollToTop} />}
 			</div>
 		</StyledContainer>
 	);

@@ -12,20 +12,31 @@ import { useMemo } from 'react';
 import { useSwipeable } from 'react-swipeable';
 
 const StyledPage = styled(PageContainer, {
-	height: '100vh',
+	'&.dairy': {
+		height: '100vh',
 
-	'.view-box': {
-		height: '100%',
+		'.view-box': {
+			height: '100%',
+		},
+
+		'.weekend': {
+			color: '$error',
+		},
 	},
 
-	'.weekend': {
-		color: '$error',
-	},
+	// '@md': {
+	// 	'&.main': {
+	// 		height: 'calc(100vh)',
+	// 	}
+	// },
 });
 
 export const DiaryPageMo = () => {
 	const { data: diaryData } = useSelectDiary();
-	const { summary, countPerDays, keeps, trades, selectedDate, setSelectedDate } = useDiaryData(diaryData?.keep, diaryData?.trade);
+	const { summary, countPerDays, keeps, trades, selectedDate, setSelectedDate } = useDiaryData(
+		diaryData?.keep,
+		diaryData?.trade
+	);
 
 	// 캘린더 데이터(1년 매수/매도 카운트)
 	const calendarData = useMemo(() => {

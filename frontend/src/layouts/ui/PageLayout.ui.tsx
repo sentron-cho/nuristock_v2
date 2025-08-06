@@ -4,6 +4,7 @@ import Header from './Header.ui';
 import { styled } from '@styles/stitches.config';
 import { ErrorBoundary } from './ErrorBoundary';
 import { Loading } from '@entites/Loading';
+import Footer from './Footer.ui';
 
 const StyledLayout = styled('div', {
 	height: '100vh',
@@ -14,6 +15,7 @@ const PageLayout = ({ children }: { children?: ReactNode }) => {
 		<ErrorBoundary>
 			<StyledLayout className='page'>
 				<Header />
+				<Footer />
 				<Suspense fallback={<Loading />}>{children || <Outlet />}</Suspense>
 			</StyledLayout>
 		</ErrorBoundary>
