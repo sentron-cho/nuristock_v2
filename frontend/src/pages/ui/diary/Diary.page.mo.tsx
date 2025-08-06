@@ -24,11 +24,11 @@ const StyledPage = styled(PageContainer, {
 		},
 	},
 
-	// '@md': {
-	// 	'&.main': {
-	// 		height: 'calc(100vh)',
-	// 	}
-	// },
+	'@md': {
+		'&.main': {
+			height: 'calc(100vh - 80px)',
+		}
+	},
 });
 
 export const DiaryPageMo = () => {
