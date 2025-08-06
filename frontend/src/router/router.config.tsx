@@ -21,14 +21,27 @@ const router = createBrowserRouter([
 				index: true,
 				element: (
 					<PageLayout>
-						<DashboardPage />
+						<DashboardPage viewType={'keep'} />
 					</PageLayout>
 				),
 			},
 			{
+				path: 'dashboard',
+				element: <PageLayout />,
+				children: [
+					{ index: true, element: <DashboardPage viewType={'keep'} /> },
+					{ path: 'keep', element: <DashboardPage viewType={'keep'} /> },
+					{ path: 'trade', element: <DashboardPage viewType={'trade'} /> },
+				],
+			},
+			{
 				path: 'mystock',
 				element: <PageLayout />,
-				children: [{ path: ':id', element: <MyStockPage /> }],
+				children: [
+					{ path: ':id', element: <MyStockPage viewType={'keep'} /> },
+					{ path: 'keep/:id', element: <MyStockPage viewType={'keep'} /> },
+					{ path: 'trade/:id', element: <MyStockPage viewType={'trade'} /> },
+				],
 			},
 			{
 				path: 'diary',

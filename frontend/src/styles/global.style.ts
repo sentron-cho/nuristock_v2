@@ -60,4 +60,38 @@ export const globalStyles = globalCss({
 			},
 		},
 	},
+
+	'.swipe-left': {
+		opacity: 0,
+		transform: 'translateX(5%)',
+		animation: 'swipeLeft 0.2s ease-out forwards',
+	},
+
+	'@keyframes swipeLeft': {
+		from: {
+			opacity: 0,
+			transform: 'translateX(5%)',
+		},
+		to: {
+			opacity: 1,
+			transform: 'translateX(0)',
+		},
+	},
+
+	'.swipe-right': {
+		opacity: 0,
+		transform: 'translateX(-5%)',
+		animation: 'swipeRight 0.2s ease-out forwards',
+	},
+
+	'@keyframes swipeRight': {
+		from: {
+			opacity: 0,
+			transform: 'translateX(-5%)',
+		},
+		to: {
+			opacity: 1,
+			transform: 'translateX(0)',
+		},
+	},
 });

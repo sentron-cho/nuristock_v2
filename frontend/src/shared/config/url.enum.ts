@@ -1,7 +1,7 @@
 export const URL = {
 	ROOT: '/',
 
-	// DASHBOARD: '/dashboard',
+	DASHBOARD: '/dashboard',
 	MYSTOCK: '/mystock',
 	DIARY: '/diary',
 	MARKET: '/market',

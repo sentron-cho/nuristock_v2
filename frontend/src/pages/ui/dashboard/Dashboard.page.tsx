@@ -16,7 +16,7 @@ import { StockRegisterPopup } from '@features/dashboard/ui/StockRegister.popup';
 import { StockUpdaterPopup } from '@features/dashboard/ui/StockUpdater.popup';
 import { StockSiseUpdaterPopup } from '@features/dashboard/ui/StockSiseUpdater.popup';
 
-const DashboardPage = () => {
+const DashboardPage = ({ viewType = 'trade' }: { viewType?: 'trade' | 'keep' }) => {
 	const { isMobile } = useCommonHook();
 	const navigate = useNavigate();
 	const { showToast, showConfirm } = useCommonHook();
@@ -65,8 +65,8 @@ const DashboardPage = () => {
 
 	return (
 		<>
-			{isMobile && <DashboardPageMo data={data} onClick={onClick} />}
-			{!isMobile && <DashboardPagePc data={data} onClick={onClick} />}
+			{isMobile && <DashboardPageMo viewType={viewType} data={data} onClick={onClick} />}
+			{!isMobile && <DashboardPagePc viewType={viewType} data={data} onClick={onClick} />}
 
 			{/* 종목 추가 팝업 */}
 			{popup?.type === EID.ADD && <StockRegisterPopup onClose={popup?.onClose} />}

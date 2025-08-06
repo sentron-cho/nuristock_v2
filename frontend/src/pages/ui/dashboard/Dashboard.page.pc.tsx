@@ -9,6 +9,7 @@ import { ST } from '@shared/config/kor.lang';
 import { IconAdd } from '@entites/Icons';
 import { Title } from '@entites/Title';
 import { useDashboardHook } from '@features/dashboard/hook/Dashboard.hook';
+import clsx from 'clsx';
 
 const StyledPage = styled(PageContainer, {
 	'.contents-layer': {
@@ -31,16 +32,18 @@ const StyledPage = styled(PageContainer, {
 });
 
 export const DashboardPagePc = ({
+	viewType = 'trade',
 	data,
 	onClick,
 }: {
+	viewType?: 'keep' | 'trade';
 	data?: DashboardResponse;
 	onClick: (eid?: string, item?: DataType) => void;
 }) => {
 	const { summaryData, titleOptions, sort, setSort, sortedKeeps, sortedTrades } = useDashboardHook(data);
 
 	return (
-		<StyledPage summaryData={summaryData}>
+		<StyledPage className={clsx(viewType)} summaryData={summaryData}>
 			<Flex direction={'column'}>
 				<PageTitleBar
 					title={ST.KEEP_STOCK}

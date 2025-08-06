@@ -16,15 +16,31 @@ const StyledContainer = styled('div', {
 		overflow: 'hidden',
 		overflowY: 'auto',
 		// maxWidth: '$pageWidth',
+		userSelect: 'none',
 
 		'.contents-wrap': {
 			maxWidth: '$pageWidth',
 			margin: 'auto',
 			height: '100%',
 
-			// '& > *': {
-			// 	paddingBottom: '100px',
-			// },
+			'.contents-layer': {
+				paddingBottom: '100px',
+				minHeight: '100vh',
+
+			// 	'.card-title': {
+			// 		position: 'sticky',
+			// 		top: 0,
+			// 		textAlign: 'center',
+			// 		zIndex: 1000,
+			// 		lineHeight: '42px',
+			// 		backgroundColor: '$black',
+			// 	},
+
+				'.card-list': {
+					flexWrap: 'wrap',
+					gap: '$0',
+				},
+			},
 		},
 	},
 

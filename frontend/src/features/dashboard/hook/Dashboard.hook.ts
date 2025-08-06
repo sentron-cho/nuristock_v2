@@ -6,7 +6,6 @@ import { reverse, sortBy } from 'lodash';
 
 export const useDashboardHook = (initialData?: DashboardResponse) => {
 	const [sort, setSort] = useState<string>();
-	const [activePage, setActivePage] = useState(0);
 
 	const titleOptions = useMemo(() => {
 		return SelectOptions();
@@ -85,8 +84,6 @@ export const useDashboardHook = (initialData?: DashboardResponse) => {
 	}, [list, sort]);
 
 	return {
-		activePage,
-		setActivePage,
 		summaryData,
 		sortedKeeps,
 		sortedTrades,

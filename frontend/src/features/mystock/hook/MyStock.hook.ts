@@ -1,5 +1,5 @@
 import { MyStockKeepType, MyStockResponse, MyStockSellType } from './../api/mystock.dto';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { reverse, sortBy } from 'lodash';
 import { OptionType } from '@shared/config/common.type';
 import { MyStockSummaryData as SummaryData } from '../config/MyStock.data';
@@ -7,8 +7,6 @@ import { useParams } from 'react-router-dom';
 
 export const useMyStockHook = (initialData?: MyStockResponse) => {
   const param = useParams();
-	const [activePage, setActivePage] = useState(0);
-
 	const data = useMemo(() => initialData, [initialData]);
 
 	const keepList = useMemo(() => reverse(sortBy(data?.keeps, 'sdate')), [data]);
@@ -39,8 +37,6 @@ export const useMyStockHook = (initialData?: MyStockResponse) => {
 	}, [data]);
 
 	return {
-		activePage,
-    setActivePage,
     stocks,
 		keepList,
 		tradeList,
