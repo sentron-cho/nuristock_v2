@@ -24,32 +24,7 @@ import clsx from 'clsx';
 import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 
 const StyledPage = styled(PageContainer, {
-	'.contents-layer': {
-		// '.card-title': {
-		// 	position: 'sticky',
-		// 	top: 0,
-		// 	textAlign: 'center',
-		// 	zIndex: 1000,
-		// 	lineHeight: '34px',
-		// 	backgroundColor: '$bgcolor',
-		// 	padding: '4px',
-
-		// 	'&.trade': {
-		// 		color: '$black',
-		// 	},
-		// },
-
-		// '.card-list': {
-		// 	flexWrap: 'wrap',
-		// 	gap: '$0',
-		// },
-
-		// '.content-trade': {
-		// 	'.trade-layer': {
-		// 		paddingBottom: '100px',
-		// 	},
-		// },
-	},
+	'.contents-layer': {},
 });
 
 const MyStockPage = ({ viewType }: { viewType?: 'keep' | 'trade' }) => {
@@ -165,22 +140,14 @@ const MyStockPage = ({ viewType }: { viewType?: 'keep' | 'trade' }) => {
 						{viewType === 'keep' && (
 							<Flex className={clsx(swipeClass)} direction={'column'}>
 								{/* 보유현황 */}
-								{!!keepList?.length && (
-									<Flex direction={'column'}>
-										<MyStcokKeepList list={keepList} sise={data?.sise} onClick={onClickKeep} />
-									</Flex>
-								)}
+								{!!keepList?.length && <MyStcokKeepList list={keepList} sise={data?.sise} onClick={onClickKeep} />}
 							</Flex>
 						)}
 
 						{viewType === 'trade' && (
 							<Flex className={swipeClass} direction={'column'}>
 								{/* 거래내역 */}
-								{!!tradeList?.length && (
-									<Flex className='content-trade' direction={'column'}>
-										<MyStcokTradeList list={tradeList} sise={data?.sise} onClick={onClickTrade} />
-									</Flex>
-								)}
+								{!!tradeList?.length && <MyStcokTradeList list={tradeList} sise={data?.sise} onClick={onClickTrade} />}
 							</Flex>
 						)}
 					</Flex>

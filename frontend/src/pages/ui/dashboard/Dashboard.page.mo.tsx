@@ -13,9 +13,7 @@ import { URL } from '@shared/config/url.enum';
 import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 
 const StyledPage = styled(PageContainer, {
-	'.contents-layer': {
-		// paddingBottom: '100px',
-	},
+	'.contents-layer': {},
 });
 
 export const DashboardPageMo = ({
@@ -30,7 +28,7 @@ export const DashboardPageMo = ({
 	const { summaryData, titleOptions, sort, setSort, sortedKeeps, sortedTrades } = useDashboardHook(data);
 	const { handlerSwipe, swipeClass } = useSwipePage({
 		onNextPage: () => {
-			return `${URL.DASHBOARD}/${viewType === 'keep' ? 'trade' : 'keep'}`
+			return `${URL.DASHBOARD}/${viewType === 'keep' ? 'trade' : 'keep'}`;
 		},
 	});
 

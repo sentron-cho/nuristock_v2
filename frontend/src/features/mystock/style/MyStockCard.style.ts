@@ -91,16 +91,9 @@ export const StyledCard = styled(Card, {
 
 export const StyledTradeCard = styled(Flex, {
 	'&.trade-layer': {
-		backgroundColor: '$gray800',
-
-		'.box': {
-			backgroundColor: '$gray100',
-		},
-
 		'.trade-sub-title': {
 			width: '100%',
 			background: '$gray400',
-			// color: '$white',
 			textAlign: 'center',
 			height: '40px',
 			lineHeight: '40px',

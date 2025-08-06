@@ -32,7 +32,7 @@ const DashboardPage = ({ viewType = 'trade' }: { viewType?: 'trade' | 'keep' }) 
 
 	const onClick = (eid?: string, item?: DataType) => {
 		if (eid === EID.SELECT) {
-			navigate(`${URL.MYSTOCK}/${item?.code}`);
+			navigate(`${URL.MYSTOCK}/${viewType}/${item?.code}`);
 		} else if (eid === EID.DELETE) {
 			showConfirm({
 				content: ST.WANT_TO_DELETE,
