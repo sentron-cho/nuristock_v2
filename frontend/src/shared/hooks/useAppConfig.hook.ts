@@ -3,8 +3,8 @@ import { AppConfigDataType } from '@shared/api/app.dto';
 import { useMemo } from 'react';
 
 export const useAppConfigHook = ({ group }: { group?: string }) => {
-  const { data, refetch, isPending } = useSelectAppConfig({ group });
-  const list = useMemo(() => data?.value, [data]);
+	const { data, isPending } = useSelectAppConfig({ group });
+	const list = useMemo(() => data?.value, [data]);
 
 	const { mutateAsync: useCreate } = useCreateAppConfig();
 	const { mutateAsync: useDelete } = useDeleteAppConfig();
@@ -12,35 +12,32 @@ export const useAppConfigHook = ({ group }: { group?: string }) => {
 
 	const createConfig = (data?: AppConfigDataType) => {
 		let params = { ...data, sgroup: data?.sgroup || group } as AppConfigDataType;
-    useCreate(params);
-    refetch();
+		useCreate(params);
 	};
 
-  const removeConfig = (rowid?: number) => {
-    if (!rowid) return;
-    
-    useDelete(rowid);
-    refetch();
+	const removeConfig = (rowid?: number) => {
+		if (!rowid) return;
+
+		useDelete(rowid);
 	};
 
-  const updateConfig = (data?: AppConfigDataType) => {
-    if (!data?.rowid) return;
+	const updateConfig = (data?: AppConfigDataType) => {
+		if (!data?.rowid) return;
 
 		let params = { ...data, sgroup: data?.sgroup || group } as AppConfigDataType;
-    useUpdate(params);
-    refetch();
+		useUpdate(params);
 	};
 
-  const getConfig = (key: string) => {
-    return list?.find(a => a.skey === key)?.svalue
-  }
+	const getConfig = (key: string) => {
+		return list?.find((a) => a.skey === key)?.svalue;
+	};
 
-  return {
-    isPending,
-    data: list,
-    getConfig,
-    createConfig,
-    removeConfig,
-    updateConfig,
+	return {
+		isPending,
+		data: list,
+		getConfig,
+		createConfig,
+		removeConfig,
+		updateConfig,
 	};
 };

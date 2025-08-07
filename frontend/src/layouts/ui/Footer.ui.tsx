@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Flex from '@entites/Flex';
 import clsx from 'clsx';
