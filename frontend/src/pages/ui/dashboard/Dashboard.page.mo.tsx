@@ -11,6 +11,8 @@ import { useDashboardHook } from '@features/dashboard/hook/Dashboard.hook';
 import clsx from 'clsx';
 import { URL } from '@shared/config/url.enum';
 import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
+import { DashboardHeader } from '@features/dashboard/ui/DashboardHeader.ui';
+import { FormProvider, useForm } from 'react-hook-form';
 
 const StyledPage = styled(PageContainer, {
 	'.contents-layer': {},
@@ -25,7 +27,11 @@ export const DashboardPageMo = ({
 	data?: DashboardResponse;
 	onClick: (eid?: string, item?: DataType) => void;
 }) => {
-	const { summaryData, titleOptions, sort, setSort, sortedKeeps, sortedTrades } = useDashboardHook(data);
+	const { getConfig, summaryData, titleOptions, sort, onChangeSort, sortedKeeps, sortedTrades } = useDashboardHook(data);
+
+	const formMethods = useForm({ defaultValues: { more: getConfig('more')?.toString() === 'true' } });
+	const formMore = formMethods?.watch('more');
+
 	const { handlerSwipe, swipeClass } = useSwipePage({
 		onNextPage: () => {
 			return `${URL.DASHBOARD}/${viewType === 'keep' ? 'trade' : 'keep'}`;
@@ -33,7 +39,7 @@ export const DashboardPageMo = ({
 	});
 
 	return (
-		<>
+		<FormProvider {...formMethods}>
 			<StyledPage summaryData={summaryData}>
 				<Flex direction={'column'}>
 					<PageTitleBar
@@ -42,7 +48,7 @@ export const DashboardPageMo = ({
 							options: titleOptions,
 							defaultValue: titleOptions?.[0]?.value,
 							value: sort,
-							onChange: setSort,
+							onChange: onChangeSort,
 							width: 100,
 						}}
 						buttonProps={{
@@ -53,6 +59,8 @@ export const DashboardPageMo = ({
 						}}
 					/>
 
+					<DashboardHeader />
+
 					<Flex className={clsx('contents-layer')} direction={'column'} {...handlerSwipe}>
 						{/* 보유 종목 */}
 						{viewType === 'keep' && (
@@ -60,11 +68,13 @@ export const DashboardPageMo = ({
 								<Flex className='card-list'>
 									{sortedKeeps?.map((item) => (
 										<DashboardCard
+											viewType={viewType}
 											sortType={sort}
 											key={item.code}
 											data={item}
 											siseData={data?.sise}
 											onClick={onClick}
+											isFullDisplay={formMore}
 										/>
 									))}
 								</Flex>
@@ -77,11 +87,13 @@ export const DashboardPageMo = ({
 								<Flex className='card-list'>
 									{sortedTrades?.map((item) => (
 										<DashboardCard
+											viewType={viewType}
 											sortType={sort}
 											key={item.code}
 											data={item}
 											siseData={data?.sise}
 											onClick={onClick}
+											isFullDisplay={formMore}
 										/>
 									))}
 								</Flex>
@@ -90,6 +102,6 @@ export const DashboardPageMo = ({
 					</Flex>
 				</Flex>
 			</StyledPage>
-		</>
+		</FormProvider>
 	);
 };

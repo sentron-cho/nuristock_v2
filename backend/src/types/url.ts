@@ -25,6 +25,10 @@ export const URL = {
   DIVIDEND: {
     ROOT: `${ROOT_URL}/dividend`,
   },
+  APP: {
+    ROOT: `${ROOT_URL}/app`,
+    CONFIG: `${ROOT_URL}/app/config`,
+  },
 };
 
 export default URL;

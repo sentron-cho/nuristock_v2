@@ -3,15 +3,21 @@ import { useEffect, useMemo, useState } from 'react';
 import { DashboardSummaryData as SummaryData, DashboardTitleOptions as SelectOptions } from '../config/Dashbord.data';
 import { DashboardResponse } from '../api/dashboard.dto';
 import { reverse, sortBy } from 'lodash';
+import { useAppConfigHook } from '@shared/hooks/useAppConfig.hook';
+import { APP_GROUP } from '@shared/config/default.config';
 
 export const useDashboardHook = (initialData?: DashboardResponse) => {
-	const [sort, setSort] = useState<string>();
+	const { data: config, getConfig, createConfig, isPending } = useAppConfigHook({ group: APP_GROUP.DASHBOARD });
+	const [sort, setSort] = useState<string>('');
+
+	console.log({ sort });
 
 	const titleOptions = useMemo(() => {
 		return SelectOptions();
 	}, []);
 
-	useEffect(() => setSort(titleOptions?.[0]?.value), [titleOptions]);
+	const sortOption = getConfig('sort');
+	useEffect(() => titleOptions && setSort(sortOption || titleOptions?.[0]?.value), [titleOptions, sortOption]);
 
 	const data = useMemo(() => initialData, [initialData]);
 
@@ -83,12 +89,20 @@ export const useDashboardHook = (initialData?: DashboardResponse) => {
 		);
 	}, [list, sort]);
 
+	const onChangeSort = (value: string) => {
+		setSort(value);
+		createConfig({ skey: 'sort', svalue: value });
+	};
+
 	return {
+		loaded: !isPending,
+		config,
+		getConfig,
 		summaryData,
 		sortedKeeps,
 		sortedTrades,
 		titleOptions,
 		sort,
-		setSort,
+		onChangeSort,
 	};
 };

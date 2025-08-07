@@ -28,6 +28,9 @@ import IconStockSearch from '@mui/icons-material/QueryStats';
 import IconDividend from '@mui/icons-material/CreditScore'; // 배당
 import IconInvest from '@mui/icons-material/Balance'; // 가치투자
 
+import IconExpandUp from '@mui/icons-material/ExpandLess';
+import IconExpandDown from '@mui/icons-material/ExpandMore';
+
 const StyledUp = styled(IconPlayArrow, {
 	color: '$plus',
 	transform: 'rotate(-90deg)',
@@ -74,4 +77,6 @@ export {
 	IconStockSearch,
 	IconDividend,
 	IconInvest,
+	IconExpandUp,
+	IconExpandDown
 };

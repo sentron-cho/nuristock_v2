@@ -3,7 +3,7 @@ import { styled } from '@styles/stitches.config';
 
 export const StyledCard = styled(Card, {
 	width: '33.33333%',
-	height: '280px',
+	height: 'fit-contents',
 	boxShadow: 'unset !important',
 	padding: '$4',
 
@@ -33,6 +33,7 @@ export const StyledCard = styled(Card, {
 				borderBottom: '1px solid $gray300',
 				overflow: 'hidden',
 				flex: 1,
+				paddingBottom: '$10',
 
 				'.trade-info, .keep-info': {
 					'&.trade-info': {

@@ -40,7 +40,7 @@ export const DashboardPagePc = ({
 	data?: DashboardResponse;
 	onClick: (eid?: string, item?: DataType) => void;
 }) => {
-	const { summaryData, titleOptions, sort, setSort, sortedKeeps, sortedTrades } = useDashboardHook(data);
+	const { summaryData, titleOptions, sort, onChangeSort, sortedKeeps, sortedTrades } = useDashboardHook(data);
 
 	return (
 		<StyledPage className={clsx(viewType)} summaryData={summaryData}>
@@ -51,7 +51,7 @@ export const DashboardPagePc = ({
 						options: titleOptions,
 						defaultValue: titleOptions?.[0]?.value,
 						value: sort,
-						onChange: setSort,
+						onChange: onChangeSort,
 						width: 100,
 					}}
 					buttonProps={{

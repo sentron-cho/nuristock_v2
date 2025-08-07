@@ -55,8 +55,10 @@ export const Button = ({
 	}, [buttonType]);
 
 	const onClickButton = (e: React.MouseEvent) => {
-		e.stopPropagation();
-		onClick?.(eid);
+		if (onClick) {
+			e.stopPropagation();
+			onClick?.(eid);
+		}
 	};
 
 	if (buttonType === 'icon') {

@@ -8,6 +8,7 @@ import profitRoute from "./routes/profit.route.js";
 import diaryRoute from "./routes/diary.route.js";
 import { startStockCollector } from "./crawler/stockCollector.js";
 import dividendRoute from "./routes/dividend.route.js";
+import appRoute from "./routes/app.route.js";
 
 // dotenv.config({ path: '.env' });
 
@@ -30,6 +31,7 @@ await fastify.register(cors, {
 await fastify.register(dbPlugin);
 
 // 라우트 등록
+await fastify.register(appRoute);
 await fastify.register(dashboardRoute);
 await fastify.register(mystockRoute);
 await fastify.register(marketRoute);

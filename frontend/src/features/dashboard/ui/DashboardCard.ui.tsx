@@ -17,15 +17,19 @@ import { StyledCard } from '../style/DashboardCard.style';
 const LONG_TIME_FORMAT_LENGTH = 8;
 
 export const DashboardCard = ({
+	viewType = 'keep',
 	data,
 	siseData,
 	sortType,
 	onClick,
+	isFullDisplay = true,
 }: {
+	viewType?: 'keep' | 'trade';
 	data: DataType;
 	siseData?: SiseType[];
 	sortType?: string;
 	onClick?: (eid?: string, item?: DataType) => void;
+	isFullDisplay?: boolean;
 }) => {
 	const sise = useMemo(() => {
 		const siseItem = siseData?.find((a) => a.code === data.code);
@@ -93,6 +97,12 @@ export const DashboardCard = ({
 		onClick?.(eid, data);
 	};
 
+	const isBottomShow = useMemo(() => {
+		if (viewType === 'keep' && isFullDisplay) return true;
+		else if (viewType === 'trade') return true;
+		else return false;
+	}, [viewType, isFullDisplay]);
+
 	return (
 		<StyledCard className={clsx('card', { active }, type, { sm: !history })}>
 			<Flex className='box' direction='column' onClick={() => handleClick(EID.SELECT)}>
@@ -117,7 +127,7 @@ export const DashboardCard = ({
 					{history ? (
 						<Flex direction={'column'}>
 							{/* 보유/예상/예상수익 */}
-							{active && (
+							{viewType === 'keep' && (
 								<Flex className='keep-info' direction='column' align='start'>
 									<CardLineFiled
 										className={clsx('keep-cost')}
@@ -141,17 +151,19 @@ export const DashboardCard = ({
 							)}
 
 							{/* 매수/매도/손익 */}
-							<Flex className='trade-info' direction='column' align='start'>
-								<CardLineFiled title={ST.BUY} text={values?.buyText} value={withCommas(data.sprice)} />
-								<CardLineFiled title={ST.SELL} text={values?.sellText} value={withCommas(data.eprice)} />
-								<CardLineFiled
-									className={clsx(valueOfPlusMinus(values?.sonic))}
-									title={ST.SONIC}
-									text={values?.sonicText}
-									suffix={{ text: '%', value: ST.WON }}
-									value={withCommas(values?.sonic)}
-								/>
-							</Flex>
+							{isBottomShow && (
+								<Flex className='trade-info' direction='column' align='start'>
+									<CardLineFiled title={ST.BUY} text={values?.buyText} value={withCommas(data.sprice)} />
+									<CardLineFiled title={ST.SELL} text={values?.sellText} value={withCommas(data.eprice)} />
+									<CardLineFiled
+										className={clsx(valueOfPlusMinus(values?.sonic))}
+										title={ST.SONIC}
+										text={values?.sonicText}
+										suffix={{ text: '%', value: ST.WON }}
+										value={withCommas(values?.sonic)}
+									/>
+								</Flex>
+							)}
 						</Flex>
 					) : (
 						<div className='noitem'>{ST.NO_HISTORY}</div>

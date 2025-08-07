@@ -68,3 +68,7 @@ export const CODE = {
 	PWDERR: 11001,
 	LOGINERR: 12001,
 };
+
+export const APP_GROUP = {
+	DASHBOARD: 'dashboard'
+}

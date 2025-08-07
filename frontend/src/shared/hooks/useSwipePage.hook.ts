@@ -11,7 +11,9 @@ export const useSwipePage = ({ onNextPage }: { onNextPage?: () => string | void 
 	const handlerSwipe = useSwipeable({
 		onSwiped: (e) => {
 			const { dir } = e;
-			// navigate(`${URL.DASHBOARD}/${viewType === 'keep' ? 'trade' : 'keep'}?swipe=${dir.toLowerCase()}`);
+
+			if (!['left', 'right']?.includes(dir?.toLowerCase())) return;
+
 			const page = onNextPage?.();
 			if (page) {
 				navigate(`${page}?swipe=${dir.toLowerCase()}`);

@@ -41,14 +41,6 @@ export const API = {
 	PROFIT: `${API_ROOT}/profit`,
 	PROFIT_YEARS: `${API_ROOT}/profit/years`,
 	DIVIDEND: `${API_ROOT}/dividend`,
-  
-	// APPINFO: `${API_ROOT}/appinfo`,
-	// TOKEN: `${API_ROOT}/token`,
-	// MENUS: `${API_ROOT}/menus`,
-	// FAMOUS: `${API_ROOT}/famous`,
-	// BANKING: `${API_ROOT}/banking`,
-	// CORPINFO: `${API_ROOT}/corpinfo`,
-	// DAILY: `${API_ROOT}/daily`,
-	// BUCKET: `${API_ROOT}/bucket`,
-	// SET: `${API_ROOT}/user/set`,
+	APP: `${API_ROOT}/app`,
+	APP_CONFIG: `${API_ROOT}/app/config`,
 };

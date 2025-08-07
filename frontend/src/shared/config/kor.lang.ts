@@ -116,6 +116,8 @@ const KOR = {
 	KOSDAQ: '코스닥',
 	SUM: '총계',
 	TAX: '제세금',
+	MORE_IN: '요약보기',
+	MORE_OUT: '전체보기',
 
 	NO_SERVICE: '서비스 준비중',
 
