@@ -129,9 +129,6 @@ export const useDiaryData = (initialKeepData?: DataType[], initialTradeData?: Da
 	// 요약 정보
 	const summary = useMemo(() => {
 		const monthData = groupedByMonth?.[dayjs(selectedDate).format('YYYYMM')];
-
-		console.log({ groupedByMonth, monthData });
-
 		const buys = monthData?.filter((a) => a.type === 'keep');
 		const sells = monthData?.filter((a) => a.type === 'trade');
 

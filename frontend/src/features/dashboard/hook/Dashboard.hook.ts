@@ -10,8 +10,6 @@ export const useDashboardHook = (initialData?: DashboardResponse) => {
 	const { data: config, getConfig, createConfig, isPending } = useAppConfigHook({ group: APP_GROUP.DASHBOARD });
 	const [sort, setSort] = useState<string>('');
 
-	console.log({ sort });
-
 	const titleOptions = useMemo(() => {
 		return SelectOptions();
 	}, []);

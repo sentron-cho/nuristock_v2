@@ -15,7 +15,7 @@ export const StyledFooter = styled('div', {
 
 		'.nav': {
 			'.link': {
-				'&.active, &:hover': {
+				'&.active': {
 					color: '$warning',
 				},
 
