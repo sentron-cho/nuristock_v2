@@ -104,7 +104,7 @@ export const DiaryPageMo = () => {
 
 	return (
 		<StyledPage className={clsx('diary', 'main')} summaryData={summary}>
-			<Flex className='view-box' direction={'column'} align={'start'}>
+			<Flex flex={1}  className='view-box' direction={'column'} align={'start'}>
 				{/* 캘린더 뷰 */}
 				<Flex {...handlerMonthSwipe} flex={1}>
 					<CalendarView

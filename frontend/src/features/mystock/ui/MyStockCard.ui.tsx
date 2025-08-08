@@ -11,12 +11,12 @@ import { EID } from '@shared/config/default.config';
 import { IconButton, IconType } from '@entites/IconButton';
 import Flex from '@entites/Flex';
 import { KeepContents, TradeContents } from './MyStockCardContents.ui';
-import { StyledCard, StyledTradeCard } from '../style/MyStockCard.style';
 import { useMemo } from 'react';
 import dayjs from 'dayjs';
 import { reverse, sortBy } from 'lodash';
 import { SubTitle } from '@entites/Title';
 import { NoData } from '@entites/NoData';
+import { Card } from '@entites/Card';
 
 export const MyStcokKeepList = ({
 	list,
@@ -74,7 +74,7 @@ export const MyStcokTradeList = ({
 	}, [groupedByYear]);
 
 	return (
-		<StyledTradeCard className={'trade-layer'} direction={'column'} gap={20}>
+		<Flex className={'trade-layer'} direction={'column'} gap={20}>
 			{years?.map((year) => {
 				const items = groupedByYear?.[year];
 				const sum = items
@@ -105,7 +105,7 @@ export const MyStcokTradeList = ({
 					</Flex>
 				);
 			})}
-		</StyledTradeCard>
+		</Flex>
 	);
 };
 
@@ -127,8 +127,8 @@ export const MyStockCard = ({
 	const type = valueOfPlusMinus(sise?.sise, sise?.sise ? data.scost : 0);
 
 	return (
-		<StyledCard className={clsx('card', type, viewType, { sm: !history })}>
-			<Flex className='box' direction='column' onClick={() => handleClick(EID.SELECT)}>
+		<Card className={clsx('card', type, viewType, { sm: !history })}>
+			<Flex className='box border' direction='column' onClick={() => handleClick(EID.SELECT)}>
 				{viewType === 'keep' && <KeepContents data={data as KeepType} sise={sise} />}
 				{viewType === 'trade' && <TradeContents data={data as SellType} sise={sise} />}
 
@@ -143,6 +143,6 @@ export const MyStockCard = ({
 					</Flex>
 				</Flex>
 			</Flex>
-		</StyledCard>
+		</Card>
 	);
 };

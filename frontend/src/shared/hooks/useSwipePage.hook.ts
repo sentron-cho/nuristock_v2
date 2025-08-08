@@ -10,7 +10,11 @@ export const useSwipePage = ({ onNextPage }: { onNextPage?: () => string | void 
 
 	const handlerSwipe = useSwipeable({
 		onSwiped: (e) => {
-			const { dir } = e;
+			const { dir, velocity } = e;
+			// console.log(e);
+
+			// 민감도 조절
+			if (velocity < 1) return;
 
 			if (!['left', 'right']?.includes(dir?.toLowerCase())) return;
 

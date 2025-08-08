@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 import { useProfitData } from '../hook/ProfitData.hook';
 import { sortedByKey } from '@shared/libs/sort.lib';
 import { ProfitCardField } from './ProfitCardField.ui';
-import { StyledCard } from '../style/ProfitCard.style';
+import { Card } from '@entites/Card';
 
 export const ProfitCardPerCode = ({
 	data,
@@ -22,11 +22,11 @@ export const ProfitCardPerCode = ({
 	}, [data]);
 
 	return (
-		<StyledCard className={clsx('card')}>
-			<Flex className={clsx('box')} direction='column' gap={10}>
+		<Card className={clsx('card')}>
+			<Flex className={clsx('box border')} direction='column' gap={10}>
 				{/* 년도별 */}
 				<ProfitCardField title={ST.PER_YEARS} className='years' data={yearData} />
 			</Flex>
-		</StyledCard>
+		</Card>
 	);
 };

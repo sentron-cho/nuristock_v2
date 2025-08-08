@@ -12,7 +12,7 @@ import { EID } from '@shared/config/default.config';
 import { Text } from '@entites/Text';
 import dayjs from 'dayjs';
 import { CardLineFiled } from '@features/common/ui/CardLineField.ui';
-import { StyledCard } from '../style/DashboardCard.style';
+import { Card } from '@entites/Card';
 
 const LONG_TIME_FORMAT_LENGTH = 8;
 
@@ -104,8 +104,8 @@ export const DashboardCard = ({
 	}, [viewType, isFullDisplay]);
 
 	return (
-		<StyledCard className={clsx('card', { active }, type, { sm: !history })}>
-			<Flex className='box' direction='column' onClick={() => handleClick(EID.SELECT)}>
+		<Card className={clsx('card', { active }, type, { sm: !history })}>
+			<Flex className='box border' direction='column' onClick={() => handleClick(EID.SELECT)}>
 				{/* head */}
 				<Flex className='head' justify='between'>
 					<Flex gap={4} className='left' flex={1}>
@@ -203,6 +203,6 @@ export const DashboardCard = ({
 					)}
 				</Flex>
 			</Flex>
-		</StyledCard>
+		</Card>
 	);
 };

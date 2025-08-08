@@ -1,6 +1,5 @@
 import Flex from '@entites/Flex';
 import { ProfitItemType as DataType } from '../api/profit.dto';
-import { StyledCard } from '../style/ProfitCard.style';
 import clsx from 'clsx';
 import { useMemo } from 'react';
 import { ST } from '@shared/config/kor.lang';
@@ -9,6 +8,7 @@ import { URL } from '@shared/config/url.enum';
 import { sortedByKey } from '@shared/libs/sort.lib';
 import { useProfitData } from '../hook/ProfitData.hook';
 import { ProfitCardField } from './ProfitCardField.ui';
+import { Card } from '@entites/Card';
 
 export const ProfitCard = ({
 	data,
@@ -35,14 +35,14 @@ export const ProfitCard = ({
 	};
 
 	return (
-		<StyledCard className={clsx('card')}>
-			<Flex className={clsx('box')} direction='column' gap={10}>
+		<Card className={clsx('card')}>
+			<Flex className={clsx('box border')} direction='column' gap={10}>
 				{/* 종목별 */}
 				<ProfitCardField title={ST.PER_CODES} className='names' data={nameData} onClick={onClick}/>
 
 				{/* 월별 */}
 				<ProfitCardField title={ST.PER_MONTHS} className='months' data={monthData} />
 			</Flex>
-		</StyledCard>
+		</Card>
 	);
 };

@@ -11,10 +11,10 @@ import { URL } from '@shared/config/url.enum';
 import { useMemo } from 'react';
 import { sortedByKey } from '@shared/libs/sort.lib';
 import { styled } from '@styles/stitches.config';
-import { StyledCard } from '@features/profit/style/ProfitCard.style';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { unset } from 'lodash';
 import { SlideWrapper } from '@entites/SliderWrapper';
+import { Card } from '@entites/Card';
 
 const StyledPage = styled(StyledProfitPage, {
 	'.button': {
@@ -31,6 +31,7 @@ const StyledPage = styled(StyledProfitPage, {
 	'.card': {
 		'.box': {
 			padding: '20px 10px',
+			minHeight: '120px',
 
 			'.body': {
 				gap: '20px',
@@ -72,7 +73,7 @@ export const ProfitPageMo = () => {
 	return (
 		<StyledPage className={clsx('profit', 'main')} summaryData={summary}>
 			<Flex className='view-box' direction={'column'} gap={20}>
-				<SlideWrapper active={activePage} >
+				<SlideWrapper active={activePage}>
 					<>
 						{/* 연도별 */}
 						<Flex direction={'column'} justify={'center'}>
@@ -81,11 +82,11 @@ export const ProfitPageMo = () => {
 								<SubTitle className={clsx('button')} title={ST.PER_CODES} onClick={() => setActivePage(1)} />
 							</Flex>
 
-							<StyledCard className={clsx('card')} onClick={() => onClick('year')}>
-								<Flex className={clsx('box')} direction='column' gap={10}>
+							<Card className={clsx('card')} onClick={() => onClick('year')}>
+								<Flex className={clsx('box')} direction='column' gap={10} >
 									<ProfitCardField className='years' data={years} />
 								</Flex>
-							</StyledCard>
+							</Card>
 						</Flex>
 
 						{/* 종목별 */}
@@ -95,11 +96,11 @@ export const ProfitPageMo = () => {
 								<SubTitle flex={1} align='center' className={clsx('year')} title={ST.PER_CODES} />
 							</Flex>
 
-							<StyledCard className={clsx('card')} onClick={() => onClick('code')}>
+							<Card className={clsx('card')} onClick={() => onClick('code')}>
 								<Flex className={clsx('box')} direction='column' gap={10}>
 									<ProfitCardField className='names' data={names} />
 								</Flex>
-							</StyledCard>
+							</Card>
 						</Flex>
 					</>
 				</SlideWrapper>

@@ -1,12 +1,13 @@
 import clsx from 'clsx';
 import { PropsWithChildren } from 'react';
-import { Card as MuiCard } from '@mui/material';
+import { Card as MuiCard, CardProps as MuiCardProps } from '@mui/material';
 import { styled } from '@styles/stitches.config';
 
 export const StyledCard = styled(MuiCard, {
 	'&.card': {
 		width: '33.33333%',
-		height: '240px',
+		// height: '240px',
+		height: 'fit-contents',
 		boxShadow: 'unset !important',
 		padding: '$4',
 		backgroundColor: 'transparent',
@@ -34,12 +35,15 @@ export const StyledCard = styled(MuiCard, {
 			},
 
 			'.body': {
-				borderBottom: '1px solid $gray300',
 				overflow: 'hidden',
 				flex: 1,
+				paddingTop: '$4',
+				paddingBottom: '$4',
 			},
 
 			'.foot': {
+				marginTop: '$4',
+				borderTop: '1px solid $gray300',
 				height: '40px',
 			},
 
@@ -50,13 +54,17 @@ export const StyledCard = styled(MuiCard, {
 			'.minus': {
 				color: '$minus',
 			},
-		},
 
-		'&.active': {
-			'.box': {
+			'&.border': {
 				borderColor: '$gray700',
 			},
 		},
+
+		// '&.active': {
+		// 	'.box': {
+		// 		borderColor: '$gray700',
+		// 	},
+		// },
 
 		'@lg': {
 			'&.card': {
@@ -73,10 +81,14 @@ export const StyledCard = styled(MuiCard, {
 	},
 });
 
-export interface CardProps {
+export interface CardProps extends MuiCardProps {
 	className?: string;
 }
 
-export const Card = ({ children, className }: CardProps & PropsWithChildren) => {
-	return <StyledCard className={clsx('card', className)}>{children}</StyledCard>;
+export const Card = ({ children, className, ...rest }: CardProps & PropsWithChildren) => {
+	return (
+		<StyledCard {...rest} className={clsx('card', className)}>
+			{children}
+		</StyledCard>
+	);
 };

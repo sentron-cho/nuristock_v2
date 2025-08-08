@@ -15,7 +15,59 @@ import { DashboardHeader } from '@features/dashboard/ui/DashboardHeader.ui';
 import { FormProvider, useForm } from 'react-hook-form';
 
 const StyledPage = styled(PageContainer, {
-	'.contents-layer': {},
+	'.contents-layer': {
+		'.card': {
+			cursor: 'pointer',
+
+			'.box': {
+				'.body': {
+					'.trade-info, .keep-info': {
+						'&.trade-info': {
+							borderTop: '1px solid $gray300',
+						},
+
+						padding: '8px',
+					},
+
+					'.b-item': {
+						borderTop: '1px solid $gray300',
+						paddingTop: '$10',
+					},
+				},
+
+				'.foot': {
+					'.naver, .daum': {
+						'&.naver': {
+							backgroundColor: '#00c73c',
+						},
+						'&.daum': {
+							backgroundColor: '#fcce00',
+							color: '$black',
+						},
+					},
+
+					'.sise': {
+						textAlign: 'right',
+
+						'.time': {
+							color: '$gray600',
+						},
+
+						'.icon': {
+							position: 'relative',
+							marginLeft: '24px',
+
+							svg: {
+								left: '-20px',
+								position: 'absolute',
+								opacity: '0.8',
+							},
+						},
+					},
+				},
+			},
+		},
+	},
 });
 
 export const DashboardPageMo = ({
@@ -27,7 +79,8 @@ export const DashboardPageMo = ({
 	data?: DashboardResponse;
 	onClick: (eid?: string, item?: DataType) => void;
 }) => {
-	const { getConfig, summaryData, titleOptions, sort, onChangeSort, sortedKeeps, sortedTrades } = useDashboardHook(data);
+	const { getConfig, summaryData, titleOptions, sort, onChangeSort, sortedKeeps, sortedTrades } =
+		useDashboardHook(data);
 
 	const formMethods = useForm({ defaultValues: { more: getConfig('more')?.toString() === 'true' } });
 	const formMore = formMethods?.watch('more');

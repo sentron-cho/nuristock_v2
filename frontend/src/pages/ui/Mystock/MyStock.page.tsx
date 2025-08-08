@@ -24,7 +24,53 @@ import clsx from 'clsx';
 import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 
 const StyledPage = styled(PageContainer, {
-	'.contents-layer': {},
+	'.contents-layer': {
+		'.card': {
+			'&.keep': {
+				cursor: 'pointer',
+			},
+
+			'.box': {
+				'.trade-info, .keep-info, .cast-info': {
+					'&.keep-info, &.cast-info': {
+						borderTop: '1px solid $gray300',
+					},
+
+					padding: '8px',
+				},
+			},
+		},
+
+		'.trade-layer': {
+			'.trade-sub-title': {
+				width: '100%',
+				background: '$gray400',
+				textAlign: 'center',
+				height: '40px',
+				lineHeight: '40px',
+				position: 'sticky',
+				top: '40px',
+				zIndex: 10,
+
+				'.sum': {
+					'&.plus': {
+						color: '$plus',
+					},
+
+					'&.minus': {
+						color: '$minus',
+					},
+				},
+			},
+
+			'@md': {
+				'.trade-sub-title': {
+					justifyContent: 'space-between',
+					padding: '0 10px',
+				},
+			},
+		},
+	},
 });
 
 const MyStockPage = ({ viewType }: { viewType?: 'keep' | 'trade' }) => {

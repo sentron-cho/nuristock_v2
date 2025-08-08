@@ -78,7 +78,7 @@ export const DividendCard = ({
 
 	return (
 		<StyledCard className={clsx('card', { sm: !history })}>
-			<Flex className='box' direction='column'>
+			<Flex className='box border' direction='column'>
 				<Flex className='head' justify={'between'} onClick={() => onClick?.(EID.SELECT, year)}>
 					<SubTitle title={year?.title} />
 					<Text bold text={`${toCost(year?.price)}`} />
