@@ -1,7 +1,6 @@
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { DashboardPageMo } from './Dashboard.page.mo';
 import { DashboardPagePc } from './Dashboard.page.pc';
-import { useNavigate } from 'react-router-dom';
 import {
 	DashboardItemType as DataType,
 	DashboardSiseItemType as SiseItemType,
@@ -18,8 +17,7 @@ import { StockSiseUpdaterPopup } from '@features/dashboard/ui/StockSiseUpdater.p
 
 const DashboardPage = ({ viewType = 'trade' }: { viewType?: 'trade' | 'keep' }) => {
 	const { isMobile } = useCommonHook();
-	const navigate = useNavigate();
-	const { showToast, showConfirm } = useCommonHook();
+	const { showToast, showConfirm, navigate } = useCommonHook();
 
 	const [popup, setPopup] = useState<PopupType>();
 

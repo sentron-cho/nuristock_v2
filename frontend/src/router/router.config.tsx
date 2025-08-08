@@ -52,9 +52,14 @@ const router = createBrowserRouter([
 				path: 'profit',
 				element: <PageLayout />,
 				children: [
-					{ index: true, element: <ProfitPage /> },
-					{ path: 'year', element: <ProfitPerYearPage /> },
-					{ path: 'code', element: <ProfitPerCodePage /> },
+					{ index: true, element: <ProfitPage viewType={'year'} /> },
+					{ path: 'year', element: <ProfitPage viewType={'year'} /> },
+					{ path: 'code', element: <ProfitPage viewType={'code'} /> },
+					{ path: 'year/:id', element: <ProfitPerYearPage /> },
+					{ path: 'code/:id', element: <ProfitPerCodePage /> },
+
+					// { path: 'year', element: <ProfitPerYearPage /> },
+					// { path: 'code', element: <ProfitPerCodePage /> },
 				],
 			},
 			{

@@ -19,7 +19,6 @@ import { URL } from '@shared/config/url.enum';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import Flex from '@entites/Flex';
 import { useMyStockHook } from '@features/mystock/hook/MyStock.hook';
-import { useNavigate, useParams } from 'react-router-dom';
 import clsx from 'clsx';
 import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 
@@ -74,9 +73,7 @@ const StyledPage = styled(PageContainer, {
 });
 
 const MyStockPage = ({ viewType }: { viewType?: 'keep' | 'trade' }) => {
-	const navigate = useNavigate();
-	const param = useParams();
-	const { showConfirm } = useCommonHook();
+	const { showConfirm, navigate, param } = useCommonHook();
 
 	const [popup, setPopup] = useState<PopupType & { type: PopupType['type'] | 'buy' | 'sell' }>();
 

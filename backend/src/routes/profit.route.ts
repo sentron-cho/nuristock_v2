@@ -8,17 +8,20 @@ const profitRoute = (fastify: FastifyInstance) => {
   // 년도별 손익 목록 조회
   fastify.get(URL.PROFIT.ROOT, async (req, reply) => {
     try {
-      console.log("[CALL]", req.query);
-
       const { year } = req.query as ProfitSearchParams;
 
-      const where = year ? `WHERE YEAR(k.edate) = ${year}` : '';
+      const where = year ? `WHERE YEAR(k.edate) = ${year}` : "";
 
       const sells = await fastify.db.query(
         `SELECT m.name as name, k.* FROM sells k JOIN dashboard m ON k.code = m.code ${where}`
       );
 
-      return { value: sells };
+      // const stock = await fastify.db.query(`SELECT code, name, kcount FROM dashboard order by kcount desc;`);
+      const dividend = await fastify.db.query(
+        `SELECT k.rowid, k.code, k.cost, k.count, k.sdate, k.price, m.name as name FROM divid k JOIN dashboard m ON k.code = m.code;`
+      );
+
+      return { value: sells, dividend: dividend };
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.MYSTOCK.ROOT }));
     }

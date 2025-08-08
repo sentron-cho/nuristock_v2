@@ -13,7 +13,7 @@ import { StyledProfitPage } from '@page/style/Profit.style';
 export const ProfitPerCodeMo = () => {
 	const { data: profitData } = useSelectProfit();
 
-	const { summary, data, createSumData, groupedByName, createTotal } = useProfitData(profitData?.value);
+	const { summary, data, createSumData, groupedByName, createTotal } = useProfitData(undefined, profitData?.value);
 
 	// 종목별 합계 구하기(손익 내림차순)
 	const sortedList = useMemo(() => {

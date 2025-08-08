@@ -1,3 +1,4 @@
+import { DividendItemType } from '@features/dividend/api/dividend.dto';
 import { MyStockKeepType } from '@features/mystock/api/mystock.dto';
 
 export interface ProfitItemType extends MyStockKeepType {
@@ -14,6 +15,7 @@ export interface ProfitItemType extends MyStockKeepType {
 
 export interface ProfitResponse {
 	value?: ProfitItemType[];
+	dividend?: DividendItemType[];
 }
 
 export interface ProfitYearsItemType {

@@ -37,6 +37,14 @@ const StyledFlex = styled(Flex, {
 
 		'.row': {
 			position: 'relative',
+			height: '32px',
+
+			p: {
+				'&.title': {
+					fontSize: '16px',
+				},
+			},
+
 			'.rate': {
 				position: 'absolute',
 				transform: 'translateX(50%)',
@@ -52,25 +60,34 @@ export const ProfitCardField = ({
 	title,
 	className,
 	data,
-	onClick,
+	onClickTitle,
+	onClickItem,
 }: {
 	title?: string;
 	className?: string;
 	data?: DataType[];
-	onClick?: (eid: string) => void;
+	onClickTitle?: (eid: string) => void;
+	onClickItem?: (item: DataType) => void;
 }) => {
 	return (
 		<StyledFlex className={clsx('card-field', className)} direction={'column'} gap={10}>
-			{title && <Flex className='head' justify={'between'} onClick={() => onClick?.('code')}>
-				<SubTitle title={title} width={'100%'} textAlign={'center'} />
-			</Flex>}
+			{title && (
+				<Flex className='head' justify={'between'} onClick={() => onClickTitle?.(title)}>
+					<SubTitle title={title} width={'100%'} textAlign={'center'} />
+				</Flex>
+			)}
 
-			<Flex direction={'column'} className='body' gap={8}>
+			<Flex direction={'column'} className='body'>
 				{data?.map((item) => {
 					const { title, sonic, sonicRate } = item;
 					const type = valueOfPlusMinus(sonic, 0);
 					return (
-						<Flex className={clsx(type, 'row')} direction={'row'} justify={'between'}>
+						<Flex
+							className={clsx(type, 'row')}
+							direction={'row'}
+							justify={'between'}
+							onClick={() => onClickItem?.(item)}
+						>
 							<Text className='title' text={title} flex={1} />
 							<Text className='rate' size='xs' align='right' text={`${sonicRate} %`} />
 							<Text className='value' text={toCost(sonic)} flex={1} align={'right'} />

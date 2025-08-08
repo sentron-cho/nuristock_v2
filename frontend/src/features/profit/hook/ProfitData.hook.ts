@@ -1,24 +1,24 @@
-import { cloneDeep, reverse, sortBy } from 'lodash';
+import { reverse, sortBy } from 'lodash';
 import { useMemo } from 'react';
 import { ProfitItemType as DataType, ProfitYearsItemType as YearDataType } from '../api/profit.dto';
 import { SummaryData } from '../config/Profit.data';
 import dayjs from 'dayjs';
 import { FieldValues } from 'react-hook-form';
+import { DividendItemType } from '@features/dividend/api/dividend.dto';
 
-export const useProfitData = (initialData?: DataType[], initialYears?: YearDataType[]) => {
-	// 년도별 데이터 초기화
-	// const years = useMemo(() => {
-	// 	const items = initialYears?.map((a) => ({ value: a?.year, label: a?.year }) as SelectOptionType);
-	// 	return reverse(sortBy(items, 'value'));
-	// }, [initialYears]);
-
+export const useProfitData = (
+	initialYears?: YearDataType[],
+	initialData?: DataType[],
+	initialDividend?: DividendItemType[]
+) => {
+	// 년도별 합게 데이터
 	const years = useMemo(() => {
 		return reverse(sortBy(initialYears, 'year'));
 	}, [initialYears]);
 
-	// 메인 데이터 초기화
+	// 메인 데이터
 	const data = useMemo(() => {
-		const items = cloneDeep(initialData)?.map((a) => {
+		return initialData?.map((a) => {
 			const sprice = (a?.scost || 0) * (a?.count || 0);
 			const eprice = (a?.ecost || 0) * (a?.count || 0);
 			const sonic = (eprice || 0) - (sprice || 0);
@@ -30,9 +30,12 @@ export const useProfitData = (initialData?: DataType[], initialYears?: YearDataT
 				sonic,
 			};
 		});
-
-		return items;
 	}, [initialData]);
+
+	// 배당 데이터
+	const dividend = useMemo(() => {
+		return initialDividend;
+	}, [initialDividend]);
 
 	const summary = useMemo(() => {
 		const list = (data as DataType[])?.map((a) => Number(a.eprice) - Number(a.sprice));
@@ -43,6 +46,63 @@ export const useProfitData = (initialData?: DataType[], initialYears?: YearDataT
 
 		return SummaryData([up?.toString(), down?.toString(), total?.toString()]);
 	}, [data]);
+
+	
+	// 년도별 데이터 추출
+	const groupedByYear = useMemo(() => {
+		return data?.reduce(
+			(acc, item) => {
+				const year = dayjs(item['edate']).format('YYYY'); // '20241104' → '2024'
+				if (!acc[year]) {
+					acc[year] = [];
+				}
+				acc[year].push(item);
+				return acc;
+			},
+			{} as Record<string, typeof data>
+		);
+	}, [data]);
+
+	// 종목명별 데이터 추출
+	const groupedByName = useMemo(() => {
+		return data?.reduce(
+			(acc, item) => {
+				const name = item['name'];
+				if (!acc[name]) acc[name] = [];
+				acc[name].push(item);
+				return acc;
+			},
+			{} as Record<string, typeof data>
+		);
+	}, [data]);
+
+	// 년도별 배당 데이터 추출
+	const dividendByYear = useMemo(() => {
+		return dividend?.reduce(
+			(acc, item) => {
+				const year = dayjs(item['sdate']).format('YYYY'); // '20241104' → '2024'
+				if (!acc[year]) {
+					acc[year] = [];
+				}
+				acc[year].push(item);
+				return acc;
+			},
+			{} as Record<string, typeof dividend>
+		);
+	}, [dividend]);
+
+		// 종목명별 배당 데이터 추출
+	const dividendByName = useMemo(() => {
+		return dividend?.reduce(
+			(acc, item) => {
+				const name = item['name'] as string;
+				if (!acc[name]) acc[name] = [];
+				acc[name].push(item);
+				return acc;
+			},
+			{} as Record<string, typeof dividend>
+		);
+	}, [dividend]);
 
 	// 키별 합게 데이터 생성
 	const createSumData = (data?: DataType[], columnKey: 'name' | 'month' | 'year' = 'name') => {
@@ -80,34 +140,6 @@ export const useProfitData = (initialData?: DataType[], initialYears?: YearDataT
 		);
 	};
 
-	// 년도별 데이터 추출
-	const groupedByYear = useMemo(() => {
-		return data?.reduce(
-			(acc, item) => {
-				const year = dayjs(item['edate']).format('YYYY'); // '20241104' → '2024'
-				if (!acc[year]) {
-					acc[year] = [];
-				}
-				acc[year].push(item);
-				return acc;
-			},
-			{} as Record<string, typeof data>
-		);
-	}, [data]);
-
-	// 종목명별 데이터 추출
-	const groupedByName = useMemo(() => {
-		return data?.reduce(
-			(acc, item) => {
-				const name = item['name'];
-				if (!acc[name]) acc[name] = [];
-				acc[name].push(item);
-				return acc;
-			},
-			{} as Record<string, typeof data>
-		);
-	}, [data]);
-
 	// 년도별 누적 투자금액
 	const createAccPrice = (data?: DataType[]) => {
 		const columnkey = 'YYYY';
@@ -128,7 +160,7 @@ export const useProfitData = (initialData?: DataType[], initialYears?: YearDataT
 		return Object.values(monthPrice).reduce((a, b) => a + b, 0);
 	};
 
-	// 년도별 누적 투자금액
+	// 년도별 누적 금액
 	const createTotal = (data?: DataType[], columnkey: string = 'sprice') => {
 		return data?.map((a) => (a as FieldValues)?.[columnkey]).reduce((a, b) => a + b, 0);
 	};
@@ -144,6 +176,8 @@ export const useProfitData = (initialData?: DataType[], initialYears?: YearDataT
 		createSumData,
 		groupedByYear,
 		groupedByName,
+		dividendByYear,
+		dividendByName,
 		createAccPrice,
 		createTotal,
 		// accPrice,
