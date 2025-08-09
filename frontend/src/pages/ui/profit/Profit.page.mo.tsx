@@ -1,7 +1,6 @@
 import { useSelectProfit, useSelectProfitYears } from '@features/profit/api/profit.api';
 import Flex from '@entites/Flex';
 import { useProfitData } from '@features/profit/hook/ProfitData.hook';
-import { SubTitle } from '@entites/Title';
 import clsx from 'clsx';
 import { ST } from '@shared/config/kor.lang';
 import { StyledProfitPage } from '@page/style/Profit.style';
@@ -11,23 +10,12 @@ import { useMemo } from 'react';
 import { sortedByKey } from '@shared/libs/sort.lib';
 import { styled } from '@styles/stitches.config';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
-import { unset } from 'lodash';
 import { Card } from '@entites/Card';
 import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 import { ProfitItemType } from '@features/profit/api/profit.dto';
+import { CardTitleNavi } from '@entites/CardTitleNavi';
 
 const StyledPage = styled(StyledProfitPage, {
-	'.button': {
-		color: '$gray500',
-		position: 'absolute',
-		right: 10,
-
-		'.left': {
-			right: unset,
-			left: 0,
-		},
-	},
-
 	'.card': {
 		'.box': {
 			padding: '20px 10px',
@@ -41,7 +29,7 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 	const { data: profitData } = useSelectProfit();
 
 	const { summary, data, createSumData } = useProfitData(yearsData?.value, profitData?.value, profitData?.dividend);
-	const { setActivePage, navigate } = useCommonHook();
+	const { navigate } = useCommonHook();
 
 	const { handlerSwipe, swipeClass } = useSwipePage({
 		onNextPage: () => {
@@ -60,14 +48,25 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 	}, [data]);
 
 	const onClickItemYear = (item: ProfitItemType) => {
-		console.log('[onClickItemYear]', { item });
-		navigate(`${URL.PROFIT}/year/${item?.title}`)
+		navigate(`${URL.PROFIT}/year/${item?.title}`);
 	};
 
 	const onClickItemName = (item: ProfitItemType) => {
-		console.log('[onClickItemName]', { item });
-		navigate(`${URL.PROFIT}/code/${item?.title}`)
+		navigate(`${URL.PROFIT}/code/${item?.title}`);
 	};
+
+	const onClick = (eid?: string) => {
+		console.log({ eid });
+		eid && navigate(`${URL.PROFIT}/${eid}`);
+	};
+
+	const naviOptions = useMemo(
+		() => [
+			{ label: ST.PER_YEARS, value: 'year' },
+			{ label: ST.PER_CODES, value: 'code' },
+		],
+		[]
+	);
 
 	return (
 		<StyledPage className={clsx('profit', 'main')} summaryData={summary}>
@@ -75,10 +74,7 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 				{/* 연도별 */}
 				{viewType === 'year' && (
 					<Flex className={clsx(swipeClass)} direction={'column'} justify={'center'}>
-						<Flex className={clsx('card-sub-title')} gap={10} justify={'center'}>
-							<SubTitle flex={1} align='center' className={clsx('year')} title={ST.PER_YEARS} />
-							<SubTitle className={clsx('button')} title={ST.PER_CODES} onClick={() => setActivePage(1)} />
-						</Flex>
+						<CardTitleNavi options={naviOptions} value={viewType} onClick={onClick} />
 
 						<Card className={clsx('card')}>
 							<Flex className={clsx('box')} direction='column' gap={10}>
@@ -91,10 +87,7 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 				{/* 종목별 */}
 				{viewType === 'code' && (
 					<Flex className={clsx(swipeClass)} direction={'column'}>
-						<Flex className={clsx('card-sub-title')} gap={10} justify={'center'}>
-							<SubTitle className={clsx('button', 'left')} title={ST.PER_YEARS} onClick={() => setActivePage(0)} />
-							<SubTitle flex={1} align='center' className={clsx('year')} title={ST.PER_CODES} />
-						</Flex>
+						<CardTitleNavi options={naviOptions} value={viewType} onClick={onClick} />
 
 						<Card className={clsx('card')}>
 							<Flex className={clsx('box')} direction='column' gap={10}>
@@ -107,3 +100,29 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 		</StyledPage>
 	);
 };
+
+// const CardTitleNavi = ({
+// 	type,
+// 	onClick,
+// }: {
+// 	type: 'year' | 'code';
+// 	onClick?: (eid: 'year' | 'code') => void;
+// }) => {
+// 	return (
+// 		<Flex className={clsx('card-title-navi')} gap={10} justify={'center'}>
+// 			<SubTitle
+// 				fontSize={'small'}
+// 				className={clsx('button', 'left')}
+// 				title={type === 'code' ? ST.PER_YEARS : ST.PER_CODES}
+// 				onClick={() => onClick?.(type === 'year' ? 'code' : 'year')}
+// 			/>
+// 			<Title flex={1} align='center' className={clsx('navi')} title={type === 'year' ? ST.PER_YEARS : ST.PER_CODES} />
+// 			<SubTitle
+// 				fontSize={'small'}
+// 				className={clsx('button', 'right')}
+// 				title={type === 'code' ? ST.PER_YEARS : ST.PER_CODES}
+// 				onClick={() => onClick?.(type === 'year' ? 'code' : 'year')}
+// 			/>
+// 		</Flex>
+// 	);
+// };

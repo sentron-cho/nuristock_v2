@@ -78,11 +78,12 @@ export const ProfitCardField = ({
 			)}
 
 			<Flex direction={'column'} className='body'>
-				{data?.map((item) => {
+				{data?.map((item, index) => {
 					const { title, sonic, sonicRate } = item;
 					const type = valueOfPlusMinus(sonic, 0);
 					return (
 						<Flex
+							key={`prifit-${index}`}
 							className={clsx(type, 'row')}
 							direction={'row'}
 							justify={'between'}

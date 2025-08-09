@@ -4,13 +4,10 @@ import { styled } from '@styles/stitches.config';
 export const StyledProfitPage = styled(PageContainer, {
 	'&.profit': {
 		'.view-box': {
-			// paddingBottom: '100px',
 			minHeight: 'calc(100vh - 60px - 40px)',
-			// flex: 1,
-			// background: '$gray400',
 		},
 
-		'.card-sub-title': {
+		'.card-title-navi': {
 			width: '100%',
 			background: '$bgcolor',
 			borderBottom: '1px solid $gray500',
@@ -24,13 +21,25 @@ export const StyledProfitPage = styled(PageContainer, {
 			justifyContent: 'space-between',
 			padding: '0 10px',
 
-			'.left, .right': {
-				color: '$gray400',
+			'.button': {
+				color: '$gray500',
+				position: 'absolute',
+				// right: 10,
+
+				'&.left': {
+					right: 'unset',
+					left: 10,
+				},
+
+				'&.right': {
+					left: 'unset',
+					right: 10,
+				},
 			},
 		},
 
 		'.contents': {
-			paddingBottom: '60px',
+			paddingBottom: '110px',
 
 			'.contents-header': {
 				background: '$bgcolor',
