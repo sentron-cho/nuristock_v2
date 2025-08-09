@@ -138,7 +138,7 @@ export const ProfitPerYearPageMo = () => {
 
 						{/* 컨텐츠 */}
 						<Flex className='card-list'>
-							<ProfitCard data={data?.value} />
+							<ProfitCard data={data?.value} dividend={dividendByYear?.[param?.id as string]} />
 						</Flex>
 					</Flex>
 				)}

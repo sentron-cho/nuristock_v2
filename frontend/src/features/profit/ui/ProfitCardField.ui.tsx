@@ -90,7 +90,7 @@ export const ProfitCardField = ({
 							onClick={() => onClickItem?.(item)}
 						>
 							<Text className='title' text={title} flex={1} />
-							<Text className='rate' size='xs' align='right' text={`${sonicRate} %`} />
+							{sonicRate && <Text className='rate' size='xs' align='right' text={`${sonicRate} %`} />}
 							<Text className='value' text={toCost(sonic)} flex={1} align={'right'} />
 						</Flex>
 					);

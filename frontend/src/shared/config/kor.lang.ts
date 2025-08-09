@@ -157,6 +157,7 @@ const KOR = {
 	PER_CODES: '종목별',
 	PER_YEARS: '연도별',
 	PER_MONTHS: '월별',
+	PER_DIVIDEND: '배당내역',
 	PER_DAYS: '일별',
 
 	MENU: {
