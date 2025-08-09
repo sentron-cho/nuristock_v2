@@ -23,7 +23,7 @@ const StyledFlex = styled(Flex, {
 			border: '1px solid rgba(0,0,0,0.05)',
 			boxShadow: 'var(--Paper-shadow);',
 			overflow: 'hidden',
-			padding: '$10',
+			padding: '$4 $10',
 		},
 
 		'.plus': {
@@ -48,7 +48,7 @@ export const ContentsHeader = ({
 }: ContentsHeaderProps & PropsWithChildren) => {
 	return (
 		<StyledFlex className={clsx('contents-header', { sticky })} style={{ top: sticky ? stickyTop : 'unset' }}>
-			<Flex className='box' align={'start'}>
+			<Flex className='box' align={'start'} direction={'column'}>
 				{children}
 			</Flex>
 		</StyledFlex>

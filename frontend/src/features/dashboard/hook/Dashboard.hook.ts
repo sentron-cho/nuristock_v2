@@ -73,6 +73,7 @@ export const useDashboardHook = (initialData?: DashboardResponse) => {
 		}
 	};
 
+	// 보유 종목 리스트
 	const sortedKeeps = useMemo(() => {
 		return makeCardList(
 			sort,
@@ -80,10 +81,11 @@ export const useDashboardHook = (initialData?: DashboardResponse) => {
 		);
 	}, [list, sort]);
 
+	// 거래내역 리스트(보유 + 미보유)
 	const sortedTrades = useMemo(() => {
 		return makeCardList(
 			sort === 'siseSonic' ? 'sonicRate' : sort,
-			list?.filter((a) => !a.kcount)
+			list?.filter((a) => a.ecount)
 		);
 	}, [list, sort]);
 

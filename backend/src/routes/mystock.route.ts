@@ -15,10 +15,14 @@ const mystockRoute = (fastify: FastifyInstance) => {
 
       const mystocks = await fastify.db.query(`SELECT * FROM dashboard`);
       const stock = await fastify.db.query(`SELECT code, name FROM dashboard WHERE code='${code}'`);
-      const keeps = await fastify.db.query(`SELECT * FROM keeps WHERE code='${code}'`);
-      const sells = await fastify.db.query(`SELECT * FROM sells WHERE code='${code}'`);
+      const keeps = await fastify.db.query(
+        `SELECT k.*, m.name as name FROM keeps k JOIN dashboard m ON k.code = m.code WHERE k.code='${code}'`
+      );
+      const sells = await fastify.db.query(
+        `SELECT k.*, m.name as name FROM sells k JOIN dashboard m ON k.code = m.code WHERE k.code='${code}'`
+      );
       const sise = await fastify.db.query(
-        `SELECT code, stime as time, sise, updown  FROM market WHERE code='${code}';`
+        `SELECT code, stime as time, sise, updown, erate, ecost  FROM market WHERE code='${code}';`
       );
 
       return {
@@ -83,18 +87,14 @@ const mystockRoute = (fastify: FastifyInstance) => {
           ecost: 0,
         };
 
-        await fastify.db.query(
-          `UPDATE market SET ${makeUpdateSet(params as FieldValues)} WHERE code = '${code}';`
-        );
+        await fastify.db.query(`UPDATE market SET ${makeUpdateSet(params as FieldValues)} WHERE code = '${code}';`);
       } else {
         // 시세 업데이트
         const params = {
           stime: dayjs().format("YYYYMMDDHHmmss"),
           sise: scost,
         };
-        await fastify.db.query(
-          `UPDATE market SET ${makeUpdateSet(params as FieldValues)} WHERE code = '${code}';`
-        );
+        await fastify.db.query(`UPDATE market SET ${makeUpdateSet(params as FieldValues)} WHERE code = '${code}';`);
       }
 
       await fastify.db.query(`INSERT INTO keeps ${makeInsertSet(req.body as FieldValues)};`);
@@ -129,9 +129,7 @@ const mystockRoute = (fastify: FastifyInstance) => {
           .status(500)
           .send(withError({ code: "ER_NOT_ROWID", sqlMessage: "is not rowid!" } as SqlError, { tag: URL.MYSTOCK.BUY }));
 
-      await fastify.db.query(
-        `UPDATE keeps SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`
-      );
+      await fastify.db.query(`UPDATE keeps SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`);
       await updateDashboardKeep(code);
       reply.status(200).send({ value: rowid });
     } catch (error) {
@@ -156,9 +154,7 @@ const mystockRoute = (fastify: FastifyInstance) => {
         stime: dayjs().format("YYYYMMDDHHmmss"),
         sise: ecost,
       };
-      await fastify.db.query(
-        `UPDATE market SET ${makeUpdateSet(siseParams as FieldValues)} WHERE code = '${code}';`
-      );
+      await fastify.db.query(`UPDATE market SET ${makeUpdateSet(siseParams as FieldValues)} WHERE code = '${code}';`);
 
       reply.status(200).send({ value: code });
     } catch (error) {
@@ -189,9 +185,7 @@ const mystockRoute = (fastify: FastifyInstance) => {
           .status(500)
           .send(withError({ code: "ER_NOT_ROWID", sqlMessage: "is not rowid!" } as SqlError, { tag: URL.MYSTOCK.BUY }));
 
-      await fastify.db.query(
-        `UPDATE sells SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`
-      );
+      await fastify.db.query(`UPDATE sells SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`);
       await updateDashboardKeep(code, true);
       reply.status(200).send({ value: rowid });
     } catch (error) {

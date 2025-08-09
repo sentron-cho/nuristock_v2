@@ -22,6 +22,7 @@ export interface MyStockKeepType {
 	sdate: string;
 	scost: number;
 	count: number;
+	name: string;
 	mode?: string;
 }
 
@@ -42,6 +43,8 @@ export interface MyStockListType {
 	sise: number;
 	updown: string;
 	erate: number;
+	kcount: number;
+	ecount: number;
 }
 
 export interface MyStockResponse {
@@ -57,6 +60,8 @@ export interface MyStockSiseItemType {
 	time: string;
 	sise: number;
 	updown: string;
+	erate: number;
+	ecost: number;
 }
 
 // export interface MyStockSiseResponse {

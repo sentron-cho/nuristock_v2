@@ -1,94 +1,32 @@
-import { useState } from 'react';
-import { PageContainer } from '@features/common/ui/PageContainer.ui';
-import { styled } from '@styles/stitches.config';
+import { useEffect, useState } from 'react';
 import {
 	MyStockKeepType as KeepType,
 	MyStockSellType,
 	MyStockTreadType as TreadType,
 } from '@features/mystock/api/mystock.dto';
 import { useDeleteMyStockBuy, useDeleteMyStockSell, useSelectMyStock } from '@features/mystock/api/mystock.api';
-import { MyStcokKeepList, MyStcokTradeList } from '@features/mystock/ui/MyStockCard.ui';
-import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { EID } from '@shared/config/default.config';
 import { ST } from '@shared/config/kor.lang';
-import { IconAdd } from '@entites/Icons';
 import { MyStockBuyPopup } from '@features/mystock/ui/MyStockBuy.popup';
 import { MyStockSellPopup } from '@features/mystock/ui/MyStockSell.popup';
 import { PopupType } from '@entites/Dialog';
-import { URL } from '@shared/config/url.enum';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
-import Flex from '@entites/Flex';
-import { useMyStockHook } from '@features/mystock/hook/MyStock.hook';
-import clsx from 'clsx';
-import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
-
-const StyledPage = styled(PageContainer, {
-	'.contents-layer': {
-		'.card': {
-			'&.keep': {
-				cursor: 'pointer',
-			},
-
-			'.box': {
-				'.trade-info, .keep-info, .cast-info': {
-					'&.keep-info, &.cast-info': {
-						borderTop: '1px solid $gray300',
-					},
-
-					padding: '8px',
-				},
-			},
-		},
-
-		'.trade-layer': {
-			'.trade-sub-title': {
-				width: '100%',
-				background: '$gray400',
-				textAlign: 'center',
-				height: '40px',
-				lineHeight: '40px',
-				position: 'sticky',
-				top: '40px',
-				zIndex: 10,
-
-				'.sum': {
-					'&.plus': {
-						color: '$plus',
-					},
-
-					'&.minus': {
-						color: '$minus',
-					},
-				},
-			},
-
-			'@md': {
-				'.trade-sub-title': {
-					justifyContent: 'space-between',
-					padding: '0 10px',
-				},
-			},
-		},
-	},
-});
+import { MyStockPageMo } from './MyStock.page.mo';
 
 const MyStockPage = ({ viewType }: { viewType?: 'keep' | 'trade' }) => {
-	const { showConfirm, navigate, param } = useCommonHook();
+	const { isMobile } = useCommonHook();
+	const { showConfirm, param } = useCommonHook();
 
 	const [popup, setPopup] = useState<PopupType & { type: PopupType['type'] | 'buy' | 'sell' }>();
 
 	const { data, refetch } = useSelectMyStock(param?.id || '');
 
-	const { keepList, tradeList, selected, summaryData, stocks } = useMyStockHook(data);
-
 	const { mutateAsync: deleteDataBuy } = useDeleteMyStockBuy();
 	const { mutateAsync: deleteDataSell } = useDeleteMyStockSell();
 
-	const { handlerSwipe, swipeClass } = useSwipePage({
-		onNextPage: () => {
-			return `${URL.MYSTOCK}/${viewType === 'keep' ? 'trade' : 'keep'}/${param?.id}`;
-		},
-	});
+	useEffect(() => {
+		refetch();
+	}, []);
 
 	const onClickKeep = (eid?: string, item?: KeepType) => {
 		if (eid === EID.SELECT || eid === 'sell') {
@@ -155,47 +93,14 @@ const MyStockPage = ({ viewType }: { viewType?: 'keep' | 'trade' }) => {
 		}
 	};
 
-	const onChangeStock = (value: string) => {
-		navigate(`${URL.MYSTOCK}/${value}`);
-	};
-
 	return (
 		<>
-			<StyledPage summaryData={summaryData}>
-				<Flex direction={'column'}>
-					<PageTitleBar
-						title={viewType === 'keep' ? ST.KEEP_LIST : ST.TRADE_LIST}
-						selectProps={{
-							options: stocks,
-							value: selected,
-							onChange: onChangeStock,
-							border: false,
-						}}
-						buttonProps={{
-							eid: 'buy',
-							icon: <IconAdd />,
-							title: ST.BUY,
-							onClick: onClickKeep,
-						}}
-					/>
-
-					<Flex className='contents-layer' direction={'column'} {...handlerSwipe}>
-						{viewType === 'keep' && (
-							<Flex className={clsx(swipeClass)} direction={'column'}>
-								{/* 보유현황 */}
-								{!!keepList?.length && <MyStcokKeepList list={keepList} sise={data?.sise} onClick={onClickKeep} />}
-							</Flex>
-						)}
-
-						{viewType === 'trade' && (
-							<Flex className={swipeClass} direction={'column'}>
-								{/* 거래내역 */}
-								{!!tradeList?.length && <MyStcokTradeList list={tradeList} sise={data?.sise} onClick={onClickTrade} />}
-							</Flex>
-						)}
-					</Flex>
-				</Flex>
-			</StyledPage>
+			{isMobile && (
+				<MyStockPageMo viewType={viewType} data={data} onClickKeep={onClickKeep} onClickTrade={onClickTrade} />
+			)}
+			{!isMobile && (
+				<MyStockPageMo viewType={viewType} data={data} onClickKeep={onClickKeep} onClickTrade={onClickTrade} />
+			)}
 
 			{/* 매수 팝업 */}
 			{popup?.type === 'buy' && <MyStockBuyPopup item={popup?.item as TreadType} onClose={popup.onClose} />}

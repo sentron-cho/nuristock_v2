@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSwipeable } from 'react-swipeable';
 
-export const useSwipePage = ({ onNextPage }: { onNextPage?: (dir?: 'left' | 'right') => string | void }) => {
+export const useSwipePage = ({ onNextPage }: { onNextPage?: (dir?: 'next' | 'prev') => string | void }) => {
 	const location = useLocation();
 	const searchParams = new URLSearchParams(location.search);
 	const navigate = useNavigate();
@@ -18,7 +18,7 @@ export const useSwipePage = ({ onNextPage }: { onNextPage?: (dir?: 'left' | 'rig
 
 			if (!['left', 'right']?.includes(dir?.toLowerCase())) return;
 
-			const page = onNextPage?.(dir?.toLowerCase() as 'left' | 'right');
+			const page = onNextPage?.(dir?.toLowerCase() === 'left' ? 'next' : 'prev');
 			if (page) {
 				navigate(`${page}?swipe=${dir.toLowerCase()}`);
 			}

@@ -15,7 +15,7 @@ import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 import { NoData } from '@entites/NoData';
 import { ContentsHeader } from '@layouts/ui/ContentsHeader.ui';
 import { sortBy } from 'lodash';
-import { CardTitleNavi } from '@entites/CardTitleNavi';
+import { TitleNavigation } from '@entites/TitleNavigation';
 
 export const ProfitPerYearPageMo = () => {
 	const { param, navigate } = useCommonHook();
@@ -90,7 +90,7 @@ export const ProfitPerYearPageMo = () => {
 
 	const { handlerSwipe, swipeClass } = useSwipePage({
 		onNextPage: (dir) => {
-			return `${URL.PROFIT}/year/${dir === 'left' ? next : prev}`;
+			return `${URL.PROFIT}/year/${dir === 'next' ? next : prev}`;
 		},
 	});
 
@@ -102,7 +102,7 @@ export const ProfitPerYearPageMo = () => {
 		<StyledProfitPage className={clsx('profit', 'per-year')} summaryData={summary} isShowScrollTop={false}>
 			<Flex className={clsx('view-box', swipeClass)} direction={'column'} {...handlerSwipe}>
 				{/* 헤드 */}
-				<CardTitleNavi options={options} value={param?.id} onClick={onClick} />
+				<TitleNavigation sticky options={options} value={param?.id} onClick={onClick} />
 
 				{!data?.isEmpty && (
 					<Flex className='contents' direction={'column'}>

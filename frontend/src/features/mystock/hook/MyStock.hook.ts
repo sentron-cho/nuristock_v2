@@ -5,12 +5,13 @@ import { OptionType } from '@shared/config/common.type';
 import { MyStockSummaryData as SummaryData } from '../config/MyStock.data';
 import { useParams } from 'react-router-dom';
 
-export const useMyStockHook = (initialData?: MyStockResponse) => {
-  const param = useParams();
+export const useMyStockHook = (initialData?: MyStockResponse, viewType?: 'trade' | 'keep') => {
+	const param = useParams();
 	const data = useMemo(() => initialData, [initialData]);
 
 	const keepList = useMemo(() => reverse(sortBy(data?.keeps, 'sdate')), [data]);
 	const tradeList = useMemo(() => reverse(sortBy(data?.sells, 'edate')), [data]);
+	const sise = useMemo(() => data?.sise, [data]);
 
 	const stocks = useMemo(
 		() =>
@@ -21,6 +22,14 @@ export const useMyStockHook = (initialData?: MyStockResponse) => {
 		[data]
 	);
 	const selected = useMemo(() => stocks?.find((a) => a.value === param?.id)?.value, [stocks, param]);
+
+	const naviOptions = useMemo(() => {
+		if (viewType === 'keep') {
+			return data?.stocks?.filter((a) => a.kcount)?.map((a) => ({ value: a.code, label: a.name }));
+		} else {
+			return data?.stocks?.filter((a) => a.ecount)?.map((a) => ({ value: a.code, label: a.name }));
+		}
+	}, [data?.stocks, viewType]);
 
 	const summaryData = useMemo(() => {
 		const buy = (data?.sells as MyStockSellType[])?.map((a) => a.scost * a.count)?.reduce((a, b) => a + b, 0);
@@ -37,7 +46,9 @@ export const useMyStockHook = (initialData?: MyStockResponse) => {
 	}, [data]);
 
 	return {
-    stocks,
+		stocks,
+		sise,
+		naviOptions,
 		keepList,
 		tradeList,
 		selected,

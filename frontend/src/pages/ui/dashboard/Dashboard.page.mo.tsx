@@ -1,6 +1,6 @@
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
 import { styled } from '@styles/stitches.config';
-import { DashboardResponse, DashboardItemType as DataType } from '@features/dashboard/api/dashboard.dto';
+import { DashboardItemType, DashboardResponse } from '@features/dashboard/api/dashboard.dto';
 import { DashboardCard } from '@features/dashboard/ui/DashboardCard.ui';
 import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
@@ -22,10 +22,6 @@ const StyledPage = styled(PageContainer, {
 			'.box': {
 				'.body': {
 					'.trade-info, .keep-info': {
-						'&.trade-info': {
-							borderTop: '1px solid $gray300',
-						},
-
 						padding: '8px',
 					},
 
@@ -77,7 +73,7 @@ export const DashboardPageMo = ({
 }: {
 	viewType?: 'keep' | 'trade';
 	data?: DashboardResponse;
-	onClick: (eid?: string, item?: DataType) => void;
+	onClick?: (eid?: string, item?: DashboardItemType) => void;
 }) => {
 	const { getConfig, summaryData, titleOptions, sort, onChangeSort, sortedKeeps, sortedTrades } =
 		useDashboardHook(data);
@@ -94,6 +90,7 @@ export const DashboardPageMo = ({
 	return (
 		<FormProvider {...formMethods}>
 			<StyledPage summaryData={summaryData}>
+				{/* 타이틀바 */}
 				<Flex direction={'column'}>
 					<PageTitleBar
 						title={viewType === 'keep' ? ST.KEEP_STOCK : ST.TRADE_LIST}
@@ -112,40 +109,46 @@ export const DashboardPageMo = ({
 						}}
 					/>
 
+					{/* 컨텐츠 헤더(요약) */}
 					<DashboardHeader />
 
+					{/* 컨텐츠 */}
 					<Flex className={clsx('contents-layer')} direction={'column'} {...handlerSwipe}>
 						{/* 보유 종목 */}
 						{viewType === 'keep' && (
-							<Flex className={clsx('card-list', swipeClass)} direction={'column'}>
-								{sortedKeeps?.map((item) => (
-									<DashboardCard
-										viewType={viewType}
-										sortType={sort}
-										key={item.code}
-										data={item}
-										siseData={data?.sise}
-										onClick={onClick}
-										isFullDisplay={formMore}
-									/>
-								))}
+							<Flex className={clsx(swipeClass)} direction={'column'}>
+								<Flex className='card-list'>
+									{sortedKeeps?.map((item) => (
+										<DashboardCard
+											viewType={viewType}
+											sortType={sort}
+											key={item.code}
+											data={item}
+											siseData={data?.sise}
+											onClick={onClick}
+											isFullDisplay={formMore}
+										/>
+									))}
+								</Flex>
 							</Flex>
 						)}
 
 						{/* 미보유 종목 */}
 						{viewType === 'trade' && (
-							<Flex className={clsx('card-list', swipeClass)} direction={'column'}>
-								{sortedTrades?.map((item) => (
-									<DashboardCard
-										viewType={viewType}
-										sortType={sort}
-										key={item.code}
-										data={item}
-										siseData={data?.sise}
-										onClick={onClick}
-										isFullDisplay={formMore}
-									/>
-								))}
+							<Flex className={clsx(swipeClass)} direction={'column'}>
+								<Flex className='card-list'>
+									{sortedTrades?.map((item) => (
+										<DashboardCard
+											viewType={viewType}
+											sortType={sort}
+											key={item.code}
+											data={item}
+											siseData={data?.sise}
+											onClick={onClick}
+											isFullDisplay={formMore}
+										/>
+									))}
+								</Flex>
 							</Flex>
 						)}
 					</Flex>

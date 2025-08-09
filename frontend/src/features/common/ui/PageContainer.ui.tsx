@@ -23,32 +23,9 @@ const StyledContainer = styled('div', {
 			margin: 'auto',
 			height: '100%',
 
-			// '.contents-header': {
-			// 	background: '$bgcolor',
-			// 	zIndex: 10,
-			// 	position: 'sticky',
-			// 	top: '40px',
-
-			// 	'.plus': {
-			// 		color: '$plus',
-			// 	},
-
-			// 	'.minus': {
-			// 		color: '$minus',
-			// 	},
-			// },
-
 			'.contents-layer': {
-				minHeight: '100vh',
-
-				// 	'.card-title': {
-				// 		position: 'sticky',
-				// 		top: 0,
-				// 		textAlign: 'center',
-				// 		zIndex: 1000,
-				// 		lineHeight: '42px',
-				// 		backgroundColor: '$black',
-				// 	},
+				// minHeight: '100vh',
+				flex: 1,
 
 				'.card-list': {
 					flexWrap: 'wrap',
@@ -65,7 +42,7 @@ const StyledContainer = styled('div', {
 
 			'.contents-wrap': {
 				'.contents-layer': {
-					paddingBottom: '150px',
+					paddingBottom: '140px',
 				},
 			},
 
