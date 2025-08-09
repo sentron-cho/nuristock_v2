@@ -8,7 +8,7 @@ import { useMemo } from 'react';
 import { ProfitCardPerCode } from '@features/profit/ui/ProfitCardPerCode.ui';
 import { sortedByKey } from '@shared/libs/sort.lib';
 import { Text } from '@entites/Text';
-import { StyledProfitPage } from '@page/style/Profit.style';
+import { PageContainer } from '@features/common/ui/PageContainer.ui';
 
 export const ProfitPerCodeMo = () => {
 	const { data: profitData } = useSelectProfit();
@@ -21,8 +21,8 @@ export const ProfitPerCodeMo = () => {
 	}, [data]);
 
 	return (
-		<StyledProfitPage className={clsx('profit', 'per-code')} summaryData={summary}>
-			<Flex className='view-box' direction={'column'} gap={20}>
+		<PageContainer className={clsx('profit', 'per-code')} summaryData={summary}>
+			<Flex className='contents-layer' direction={'column'} gap={20}>
 				{sortedList?.map((item) => {
 					const { name, sonic } = item;
 					const data = groupedByName?.[name];
@@ -51,6 +51,6 @@ export const ProfitPerCodeMo = () => {
 					);
 				})}
 			</Flex>
-		</StyledProfitPage>
+		</PageContainer>
 	);
 };

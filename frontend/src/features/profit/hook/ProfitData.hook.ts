@@ -47,7 +47,6 @@ export const useProfitData = (
 		return SummaryData([up?.toString(), down?.toString(), total?.toString()]);
 	}, [data]);
 
-	
 	// 년도별 데이터 추출
 	const groupedByYear = useMemo(() => {
 		return data?.reduce(
@@ -91,7 +90,7 @@ export const useProfitData = (
 		);
 	}, [dividend]);
 
-		// 종목명별 배당 데이터 추출
+	// 종목명별 배당 데이터 추출
 	const dividendByName = useMemo(() => {
 		return dividend?.reduce(
 			(acc, item) => {
@@ -103,6 +102,10 @@ export const useProfitData = (
 			{} as Record<string, typeof dividend>
 		);
 	}, [dividend]);
+
+	const naviOptions = useMemo(() => {
+		return sortBy(years, ['year'])?.map((a) => ({ value: a?.year, label: a?.year }));
+	}, [years]);
 
 	// 키별 합게 데이터 생성
 	const createSumData = (data?: DataType[], columnKey: 'name' | 'month' | 'year' = 'name') => {
@@ -173,6 +176,7 @@ export const useProfitData = (
 		years,
 		data,
 		summary,
+		naviOptions,
 		createSumData,
 		groupedByYear,
 		groupedByName,

@@ -30,8 +30,6 @@ export const ProfitCard = ({
 		return sortedByKey(list, 'title', true) as DataType[];
 	}, [data]);
 
-	console.log({ dividend });
-
 	const dividendData = useMemo(() => {
 		const list = dividend?.reduce(
 			(acc, curr) => {
@@ -54,10 +52,6 @@ export const ProfitCard = ({
 
 		return sortedByKey(list, 'price', true)?.map((a) => ({ title: a?.title, sonic: a?.price })) as DataType[];
 	}, [dividend]);
-
-	// const onClick = (eid: string) => {
-	// 	navigate(`${URL.PROFIT}/${eid}`);
-	// };
 
 	return (
 		<Card className={clsx('card')}>

@@ -3,7 +3,6 @@ import Flex from '@entites/Flex';
 import { useProfitData } from '@features/profit/hook/ProfitData.hook';
 import clsx from 'clsx';
 import { ST } from '@shared/config/kor.lang';
-import { StyledProfitPage } from '@page/style/Profit.style';
 import { ProfitCardField } from '@features/profit/ui/ProfitCardField.ui';
 import { URL } from '@shared/config/url.enum';
 import { useMemo } from 'react';
@@ -14,8 +13,9 @@ import { Card } from '@entites/Card';
 import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 import { ProfitItemType } from '@features/profit/api/profit.dto';
 import { TitleNavigation } from '@entites/TitleNavigation';
+import { PageContainer } from '@features/common/ui/PageContainer.ui';
 
-const StyledPage = styled(StyledProfitPage, {
+const StyledPage = styled(PageContainer, {
 	'.card': {
 		'.box': {
 			padding: '20px 10px',
@@ -70,7 +70,8 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 
 	return (
 		<StyledPage className={clsx('profit', 'main')} summaryData={summary}>
-			<Flex className='view-box' direction={'column'} gap={20} {...handlerSwipe}>
+			<Flex className='contents-layer' direction={'column'} gap={20} {...handlerSwipe}>
+
 				{/* 연도별 */}
 				{viewType === 'year' && (
 					<Flex className={clsx(swipeClass)} direction={'column'} justify={'center'}>
@@ -78,7 +79,7 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 
 						<Card className={clsx('card')}>
 							<Flex className={clsx('box')} direction='column' gap={10}>
-								<ProfitCardField className='years' data={years} onClickItem={onClickItemYear} />
+								<ProfitCardField rowHeight={32} className='years' data={years} onClickItem={onClickItemYear} />
 							</Flex>
 						</Card>
 					</Flex>
@@ -91,7 +92,7 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 
 						<Card className={clsx('card')}>
 							<Flex className={clsx('box')} direction='column' gap={10}>
-								<ProfitCardField className='names' data={names} onClickItem={onClickItemName} />
+								<ProfitCardField rowHeight={32} className='names' data={names} onClickItem={onClickItemName} />
 							</Flex>
 						</Card>
 					</Flex>

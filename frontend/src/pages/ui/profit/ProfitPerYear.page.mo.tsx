@@ -2,20 +2,18 @@ import { useSelectProfit, useSelectProfitYears } from '@features/profit/api/prof
 import Flex from '@entites/Flex';
 import { ProfitCard } from '@features/profit/ui/ProfitCard.ui';
 import { useProfitData } from '@features/profit/hook/ProfitData.hook';
-import { SubTitle } from '@entites/Title';
 import clsx from 'clsx';
-import { toCost, valueOfPlusMinus } from '@shared/libs/utils.lib';
-import { ST } from '@shared/config/kor.lang';
-import { Text } from '@entites/Text';
-import { StyledProfitPage } from '@page/style/Profit.style';
+import { valueOfPlusMinus } from '@shared/libs/utils.lib';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { useMemo } from 'react';
 import { URL } from '@shared/config/url.enum';
 import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 import { NoData } from '@entites/NoData';
-import { ContentsHeader } from '@layouts/ui/ContentsHeader.ui';
 import { sortBy } from 'lodash';
 import { TitleNavigation } from '@entites/TitleNavigation';
+import { PageContainer } from '@features/common/ui/PageContainer.ui';
+import { ProfitPerYearHeader } from '@features/profit/ui/ProfitPerYearHeader.ui';
+import { useNaviByOptions } from '@shared/hooks/useOptionNavi.hook';
 
 export const ProfitPerYearPageMo = () => {
 	const { param, navigate } = useCommonHook();
@@ -23,7 +21,7 @@ export const ProfitPerYearPageMo = () => {
 	const { data: yearsData } = useSelectProfitYears();
 	const { data: profitData } = useSelectProfit();
 
-	const { summary, years, groupedByYear, dividendByYear, createTotal } = useProfitData(
+	const { summary, years, groupedByYear, dividendByYear, naviOptions, createTotal } = useProfitData(
 		yearsData?.value,
 		profitData?.value,
 		profitData?.dividend
@@ -55,6 +53,8 @@ export const ProfitPerYearPageMo = () => {
 		};
 	}, [param, groupedByYear, dividendByYear]);
 
+	const { next, prev } = useNaviByOptions({ options: naviOptions, value: param?.id });
+
 	const options = useMemo(() => {
 		return sortBy(
 			years?.map((a) => ({ value: a?.year, label: a?.year })),
@@ -62,35 +62,9 @@ export const ProfitPerYearPageMo = () => {
 		);
 	}, [years]);
 
-	// 이전 년도
-	const prev = useMemo(() => {
-		if (!years?.length || !param?.id) return '';
-
-		const sorted = sortBy(years, ['year']);
-		const index = sorted?.findIndex((a) => a.year?.toString() === param.id?.toString()) - 1;
-		if (index < 0) {
-			return sorted[years?.length - 1].year;
-		} else {
-			return sorted[index].year;
-		}
-	}, [param?.id]);
-
-	// 다음 년도
-	const next = useMemo(() => {
-		if (!years?.length || !param?.id) return '';
-
-		const sorted = sortBy(years, ['year']);
-		const index = sorted?.findIndex((a) => a.year?.toString() === param.id?.toString()) + 1;
-		if (index >= years?.length) {
-			return sorted[0].year;
-		} else {
-			return sorted[index].year;
-		}
-	}, [param?.id]);
-
 	const { handlerSwipe, swipeClass } = useSwipePage({
 		onNextPage: (dir) => {
-			return `${URL.PROFIT}/year/${dir === 'next' ? next : prev}`;
+			return `${URL.PROFIT}/year/${dir === 'next' ? next?.value : prev?.value}`;
 		},
 	});
 
@@ -99,43 +73,16 @@ export const ProfitPerYearPageMo = () => {
 	};
 
 	return (
-		<StyledProfitPage className={clsx('profit', 'per-year')} summaryData={summary} isShowScrollTop={false}>
-			<Flex className={clsx('view-box', swipeClass)} direction={'column'} {...handlerSwipe}>
+		<PageContainer className={clsx('profit', 'per-year')} summaryData={summary} isShowScrollTop={false}>
+			<Flex className={clsx(swipeClass)} flex={1} direction={'column'} {...handlerSwipe}>
 				{/* 헤드 */}
 				<TitleNavigation sticky options={options} value={param?.id} onClick={onClick} />
 
-				{!data?.isEmpty && (
-					<Flex className='contents' direction={'column'}>
-						{/* 요약 */}
-						<ContentsHeader>
-							<Flex direction={'column'}>
-								<Flex justify={'between'}>
-									<SubTitle title={ST.BUY} flex={1} />
-									<Text size='sm' flex={1} align='right' text={`${toCost(data?.buyTotal)}`} />
-								</Flex>
-								<Flex className={clsx(data?.type)} justify={'between'}>
-									<SubTitle title={ST.SELL} />
-									<Text size='sm' flex={1} align='right' text={`${toCost(data?.sellTotal)}`} />
-								</Flex>
-								<Flex className={clsx(data?.type)} justify={'between'}>
-									<SubTitle title={ST.SONIC} />
-									<Text bold flex={1} align='right' className={clsx('sum', data?.type)} text={`${toCost(data?.sum)}`} />
-								</Flex>
-								{data?.dividend && (
-									<Flex className={clsx(data?.type)} justify={'between'}>
-										<SubTitle title={ST.DIVIDEND} />
-										<Text
-											bold
-											flex={1}
-											align='right'
-											className={clsx('sum', 'plus')}
-											text={`${toCost(data?.dividend)}`}
-										/>
-									</Flex>
-								)}
-							</Flex>
-						</ContentsHeader>
+				{/* 요약 */}
+				{!data?.isEmpty && <ProfitPerYearHeader data={data} />}
 
+				{!data?.isEmpty && (
+					<Flex className='contents-layer' direction={'column'}>
 						{/* 컨텐츠 */}
 						<Flex className='card-list'>
 							<ProfitCard data={data?.value} dividend={dividendByYear?.[param?.id as string]} />
@@ -144,6 +91,6 @@ export const ProfitPerYearPageMo = () => {
 				)}
 				{data?.isEmpty && <NoData />}
 			</Flex>
-		</StyledProfitPage>
+		</PageContainer>
 	);
 };
