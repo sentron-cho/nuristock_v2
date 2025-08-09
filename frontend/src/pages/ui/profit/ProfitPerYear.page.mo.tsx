@@ -15,6 +15,8 @@ import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 import { NoData } from '@entites/NoData';
 import { ContentsHeader } from '@layouts/ui/ContentsHeader.ui';
 import { sortBy } from 'lodash';
+import { ProfitYearsItemType } from '@features/profit/api/profit.dto';
+import { useNavigate } from 'react-router-dom';
 
 export const ProfitPerYearPageMo = () => {
 	const { param } = useCommonHook();
@@ -56,6 +58,8 @@ export const ProfitPerYearPageMo = () => {
 
 	// 이전 년도
 	const prev = useMemo(() => {
+		if (!years?.length || !param?.id) return '';
+
 		const sorted = sortBy(years, ['year']);
 		const index = sorted?.findIndex((a) => a.year?.toString() === param.id?.toString()) - 1;
 		if (index < 0) {
@@ -67,6 +71,8 @@ export const ProfitPerYearPageMo = () => {
 
 	// 다음 년도
 	const next = useMemo(() => {
+		if (!years?.length || !param?.id) return '';
+
 		const sorted = sortBy(years, ['year']);
 		const index = sorted?.findIndex((a) => a.year?.toString() === param.id?.toString()) + 1;
 		if (index >= years?.length) {
@@ -86,14 +92,10 @@ export const ProfitPerYearPageMo = () => {
 		<StyledProfitPage className={clsx('profit', 'per-year')} summaryData={summary}>
 			<Flex className={clsx('view-box', swipeClass)} direction={'column'} {...handlerSwipe}>
 				{/* 헤드 */}
-				<Flex className={clsx('card-sub-title')} justify={'center'}>
-					<SubTitle fontSize={'small'} className={clsx('year left')} title={`${prev}`} />
-					<Title flex={1} className={clsx('year')} title={`${data?.year}${ST.YEAR}`} />
-					<SubTitle fontSize={'small'} className={clsx('year right')} title={`${next}`} />
-				</Flex>
+				<ProfitCardTitle year={param?.id} years={years} />
 
 				{!data?.isEmpty && (
-					<Flex direction={'column'}>
+					<Flex className='contents' direction={'column'}>
 						{/* 요약 */}
 						<ContentsHeader>
 							<Flex direction={'column'}>
@@ -109,10 +111,18 @@ export const ProfitPerYearPageMo = () => {
 									<SubTitle title={ST.SONIC} />
 									<Text bold flex={1} align='right' className={clsx('sum', data?.type)} text={`${toCost(data?.sum)}`} />
 								</Flex>
-								{data?.dividend && <Flex className={clsx(data?.type)} justify={'between'}>
-									<SubTitle title={ST.DIVIDEND} />
-									<Text bold flex={1} align='right' className={clsx('sum', 'plus')} text={`${toCost(data?.dividend)}`} />
-								</Flex>}
+								{data?.dividend && (
+									<Flex className={clsx(data?.type)} justify={'between'}>
+										<SubTitle title={ST.DIVIDEND} />
+										<Text
+											bold
+											flex={1}
+											align='right'
+											className={clsx('sum', 'plus')}
+											text={`${toCost(data?.dividend)}`}
+										/>
+									</Flex>
+								)}
 							</Flex>
 						</ContentsHeader>
 
@@ -125,5 +135,47 @@ export const ProfitPerYearPageMo = () => {
 				{data?.isEmpty && <NoData />}
 			</Flex>
 		</StyledProfitPage>
+	);
+};
+
+export const ProfitCardTitle = ({ years, year }: { years?: ProfitYearsItemType[]; year?: string }) => {
+	const navigate = useNavigate();
+
+	// 이전 년도
+	const prev = useMemo(() => {
+		if (!years?.length || !year) return '';
+
+		const sorted = sortBy(years, ['year']);
+		const index = sorted?.findIndex((a) => a.year?.toString() === year?.toString()) - 1;
+		if (index < 0) {
+			return sorted[years?.length - 1].year;
+		} else {
+			return sorted[index].year;
+		}
+	}, [year]);
+
+	// 다음 년도
+	const next = useMemo(() => {
+		if (!years?.length || !year) return '';
+
+		const sorted = sortBy(years, ['year']);
+		const index = sorted?.findIndex((a) => a.year?.toString() === year?.toString()) + 1;
+		if (index >= years?.length) {
+			return sorted[0].year;
+		} else {
+			return sorted[index].year;
+		}
+	}, [year]);
+
+	const onClick = (eid: 'next' | 'prev') => {
+		navigate(`${URL.PROFIT}/year/${eid === 'next' ? next : prev}`);
+	};
+
+	return (
+		<Flex className={clsx('card-sub-title')} justify={'center'}>
+			<SubTitle fontSize={'small'} className={clsx('year left')} title={`${prev}`} onClick={() => onClick('prev')} />
+			<Title flex={1} className={clsx('year')} title={`${year}${ST.YEAR}`} />
+			<SubTitle fontSize={'small'} className={clsx('year right')} title={`${next}`} onClick={() => onClick('next')} />
+		</Flex>
 	);
 };

@@ -5,7 +5,8 @@ export const StyledProfitPage = styled(PageContainer, {
 	'&.profit': {
 		'.view-box': {
 			// paddingBottom: '100px',
-			minHeight: '100vh',
+			minHeight: 'calc(100vh - 60px - 40px)',
+			// flex: 1,
 			// background: '$gray400',
 		},
 
@@ -28,18 +29,22 @@ export const StyledProfitPage = styled(PageContainer, {
 			},
 		},
 
-		'.contents-header': {
-			position: 'sticky',
-			top: '40px',
-			background: '$bgcolor',
-			zIndex: 10,
+		'.contents': {
+			paddingBottom: '60px',
 
-			'.plus': {
-				color: '$plus',
-			},
+			'.contents-header': {
+				background: '$bgcolor',
+				zIndex: 10,
+				position: 'sticky',
+				top: '40px',
 
-			'.minus': {
-				color: '$minus',
+				'.plus': {
+					color: '$plus',
+				},
+
+				'.minus': {
+					color: '$minus',
+				},
 			},
 		},
 	},
