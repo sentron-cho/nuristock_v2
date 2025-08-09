@@ -99,7 +99,7 @@ export const ProfitPerYearPageMo = () => {
 	};
 
 	return (
-		<StyledProfitPage className={clsx('profit', 'per-year')} summaryData={summary}>
+		<StyledProfitPage className={clsx('profit', 'per-year')} summaryData={summary} isShowScrollTop={false}>
 			<Flex className={clsx('view-box', swipeClass)} direction={'column'} {...handlerSwipe}>
 				{/* 헤드 */}
 				<CardTitleNavi options={options} value={param?.id} onClick={onClick} />

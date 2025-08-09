@@ -23,7 +23,7 @@ export const DashboardHeader = ({ onClick }: { onClick?: (eid: string, value: un
 	};
 
 	return (
-		<ContentsHeader>
+		<ContentsHeader stickyTop={44}>
 			<Flex justify={'end'}>
 				{/* 요약보기/전체보기 */}
 				<Flex className='more' fullWidth={false} onClick={onClickMore}>

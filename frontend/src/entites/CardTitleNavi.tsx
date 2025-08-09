@@ -44,25 +44,25 @@ export const CardTitleNavi = ({
 
 	return (
 		<Flex className={clsx('card-title-navi')} gap={10} justify={'center'}>
-			<SubTitle
+			{prev && <SubTitle
 				fontSize={'small'}
 				className={clsx('button', 'left')}
-				title={`${prev?.label}`}
-				onClick={() => onClick?.(prev?.value)}
-			/>
-			<Title
+				title={prev.label}
+				onClick={() => onClick?.(prev.value)}
+			/>}
+			{current && <Title
 				flex={1}
 				align='center'
 				className={clsx('navi')}
 				title={`${current?.label}`}
 				onClick={() => onClickTitle?.()}
-			/>
-			<SubTitle
+			/>}
+			{next && <SubTitle
 				fontSize={'small'}
 				className={clsx('button', 'right')}
-				title={`${next?.label}`}
-				onClick={() => onClick?.(next?.value)}
-			/>
+				title={next.label}
+				onClick={() => onClick?.(next.value)}
+			/>}
 		</Flex>
 	);
 };

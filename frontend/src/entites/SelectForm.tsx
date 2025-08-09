@@ -91,7 +91,6 @@ export const Select: React.FC<SelectProps> = ({
 }) => {
 	const handleChange = (e: SelectChangeEvent<string | number>) => {
 		onChange?.(e?.target?.value?.toString());
-		// setInnerValue(e?.target?.value?.toString());
 		onClearError?.(id);
 	};
 

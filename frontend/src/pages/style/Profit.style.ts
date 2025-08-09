@@ -40,21 +40,6 @@ export const StyledProfitPage = styled(PageContainer, {
 
 		'.contents': {
 			paddingBottom: '110px',
-
-			'.contents-header': {
-				background: '$bgcolor',
-				zIndex: 10,
-				position: 'sticky',
-				top: '40px',
-
-				'.plus': {
-					color: '$plus',
-				},
-
-				'.minus': {
-					color: '$minus',
-				},
-			},
 		},
 	},
 });

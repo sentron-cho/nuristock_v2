@@ -117,39 +117,35 @@ export const DashboardPageMo = ({
 					<Flex className={clsx('contents-layer')} direction={'column'} {...handlerSwipe}>
 						{/* 보유 종목 */}
 						{viewType === 'keep' && (
-							<Flex className={clsx(swipeClass)} direction={'column'}>
-								<Flex className='card-list'>
-									{sortedKeeps?.map((item) => (
-										<DashboardCard
-											viewType={viewType}
-											sortType={sort}
-											key={item.code}
-											data={item}
-											siseData={data?.sise}
-											onClick={onClick}
-											isFullDisplay={formMore}
-										/>
-									))}
-								</Flex>
+							<Flex className={clsx('card-list', swipeClass)} direction={'column'}>
+								{sortedKeeps?.map((item) => (
+									<DashboardCard
+										viewType={viewType}
+										sortType={sort}
+										key={item.code}
+										data={item}
+										siseData={data?.sise}
+										onClick={onClick}
+										isFullDisplay={formMore}
+									/>
+								))}
 							</Flex>
 						)}
 
 						{/* 미보유 종목 */}
 						{viewType === 'trade' && (
-							<Flex className={clsx(swipeClass)} direction={'column'}>
-								<Flex className='card-list'>
-									{sortedTrades?.map((item) => (
-										<DashboardCard
-											viewType={viewType}
-											sortType={sort}
-											key={item.code}
-											data={item}
-											siseData={data?.sise}
-											onClick={onClick}
-											isFullDisplay={formMore}
-										/>
-									))}
-								</Flex>
+							<Flex className={clsx('card-list', swipeClass)} direction={'column'}>
+								{sortedTrades?.map((item) => (
+									<DashboardCard
+										viewType={viewType}
+										sortType={sort}
+										key={item.code}
+										data={item}
+										siseData={data?.sise}
+										onClick={onClick}
+										isFullDisplay={formMore}
+									/>
+								))}
 							</Flex>
 						)}
 					</Flex>

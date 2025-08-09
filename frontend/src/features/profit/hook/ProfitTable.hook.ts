@@ -24,13 +24,15 @@ export const useProfitTable = (initialData?: DataType[], initialYears?: YearsTyp
 	const selectedYear = formMethod.watch('year');
 
 	const years = useMemo(() => {
+		if (!initialYears) return undefined;
+
 		const items = initialYears?.map((a) => ({ value: a?.year, label: a?.year }) as SelectOptionType);
 		return reverse(sortBy([...(items || []), SELECT_ALL], 'value'));
 	}, [initialYears]);
 
 	// 메인 데이터 초기화
 	useEffect(() => {
-		const items = cloneDeep(initialData)?.map((a) => {
+		const items = initialData?.map((a) => {
 			const sprice = (a?.scost || 0) * (a?.count || 0);
 			const eprice = (a?.ecost || 0) * (a?.count || 0);
 			return {

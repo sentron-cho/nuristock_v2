@@ -23,6 +23,21 @@ const StyledContainer = styled('div', {
 			margin: 'auto',
 			height: '100%',
 
+			// '.contents-header': {
+			// 	background: '$bgcolor',
+			// 	zIndex: 10,
+			// 	position: 'sticky',
+			// 	top: '40px',
+
+			// 	'.plus': {
+			// 		color: '$plus',
+			// 	},
+
+			// 	'.minus': {
+			// 		color: '$minus',
+			// 	},
+			// },
+
 			'.contents-layer': {
 				minHeight: '100vh',
 
@@ -56,7 +71,7 @@ const StyledContainer = styled('div', {
 
 			'.scroll-top': {
 				marginBottom: 44,
-			}
+			},
 		},
 	},
 });
@@ -71,6 +86,7 @@ type PageContainerProps = ComponentProps<typeof StyledContainer> & {
 	value?: string;
 	defaultValue?: string;
 	onClickSummary?: (item: SummaryDataType) => void;
+	isShowScrollTop?: boolean;
 };
 
 export const PageContainer = ({
@@ -82,6 +98,7 @@ export const PageContainer = ({
 	summaryData,
 	value,
 	defaultValue,
+	isShowScrollTop = true,
 	onClickSummary,
 	...props
 }: PageContainerProps) => {
@@ -179,8 +196,9 @@ export const PageContainer = ({
 				</Flex>
 
 				{/* ✅ 스크롤 Top 버튼 */}
-				{/* {showScrollTop && <ScrollTopButton onClick={scrollToTop}>↑</ScrollTopButton>} */}
-				{showScrollTop && <ScrollTopButton className='scroll-top' fontSize='large' onClick={scrollToTop} />}
+				{isShowScrollTop && showScrollTop && (
+					<ScrollTopButton className='scroll-top' fontSize='large' onClick={scrollToTop} />
+				)}
 			</div>
 		</StyledContainer>
 	);

@@ -1,6 +1,5 @@
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { DashboardPageMo } from './Dashboard.page.mo';
-import { DashboardPagePc } from './Dashboard.page.pc';
 import {
 	DashboardItemType as DataType,
 	DashboardSiseItemType as SiseItemType,
@@ -64,7 +63,7 @@ const DashboardPage = ({ viewType = 'trade' }: { viewType?: 'trade' | 'keep' }) 
 	return (
 		<>
 			{isMobile && <DashboardPageMo viewType={viewType} data={data} onClick={onClick} />}
-			{!isMobile && <DashboardPagePc viewType={viewType} data={data} onClick={onClick} />}
+			{!isMobile && <DashboardPageMo viewType={viewType} data={data} onClick={onClick} />}
 
 			{/* 종목 추가 팝업 */}
 			{popup?.type === EID.ADD && <StockRegisterPopup onClose={popup?.onClose} />}
