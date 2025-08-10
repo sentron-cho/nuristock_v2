@@ -5,7 +5,7 @@ import { ST } from '@shared/config/kor.lang';
 import { useMemo } from 'react';
 import { useProfitData } from '../hook/ProfitData.hook';
 import { sortedByKey } from '@shared/libs/sort.lib';
-import { ProfitCardField } from './ProfitCardField.ui';
+import { ProfitCardRows } from './ProfitCardRows.ui';
 import { Card } from '@entites/Card';
 
 export const ProfitCardPerCode = ({
@@ -25,7 +25,7 @@ export const ProfitCardPerCode = ({
 		<Card className={clsx('card')}>
 			<Flex className={clsx('box border')} direction='column' gap={10}>
 				{/* 년도별 */}
-				<ProfitCardField title={ST.PER_YEARS} className='years' data={yearData} />
+				<ProfitCardRows title={ST.PER_YEARS} className='years' data={yearData} />
 			</Flex>
 		</Card>
 	);

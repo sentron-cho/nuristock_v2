@@ -59,8 +59,6 @@ export const ContentsView = ({
 	data?: { sell?: DiaryItemType[]; buy?: DiaryItemType[] };
 	onChangeDate?: (value?: dayjs.Dayjs) => void;
 }) => {
-	// console.log('[ContentsView]', { data, date: dayjs(date).format('YYYY-MM-DD') });
-
 	const buyList = useMemo(() => data?.buy || [], [data]);
 	const sellList = useMemo(() => data?.sell || [], [data]);
 

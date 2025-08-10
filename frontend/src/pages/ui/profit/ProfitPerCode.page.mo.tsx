@@ -13,9 +13,6 @@ import { URL } from '@shared/config/url.enum';
 import { TitleNavigation } from '@entites/TitleNavigation';
 import { ProfitSummary } from '@features/profit/ui/ProfitSummary.ui';
 import { ProfitCard } from '@features/profit/ui/ProfitCard.ui';
-import { ProfitItemType } from '@features/profit/api/profit.dto';
-import dayjs from 'dayjs';
-import { DividendItemType } from '@features/dividend/api/dividend.dto';
 
 export const ProfitPerCodePageMo = () => {
 	const { param, navigate } = useCommonHook();
@@ -28,6 +25,7 @@ export const ProfitPerCodePageMo = () => {
 		groupedByName,
 		dividendByName,
 		createTotal,
+		createDividendSumData,
 	} = useProfitData(undefined, profitData?.value, profitData?.dividend);
 
 	const name = useMemo(() => {
@@ -66,30 +64,7 @@ export const ProfitPerCodePageMo = () => {
 	}, [list]);
 
 	// 연도별 배당 합계
-	const dividendData = useMemo(() => {
-		if (!dividendByName || !name) return undefined;
-
-		const list = dividendByName?.[name as string]?.reduce(
-			(acc, curr) => {
-				let key = dayjs(curr.sdate).format('YYYY');
-				curr['title'] = key;
-
-				// 초기화
-				if (!acc[key]) {
-					acc[key] = { ...curr, cost: 0, count: 0, price: 0 };
-				}
-
-				acc[key].cost = (acc[key].cost || 0) + (curr.cost || 0);
-				acc[key].count = (acc[key].count || 0) + (curr.count || 0);
-				acc[key].price = (acc[key].price || 0) + (curr.price || 0);
-
-				return acc;
-			},
-			{} as Record<string, DividendItemType>
-		);
-
-		return sortedByKey(list, 'title', true)?.map((a) => ({ title: a?.title, sonic: a?.price })) as ProfitItemType[];
-	}, [name, dividendByName]);
+	const dividendData = createDividendSumData(dividendByName?.[name as string], 'year');
 
 	const naviOptions = useMemo(() => {
 		return sortedList && Object.values(sortedList)?.map((a) => ({ value: a?.code, label: a?.name }));

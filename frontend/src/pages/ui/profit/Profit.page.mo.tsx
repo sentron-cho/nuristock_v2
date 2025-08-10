@@ -3,7 +3,7 @@ import Flex from '@entites/Flex';
 import { useProfitData } from '@features/profit/hook/ProfitData.hook';
 import clsx from 'clsx';
 import { ST } from '@shared/config/kor.lang';
-import { ProfitCardField } from '@features/profit/ui/ProfitCardField.ui';
+import { ProfitCardField } from '@features/profit/ui/ProfitCardRows.ui';
 import { URL } from '@shared/config/url.enum';
 import { useMemo } from 'react';
 import { sortedByKey } from '@shared/libs/sort.lib';
@@ -14,12 +14,12 @@ import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 import { ProfitItemType } from '@features/profit/api/profit.dto';
 import { TitleNavigation } from '@entites/TitleNavigation';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
+import { toCost, valueOfPlusMinus } from '@shared/libs/utils.lib';
 
 const StyledPage = styled(PageContainer, {
 	'.card': {
 		'.box': {
-			padding: '20px 10px',
-			minHeight: '120px',
+			padding: '10px',
 		},
 	},
 });
@@ -28,7 +28,11 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 	const { data: yearsData } = useSelectProfitYears();
 	const { data: profitData } = useSelectProfit();
 
-	const { summary, data, createSumData } = useProfitData(yearsData?.value, profitData?.value, profitData?.dividend);
+	const { summary, data, createSumData, createDividendSumData } = useProfitData(
+		yearsData?.value,
+		profitData?.value,
+		profitData?.dividend
+	);
 	const { navigate } = useCommonHook();
 
 	const { handlerSwipe, swipeClass } = useSwipePage({
@@ -37,14 +41,62 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 		},
 	});
 
+	// 년도별 배당 합계
+	const dividendPerYear = useMemo(() => {
+		return createDividendSumData(profitData?.dividend, 'year');
+	}, [profitData?.dividend]);
+
+	// 종목별 배당 합계
+	const dividendPerName = useMemo(() => {
+		return createDividendSumData(profitData?.dividend, 'name');
+	}, [profitData?.dividend]);
+
+	// 년도별 수익 합계
 	const years = useMemo(() => {
 		const items = createSumData(data, 'year');
-		return items && sortedByKey(Object.values(items), 'title', true);
+		return (
+			items &&
+			sortedByKey(Object.values(items), 'title', true)?.map((item) => {
+				const { title, sonicRate } = item;
+
+				const type = valueOfPlusMinus(item.sonic, 0);
+				const dividend = dividendPerYear?.find((b) => b.title === title);
+
+				const sonic = dividend ? Number(item.sonic) + Number(dividend?.sonic) : item.sonic;
+				const dividendRate = dividend ? ((Number(dividend?.sonic) / Number(item.sprice)) * 100).toFixed(1) : 0;
+
+				return {
+					...item,
+					type,
+					sonic: sonic,
+					sonicRate: dividend ? (Number(sonicRate) + Number(dividendRate)).toFixed(1) : sonicRate,
+				};
+			})
+		);
 	}, [data]);
 
+	// 종목별 수익 합계
 	const names = useMemo(() => {
 		const items = createSumData(data, 'name');
-		return items && sortedByKey(Object.values(items), 'sonic', true);
+		return (
+			items &&
+			sortedByKey(Object.values(items), 'sonic', true)?.map((item) => {
+				const { title, sonicRate } = item;
+
+				const type = valueOfPlusMinus(item.sonic, 0);
+				const dividend = dividendPerName?.find((b) => b.title === title);
+
+				const sonic = dividend ? Number(item.sonic) + Number(dividend?.sonic) : item.sonic;
+				const dividendRate = dividend ? ((Number(dividend?.sonic) / Number(item.sprice)) * 100).toFixed(1) : 0;
+
+				return {
+					...item,
+					type,
+					sonic: sonic,
+					sonicRate: dividend ? (Number(sonicRate) + Number(dividendRate)).toFixed(1) : sonicRate,
+				};
+			})
+		);
 	}, [data]);
 
 	const onClickItemYear = (item: ProfitItemType) => {
@@ -56,7 +108,6 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 	};
 
 	const onClick = (eid?: string) => {
-		console.log({ eid });
 		eid && navigate(`${URL.PROFIT}/${eid}`);
 	};
 
@@ -71,15 +122,31 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 	return (
 		<StyledPage className={clsx('profit', 'main')} summaryData={summary}>
 			<Flex className='contents-layer' direction={'column'} gap={20} {...handlerSwipe}>
-
 				{/* 연도별 */}
 				{viewType === 'year' && (
 					<Flex className={clsx(swipeClass)} direction={'column'} justify={'center'}>
 						<TitleNavigation sticky options={naviOptions} value={viewType} onClick={onClick} />
 
 						<Card className={clsx('card')}>
-							<Flex className={clsx('box')} direction='column' gap={10}>
-								<ProfitCardField rowHeight={32} className='years' data={years} onClickItem={onClickItemYear} />
+							<Flex className={clsx('box')} direction='column' gap={0}>
+								{/* <ProfitCardRows rowHeight={32} className='years' data={years} onClickItem={onClickItemYear} /> */}
+
+								{years?.map((item, index) => {
+									const { title, sonic, sonicRate, type } = item;
+
+									return (
+										<ProfitCardField
+											key={`profit-${index}`}
+											type={type}
+											title={title}
+											text={`${sonicRate} %`}
+											value={toCost(sonic)}
+											onClick={() => onClickItemYear?.(item)}
+											height={36}
+											titleProps={{ style: { fontSize: 16, fontWeight: 500 } }}
+										/>
+									);
+								})}
 							</Flex>
 						</Card>
 					</Flex>
@@ -91,8 +158,23 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 						<TitleNavigation sticky options={naviOptions} value={viewType} onClick={onClick} />
 
 						<Card className={clsx('card')}>
-							<Flex className={clsx('box')} direction='column' gap={10}>
-								<ProfitCardField rowHeight={32} className='names' data={names} onClickItem={onClickItemName} />
+							<Flex className={clsx('box')} direction='column' gap={0}>
+								{names?.map((item, index) => {
+									const { title, sonic, sonicRate, type } = item;
+
+									return (
+										<ProfitCardField
+											key={`profit-${index}`}
+											type={type}
+											title={title}
+											text={`${sonicRate} %`}
+											value={toCost(sonic)}
+											onClick={() => onClickItemName?.(item)}
+											height={32}
+											titleProps={{ style: { fontSize: 16, fontWeight: 500 } }}
+										/>
+									);
+								})}
 							</Flex>
 						</Card>
 					</Flex>

@@ -56,7 +56,6 @@ const DividendPage = () => {
 	}, [data]);
 
 	const onClick = (eid?: string) => {
-		console.log({ eid });
 		if (eid === EID.ADD) {
 			setPopup({
 				type: eid,
@@ -69,7 +68,6 @@ const DividendPage = () => {
 	};
 
 	const onClickItem = (item?: DataType) => {
-		console.log({ item });
 		setPopup({
 			type: EID.EDIT,
 			item: item,

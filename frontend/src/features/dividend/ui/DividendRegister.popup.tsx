@@ -66,10 +66,6 @@ export const DividendRegisterPopup = ({
 	const { mutateAsync: createData } = useCreate();
 	const { mutateAsync: updateData } = useUpdate();
 
-	const selected = forms?.watch('code');
-
-	console.log({ selected });
-
 	const onClickClose = (isOk: boolean) => {
 		if (isOk) {
 			forms?.handleSubmit(
@@ -84,8 +80,6 @@ export const DividendRegisterPopup = ({
 						sdate: dayjs(fields?.date).format(DATE_DB_FORMAT),
 					};
 					
-					console.log({ item, fields, params });
-
 					if (isEditMode) {
 						await updateData(params);
 					} else {

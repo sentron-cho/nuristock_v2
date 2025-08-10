@@ -26,12 +26,16 @@ const Footer: React.FC = () => {
 				<Flex className='nav' gap={10}>
 					{menu?.map((item) => {
 						let active = pathname.startsWith(item.value);
+
 						if (pathname.startsWith(URL.MYSTOCK)) {
 							if (item.value === URL.DASHBOARD) active = true;
 						}
-						
+
+						if (pathname === '/' && item?.value === URL.DASHBOARD) active = true;
+
 						return (
 							<Flex
+								key={item.value}
 								className={clsx('link', { active })}
 								onClick={() => onClickNav(item.value)}
 								direction={'column'}

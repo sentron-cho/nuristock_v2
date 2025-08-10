@@ -1,10 +1,11 @@
 import { reverse, sortBy } from 'lodash';
 import { useMemo } from 'react';
-import { ProfitItemType as DataType, ProfitYearsItemType as YearDataType } from '../api/profit.dto';
+import { ProfitItemType as DataType, ProfitItemType, ProfitYearsItemType as YearDataType } from '../api/profit.dto';
 import { SummaryData } from '../config/Profit.data';
 import dayjs from 'dayjs';
 import { FieldValues } from 'react-hook-form';
 import { DividendItemType } from '@features/dividend/api/dividend.dto';
+import { sortedByKey } from '@shared/libs/sort.lib';
 
 export const useProfitData = (
 	initialYears?: YearDataType[],
@@ -107,6 +108,35 @@ export const useProfitData = (
 		return sortBy(years, ['year'])?.map((a) => ({ value: a?.year, label: a?.year }));
 	}, [years]);
 
+	// 종목별 배당 합계
+	const createDividendSumData = (data?: DividendItemType[], columnKey: 'name' | 'year' = 'name') => {
+		const list = data?.reduce(
+			(acc, curr) => {
+				let key = (curr as Record<string, any>)[columnKey] as string;
+				if (columnKey === 'year') {
+					key = dayjs(curr.sdate).format('YYYY');
+					curr['title'] = key;
+				} else {
+					curr['title'] = key;
+				}
+
+				// 초기화
+				if (!acc[key]) {
+					acc[key] = { ...curr, cost: 0, count: 0, price: 0 };
+				}
+
+				acc[key].cost = (acc[key].cost || 0) + (curr.cost || 0);
+				acc[key].count = (acc[key].count || 0) + (curr.count || 0);
+				acc[key].price = (acc[key].price || 0) + (curr.price || 0);
+
+				return acc;
+			},
+			{} as Record<string, DividendItemType>
+		);
+
+		return sortedByKey(list, columnKey === 'name' ? 'price' : 'title', true)?.map((a) => ({ title: a?.title, sonic: a?.price })) as ProfitItemType[];
+	};
+
 	// 키별 합게 데이터 생성
 	const createSumData = (data?: DataType[], columnKey: 'name' | 'month' | 'year' = 'name') => {
 		return data?.reduce(
@@ -182,6 +212,7 @@ export const useProfitData = (
 		groupedByName,
 		dividendByYear,
 		dividendByName,
+		createDividendSumData,
 		createAccPrice,
 		createTotal,
 		// accPrice,

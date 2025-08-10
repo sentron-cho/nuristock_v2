@@ -90,7 +90,6 @@ export const MyStockPageMo = ({
 	});
 
 	const onClick = (value?: string) => {
-		console.log({ value });
 		navigate(`${URL.MYSTOCK}/${viewType}/${value}`);
 	};
 

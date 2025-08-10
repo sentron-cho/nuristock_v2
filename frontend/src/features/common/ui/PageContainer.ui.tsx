@@ -111,7 +111,6 @@ export const PageContainer = ({
 			// ⏱ 디바운스로 100ms 후 저장
 			timeout = setTimeout(() => {
 				sessionStorage.setItem(`scroll-position:${key}`, scrollEl.scrollTop.toString());
-				// console.log('[스크롤 저장]', scrollEl.scrollTop);
 			}, 100);
 		};
 
@@ -123,17 +122,9 @@ export const PageContainer = ({
 	useEffect(() => {
 		const key = location.pathname;
 		const scrollEl = document.querySelector('.scroll-view');
-
-		// if (isReload && scrollEl) {
-		// 	scrollEl.scrollTo({ top: 0, behavior: 'auto' });
-		// 	sessionStorage.removeItem(`scroll-position:${key}`);
-		// 	return;
-		// }
-
 		const savedY = sessionStorage.getItem(`scroll-position:${key}`);
 		if (navigationType === 'POP' && scrollEl && savedY) {
 			scrollEl.scrollTo({ top: parseInt(savedY, 10), behavior: 'auto' });
-			// console.log('[스크롤 복원]', savedY);
 		}
 	}, [location, navigationType]);
 
