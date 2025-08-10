@@ -42,7 +42,7 @@ const StyledContainer = styled('div', {
 
 			'.contents-wrap': {
 				'.contents-layer': {
-					paddingBottom: '140px',
+					paddingBottom: '150px',
 				},
 			},
 

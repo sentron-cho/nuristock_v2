@@ -52,7 +52,7 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 	};
 
 	const onClickItemName = (item: ProfitItemType) => {
-		navigate(`${URL.PROFIT}/code/${item?.title}`);
+		navigate(`${URL.PROFIT}/code/${item?.code}`);
 	};
 
 	const onClick = (eid?: string) => {

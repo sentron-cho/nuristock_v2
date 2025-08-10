@@ -1,5 +1,5 @@
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
-import { ProfitPerCodeMo } from './ProfitPerCode.page.mo';
+import { ProfitPerCodePageMo } from './ProfitPerCode.page.mo';
 import { IconArrowLeft } from '@entites/Icons';
 import { styled } from '@styles/stitches.config';
 
@@ -8,8 +8,8 @@ const ProfitPerCode = () => {
 
 	return (
 		<>
-			{isMobile && <ProfitPerCodeMo />}
-			{!isMobile && <ProfitPerCodeMo />}
+			{isMobile && <ProfitPerCodePageMo />}
+			{!isMobile && <ProfitPerCodePageMo />}
 
 			<BackButton fontSize='large' onClick={onBack} />
 		</>

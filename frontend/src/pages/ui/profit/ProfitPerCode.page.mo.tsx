@@ -1,55 +1,129 @@
 import { useSelectProfit } from '@features/profit/api/profit.api';
 import Flex from '@entites/Flex';
 import { useProfitData } from '@features/profit/hook/ProfitData.hook';
-import { SubTitle } from '@entites/Title';
 import clsx from 'clsx';
-import { toCost, valueOfPlusMinus } from '@shared/libs/utils.lib';
+import { valueOfPlusMinus } from '@shared/libs/utils.lib';
 import { useMemo } from 'react';
-import { ProfitCardPerCode } from '@features/profit/ui/ProfitCardPerCode.ui';
 import { sortedByKey } from '@shared/libs/sort.lib';
-import { Text } from '@entites/Text';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
+import { useCommonHook } from '@shared/hooks/useCommon.hook';
+import { useNaviByOptions } from '@shared/hooks/useOptionNavi.hook';
+import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
+import { URL } from '@shared/config/url.enum';
+import { TitleNavigation } from '@entites/TitleNavigation';
+import { ProfitSummary } from '@features/profit/ui/ProfitSummary.ui';
+import { ProfitCard } from '@features/profit/ui/ProfitCard.ui';
+import { ProfitItemType } from '@features/profit/api/profit.dto';
+import dayjs from 'dayjs';
+import { DividendItemType } from '@features/dividend/api/dividend.dto';
 
-export const ProfitPerCodeMo = () => {
+export const ProfitPerCodePageMo = () => {
+	const { param, navigate } = useCommonHook();
 	const { data: profitData } = useSelectProfit();
 
-	const { summary, data, createSumData, groupedByName, createTotal } = useProfitData(undefined, profitData?.value);
+	const {
+		summary,
+		data: list,
+		createSumData,
+		groupedByName,
+		dividendByName,
+		createTotal,
+	} = useProfitData(undefined, profitData?.value, profitData?.dividend);
+
+	const name = useMemo(() => {
+		return profitData?.value?.find(a => a?.code === param?.id)?.name as string;
+	}, [param])
+
+	// 데이터
+	const data = useMemo(() => {
+		if (!groupedByName || !name) return undefined;
+
+		const key = name as string;
+		const value = groupedByName?.[key];
+		const sum = value?.map((a) => Number(a.sonic))?.reduce((a, b) => a + b, 0); // 수익금액
+		const buyTotal = createTotal(value, 'sprice'); // 매수총액
+		const sellTotal = createTotal(value, 'eprice'); // 매도총액
+		const rate = ((sum / buyTotal) * 100).toFixed(2); // 매수 총액 대비 수익율
+		const type = valueOfPlusMinus(Number(sum));
+		const dividend = dividendByName?.[key]?.map((a) => a.price)?.reduce((a, b) => a + b, 0);
+
+		return {
+			title: key,
+			type,
+			buyTotal,
+			sellTotal,
+			rate,
+			sum,
+			value,
+			isEmpty: !buyTotal,
+			dividend,
+		};
+	}, [name, groupedByName, dividendByName]);
 
 	// 종목별 합계 구하기(손익 내림차순)
 	const sortedList = useMemo(() => {
-		return sortedByKey(createSumData(data, 'name'), 'sonic', true);
-	}, [data]);
+		return sortedByKey(createSumData(list, 'name'), 'sonic', true);
+	}, [list]);
+
+	// 연도별 배당 합계
+	const dividendData = useMemo(() => {
+		if (!dividendByName || !name) return undefined;
+
+		const list = dividendByName?.[name as string]?.reduce(
+			(acc, curr) => {
+				let key = dayjs(curr.sdate).format('YYYY');
+				curr['title'] = key;
+
+				// 초기화
+				if (!acc[key]) {
+					acc[key] = { ...curr, cost: 0, count: 0, price: 0 };
+				}
+
+				acc[key].cost = (acc[key].cost || 0) + (curr.cost || 0);
+				acc[key].count = (acc[key].count || 0) + (curr.count || 0);
+				acc[key].price = (acc[key].price || 0) + (curr.price || 0);
+
+				return acc;
+			},
+			{} as Record<string, DividendItemType>
+		);
+
+		return sortedByKey(list, 'title', true)?.map((a) => ({ title: a?.title, sonic: a?.price })) as ProfitItemType[];
+	}, [name, dividendByName]);
+
+	const naviOptions = useMemo(() => {
+		return sortedList && Object.values(sortedList)?.map((a) => ({ value: a?.code, label: a?.name }));
+	}, [sortedList]);
+
+	const { next, prev } = useNaviByOptions({ options: naviOptions, value: param?.id });
+
+	const { handlerSwipe, swipeClass } = useSwipePage({
+		onNextPage: (dir) => {
+			return `${URL.PROFIT}/code/${dir === 'next' ? next?.value : prev?.value}`;
+		},
+	});
+
+	const onClick = (eid?: string) => {
+		navigate(`${URL.PROFIT}/code/${eid}`);
+	};
 
 	return (
 		<PageContainer className={clsx('profit', 'per-code')} summaryData={summary}>
-			<Flex className='contents-layer' direction={'column'} gap={20}>
-				{sortedList?.map((item) => {
-					const { name, sonic } = item;
-					const data = groupedByName?.[name];
-					const type = valueOfPlusMinus(sonic);
-					const total = createTotal(data);
-					const rate = ((sonic / total) * 100).toFixed(2);
+			<Flex className={clsx(swipeClass)} flex={1} direction={'column'} {...handlerSwipe}>
+				{/* 헤드 */}
+				<TitleNavigation sticky options={naviOptions} value={param?.id} onClick={onClick} />
 
-					return (
-						<Flex direction={'column'}>
-							<Flex className={clsx('card-sub-title')} width={200} gap={10} justify={'center'}>
-								<SubTitle flex={1} align='left' className={clsx('year')} title={`${name}`} />
-								<Text
-									size='xs'
-									flex={2}
-									align='center'
-									className={clsx('total')}
-									text={`${toCost(total)} [${rate}%]`}
-								/>
-								<Text bold flex={1} align='right' className={clsx('sum', type)} text={`${toCost(sonic)}`} />
-							</Flex>
+				{/* 요약 */}
+				{!data?.isEmpty && <ProfitSummary data={data} />}
 
-							<Flex className='card-list'>
-								<ProfitCardPerCode data={data} />
-							</Flex>
+				{!data?.isEmpty && (
+					<Flex className='contents-layer' direction={'column'}>
+						{/* 컨텐츠 */}
+						<Flex className='card-list'>
+							<ProfitCard viewType='code' data={data?.value} dividend={dividendData} />
 						</Flex>
-					);
-				})}
+					</Flex>
+				)}
 			</Flex>
 		</PageContainer>
 	);
