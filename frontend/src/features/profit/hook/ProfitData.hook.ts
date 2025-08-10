@@ -198,10 +198,6 @@ export const useProfitData = (
 		return data?.map((a) => (a as FieldValues)?.[columnkey]).reduce((a, b) => a + b, 0);
 	};
 
-	// const accPrice = useMemo(() => {
-	// 	return makeAccPrice(groupedByYear);
-	// }, [groupedByYear])
-
 	return {
 		years,
 		data,
@@ -215,6 +211,5 @@ export const useProfitData = (
 		createDividendSumData,
 		createAccPrice,
 		createTotal,
-		// accPrice,
 	};
 };

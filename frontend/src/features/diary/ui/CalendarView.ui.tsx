@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { styled } from '@styles/stitches.config';
 import { CalendarCell, CalendarTypeData } from './CalendarCell.ui';
 import dayjs from 'dayjs';
@@ -6,19 +6,17 @@ import Flex from '@entites/Flex';
 import { SubTitle, Title } from '@entites/Title';
 import { IconArrowLeft, IconArrowRight } from '@entites/Icons';
 import clsx from 'clsx';
+import { DatePicker } from '@entites/DatePickerForm';
 
 const StyledFlex = styled(Flex, {
 	'&.diary-view': {
-		// paddingTop: '$20',
-		// background: '$gray300',
-
 		'.cal-title-bar': {
 			height: '40px',
 
 			'.icon': {
 				width: '80px',
 				height: '100%',
-				padding: '4px'
+				padding: '4px',
 			},
 		},
 
@@ -52,6 +50,9 @@ export const CalendarView = ({
 	onChangeMonth?: (value?: dayjs.Dayjs) => void;
 	onChangeDate?: (value?: dayjs.Dayjs) => void;
 }) => {
+	const [open, setOpen] = useState<boolean>(false);
+	// const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>();
+
 	const dates = useMemo(() => {
 		const start = today.startOf('month').startOf('week');
 		const end = today.endOf('month').endOf('week');
@@ -81,16 +82,35 @@ export const CalendarView = ({
 		onChangeMonth?.(dayjs(selected));
 	};
 
+	const onClose = () => {
+		setOpen(false);
+	};
+
+	const onOpen = () => {
+		setOpen(true);
+	};
+
+	const onSelect = (value: dayjs.Dayjs | null) => {
+		// console.log(dayjs(value).format('YYYY-MM'));
+		// value && setSelectedDate(value);
+		onChangeMonth?.(dayjs(value));
+	};
+
 	return (
 		<StyledFlex className='diary-view' direction={'column'} gap={8}>
 			<Flex className='cal-title-bar' justify={'center'} align={'center'}>
 				<IconArrowLeft className='icon' onClick={() => onChange('prev')} />
-				<Title
-					align='center'
-					className='title'
-					title={dayjs(today).format('YYYY년 MM월')}
-					flex={1}
-					onClick={() => onChange('now')}
+				<Title align='center' className='title' title={dayjs(today).format('YYYY년 MM월')} flex={1} onClick={onOpen} />
+				<DatePicker
+					showInputForm={false}
+					id={'date-picker'}
+					value={dayjs(today)}
+					open={open}
+					onClose={onClose}
+					closeOnSelect={true}
+					onChange={onSelect}
+					views={['year', 'month']}
+					format='YYYY-MM'
 				/>
 				<IconArrowRight className='icon' onClick={() => onChange('next')} />
 			</Flex>

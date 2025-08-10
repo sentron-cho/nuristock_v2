@@ -5,8 +5,13 @@ import { Tooltip } from '@entites/Tooltip';
 import clsx from 'clsx';
 import dayjs, { Dayjs } from 'dayjs';
 import { StyledDatePickerForm } from './DatePickerForm.style';
+import { ST } from '@shared/config/kor.lang';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import 'dayjs/locale/ko';
+import updateLocale from 'dayjs/plugin/updateLocale';
 
-type DatePickerFormProps<T extends FieldValues = FieldValues> = Omit<CustomDatePickerProps, 'value' | 'onChange'> & {
+type DatePickerFormProps<T extends FieldValues = FieldValues> = DatePickerProps & {
 	name?: Path<T>;
 	formMethod?: UseFormReturn<T>;
 };
@@ -21,7 +26,7 @@ export const DatePickerForm = <T extends FieldValues = FieldValues>(props: DateP
 				name={id}
 				control={props.formMethod?.control}
 				render={({ field, formState }) => (
-					<CustomDatePicker
+					<DatePicker
 						{...props}
 						value={field.value}
 						onChange={(value) => {
@@ -36,11 +41,11 @@ export const DatePickerForm = <T extends FieldValues = FieldValues>(props: DateP
 			/>
 		);
 	} else {
-		return <CustomDatePicker {...props} />;
+		return <DatePicker {...props} />;
 	}
 };
 
-export interface CustomDatePickerProps extends Omit<MuiDatePickerProps<false>, 'onChange' | 'value' | 'renderInput'> {
+export interface DatePickerProps extends Omit<MuiDatePickerProps<false>, 'onChange' | 'value' | 'renderInput'> {
 	id: string;
 	label?: string;
 	placeholder?: string;
@@ -52,9 +57,10 @@ export interface CustomDatePickerProps extends Omit<MuiDatePickerProps<false>, '
 	readOnly?: boolean;
 	align?: 'left' | 'center' | 'right';
 	size?: 'small' | 'medium' | 'large';
+	showInputForm?: boolean;
 }
 
-const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
+export const DatePicker: React.FC<DatePickerProps> = ({
 	id,
 	value,
 	onChange,
@@ -64,8 +70,17 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
 	readOnly = false,
 	align,
 	size = 'medium',
+	showInputForm = true,
 	...props
 }) => {
+	dayjs.extend(updateLocale);
+
+	// ✅ ko 로케일의 month/shortMonth를 '1월' ~ '12월'로 재정의
+	dayjs.updateLocale('ko', {
+		months: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+		monthsShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+	});
+
 	return (
 		<StyledDatePickerForm
 			className={clsx('date-picker', { error, readonly: readOnly }, size)}
@@ -73,27 +88,75 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
 			error={error}
 			align={align}
 			disabled={disabled}
+			style={!showInputForm ? { display: 'none' } : {}}
 		>
-			<MuiDatePicker
-				{...props}
-				// ref={inputRef}
-				format='YYYY-MM-DD'
-				value={dayjs(value)}
-				onChange={onChange}
-				slotProps={{
-					textField: {
-						size: 'small',
-						id,
-						fullWidth: true,
-						error,
-						variant: 'outlined',
-						helperText: null,
-						disabled: disabled,
-						readOnly: readOnly,
-					},
+			<LocalizationProvider
+				dateAdapter={AdapterDayjs}
+				adapterLocale='ko'
+				localeText={{
+					todayButtonLabel: ST.TODAY,
+					datePickerToolbarTitle: '', // 툴바 툴팁 제거
+					okButtonLabel: ST.OK,
+					cancelButtonLabel: ST.CANCEL,
 				}}
-			/>
+			>
+				<MuiDatePicker
+					format='YYYY-MM-DD'
+					slotProps={{
+						textField: {
+							size: 'small',
+							id,
+							fullWidth: true,
+							error,
+							variant: 'outlined',
+							helperText: null,
+							disabled: disabled,
+							readOnly: readOnly,
+						},
+						actionBar: {
+							actions: ['today', 'accept', 'cancel'], // ✅ 오늘 버튼 추가
+						},
+					}}
+					slots={
+						{
+							// actionBar: ActionBar,
+							// toolbar: () => <PickersToolbar {...props} toolbarTitle="" />, // ✅ 툴바 전체 제거
+						}
+					}
+					value={dayjs(value)}
+					onChange={onChange}
+					{...props}
+				/>
+			</LocalizationProvider>
 			{message && <Tooltip message={message} color={error ? 'error' : 'action'} />}
 		</StyledDatePickerForm>
 	);
 };
+
+// type ActionBarProps = React.ComponentProps<typeof PickersActionBar>; // ✅ 안전한 타입 추론
+
+// const ActionBar = (props: ActionBarProps) => {
+// 	const {
+// 		onAccept,
+// 		onCancel,
+// 		actions, // 기본 액션들
+// 		setValue,
+// 	} = props as ActionBarProps & FieldValues;
+
+// 	const handleToday = () => {
+// 		setValue?.(dayjs());
+// 		onAccept?.();
+// 	};
+
+// 	return (
+// 		<Flex style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, padding: 8 }}>
+// 			<Button onClick={handleToday} title={ST.TODAY} />
+// 			{actions?.includes('cancel') && <Button onClick={onCancel}>취소</Button>}
+// 			{actions?.includes('accept') && (
+// 				<Button variant='contained' onClick={onAccept}>
+// 					확인
+// 				</Button>
+// 			)}
+// 		</Flex>
+// 	);
+// };

@@ -39,7 +39,7 @@ export const DividendRegisterPopup = ({
 	const forms = useForm({
 		defaultValues: isEditMode
 			? {
-					code: undefined,
+					code: { label: item?.name, value: item?.code },
 					date: dayjs(item?.sdate).toDate(),
 					cost: withCommas(item?.cost),
 					count: withCommas(item?.count),
@@ -70,7 +70,6 @@ export const DividendRegisterPopup = ({
 		if (isOk) {
 			forms?.handleSubmit(
 				async (fields) => {
-					
 					const params = {
 						rowid: item?.rowid,
 						code: (fields?.code as SelectOptionType)?.value,
@@ -79,7 +78,7 @@ export const DividendRegisterPopup = ({
 						price: Number(toNumber(fields.price)),
 						sdate: dayjs(fields?.date).format(DATE_DB_FORMAT),
 					};
-					
+
 					if (isEditMode) {
 						await updateData(params);
 					} else {
@@ -109,7 +108,6 @@ export const DividendRegisterPopup = ({
 	return (
 		<Dialog title={`${ST.DIVIDEND}(${isEditMode ? ST.UPDATE : ST.ADD})`} onClose={onClickClose}>
 			<StyledForm direction={'column'} gap={20}>
-				{/* <Select options={stocks} /> */}
 				<DatePickerForm id='date' label={ST.DATE} placeholder={ST.IN_DATE} formMethod={forms} align='right' />
 				<AutoCompleteForm id='code' formMethod={forms} options={stockOptions || []} onChange={onChange} />
 				<NumberInputForm id='count' label={ST.STOCK_COUNT} formMethod={forms} maxLength={8} focused />

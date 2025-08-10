@@ -69,7 +69,6 @@ export const StyledDatePickerForm = styled(FormControl, {
 			borderColor: '$gray800 !important',
 			borderWidth: '1px !important',
 		},
-
 		// '.MuiInputBase-input': {
 		// 	padding: '0 $10',
 		// 	lineHeight: '20px',
