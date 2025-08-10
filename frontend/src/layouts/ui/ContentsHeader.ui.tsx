@@ -5,7 +5,7 @@ import { PropsWithChildren } from 'react';
 
 const StyledFlex = styled(Flex, {
 	'&.contents-header': {
-		minHeight: 100,
+		// minHeight: 100,
 		width: '100%',
 		padding: '$4',
 		background: '$bgcolor',
@@ -39,15 +39,18 @@ const StyledFlex = styled(Flex, {
 interface ContentsHeaderProps {
 	sticky?: boolean;
 	stickyTop?: number | string;
+	minHeight?: number | string;
 }
 
 export const ContentsHeader = ({
 	children,
 	sticky = true,
 	stickyTop = 40,
+	minHeight,
 }: ContentsHeaderProps & PropsWithChildren) => {
 	return (
-		<StyledFlex className={clsx('contents-header', { sticky })} style={{ top: sticky ? stickyTop : 'unset' }}>
+		<StyledFlex className={clsx('contents-header', { sticky })}
+			style={{ top: sticky ? stickyTop : 'unset', minHeight: minHeight }}>
 			<Flex className='box' align={'start'} direction={'column'}>
 				{children}
 			</Flex>

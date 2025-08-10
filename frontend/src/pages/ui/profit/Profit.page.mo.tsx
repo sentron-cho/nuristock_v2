@@ -15,6 +15,7 @@ import { ProfitItemType } from '@features/profit/api/profit.dto';
 import { TitleNavigation } from '@entites/TitleNavigation';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
 import { toCost, valueOfPlusMinus } from '@shared/libs/utils.lib';
+import { ProfitSummaryMain } from '@features/profit/ui/ProfitSummary.ui';
 
 const StyledPage = styled(PageContainer, {
 	'.card': {
@@ -121,16 +122,20 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 
 	return (
 		<StyledPage className={clsx('profit', 'main')} summaryData={summary}>
-			<Flex className='contents-layer' direction={'column'} gap={20} {...handlerSwipe}>
+			<Flex className='contents-layer' direction={'column'} {...handlerSwipe}>
 				{/* 연도별 */}
 				{viewType === 'year' && (
 					<Flex className={clsx(swipeClass)} direction={'column'} justify={'center'}>
+						
+						{/* 제목 */}
 						<TitleNavigation sticky options={naviOptions} value={viewType} onClick={onClick} />
 
+						{/* 요약 */}
+						<ProfitSummaryMain data={years} dividend={dividendPerYear} />
+
+						{/* 컨텐츠 */}
 						<Card className={clsx('card')}>
 							<Flex className={clsx('box')} direction='column' gap={0}>
-								{/* <ProfitCardRows rowHeight={32} className='years' data={years} onClickItem={onClickItemYear} /> */}
-
 								{years?.map((item, index) => {
 									const { title, sonic, sonicRate, type } = item;
 
@@ -155,8 +160,14 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 				{/* 종목별 */}
 				{viewType === 'code' && (
 					<Flex className={clsx(swipeClass)} direction={'column'}>
+						
+						{/* 제목 */}
 						<TitleNavigation sticky options={naviOptions} value={viewType} onClick={onClick} />
 
+						{/* 요약 */}
+						<ProfitSummaryMain data={years} dividend={dividendPerYear} />
+
+						{/* 컨텐츠 */}
 						<Card className={clsx('card')}>
 							<Flex className={clsx('box')} direction='column' gap={0}>
 								{names?.map((item, index) => {
