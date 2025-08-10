@@ -25,6 +25,10 @@ export const URL = {
   DIVIDEND: {
     ROOT: `${ROOT_URL}/dividend`,
   },
+  INVEST: {
+    ROOT: `${ROOT_URL}/invest`,
+    REFRESH: `${ROOT_URL}/invest/refresh`,
+  },
   APP: {
     ROOT: `${ROOT_URL}/app`,
     CONFIG: `${ROOT_URL}/app/config`,

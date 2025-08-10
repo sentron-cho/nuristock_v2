@@ -38,6 +38,7 @@ export const API = {
 	MARKET_SISE: `${API_ROOT}/market/sise`,
 	MARKET_COUNT: `${API_ROOT}/market/vcount`,
 	INVEST: `${API_ROOT}/invest`,
+	INVEST_REFRESH: `${API_ROOT}/invest/refresh`,
 	PROFIT: `${API_ROOT}/profit`,
 	PROFIT_YEARS: `${API_ROOT}/profit/years`,
 	DIVIDEND: `${API_ROOT}/dividend`,

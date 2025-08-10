@@ -134,6 +134,7 @@ const KOR = {
 	DUP_ITEM: '이미 등록된 항목입니다.',
 	ONLY_NUMBER: '숫자(0-9)만 입력 가능합니다.',
 	WANT_TO_DELETE: '삭제하시겠습니까?',
+	WANT_TO_REFRESH: '갱신하시겠습니까?',
 
 	ERROR_PROBLEM: '문제가 발생했습니다!',
 	ERROR_UNKNOWN: '알 수 없는 오류가 발생했습니다.',
@@ -159,6 +160,7 @@ const KOR = {
 	PER_MONTHS: '월별',
 	PER_DIVIDEND: '배당내역',
 	PER_DAYS: '일별',
+	INVEST: '가치투자',
 
 	MENU: {
 		DASHBOARD: '메인',

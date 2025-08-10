@@ -3,6 +3,7 @@ import { SortOrder } from 'antd/es/table/interface';
 import dayjs from 'dayjs';
 
 export enum COST {
+	JO = '조',
 	EUK = '억',
 	MAN = '만',
 	WON = '원',
@@ -42,10 +43,12 @@ export const toCost = (v?: number | string, showZero?: boolean) => {
 
 export const toShortCost = (v?: number | string) => {
 	let num = Number(v);
-
-	if (num > 99999999) {
+	if (num > 99999999999) {
+		// 조원 ~
+		return (num / 1000000000000).toFixed(1) + `${COST.JO}${COST.WON}`;
+	} else if (num > 99999999) {
 		// 억원 ~
-		return Math.ceil(num / 100000000) + `${COST.EUK}${COST.WON}`;
+		return (num / 100000000).toFixed(1) + `${COST.EUK}${COST.WON}`;
 	} else if (num > 9999999) {
 		// 천만원 ~ 억원
 		return Math.ceil(num / 10000000) + `${COST.CHEN}${COST.MAN}${COST.WON}`;

@@ -52,7 +52,7 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 		return createDividendSumData(profitData?.dividend, 'name');
 	}, [profitData?.dividend]);
 
-	// 년도별 수익 합계
+	// 년도별 수익 합계(배당 포함)
 	const years = useMemo(() => {
 		const items = createSumData(data, 'year');
 		return (
@@ -76,7 +76,7 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 		);
 	}, [data]);
 
-	// 종목별 수익 합계
+	// 종목별 수익 합계(배당 포함)
 	const names = useMemo(() => {
 		const items = createSumData(data, 'name');
 		return (
@@ -131,7 +131,7 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 						<TitleNavigation sticky options={naviOptions} value={viewType} onClick={onClick} />
 
 						{/* 요약 */}
-						<ProfitSummaryMain data={years} dividend={dividendPerYear} />
+						<ProfitSummaryMain data={data} dividend={dividendPerYear} />
 
 						{/* 컨텐츠 */}
 						<Card className={clsx('card')}>

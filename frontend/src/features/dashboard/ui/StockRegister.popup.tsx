@@ -16,6 +16,7 @@ import { IconEdit } from '@entites/Icons';
 import { FormField } from '@entites/FormField';
 import { TextInputForm } from '@entites/TextInputForm';
 import { toCost } from '@shared/libs/utils.lib';
+import { useCreateInvestment } from '@features/investment/api/investment.api';
 
 const StyledDialog = styled(Dialog, {
 	overflow: 'hidden',
@@ -54,7 +55,13 @@ const StyledDialog = styled(Dialog, {
 	},
 });
 
-export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => void }) => {
+export const StockRegisterPopup = ({
+	viewType = 'dashboard',
+	onClose,
+}: {
+	viewType?: 'dashboard' | 'investment';
+	onClose: (isOk: boolean) => void;
+}) => {
 	const { showAlert } = useCommonHook();
 
 	const forms = useForm<FieldValues>({ defaultValues: { search: '', title: '' } });
@@ -62,6 +69,7 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 
 	const { data, isPending } = useSelectMarket();
 	const { mutateAsync: createData } = useCreateDashboard();
+	const { mutateAsync: createInvestment } = useCreateInvestment();
 
 	const list = useMemo(() => {
 		const items = data?.value?.map((a) => ({ text: `${a?.name}(${a?.code})`, id: a?.code }));
@@ -93,7 +101,11 @@ export const StockRegisterPopup = ({ onClose }: { onClose: (isOk: boolean) => vo
 						return showAlert({ content: ST.SELECT_SEARCH });
 					}
 
-					await createData({ ...selected, name: forms?.getValues('title') || selected?.name });
+					if (viewType === 'dashboard') {
+						await createData({ ...selected, name: forms?.getValues('title') || selected?.name });
+					} else {
+						await createInvestment({ ...selected, name: forms?.getValues('title') || selected?.name });
+					}
 					// showToast('registered');
 					onClose?.(isOk);
 				}

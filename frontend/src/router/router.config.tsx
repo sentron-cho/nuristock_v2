@@ -4,7 +4,7 @@ import PageLayout from '../layouts/ui/PageLayout.ui';
 import DashboardPage from '../pages/ui/dashboard/Dashboard.page';
 import NotFoundPage from '../pages/ui/common/NotFound.page';
 import MarketPage from '../pages/ui/Market.page';
-import InvestmentPage from '../pages/ui/Investment.page';
+import InvestmentPage from '../pages/ui/Investment/Investment.page';
 import DividendPage from '@page/ui/Dividend.page';
 import DiaryPage from '@page/ui/diary/Diary.page';
 import ProfitPage from '../pages/ui/profit/Profit.page';

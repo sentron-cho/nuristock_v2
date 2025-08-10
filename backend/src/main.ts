@@ -9,6 +9,7 @@ import diaryRoute from "./routes/diary.route.js";
 import { startStockCollector } from "./crawler/stockCollector.js";
 import dividendRoute from "./routes/dividend.route.js";
 import appRoute from "./routes/app.route.js";
+import investRoute from "./routes/invest.route.js";
 
 // dotenv.config({ path: '.env' });
 
@@ -31,13 +32,14 @@ await fastify.register(cors, {
 await fastify.register(dbPlugin);
 
 // 라우트 등록
-await fastify.register(appRoute);
-await fastify.register(dashboardRoute);
-await fastify.register(mystockRoute);
-await fastify.register(marketRoute);
-await fastify.register(profitRoute);
-await fastify.register(diaryRoute);
-await fastify.register(dividendRoute);
+await fastify.register(appRoute); // 앱 설정
+await fastify.register(dashboardRoute); // 대시보드
+await fastify.register(mystockRoute); // 보유주식/거래주식
+await fastify.register(marketRoute); // 종목
+await fastify.register(profitRoute); // 투자손익
+await fastify.register(diaryRoute); // 다이어리
+await fastify.register(dividendRoute); // 배당
+await fastify.register(investRoute); // 가치투자
 
 // 크롤링 작업 시작
 fastify.ready().then(() => {
