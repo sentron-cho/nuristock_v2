@@ -58,7 +58,6 @@ export const useDividendData = (initialData?: DividendResponse) => {
 
 	// 년도별 데이터 추출
 	const groupedByYear = useMemo(() => {
-		console.log({ data });
 		return data?.reduce(
 			(acc, item) => {
 				const year = dayjs(item['sdate']).format('YYYY'); // '20241104' → '2024'

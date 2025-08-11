@@ -91,8 +91,6 @@ export const CalendarView = ({
 	};
 
 	const onSelect = (value: dayjs.Dayjs | null) => {
-		// console.log(dayjs(value).format('YYYY-MM'));
-		// value && setSelectedDate(value);
 		onChangeMonth?.(dayjs(value));
 	};
 

@@ -191,6 +191,18 @@ const KOR = {
 	DIVIDEND_SUM: '배당금',
 	DIVIDEND_TOTAL: '배당금(세후)',
 
+	EMPTY_INVESTMENT: '년도 평가기준 설정',
+	ROE: '자본이익율(ROE)',
+	STOCKS_COUNT: '상장주식수',
+	BASE_YEAR: '기준년도',
+	BS: '자기자본(BS)',
+	EXCESS_PROFIT: '초과이익',
+	BASE_RATE: '기준평가율',
+	BASE_07: '평가율(W0.7)',
+	BASE_08: '평가율(W0.8)',
+	BASE_09: '평가율(W0.9)',
+	BASE_10: '평가율(W1.0)',
+
 	// DASHBOARD: {
 	// 	ADD: '종목 추가',
 

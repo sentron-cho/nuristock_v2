@@ -6,10 +6,12 @@ import { EID } from '@shared/config/default.config';
 import { ST } from '@shared/config/kor.lang';
 import { IconAdd } from '@entites/Icons';
 import clsx from 'clsx';
+import { DashboardHeader } from '@features/dashboard/ui/DashboardHeader.ui';
 import { InvestmentItemType } from '@features/investment/api/investment.dto';
-import { InvestmentCard } from '@features/investment/ui/InvestmentCard.ui';
 import { useInvestmentHook } from '@features/investment/hook/Investment.hook';
-import { InvestmentHeader } from '@features/investment/ui/InvestmentHeader.ui';
+import { useMemo } from 'react';
+import { sortedByKey } from '@shared/libs/sort.lib';
+import { InvestmentDetailCard } from '@features/investment/ui/InvestmentDetailCard.ui';
 
 const StyledPage = styled(PageContainer, {
 	'.contents-layer': {
@@ -19,7 +21,7 @@ const StyledPage = styled(PageContainer, {
 	},
 });
 
-export const InvestmentPageMo = ({
+export const InvestmentDetailPageMo = ({
 	data,
 	onClick,
 	onRefresh,
@@ -27,16 +29,15 @@ export const InvestmentPageMo = ({
 	data?: InvestmentItemType[];
 	onClick?: (eid?: string, item?: InvestmentItemType) => void;
 	onRefresh?: (eid?: string, item?: InvestmentItemType) => void;
-	}) => {
-	const { dataByToday: list } = useInvestmentHook(data);
+}) => {
+	const { groupedByName } = useInvestmentHook(data);
+
+	const list = useMemo(() => {
+		return groupedByName && sortedByKey(Object.entries(groupedByName), 'title', true);
+	}, [groupedByName]);
 
 	const onClickItem = (eid?: string, item?: InvestmentItemType) => {
-		console.log({eid, item})
-		if (eid === 'refresh') {
-			onRefresh?.(eid, item);
-		} else {
-			onClick?.(eid, item)
-		}
+		onRefresh?.(eid, item);
 	};
 
 	console.log(list);
@@ -56,12 +57,12 @@ export const InvestmentPageMo = ({
 				/>
 
 				{/* 컨텐츠 헤더(요약) */}
-				<InvestmentHeader />
+				<DashboardHeader />
 
 				{/* 컨텐츠 */}
 				<Flex className={clsx('contents-layer')} direction={'column'}>
 					{list?.map((item) => {
-						return <InvestmentCard title={item.name} data={item} onClick={onClickItem} />;
+						return <InvestmentDetailCard title={item?.[0]} data={item?.[1]} onClick={onClickItem} />;
 					})}
 				</Flex>
 			</Flex>

@@ -12,7 +12,6 @@ import clsx from 'clsx';
 import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 import { MystockHeader } from '@features/mystock/ui/MystockHeader.ui';
 import { useNaviByOptions } from '@shared/hooks/useOptionNavi.hook';
-import { colors } from '@mui/material';
 
 const StyledPage = styled(PageContainer, {
 	'.page-titl-bar': {

@@ -58,9 +58,11 @@ const StyledDialog = styled(Dialog, {
 export const StockRegisterPopup = ({
 	viewType = 'dashboard',
 	onClose,
+	onSuccess,
 }: {
 	viewType?: 'dashboard' | 'investment';
 	onClose: (isOk: boolean) => void;
+	onSuccess?: () => void;
 }) => {
 	const { showAlert } = useCommonHook();
 
@@ -104,7 +106,9 @@ export const StockRegisterPopup = ({
 					if (viewType === 'dashboard') {
 						await createData({ ...selected, name: forms?.getValues('title') || selected?.name });
 					} else {
-						await createInvestment({ ...selected, name: forms?.getValues('title') || selected?.name });
+						createInvestment({ ...selected, name: forms?.getValues('title') || selected?.name })?.then(() => {
+							onSuccess?.();
+						});
 					}
 					// showToast('registered');
 					onClose?.(isOk);

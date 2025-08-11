@@ -1,8 +1,15 @@
 import { styled } from '@stitches/react';
 import { SvgIconProps } from '@mui/material';
 
+import IconHome from '@mui/icons-material/Home'; // 홈
+import IconDiary from '@mui/icons-material/EventNote'; // 다이어리
+import IconSonic from '@mui/icons-material/Assessment'; // 투자손익
+import IconStockSearch from '@mui/icons-material/QueryStats';
+import IconDividend from '@mui/icons-material/CreditScore'; // 배당
+import IconInvest from '@mui/icons-material/Balance'; // 가치투자
+
 import IconDelete from '@mui/icons-material/Delete';
-import IconEdit from '@mui/icons-material/EditDocument';
+import IconEdit from '@mui/icons-material/DriveFileRenameOutline';
 import IconLaunch from '@mui/icons-material/Launch';
 import IconLink from '@mui/icons-material/Link';
 import IconAdd from '@mui/icons-material/Add';
@@ -19,15 +26,6 @@ import IconArrowCircleDown from '@mui/icons-material/ArrowCircleDown';
 import IconArrowLeft from '@mui/icons-material/ArrowLeft';
 import IconArrowRight from '@mui/icons-material/ArrowRight';
 
-import IconHome from '@mui/icons-material/Home'; // 홈
-import IconDiary from '@mui/icons-material/EventNote'; // 다이어리
-import IconSonic from '@mui/icons-material/Assessment'; // 투자손익
-// import IconStockSearch from '@mui/icons-material/AutofpsSelect'; // 종목검색
-import IconStockSearch from '@mui/icons-material/QueryStats';
-// import IconDividend from '@mui/icons-material/AutoMode'; // 배당
-import IconDividend from '@mui/icons-material/CreditScore'; // 배당
-import IconInvest from '@mui/icons-material/Balance'; // 가치투자
-
 import IconExpandUp from '@mui/icons-material/ExpandLess';
 import IconExpandDown from '@mui/icons-material/ExpandMore';
 
@@ -42,6 +40,8 @@ import IconRemovePlaylist from '@mui/icons-material/PlaylistRemove';
 
 import IconMoreHori from '@mui/icons-material/MoreHoriz';
 import IconMoreVert from '@mui/icons-material/MoreVert';
+
+import IconEditDocument from '@mui/icons-material/EditDocument';
 
 const StyledUp = styled(IconPlayArrow, {
 	color: '$plus',
@@ -98,5 +98,6 @@ export {
 	IconAddPlaylist,
 	IconRemovePlaylist,
 	IconMoreHori,
-	IconMoreVert
+	IconMoreVert,
+	IconEditDocument
 };

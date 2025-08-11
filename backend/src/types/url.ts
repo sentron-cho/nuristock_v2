@@ -28,6 +28,7 @@ export const URL = {
   INVEST: {
     ROOT: `${ROOT_URL}/invest`,
     REFRESH: `${ROOT_URL}/invest/refresh`,
+    CLEAR: `${ROOT_URL}/invest/clear`,
   },
   APP: {
     ROOT: `${ROOT_URL}/app`,

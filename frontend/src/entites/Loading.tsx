@@ -1,9 +1,31 @@
-import { Box, CircularProgress } from "@mui/material";
+import { Box, CircularProgress } from '@mui/material';
+import { styled } from '@styles/stitches.config';
+import clsx from 'clsx';
 
-export const Loading = () => {
+const StyledBox = styled(Box, {
+	'&.loading': {
+		width: '100vw',
+		zIndex: '9999999',
+		background: '#00000020',
+
+		'&.fixed': {
+			position: 'fixed',
+			top: 0,
+			left: 0,
+		},
+	},
+});
+
+export const Loading = ({ position = 'fixed' }: { position?: string }) => {
 	return (
-		<Box display='flex' justifyContent='center' alignItems='center' minHeight='100vh'>
+		<StyledBox
+			className={clsx('loading', position)}
+			display='flex'
+			justifyContent='center'
+			alignItems='center'
+			minHeight='100vh'
+		>
 			<CircularProgress />
-		</Box>
+		</StyledBox>
 	);
 };

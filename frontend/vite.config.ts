@@ -5,11 +5,8 @@ import { resolve } from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-	// const envPath = path.resolve(new URL(import.meta.url).pathname, `.env.${mode}`);
-	// dotenv.config({ path: envPath });
 	const env = loadEnv(mode, process.cwd(), 'VITE_');
 
-	// console.log({ location: location });
 	console.log('[START]', { url: `${env?.VITE_HOST}:${env?.VITE_PORT}` });
 	console.log('[API]', { url: `${env?.VITE_API_URL}` });
 

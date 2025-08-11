@@ -2,9 +2,22 @@ import { Card } from '@entites/Card';
 import Flex from '@entites/Flex';
 import { Title } from '@entites/Title';
 import { InvestmentItemType } from '../api/investment.dto';
-import { IconRefresh } from '@entites/Icons';
-import { Text } from '@entites/Text';
-import { toShortCost, withCommas } from '@shared/libs/utils.lib';
+import { withCommas } from '@shared/libs/utils.lib';
+import { ST } from '@shared/config/kor.lang';
+import { EID } from '@shared/config/default.config';
+import { CardLineFiled } from '@features/common/ui/CardLineField.ui';
+import { useMemo } from 'react';
+import dayjs from 'dayjs';
+import { styled } from '@styles/stitches.config';
+import { IconDelete, IconEdit, } from '@entites/Icons';
+
+const StyledCard = styled(Card, {
+	'.body': {
+		'.empty': {
+			color: '$gray600',
+		},
+	},
+});
 
 export const InvestmentCard = ({
 	title,
@@ -12,34 +25,41 @@ export const InvestmentCard = ({
 	onClick,
 }: {
 	title?: string;
-	data?: InvestmentItemType[];
+	data?: InvestmentItemType;
 	onClick?: (eid?: string, item?: InvestmentItemType) => void;
 }) => {
 	console.log({ data });
+
+	const isEmpty = useMemo(() => !data?.roe && !data?.bs, [data]);
+
 	return (
-		<Card>
+		<StyledCard>
 			<Flex className='box border' direction='column'>
-				<Flex className='head' justify={'between'}>
-					<Title title={title} />
-					<IconRefresh onClick={() => onClick?.('all', data?.[0])} />
+				<Flex className='head' justify={'between'} onClick={() => onClick?.(EID.SELECT, data)}>
+					<Title title={title} flex={1} />
+					<Flex fullWidth={false} gap={10}>
+						{!isEmpty && <IconEdit onClick={() => onClick?.(EID.UPDATE, data)} />}
+						{<IconDelete onClick={() => onClick?.(EID.CLEAR, data)} />}
+					</Flex>
 				</Flex>
-				<Flex className='body' direction={'column'} gap={4}>
-					{data?.map((item) => {
-						return (
-							<Flex flex={1} justify={'between'}>
-								<Flex gap={10}>
-									<Title title={item?.sdate} />
-									<Text text={item?.roe} />
-									<Text text={withCommas(item?.count)} />
-									<Text text={toShortCost(item?.brate)} />
-									<Text text={item?.profit} />
-								</Flex>
-								<IconRefresh onClick={() => onClick?.(item.sdate.toString(), item)} />
-							</Flex>
-						);
-					})}
+				<Flex className='body' direction={'column'} gap={4} onClick={() => onClick?.(EID.SELECT, data)}>
+					{isEmpty && (
+						<Flex className='empty' justify={'center'} onClick={() => onClick?.(EID.UPDATE, data)}>
+							<Title title={`${dayjs().format('YYYY')}${ST.EMPTY_INVESTMENT}`} />
+						</Flex>
+					)}
+
+					{!isEmpty && (
+						<Flex flex={1} direction={'column'} gap={4}>
+							<CardLineFiled title={ST.ROE} value={data?.roe} suffix={{ value: '%' }} />
+							<CardLineFiled title={ST.BASE_RATE} value={withCommas(data?.brate)} suffix={{ value: '%' }} />
+							<CardLineFiled title={ST.STOCKS_COUNT} value={withCommas(data?.count)} suffix={{ value: ST.JU }} />
+							<CardLineFiled title={ST.EXCESS_PROFIT} value={data?.profit} />
+							<CardLineFiled title={ST.BS} value={data?.bs} />
+						</Flex>
+					)}
 				</Flex>
 			</Flex>
-		</Card>
+		</StyledCard>
 	);
 };

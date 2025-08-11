@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { InvestmentItemType } from '../api/investment.dto';
+import dayjs from 'dayjs';
 
 export const useInvestmentHook = (initialData?: InvestmentItemType[]) => {
 	const data = useMemo(() => initialData, [initialData]);
@@ -17,5 +18,9 @@ export const useInvestmentHook = (initialData?: InvestmentItemType[]) => {
 		);
 	}, [data]);
 
-	return { data, groupedByName };
+	const dataByToday = useMemo(() => { 
+		return data?.filter(a => a.sdate?.toString() === dayjs().format('YYYY'))
+	}, [data]);
+
+	return { data, groupedByName, dataByToday };
 };
