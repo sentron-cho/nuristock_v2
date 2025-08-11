@@ -31,15 +31,12 @@ export const InvestmentPageMo = ({
 	const { dataByToday: list } = useInvestmentHook(data);
 
 	const onClickItem = (eid?: string, item?: InvestmentItemType) => {
-		console.log({eid, item})
 		if (eid === 'refresh') {
 			onRefresh?.(eid, item);
 		} else {
 			onClick?.(eid, item)
 		}
 	};
-
-	console.log(list);
 
 	return (
 		<StyledPage>

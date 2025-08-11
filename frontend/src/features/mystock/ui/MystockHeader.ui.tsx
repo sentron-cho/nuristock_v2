@@ -25,7 +25,7 @@ const StyledContents = styled(Flex, {
 
 	'.btn-add': {
 		color: '$gray700',
-		marginTop: 4,
+		marginTop: 2,
 	},
 
 	'&.bar': {

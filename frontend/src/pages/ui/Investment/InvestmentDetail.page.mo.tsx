@@ -40,8 +40,6 @@ export const InvestmentDetailPageMo = ({
 		onRefresh?.(eid, item);
 	};
 
-	console.log(list);
-
 	return (
 		<StyledPage>
 			{/* 타이틀바 */}

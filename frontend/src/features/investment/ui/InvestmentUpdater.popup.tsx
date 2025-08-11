@@ -20,9 +20,6 @@ const StyledForm = styled(Flex, {
 export const InvestmentUpdaterPopup = ({ item, onClose }: { item?: DataType; onClose: (isOk: boolean) => void }) => {
 	const forms = useForm({
 		defaultValues: {
-			// code: { label: item?.name, value: item?.code },
-			// name: withCommas(item?.name),
-			// sdate: withCommas(item?.sdate),
 			count: withCommas(item?.count),
 			roe: withCommas(item?.roe),
 			bs: withCommas(item?.bs),
@@ -35,10 +32,6 @@ export const InvestmentUpdaterPopup = ({ item, onClose }: { item?: DataType; onC
 		},
 		resolver: zodResolver(
 			z.object({
-				// code: z.refine((v) => !!v, { message: ST.PLEASE_SELECT }),
-				// name: z.string(),
-				// date: Schema.DefaultDate,
-				// sdate: z.string().optional(),
 				count: z.string().optional(),
 				roe: z.string().optional(),
 				bs: z.string().optional(),
@@ -60,8 +53,6 @@ export const InvestmentUpdaterPopup = ({ item, onClose }: { item?: DataType; onC
 			forms?.handleSubmit(
 				async (fields) => {
 					const params = { rowid: item?.rowid, ...fields } as DataType;
-
-					console.log({ params });
 
 					await updateData(params);
 					onClose?.(isOk);

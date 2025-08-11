@@ -60,7 +60,6 @@ export const useClearInvestment = () => {
 	return useMutation({
 		mutationKey: ['INVESTMENT-U03'],
 		mutationFn: async (rowid: string | number) => {
-			console.log({ rowid });
 			return await api.put(API.INVEST_CLEAR, { rowid });
 		},
 	});

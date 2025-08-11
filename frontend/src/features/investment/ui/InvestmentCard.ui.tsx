@@ -28,21 +28,22 @@ export const InvestmentCard = ({
 	data?: InvestmentItemType;
 	onClick?: (eid?: string, item?: InvestmentItemType) => void;
 }) => {
-	console.log({ data });
-
 	const isEmpty = useMemo(() => !data?.roe && !data?.bs, [data]);
 
 	return (
 		<StyledCard>
 			<Flex className='box border' direction='column'>
-				<Flex className='head' justify={'between'} onClick={() => onClick?.(EID.SELECT, data)}>
-					<Title title={title} flex={1} />
+				{/* 헤드 */}
+				<Flex className='head' justify={'between'}>
+					<Title title={title} flex={1} onClick={() => onClick?.(EID.SELECT, data)} />
 					<Flex fullWidth={false} gap={10}>
 						{!isEmpty && <IconEdit onClick={() => onClick?.(EID.UPDATE, data)} />}
 						{<IconDelete onClick={() => onClick?.(EID.CLEAR, data)} />}
 					</Flex>
 				</Flex>
-				<Flex className='body' direction={'column'} gap={4} onClick={() => onClick?.(EID.SELECT, data)}>
+
+				{/* 바디 */}
+				<Flex className='body' direction={'column'} gap={4}>
 					{isEmpty && (
 						<Flex className='empty' justify={'center'} onClick={() => onClick?.(EID.UPDATE, data)}>
 							<Title title={`${dayjs().format('YYYY')}${ST.EMPTY_INVESTMENT}`} />
@@ -50,7 +51,7 @@ export const InvestmentCard = ({
 					)}
 
 					{!isEmpty && (
-						<Flex flex={1} direction={'column'} gap={4}>
+						<Flex flex={1} direction={'column'} gap={4} onClick={() => onClick?.(EID.SELECT, data)}>
 							<CardLineFiled title={ST.ROE} value={data?.roe} suffix={{ value: '%' }} />
 							<CardLineFiled title={ST.BASE_RATE} value={withCommas(data?.brate)} suffix={{ value: '%' }} />
 							<CardLineFiled title={ST.STOCKS_COUNT} value={withCommas(data?.count)} suffix={{ value: ST.JU }} />
