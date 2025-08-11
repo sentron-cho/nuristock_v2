@@ -4,7 +4,6 @@ import { MyStockKeepType, MyStockResponse, MyStockSellType } from '@features/mys
 import { MyStcokKeepList, MyStcokTradeList } from '@features/mystock/ui/MyStockCard.ui';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { ST } from '@shared/config/kor.lang';
-import { IconAdd } from '@entites/Icons';
 import { URL } from '@shared/config/url.enum';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import Flex from '@entites/Flex';
@@ -13,8 +12,24 @@ import clsx from 'clsx';
 import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 import { MystockHeader } from '@features/mystock/ui/MystockHeader.ui';
 import { useNaviByOptions } from '@shared/hooks/useOptionNavi.hook';
+import { colors } from '@mui/material';
 
 const StyledPage = styled(PageContainer, {
+	'.page-titl-bar': {
+		'.box': {
+			'.btn.right': {
+				marginTop: 4,
+				fontSize: '16px',
+				color: '$gray500',
+				// opacity: 0.8,
+			},
+		},
+	},
+
+	'.btn-add': {
+		color: '$gray700',
+	},
+
 	'.contents-layer': {
 		'.card': {
 			'&.keep': {
@@ -93,6 +108,10 @@ export const MyStockPageMo = ({
 		navigate(`${URL.MYSTOCK}/${viewType}/${value}`);
 	};
 
+	const onClickHead = () => {
+		navigate(`${URL.MYSTOCK}/${viewType === 'keep' ? 'trade' : 'keep'}/${param?.id}`);
+	};
+
 	return (
 		<>
 			<StyledPage summaryData={summaryData}>
@@ -102,9 +121,10 @@ export const MyStockPageMo = ({
 						title={viewType === 'keep' ? ST.KEEP_LIST : ST.TRADE_LIST}
 						buttonProps={{
 							eid: 'buy',
-							icon: <IconAdd />,
-							title: ST.BUY,
-							onClick: onClickKeep,
+							title: viewType === 'keep' ? ST.TRADE_LIST : ST.KEEP_LIST,
+							buttonType: 'text',
+							color: 'primary',
+							onClick: onClickHead,
 						}}
 					/>
 
@@ -117,6 +137,7 @@ export const MyStockPageMo = ({
 						sells={tradeList}
 						sise={sise}
 						onClickNavi={onClick}
+						onClickAdd={() => onClickKeep?.('buy')}
 					/>
 
 					{/* 컨텐츠 */}

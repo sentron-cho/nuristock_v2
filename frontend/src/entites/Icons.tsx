@@ -31,6 +31,18 @@ import IconInvest from '@mui/icons-material/Balance'; // 가치투자
 import IconExpandUp from '@mui/icons-material/ExpandLess';
 import IconExpandDown from '@mui/icons-material/ExpandMore';
 
+import IconRemoveCircle from '@mui/icons-material/RemoveCircle';
+import IconAddCircle from '@mui/icons-material/AddCircle';
+
+import IconAddBox from '@mui/icons-material/AddBox';
+import IconRemoveBox from '@mui/icons-material/IndeterminateCheckBox';
+
+import IconAddPlaylist from '@mui/icons-material/PlaylistAdd';
+import IconRemovePlaylist from '@mui/icons-material/PlaylistRemove';
+
+import IconMoreHori from '@mui/icons-material/MoreHoriz';
+import IconMoreVert from '@mui/icons-material/MoreVert';
+
 const StyledUp = styled(IconPlayArrow, {
 	color: '$plus',
 	transform: 'rotate(-90deg)',
@@ -78,5 +90,13 @@ export {
 	IconDividend,
 	IconInvest,
 	IconExpandUp,
-	IconExpandDown
+	IconExpandDown,
+	IconRemoveCircle,
+	IconAddCircle,
+	IconRemoveBox,
+	IconAddBox,
+	IconAddPlaylist,
+	IconRemovePlaylist,
+	IconMoreHori,
+	IconMoreVert
 };

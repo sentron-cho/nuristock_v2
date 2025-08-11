@@ -9,7 +9,7 @@ import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
 import { Text } from '@entites/Text';
 import { EID } from '@shared/config/default.config';
-import { IconDown, IconUp } from '@entites/Icons';
+import { IconAddCircle, IconDown, IconUp } from '@entites/Icons';
 
 const StyledContents = styled(Flex, {
 	'.up': {
@@ -21,6 +21,11 @@ const StyledContents = styled(Flex, {
 
 	'.sise': {
 		fontSize: 28,
+	},
+
+	'.btn-add': {
+		color: '$gray700',
+		marginTop: 4,
 	},
 
 	'&.bar': {
@@ -36,6 +41,7 @@ export const MystockHeader = ({
 	sells,
 	sise,
 	onClickNavi,
+	onClickAdd,
 }: {
 	value?: string;
 	viewType?: 'keep' | 'trade';
@@ -44,6 +50,7 @@ export const MystockHeader = ({
 	sells?: MyStockSellType[];
 	sise?: MyStockSiseItemType;
 	onClickNavi?: (value?: string) => void;
+	onClickAdd?: () => void;
 }) => {
 	console.log({ viewType, value, options, keeps, sells, sise });
 
@@ -53,11 +60,17 @@ export const MystockHeader = ({
 
 	return (
 		<ContentsHeader stickyTop={44}>
-			<TitleNavigation withTitleValue height={28} options={options} value={value} onClick={onClick}></TitleNavigation>
+			{/* 타이틀 및 네비게이션 */}
+			<TitleNavigation withTitleValue height={28} options={options} value={value} onClick={onClick} />
 
+			{/* 현재가 및 상승율 */}
 			<StyledContents className={clsx(viewType, 'bar')} flex={1}>
-				<Flex className={clsx(sise?.updown)} justify={'between'}>
-					<Title flex={1} className={clsx('sise')} title={toCost(sise?.sise)} />
+				<Flex className={clsx('left')} justify={'between'}>
+					<Flex flex={1} gap={8} onClick={onClickAdd}>
+						<Title className={clsx('sise', sise?.updown)} title={toCost(sise?.sise)} />
+						<IconAddCircle className='btn-add' />
+					</Flex>
+
 					<Flex flex={1} align={'end'} justify={'center'} direction={'column'}>
 						<Flex justify={'end'} gap={4}>
 							{sise?.updown === EID.UP && <IconUp fontSize='small' />}
