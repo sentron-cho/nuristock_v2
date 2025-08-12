@@ -5,6 +5,7 @@ import {
 	useDeleteInvestment,
 	useRefreshInvestment,
 	useSelectInvestment,
+	useUpdateInvestmentByNaver,
 	// useCreateInvestment,
 	// useUpdateInvestment,
 } from '@features/investment/api/investment.api';
@@ -18,6 +19,7 @@ import { StockRegisterPopup } from '@features/dashboard/ui/StockRegister.popup';
 import { URL } from '@shared/config/url.enum';
 import { Loading } from '@entites/Loading';
 import { InvestmentUpdaterPopup } from '@features/investment/ui/InvestmentUpdater.popup';
+import dayjs from 'dayjs';
 
 const InvestmentPage = () => {
 	const { isMobile, showToast, showConfirm, navigate } = useCommonHook();
@@ -32,6 +34,7 @@ const InvestmentPage = () => {
 	const { mutateAsync: deleteData } = useDeleteInvestment();
 	const { mutateAsync: clearData } = useClearInvestment();
 	const { mutateAsync: refreshData } = useRefreshInvestment();
+	const { mutateAsync: updateByNaver } = useUpdateInvestmentByNaver();
 	// const { mutateAsync: createData } = useCreateInvestment();
 	// const { mutateAsync: updateData } = useUpdateInvestment();
 
@@ -88,11 +91,11 @@ const InvestmentPage = () => {
 
 	const onRefresh = (eid?: string, item?: InvestmentItemType) => {
 		showConfirm({
-			content: ST.WANT_TO_REFRESH,
+			content: ST.WANT_TO_UPDATE_NAVER,
 			onClose: async (isOk) => {
 				// console.log({ item });
 				if (isOk && item?.code) {
-					await refreshData({ targetYear: eid, code: item.code });
+					await updateByNaver({ targetYear: dayjs().format('YYYY'), code: item.code });
 					refetch();
 					showToast('info', ST.SUCCESS);
 				}

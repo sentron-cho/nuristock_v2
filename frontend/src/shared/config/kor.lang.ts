@@ -135,6 +135,7 @@ const KOR = {
 	ONLY_NUMBER: '숫자(0-9)만 입력 가능합니다.',
 	WANT_TO_DELETE: '삭제하시겠습니까?',
 	WANT_TO_REFRESH: '갱신하시겠습니까?',
+	WANT_TO_UPDATE_NAVER: '네이버(추정) 데이터로 업데이트 하시겠습니까?',
 
 	ERROR_PROBLEM: '문제가 발생했습니다!',
 	ERROR_UNKNOWN: '알 수 없는 오류가 발생했습니다.',

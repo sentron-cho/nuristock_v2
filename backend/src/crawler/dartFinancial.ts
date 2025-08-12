@@ -1,11 +1,13 @@
 import axios from "axios";
 import { getCorpCodeByStock } from "./dartCorpmap.js";
+import { REST_API } from "../types/url.js";
+import { saveText } from "../lib/writefile.js";
 
-const DART_BASE = "https://opendart.fss.or.kr/api";
 const TIME_OUT = 15 * 1000;
-const URL_EQUITY = `${DART_BASE}/fnlttMultiAcnt.json`;
-const URL_ROE = `${DART_BASE}/fnlttSinglIndx.json`;
-const URL_SHARES = `${DART_BASE}/stockTotqySttus.json`;
+
+const URL_EQUITY = REST_API.DART_EQUITY;
+const URL_ROE = REST_API.DART_ROE;
+const URL_SHARES = REST_API.DART_SHARES;
 
 /** 자본총계(BS, 연결 우선) */
 export const fetchEquity = async (corpCode8: string, year: number): Promise<number | undefined> => {
@@ -70,6 +72,8 @@ export const fetchNetIncome = async (corpCode8: string, year: number): Promise<n
     reprt_code: "11011",
   };
   const { data } = await axios.get(URL_EQUITY, { params, timeout: TIME_OUT });
+
+  console.log({ URL_EQUITY, params });
 
   // console.log("[당기순이익 ============> ]", { url, params });
   // console.log("[당기순이익 ============> ]", { data });
@@ -147,4 +151,35 @@ export const fetchLatestIssuedSharesByCorp = async (
   }
 
   return { year: 0, reprtCode: "11011", reprtName: "", shares: 0 };
+};
+
+/** 종목코드(6자리) 기준 사업보고서 가져오기 */
+export const getDartReportByStock = async (code6: string, year: number): Promise<unknown> => {
+  console.log("[getDartReportByStock]", { code6, year });
+
+  const corpCode = await getCorpCodeByStock(code6);
+  if (!corpCode) throw new Error(`corp_code not found for stock ${code6}`);
+
+  const params = {
+    crtfc_key: process.env.DART_API_KEY,
+    corp_code: corpCode,
+    bsns_year: year,
+    reprt_code: "11011",
+  };
+
+  const { data } = await axios.get(URL_SHARES, { params, timeout: TIME_OUT });
+  // saveText("report", JSON.stringify(data));
+
+  return data?.list;
+
+  // const row = Array.isArray(data?.list) ? data.list[0] : undefined;
+  // if (!row) undefined;
+
+  // const raw = row.istc_totqy ?? row.issuetotqy ?? row?.totqy;
+  // const shares = Number(String(raw ?? "").replace(/,/g, ""));
+  // if (Number.isFinite(shares)) {
+  //   return { year, reprtCode: REPORTS?.[3].code, reprtName: REPORTS?.[3].name, shares };
+  // }
+
+  // return fetchLatestIssuedSharesByCorp(corpCode, lookbackYears);
 };

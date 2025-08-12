@@ -9,7 +9,7 @@ import { CardLineFiled } from '@features/common/ui/CardLineField.ui';
 import { useMemo } from 'react';
 import dayjs from 'dayjs';
 import { styled } from '@styles/stitches.config';
-import { IconDelete, IconEdit, } from '@entites/Icons';
+import { IconDelete, IconEdit } from '@entites/Icons';
 
 const StyledCard = styled(Card, {
 	'.body': {
@@ -35,7 +35,7 @@ export const InvestmentCard = ({
 			<Flex className='box border' direction='column'>
 				{/* 헤드 */}
 				<Flex className='head' justify={'between'}>
-					<Title title={title} flex={1} onClick={() => onClick?.(EID.SELECT, data)} />
+					<Title title={`${title}(${data?.code})`} flex={1} onClick={() => onClick?.(EID.SELECT, data)} />
 					<Flex fullWidth={false} gap={10}>
 						{!isEmpty && <IconEdit onClick={() => onClick?.(EID.UPDATE, data)} />}
 						{<IconDelete onClick={() => onClick?.(EID.CLEAR, data)} />}
@@ -45,7 +45,7 @@ export const InvestmentCard = ({
 				{/* 바디 */}
 				<Flex className='body' direction={'column'} gap={4}>
 					{isEmpty && (
-						<Flex className='empty' justify={'center'} onClick={() => onClick?.(EID.UPDATE, data)}>
+						<Flex className='empty' justify={'center'} onClick={() => onClick?.('refresh', data)}>
 							<Title title={`${dayjs().format('YYYY')}${ST.EMPTY_INVESTMENT}`} />
 						</Flex>
 					)}

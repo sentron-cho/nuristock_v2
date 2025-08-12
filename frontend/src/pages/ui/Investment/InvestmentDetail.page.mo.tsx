@@ -25,10 +25,12 @@ export const InvestmentDetailPageMo = ({
 	data,
 	onClick,
 	onRefresh,
+	onClickReport,
 }: {
 	data?: InvestmentItemType[];
 	onClick?: (eid?: string, item?: InvestmentItemType) => void;
 	onRefresh?: (eid?: string, item?: InvestmentItemType) => void;
+	onClickReport?: (eid?: string, item?: InvestmentItemType) => void;
 }) => {
 	const { groupedByName } = useInvestmentHook(data);
 
@@ -60,7 +62,7 @@ export const InvestmentDetailPageMo = ({
 				{/* 컨텐츠 */}
 				<Flex className={clsx('contents-layer')} direction={'column'}>
 					{list?.map((item) => {
-						return <InvestmentDetailCard title={item?.[0]} data={item?.[1]} onClick={onClickItem} />;
+						return <InvestmentDetailCard title={item?.[0]} data={item?.[1]} onClick={onClickItem} onClickReport={onClickReport} />;
 					})}
 				</Flex>
 			</Flex>

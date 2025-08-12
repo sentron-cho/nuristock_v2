@@ -2,7 +2,7 @@ import { Card } from '@entites/Card';
 import Flex from '@entites/Flex';
 import { Title } from '@entites/Title';
 import { InvestmentItemType } from '../api/investment.dto';
-import { IconRefresh } from '@entites/Icons';
+import { IconAddBox, IconRefresh } from '@entites/Icons';
 import { Text } from '@entites/Text';
 import { toShortCost, withCommas } from '@shared/libs/utils.lib';
 
@@ -10,10 +10,12 @@ export const InvestmentDetailCard = ({
 	title,
 	data,
 	onClick,
+	onClickReport,
 }: {
 	title?: string;
 	data?: InvestmentItemType[];
 	onClick?: (eid?: string, item?: InvestmentItemType) => void;
+	onClickReport?: (eid?: string, item?: InvestmentItemType) => void;
 }) => {
 	console.log({ data });
 	return (
@@ -34,7 +36,7 @@ export const InvestmentDetailCard = ({
 									<Text text={toShortCost(item?.brate)} />
 									<Text text={item?.profit} />
 								</Flex>
-								<IconRefresh onClick={() => onClick?.(item.sdate.toString(), item)} />
+								<IconRefresh onClick={() => onClickReport?.(item.sdate.toString(), item)} />
 							</Flex>
 						);
 					})}

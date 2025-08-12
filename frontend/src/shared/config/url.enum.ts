@@ -40,6 +40,8 @@ export const API = {
 	INVEST: `${API_ROOT}/invest`,
 	INVEST_CLEAR: `${API_ROOT}/invest/clear`,
 	INVEST_REFRESH: `${API_ROOT}/invest/refresh`,
+	INVEST_REPORT: `${API_ROOT}/invest/report`,
+	INVEST_UPDATE_BY_NAVER: `${API_ROOT}/invest/naver`,
 	PROFIT: `${API_ROOT}/profit`,
 	PROFIT_YEARS: `${API_ROOT}/profit/years`,
 	DIVIDEND: `${API_ROOT}/dividend`,

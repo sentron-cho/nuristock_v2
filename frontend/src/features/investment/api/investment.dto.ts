@@ -18,6 +18,11 @@ export interface InvestmentResponse {
 	value?: InvestmentItemType[];
 }
 
+export interface InvestmentSearchParam {
+	code: string;
+	targetYear?: string;
+}
+
 export interface InvestmentRefreshType {
 	code: string;
 	targetYear?: string;

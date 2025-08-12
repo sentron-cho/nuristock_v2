@@ -2,11 +2,16 @@ import { SqlError } from "mariadb/*";
 import URL from "../types/url.js";
 import { FastifyInstance } from "fastify";
 import { withError } from "../lib/error.js";
-import { InvestCreateType, InvestRefreshParams } from "../types/invest.type.js";
+import { InvestCreateType, InvestRefreshParams, InvestSearchParams } from "../types/invest.type.js";
 import { getYearlyFacts } from "../crawler/yearlyFactsService.js";
 import dayjs from "dayjs";
 import { makeUpdateSet } from "../lib/db.util.js";
 import { FieldValues } from "../types/common.type.js";
+import { INVEST_CRALER_TYPE } from "../types/enum.js";
+import { getDartReportByStock } from "../crawler/dartFinancial.js";
+import { getFnGuideNetIncomeE } from "../crawler/fnguideFinancial.js";
+// import { getNaverEquityAndROE } from "../crawler/naverFinancial.js";
+// import { getEquityAndRoeEstimate } from "../crawler/estimateService.js";
 
 const investRoute = (fastify: FastifyInstance) => {
   const updateInvestData = async (data?: InvestRefreshParams) => {
@@ -34,12 +39,12 @@ const investRoute = (fastify: FastifyInstance) => {
       for (const f of list) {
         let params = {
           count: f.shares,
+          ctype: INVEST_CRALER_TYPE.DART,
         } as Record<string, string | number>;
 
         f?.roe && (params["roe"] = f.roe?.toFixed(2));
         f?.equity && (params["roe"] = f.equity);
 
-        makeUpdateSet();
         const sql = `UPDATE investment set ${makeUpdateSet(params)} WHERE code = '${code}' and sdate = '${f.year}'`;
         await fastify.db.query(sql);
       }
@@ -74,11 +79,6 @@ const investRoute = (fastify: FastifyInstance) => {
 
       await updateInvestData({ code } as InvestRefreshParams);
 
-      // await fastify.db.query(`INSERT INTO invest ${makeInsertSet(req.body as FieldValues)}`);
-      // reply.status(200).send({ value: code });
-      // const latest = await fetchLatestIssuedSharesByStock("005380");
-      // console.log("[Latest Issued Shares]", latest);
-
       reply.status(200).send({ value: code });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.INVEST.ROOT }));
@@ -91,6 +91,38 @@ const investRoute = (fastify: FastifyInstance) => {
       const { code } = req.body as InvestRefreshParams;
 
       await updateInvestData(req?.body as InvestRefreshParams);
+
+      reply.status(200).send({ value: code });
+    } catch (error) {
+      reply.status(500).send(withError(error as SqlError, { tag: URL.INVEST.ROOT }));
+    }
+  });
+
+  // 가치투자 종목 항목 데이터 갱신(네이버 추정치)
+  fastify.put(URL.INVEST.UPDATE_BY_NAVER, async (req, reply) => {
+    try {
+      const { code, targetYear } = req.body as InvestRefreshParams;
+
+      // 네이버
+      // const values = await getNaverEquityAndROE(code?.replace("A", ""));
+      const values = await getFnGuideNetIncomeE(code?.replace("A", ""), dayjs().year());
+
+      console.log({ values });
+
+      // if (!values || !values?.equity || !values?.roe)
+      //   reply
+      //     .status(500)
+      //     .send(
+      //       withError({ code: "ER_NOT_UNKNOW", sqlMessage: "is not rowid!" } as SqlError, { tag: URL.INVEST.ROOT })
+      //     );
+
+      // const { netProfit, roe } = values as FieldValues;
+      // const params = { roe: roe, bs: "", profit: netProfit, brate: "", rate1: "", rate2: "", rate3: "", rate4: "" };
+      // await fastify.db.query(
+      //   `UPDATE investment SET ${makeUpdateSet(
+      //     params as FieldValues
+      //   )} WHERE code ='${code}' and sdate = '${targetYear}';`
+      // );
 
       reply.status(200).send({ value: code });
     } catch (error) {
@@ -120,7 +152,7 @@ const investRoute = (fastify: FastifyInstance) => {
       const { rowid } = req.body as InvestCreateType;
 
       // 데이터 초기화
-      const params = { roe: "", bs: "", profit: "", brate: "", rate1: "", rate2: "", rate3: "", rate4: "" };
+      const params = { roe: "", bs: "", profit: "", brate: "", rate1: "", rate2: "", rate3: "", rate4: "", ctype: "" };
       await fastify.db.query(`UPDATE investment SET ${makeUpdateSet(params as FieldValues)} WHERE rowid ='${rowid}';`);
 
       console.log({ query: `UPDATE investment SET ${makeUpdateSet(params as FieldValues)} WHERE rowid ='${rowid}';` });
@@ -145,6 +177,21 @@ const investRoute = (fastify: FastifyInstance) => {
         `UPDATE investment SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`
       );
       reply.status(200).send({ value: rowid });
+    } catch (error) {
+      reply.status(500).send(withError(error as SqlError, { tag: URL.INVEST.ROOT }));
+    }
+  });
+
+  // 가치투자 종목 사업 보고서 조회
+  fastify.get(URL.INVEST.REPORT, async (req, reply) => {
+    try {
+      const { code, targetYear } = req.query as InvestRefreshParams;
+
+      console.log("[getDartReportByStock]", { code, targetYear });
+
+      const value = await getDartReportByStock(code?.replace("A", ""), Number(targetYear));
+
+      reply.status(200).send({ value: value });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.INVEST.ROOT }));
     }
