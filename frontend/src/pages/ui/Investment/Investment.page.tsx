@@ -3,9 +3,9 @@ import { InvestmentPageMo } from './Investment.page.mo';
 import {
 	useClearInvestment,
 	useDeleteInvestment,
-	useRefreshInvestment,
 	useSelectInvestment,
 	useUpdateInvestmentByNaver,
+	// useRefreshInvestment,
 	// useCreateInvestment,
 	// useUpdateInvestment,
 } from '@features/investment/api/investment.api';
@@ -33,7 +33,7 @@ const InvestmentPage = () => {
 
 	const { mutateAsync: deleteData } = useDeleteInvestment();
 	const { mutateAsync: clearData } = useClearInvestment();
-	const { mutateAsync: refreshData } = useRefreshInvestment();
+	// const { mutateAsync: refreshData } = useRefreshInvestment();
 	const { mutateAsync: updateByNaver } = useUpdateInvestmentByNaver();
 	// const { mutateAsync: createData } = useCreateInvestment();
 	// const { mutateAsync: updateData } = useUpdateInvestment();
@@ -89,7 +89,7 @@ const InvestmentPage = () => {
 		}
 	};
 
-	const onRefresh = (eid?: string, item?: InvestmentItemType) => {
+	const onRefresh = (_eid?: string, item?: InvestmentItemType) => {
 		showConfirm({
 			content: ST.WANT_TO_UPDATE_NAVER,
 			onClose: async (isOk) => {

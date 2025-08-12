@@ -2,7 +2,7 @@ import { Card } from '@entites/Card';
 import Flex from '@entites/Flex';
 import { Title } from '@entites/Title';
 import { InvestmentItemType } from '../api/investment.dto';
-import { IconAddBox, IconRefresh } from '@entites/Icons';
+import { IconRefresh } from '@entites/Icons';
 import { Text } from '@entites/Text';
 import { toShortCost, withCommas } from '@shared/libs/utils.lib';
 
