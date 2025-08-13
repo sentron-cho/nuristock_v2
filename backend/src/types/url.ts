@@ -43,19 +43,21 @@ export default URL;
 const DART_BASE = "https://opendart.fss.or.kr/api";
 const FNGUIDE_ROOT = "https://comp.fnguide.com";
 const DAUM_ROOT = "https://finance.daum.net";
+const NAVER_ROOT = `https://finance.naver.com`;
 
 export const REST_API = {
-  NAVER_ROOT: `https://finance.naver.com/item/main.naver`,
-  NAVER_COINFO: `https://finance.naver.com/item/coinfo.naver`,
+  NAVER_ROOT: `${NAVER_ROOT}`,
+  NAVER_MAIN: `${NAVER_ROOT}/item/main.naver`,
 
   DART_BASE: `${DART_BASE}`,
+  // 자산총계 부채총계 자본총계 매출액 영업이익 당기순이익
   DART_EQUITY: `${DART_BASE}/fnlttMultiAcnt.json`,
   DART_ROE: `${DART_BASE}/fnlttSinglIndx.json`,
   DART_SHARES: `${DART_BASE}/stockTotqySttus.json`,
 
   FNGUIDE_ROOT: `${FNGUIDE_ROOT}/`,
-  FNGUIDE_BASE: `${FNGUIDE_ROOT}/SVO2/ASP/SVD_Consensus.asp`,
+  FNGUIDE_MAIN: `${FNGUIDE_ROOT}/SVO2/ASP/SVD_Main.asp`,
 
   DAUM_ROOT: `${DAUM_ROOT}`,
-  DAUM_BASE: `${DAUM_ROOT}/quotes`,
+  DAUM_QUOTES: `${DAUM_ROOT}/quotes`,
 };

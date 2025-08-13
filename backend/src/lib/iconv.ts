@@ -1,5 +1,6 @@
 import axios from 'axios';
 import iconv from 'iconv-lite';
+import { TIME_OUT } from '../types/constants.js';
 
 const sniffCharset = (html: string, contentType?: string) => {
   // 1) Content-Type 우선
@@ -18,7 +19,7 @@ const sniffCharset = (html: string, contentType?: string) => {
 export const fetchHtmlDecoded = async (url: string): Promise<string> => {
   const res = await axios.get<ArrayBuffer>(url, {
     responseType: 'arraybuffer',
-    timeout: 15000,
+    timeout: TIME_OUT,
     // 네이버 호환 헤더
     headers: {
       'User-Agent':

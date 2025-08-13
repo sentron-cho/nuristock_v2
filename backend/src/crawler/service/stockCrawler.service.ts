@@ -1,9 +1,9 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { FastifyInstance } from "fastify";
-import { FieldValues } from "../types/common.type";
-import { makeUpdateSet } from "../lib/db.util.js";
-import dayjs from "../lib/dayjs.js";
+import { FieldValues } from "../../types/common.type";
+import { makeUpdateSet } from "../../lib/db.util.js";
+import dayjs from "../../lib/dayjs.js";
 
 // const stocks = ["A000270", "A003490", "A005380", "A005490"];
 
@@ -58,7 +58,7 @@ const END_TIME = 16; // 오후 4
 const INTERVAL_TIME = 5 * 60 * 1000; // 5분마다
 
 // 주식 현재가 시세 크롤링
-export const startStockCollector = (fastify: FastifyInstance) => {
+export const startStockSiseService = (fastify: FastifyInstance) => {
   const fetchAllStocks = async () => {
     const now = dayjs().tz('Asia/Seoul');
     const hour = now.hour();

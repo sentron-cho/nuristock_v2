@@ -18,6 +18,7 @@ export const InvestmentDetailCard = ({
 	onClickReport?: (eid?: string, item?: InvestmentItemType) => void;
 }) => {
 	console.log({ data });
+
 	return (
 		<Card>
 			<Flex className='box border' direction='column'>
@@ -27,14 +28,16 @@ export const InvestmentDetailCard = ({
 				</Flex>
 				<Flex className='body' direction={'column'} gap={4}>
 					{data?.map((item) => {
+						const profit = toShortCost(item?.profit);
+						
 						return (
 							<Flex flex={1} justify={'between'}>
 								<Flex gap={10}>
 									<Title title={item?.sdate} />
 									<Text text={item?.roe} />
 									<Text text={withCommas(item?.count)} />
-									<Text text={toShortCost(item?.brate)} />
-									<Text text={item?.profit} />
+									<Text text={`${profit?.value} ${profit?.unit}`} />
+									<Text text={`${item?.brate}%`} />
 								</Flex>
 								<IconRefresh onClick={() => onClickReport?.(item.sdate.toString(), item)} />
 							</Flex>

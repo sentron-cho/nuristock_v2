@@ -2,7 +2,7 @@ import { Card } from '@entites/Card';
 import Flex from '@entites/Flex';
 import { Title } from '@entites/Title';
 import { InvestmentItemType } from '../api/investment.dto';
-import { withCommas } from '@shared/libs/utils.lib';
+import { toShortCost, withCommas } from '@shared/libs/utils.lib';
 import { ST } from '@shared/config/kor.lang';
 import { EID } from '@shared/config/default.config';
 import { CardLineFiled } from '@features/common/ui/CardLineField.ui';
@@ -55,7 +55,11 @@ export const InvestmentCard = ({
 							<CardLineFiled title={ST.ROE} value={data?.roe} suffix={{ value: '%' }} />
 							<CardLineFiled title={ST.BASE_RATE} value={withCommas(data?.brate)} suffix={{ value: '%' }} />
 							<CardLineFiled title={ST.STOCKS_COUNT} value={withCommas(data?.count)} suffix={{ value: ST.JU }} />
-							<CardLineFiled title={ST.EXCESS_PROFIT} value={data?.profit} />
+							<CardLineFiled
+								title={ST.EXCESS_PROFIT}
+								value={toShortCost(data?.profit)?.value}
+								suffix={{ value: toShortCost(data?.profit)?.unit }}
+							/>
 							<CardLineFiled title={ST.BS} value={data?.bs} />
 						</Flex>
 					)}

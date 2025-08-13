@@ -6,7 +6,7 @@ import mystockRoute from "./routes/mystock.route.js";
 import marketRoute from "./routes/market.route.js";
 import profitRoute from "./routes/profit.route.js";
 import diaryRoute from "./routes/diary.route.js";
-import { startStockCollector } from "./crawler/stockCollector.js";
+import { startStockSiseService } from "./crawler/service/stockCrawler.service.js";
 import dividendRoute from "./routes/dividend.route.js";
 import appRoute from "./routes/app.route.js";
 import investRoute from "./routes/invest.route.js";
@@ -43,9 +43,8 @@ await fastify.register(investRoute); // 가치투자
 
 // 크롤링 작업 시작
 fastify.ready().then(() => {
-  startStockCollector(fastify); // DB 주입
+  startStockSiseService(fastify); // DB 주입
 });
-// startStockCollector();
 
 fastify.get("/", async (req, reply) => {
   return { hello: "world" };

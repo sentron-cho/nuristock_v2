@@ -45,20 +45,39 @@ export const toShortCost = (v?: number | string) => {
 	let num = Number(v);
 	if (num > 99999999999) {
 		// 조원 ~
-		return (num / 1000000000000).toFixed(1) + `${COST.JO}${COST.WON}`;
+		return { value: (num / 1000000000000).toFixed(1), unit: `${COST.JO}${COST.WON}` };
 	} else if (num > 99999999) {
 		// 억원 ~
-		return (num / 100000000).toFixed(1) + `${COST.EUK}${COST.WON}`;
+		return { value: (num / 100000000).toFixed(1), unit: `${COST.EUK}${COST.WON}` };
 	} else if (num > 9999999) {
 		// 천만원 ~ 억원
-		return Math.ceil(num / 10000000) + `${COST.CHEN}${COST.MAN}${COST.WON}`;
+		return { value: Math.ceil(num / 10000000), unit: `${COST.CHEN}${COST.MAN}${COST.WON}` };
 	} else if (num > 9999) {
 		// 만원 ~ 백만원
-		return Math.ceil(num / 10000) + `${COST.MAN}${COST.WON}`;
+		return { value: Math.ceil(num / 10000), unit: `${COST.MAN}${COST.WON}` };
 	} else {
-		return withCommas(v);
+		return { value: withCommas(v), nuit: '' };
 	}
 };
+
+// export const toShortCostUnit = (v?: number | string) => {
+// 	let num = Number(v);
+// 	if (num > 99999999999) {
+// 		// 조원 ~
+// 		return `${COST.JO}${COST.WON}`;
+// 	} else if (num > 99999999) {
+// 		// 억원 ~
+// 		return `${COST.EUK}${COST.WON}`;
+// 	} else if (num > 9999999) {
+// 		// 천만원 ~ 억원
+// 		return `${COST.CHEN}${COST.MAN}${COST.WON}`;
+// 	} else if (num > 9999) {
+// 		// 만원 ~ 백만원
+// 		return `${COST.MAN}${COST.WON}`;
+// 	} else {
+// 		return `${COST.WON}`;
+// 	}
+// };
 
 export const getCostColorType = (value?: string | number) => {
 	const number = Number(value);

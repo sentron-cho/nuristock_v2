@@ -55,7 +55,7 @@ export const getYearlyFacts = async (opts: {
       if (equity != null) prevEquity = equity;
     }
 
-    console.log({ code: code6, corpCode, value: rows });
+    // console.log({ code: code6, corpCode, value: rows });
 
     return { code: code6, corpCode, value: rows };
   } catch (error) {

@@ -10,3 +10,8 @@ export type FactsResult = {
   corpCode?: string; // DART 8자리 고유번호
   value: YearRow[];
 };
+
+export type ConsensusResult = {
+  netProfit?: number; // 지배주주순이익 (또는 당기순이익)
+  roe?: number; // ROE (%)
+};
