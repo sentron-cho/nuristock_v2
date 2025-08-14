@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { FastifyInstance } from "fastify";
-import { FieldValues } from "../../types/common.type";
+import { FieldValues } from "../../types/common.type.js";
 import { makeUpdateSet } from "../../lib/db.util.js";
 import dayjs from "../../lib/dayjs.js";
 import { REST_API } from "../../types/url.js";

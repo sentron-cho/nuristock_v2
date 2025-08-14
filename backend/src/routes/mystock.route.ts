@@ -3,9 +3,9 @@ import URL from "../types/url.js";
 import { FastifyInstance } from "fastify";
 import { withError } from "../lib/error.js";
 import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
-import { MyStockKeepCreateType, MyStockSellCreateType } from "../types/mystock.type.js";
-import dayjs from "dayjs";
+import { MyStockKeepCreateType, MyStockSellCreateType } from "../types/data.type.js";
 import { FieldValues } from "../types/common.type.js";
+import dayjs from "dayjs";
 
 const mystockRoute = (fastify: FastifyInstance) => {
   // 보유종목 목록 조회

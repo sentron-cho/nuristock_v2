@@ -2,7 +2,7 @@ import { SqlError } from "mariadb/*";
 import URL from "../types/url.js";
 import { FastifyInstance } from "fastify";
 import { withError } from "../lib/error.js";
-import { ProfitSearchParams } from "../types/profit.type.js";
+import { ProfitSearchParams } from "../types/data.type.js";
 
 const profitRoute = (fastify: FastifyInstance) => {
   // 년도별 손익 목록 조회

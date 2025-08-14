@@ -1,7 +1,5 @@
-import dayjs from "dayjs";
-import { FactsResult, YearRow } from "../types/crowler.type.js";
+import { FactsResult, YearRow } from "../types/data.type.js";
 import { getCorpCodeByStock } from "./dartCorpmap.js";
-// import { fetchListedSharesAtDate } from './krxClient.js';
 import {
   fetchEquity,
   fetchNetIncome,

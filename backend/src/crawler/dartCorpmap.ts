@@ -5,8 +5,9 @@ import { pipeline } from 'node:stream/promises';
 import dayjs from 'dayjs';
 import unzipper from 'unzipper';
 import { parseStringPromise } from 'xml2js';
+import { REST_API } from '../types/url.js';
 
-const DART_BASE = 'https://opendart.fss.or.kr/api';
+const DART_BASE = REST_API.DART_BASE; 
 const CACHE_DIR = process.env.DATA_CACHE_DIR || '.cache';
 
 const CORP_MAP_JSON = path.join(CACHE_DIR, 'dart_corp_map.json');

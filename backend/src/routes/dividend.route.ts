@@ -4,7 +4,7 @@ import { FastifyInstance } from "fastify";
 import { withError } from "../lib/error.js";
 import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
 import { FieldValues } from "../types/common.type.js";
-import { DividendCreateType } from "../types/dividend.type.js";
+import { DividendCreateType } from "../types/data.type.js";
 
 const dividendRoute = (fastify: FastifyInstance) => {
   // 배당 목록 조회

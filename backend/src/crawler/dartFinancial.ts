@@ -2,7 +2,6 @@ import axios from "axios";
 import { getCorpCodeByStock } from "./dartCorpmap.js";
 import { REST_API } from "../types/url.js";
 import { TIME_OUT } from "../types/constants.js";
-// import { saveText } from "../lib/writefile.js";
 
 const URL_EQUITY = REST_API.DART_EQUITY;
 const URL_ROE = REST_API.DART_ROE;

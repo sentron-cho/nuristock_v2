@@ -25,6 +25,12 @@ export const URL = {
   DIVIDEND: {
     ROOT: `${ROOT_URL}/dividend`,
   },
+  ASSET: {
+    ROOT: `${ROOT_URL}/asset`,
+  },
+  DEPOSIT: {
+    ROOT: `${ROOT_URL}/deposit`,
+  },
   INVEST: {
     ROOT: `${ROOT_URL}/invest`,
     REPORT: `${ROOT_URL}/invest/report`,

@@ -3,7 +3,7 @@ import { FastifyInstance } from "fastify";
 import { withError } from "../lib/error.js";
 import { SqlError } from "mariadb/*";
 import { makeUpdateSet } from "../lib/db.util.js";
-import { DashboardCreateType } from "../types/dashboard.type.js";
+import { DashboardCreateType } from "../types/data.type.js";
 
 const dashboardRoute = (fastify: FastifyInstance) => {
   fastify.get(URL.DASHBOARD.ROOT, async (_req, reply) => {

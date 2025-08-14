@@ -1,6 +1,6 @@
 import * as cheerio from "cheerio";
 import { REST_API } from "../../types/url.js";
-import { ConsensusResult } from "../../types/crowler.type.js";
+import { ConsensusResult } from "../../types/data.type.js";
 import { parseNumber } from "../../lib/parser.util.js";
 import { chromium } from "playwright";
 import { TIME_OUT, TIME_OUT_30 } from "../../types/constants.js";

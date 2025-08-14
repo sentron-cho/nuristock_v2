@@ -1,17 +1,16 @@
 import { SqlError } from "mariadb/*";
-import URL from "../types/url.js";
 import { FastifyInstance } from "fastify";
-import { withError } from "../lib/error.js";
-import { InvestCreateType, InvestRefreshParams } from "../types/invest.type.js";
-import { getYearlyFacts } from "../crawler/yearlyFactsService.js";
 import dayjs from "dayjs";
+import URL from "../types/url.js";
+import { withError } from "../lib/error.js";
+import { InvestCreateType, InvestRefreshParams, ConsensusResult } from "../types/data.type.js";
+import { getYearlyFacts } from "../crawler/yearlyFacts.service.js";
 import { makeUpdateSet } from "../lib/db.util.js";
 import { FieldValues } from "../types/common.type.js";
 import { INVEST_CRALER_TYPE } from "../types/enum.js";
 import { getDartReportByStock } from "../crawler/dartFinancial.js";
 import { getFnGuideConsensus } from "../crawler/service/fnguideScraper.service.js";
 import { getNaverConsensus } from "../crawler/service/naverScraper.service.js";
-import { ConsensusResult } from "../types/crowler.type.js";
 import { getNaverStockSise, updateStockSise } from "./../crawler/service/stockCrawler.service.js";
 
 const investRoute = (fastify: FastifyInstance) => {
