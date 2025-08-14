@@ -8,7 +8,7 @@ import { EID } from '@shared/config/default.config';
 import { URL } from '@shared/config/url.enum';
 import { ST } from '@shared/config/kor.lang';
 import { useDeleteDashboard, useSelectDashboard } from '@features/dashboard/api/dashboard.api';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { PopupType } from '@entites/Dialog';
 import { StockRegisterPopup } from '@features/dashboard/ui/StockRegister.popup';
 import { StockUpdaterPopup } from '@features/dashboard/ui/StockUpdater.popup';
@@ -22,10 +22,6 @@ const DashboardPage = ({ viewType = 'trade' }: { viewType?: 'trade' | 'keep' }) 
 
 	const { data, refetch } = useSelectDashboard();
 	const { mutateAsync: deleteData } = useDeleteDashboard();
-
-	useEffect(() => {
-		refetch();
-	}, []);
 
 	const onClick = (eid?: string, item?: DataType) => {
 		if (eid === EID.SELECT) {

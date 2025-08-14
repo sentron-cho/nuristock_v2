@@ -84,7 +84,7 @@ export const MyStcokTradeList = ({
 				const type = valueOfPlusMinus(sum);
 
 				return (
-					<Flex direction={'column'}>
+					<Flex direction={'column'} key={year}>
 						{/* 년도 */}
 						<Flex className={clsx('trade-sub-title')} width={200} gap={10} justify={'center'}>
 							<SubTitle width={60} className={clsx('year')} title={`${year}${ST.YEAR}`} />

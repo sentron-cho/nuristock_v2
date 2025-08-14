@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
 	MyStockKeepType as KeepType,
 	MyStockSellType,
@@ -24,9 +24,7 @@ const MyStockPage = ({ viewType }: { viewType?: 'keep' | 'trade' }) => {
 	const { mutateAsync: deleteDataBuy } = useDeleteMyStockBuy();
 	const { mutateAsync: deleteDataSell } = useDeleteMyStockSell();
 
-	useEffect(() => {
-		refetch();
-	}, []);
+	// useEffect(() => refetch(), []);
 
 	const onClickKeep = (eid?: string, item?: KeepType) => {
 		if (eid === EID.SELECT || eid === 'sell') {

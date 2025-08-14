@@ -4,8 +4,11 @@ import { reverse, sortBy } from 'lodash';
 import { OptionType } from '@shared/config/common.type';
 import { MyStockSummaryData as SummaryData } from '../config/MyStock.data';
 import { useParams } from 'react-router-dom';
+import { StorageDataKey, useStorageHook } from '@shared/hooks/useStorage.hook';
 
 export const useMyStockHook = (initialData?: MyStockResponse, viewType?: 'trade' | 'keep') => {
+	const { getLocalStorage } = useStorageHook();
+
 	const param = useParams();
 	const data = useMemo(() => initialData, [initialData]);
 
@@ -24,10 +27,14 @@ export const useMyStockHook = (initialData?: MyStockResponse, viewType?: 'trade'
 	const selected = useMemo(() => stocks?.find((a) => a.value === param?.id)?.value, [stocks, param]);
 
 	const naviOptions = useMemo(() => {
+		// 대시보드에서 정렬된 순서로 네비게이션 데이터 설정하기...
+		const sortedTrade = getLocalStorage(StorageDataKey.DASHBOARD_SORTED_TRADE) as OptionType[];
+		const sortedKeep = getLocalStorage(StorageDataKey.DASHBOARD_SORTED_KEEP) as OptionType[];
+
 		if (viewType === 'keep') {
-			return data?.stocks?.filter((a) => a.kcount)?.map((a) => ({ value: a.code, label: a.name }));
+			return sortedKeep || data?.stocks?.filter((a) => a.kcount)?.map((a) => ({ value: a.code, label: a.name }));
 		} else {
-			return data?.stocks?.filter((a) => a.ecount)?.map((a) => ({ value: a.code, label: a.name }));
+			return sortedTrade || data?.stocks?.filter((a) => a.ecount)?.map((a) => ({ value: a.code, label: a.name }));
 		}
 	}, [data?.stocks, viewType]);
 
