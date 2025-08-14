@@ -73,7 +73,8 @@ export const useInvestmentPerValueHook = (
 ) => {
 	const list = useMemo(() => {
 		return targetList?.map((target) => {
-			const value = calcValuePerShare({ ...data, rateKey: target });
+			let value = calcValuePerShare({ ...data, rateKey: target });
+
 			return {
 				target: target,
 				value: withCommas(value),

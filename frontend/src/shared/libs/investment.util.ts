@@ -67,8 +67,9 @@ export const calcValuePerShare = ({
 	const nEquity = Number(withCommas(equity, true));
 	const nRate = percentToDecimal(brate); // 8.0% -> 0.08 치환
 	const nProfit = calcExcessProfit({ equity, roe, brate } as InvestmentItemType);
-  const nTargetRate = toNumeric((rest as FieldValues)?.[rateKey]); // 8.0
-  
-  const value = (nEquity + nProfit * (nTargetRate / (1 + nRate - nTargetRate)));
+	const nTargetRate = toNumeric((rest as FieldValues)?.[rateKey]); // 8.0
+
+	const value = nEquity + nProfit * (nTargetRate / (1 + nRate - nTargetRate));
+
 	return Math.round(value / nCount);
 };
