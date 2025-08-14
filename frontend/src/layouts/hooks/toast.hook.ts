@@ -31,11 +31,11 @@ export const useToast = () => {
 		// registered: () => enqueueSnackbar(ST.REGISTERED, { variant: 'success' }), // 등록되었습니다.
 		// updated: () => enqueueSnackbar(ST.UPDATED, { variant: 'success' }), // 저장되었습니다.
 
-		success: () => enqueueSnackbar(ST.SUCCESS, { variant: 'success' }), // 처리되었습니다.
-		error: () => enqueueSnackbar(ST.FAILUER, { variant: 'error' }), // 오류가 발생했습니다.
+		toastSuccess: () => enqueueSnackbar(ST.SUCCESS, { variant: 'success' }), // 처리되었습니다.
+		toastError: () => enqueueSnackbar(ST.FAILUER, { variant: 'error' }), // 오류가 발생했습니다.
 
-		info: (msg: string) => enqueueSnackbar(msg, { variant: 'info' }),
-		warning: (msg: string) => enqueueSnackbar(msg, { variant: 'warning' }),
+		toastInfo: (msg: string) => enqueueSnackbar(msg, { variant: 'info' }),
+		toastWarning: (msg: string) => enqueueSnackbar(msg, { variant: 'warning' }),
 		showToast,
 		toast,
 	};

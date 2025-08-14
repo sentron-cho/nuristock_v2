@@ -89,7 +89,7 @@ export const MyStockPageMo = ({
 	onClickKeep?: (eid?: string, item?: MyStockKeepType) => void;
 	onClickTrade?: (eid?: string, item?: MyStockSellType) => void;
 }) => {
-	const { navigate, param } = useCommonHook();
+	const { navigate, param, toastInfo } = useCommonHook();
 	const { keepList, tradeList, selected, summaryData, naviOptions, sise } = useMyStockHook(data, viewType);
 	const { prev, next } = useNaviByOptions({ options: naviOptions, value: param?.id });
 
@@ -108,6 +108,12 @@ export const MyStockPageMo = ({
 	};
 
 	const onClickHead = () => {
+		if (viewType === 'keep' && !tradeList?.length) {
+			return toastInfo(ST.NODATA);
+		} else if (viewType === 'trade' && !keepList?.length) {
+			return toastInfo(ST.NODATA);
+		}
+
 		navigate(`${URL.MYSTOCK}/${viewType === 'keep' ? 'trade' : 'keep'}/${param?.id}`);
 	};
 

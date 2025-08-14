@@ -55,6 +55,7 @@ export const MyStcokTradeList = ({
 }) => {
 	if (!list?.length) return <NoData />;
 
+
 	const groupedByYear = useMemo(() => {
 		return list.reduce(
 			(acc, item) => {

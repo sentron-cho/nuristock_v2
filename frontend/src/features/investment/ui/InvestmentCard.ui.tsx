@@ -2,7 +2,7 @@ import { Card } from '@entites/Card';
 import Flex from '@entites/Flex';
 import { Title } from '@entites/Title';
 import { InvestmentItemType } from '../api/investment.dto';
-import { toCost, toShortCost, withCommas } from '@shared/libs/utils.lib';
+import { toCost, toShortCost, valueOfPlusMinus, withCommas } from '@shared/libs/utils.lib';
 import { ST } from '@shared/config/kor.lang';
 import { EID } from '@shared/config/default.config';
 import { CardLineFiled } from '@features/common/ui/CardLineField.ui';
@@ -13,6 +13,7 @@ import { IconDelete, IconEdit } from '@entites/Icons';
 import { calcExcessProfit, calcShareholderValue } from '@shared/libs/investment.util';
 import { Text } from '@entites/Text';
 import { PerValueField } from './InvestmentCommon.ui';
+import clsx from 'clsx';
 
 const StyledCard = styled(Card, {
 	'.body': {
@@ -71,6 +72,7 @@ export const InvestmentCard = ({
 							<CardLineFiled title={ST.STOCKS_COUNT} value={withCommas(data?.count)} suffix={{ value: ST.JU }} />
 							<CardLineFiled title={ST.EQUITY} value={parsed?.equity?.value} suffix={{ value: parsed?.equity?.unit }} />
 							<CardLineFiled
+								className={clsx(valueOfPlusMinus(Number(parsed?.profit?.value)))}
 								title={ST.EXCESS_PROFIT}
 								value={parsed?.profit?.value}
 								suffix={{ value: parsed?.profit?.unit }}

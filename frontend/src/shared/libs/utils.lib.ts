@@ -42,42 +42,29 @@ export const toCost = (v?: number | string, showZero?: boolean) => {
 };
 
 export const toShortCost = (v?: number | string) => {
-	let num = Number(v);
+	const isMinus = Number(v) < 0;
+	let num = Math.abs(Number(v));
+
+	let item: { value: string | number; unit: string };
+
 	if (num > 99999999999) {
 		// 조원 ~
-		return { value: (num / 1000000000000).toFixed(1), unit: `${COST.JO}${COST.WON}` };
+		item = { value: (num / 1000000000000).toFixed(1), unit: `${COST.JO}${COST.WON}` };
 	} else if (num > 99999999) {
 		// 억원 ~
-		return { value: (num / 100000000).toFixed(1), unit: `${COST.EUK}${COST.WON}` };
+		item = { value: (num / 100000000).toFixed(1), unit: `${COST.EUK}${COST.WON}` };
 	} else if (num > 9999999) {
 		// 천만원 ~ 억원
-		return { value: Math.ceil(num / 10000000), unit: `${COST.CHEN}${COST.MAN}${COST.WON}` };
+		item = { value: Math.ceil(num / 10000000), unit: `${COST.CHEN}${COST.MAN}${COST.WON}` };
 	} else if (num > 9999) {
 		// 만원 ~ 백만원
-		return { value: Math.ceil(num / 10000), unit: `${COST.MAN}${COST.WON}` };
+		item = { value: Math.ceil(num / 10000), unit: `${COST.MAN}${COST.WON}` };
 	} else {
-		return { value: withCommas(v), nuit: '' };
+		item = { value: withCommas(v) || '', unit: '' };
 	}
-};
 
-// export const toShortCostUnit = (v?: number | string) => {
-// 	let num = Number(v);
-// 	if (num > 99999999999) {
-// 		// 조원 ~
-// 		return `${COST.JO}${COST.WON}`;
-// 	} else if (num > 99999999) {
-// 		// 억원 ~
-// 		return `${COST.EUK}${COST.WON}`;
-// 	} else if (num > 9999999) {
-// 		// 천만원 ~ 억원
-// 		return `${COST.CHEN}${COST.MAN}${COST.WON}`;
-// 	} else if (num > 9999) {
-// 		// 만원 ~ 백만원
-// 		return `${COST.MAN}${COST.WON}`;
-// 	} else {
-// 		return `${COST.WON}`;
-// 	}
-// };
+	return { value: isMinus ? Number(item?.value) * -1 : item?.value, unit: item?.unit };
+};
 
 export const getCostColorType = (value?: string | number) => {
 	const number = Number(value);
@@ -150,13 +137,13 @@ export const percentToDecimal = (percent: string | number): number => {
  * - 없으면 NaN 반환
  */
 export const toNumeric = (value: string | number): number => {
-  if (typeof value === "number") return value;
-  if (typeof value !== "string") return NaN;
+	if (typeof value === 'number') return value;
+	if (typeof value !== 'string') return NaN;
 
-  const numericString = value
-    .replace(/[^0-9.-]/g, "")     // 숫자, 마이너스, 소수점만 허용
-    .replace(/(?!^)-/g, "")       // 맨 앞이 아닌 '-' 제거
-    .replace(/(\..*)\./g, "$1");  // 소수점 두 번 이상이면 뒤 제거
+	const numericString = value
+		.replace(/[^0-9.-]/g, '') // 숫자, 마이너스, 소수점만 허용
+		.replace(/(?!^)-/g, '') // 맨 앞이 아닌 '-' 제거
+		.replace(/(\..*)\./g, '$1'); // 소수점 두 번 이상이면 뒤 제거
 
-  return parseFloat(numericString);
+	return parseFloat(numericString);
 };
