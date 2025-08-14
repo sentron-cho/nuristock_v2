@@ -4,12 +4,12 @@ import { FastifyInstance } from "fastify";
 import { FieldValues } from "../../types/common.type";
 import { makeUpdateSet } from "../../lib/db.util.js";
 import dayjs from "../../lib/dayjs.js";
+import { REST_API } from "../../types/url.js";
 
-// const stocks = ["A000270", "A003490", "A005380", "A005490"];
-
-const getNaverStockPrice = async (code: string) => {
+export const getNaverStockSise = async (code: string) => {
   try {
-    const url = `https://finance.naver.com/item/main.nhn?code=${code}`;
+    // https://finance.naver.com/item/main.nhn
+    const url = `${REST_API.NAVER_ROOT}/item/main.nhn?code=${code}`;
     const { data } = await axios.get(url, {
       headers: {
         "User-Agent": "Mozilla/5.0",
@@ -43,7 +43,7 @@ const getNaverStockPrice = async (code: string) => {
   }
 };
 
-const updateStockSise = async (fastify: FastifyInstance, item: FieldValues) => {
+export const updateStockSise = async (fastify: FastifyInstance, item: FieldValues) => {
   try {
     const { code, sise, ecost, erate, updown, stime } = item;
     const params = { sise, ecost, erate, updown, stime };
@@ -57,9 +57,14 @@ const START_TIME = 9; // 오전 9
 const END_TIME = 16; // 오후 4
 const INTERVAL_TIME = 5 * 60 * 1000; // 5분마다
 
+const INVEST_START_TIME = 6;
+const INVEST_END_TIME = 20;
+const INVEST_INTERVAL_TIME = 60 * 60 * 1000; // 60분마다
+
 // 주식 현재가 시세 크롤링
 export const startStockSiseService = (fastify: FastifyInstance) => {
-  const fetchAllStocks = async () => {
+  // 대시보드 DB의 주식 종목에 대한 시세 크롤링
+  const fetchStocksByDashboard = async () => {
     const now = dayjs().tz('Asia/Seoul');
     const hour = now.hour();
     const day = now.day();
@@ -67,23 +72,44 @@ export const startStockSiseService = (fastify: FastifyInstance) => {
     // ⛔️ 토/일요일 제외
     const isWeekend = day === 0 || day === 6;
 
-    // console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}]`, {
-    //   now: now.format("YYYY-MM-DD HH:mm:ss"),
-    //   hour,
-    //   day,
-    //   isWeekend,
-    //   ok: !isWeekend && hour >= START_TIME && hour < END_TIME,
-    //   INTERVAL_TIME,
-    // });
-
-    // 오전 8시 ~ 오후 8시 (20시) 사이에만 실행
+    // 오전 9시 ~ 오후 4시 (16시) 사이에만 실행
     if (!isWeekend && hour >= START_TIME && hour < END_TIME) {
-      console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}] 시세 수집 시작, 크롤링`);
-      const data = await fastify.db.query("SELECT code FROM dashboard");
-      const codes = data?.map((a) => a?.code?.replace("A", ""));
+      console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}] 대시보드 시세 수집 시작, 크롤링`);
+      
+      // 대시보드 DB에 있는 종목들 가져오기
+      let data = await fastify.db.query("SELECT code FROM dashboard");
+      let codes = data?.map((a) => a?.code?.replace("A", ""));
 
-      const results = await Promise.all(codes.map(getNaverStockPrice));
-      const validResults = results.filter(Boolean);
+      // 실시간 주가 가져오기
+      let results = await Promise.all(codes.map(getNaverStockSise));
+      let validResults = results.filter(Boolean);
+
+      // DB 저장
+      for (const item of validResults) {
+        await updateStockSise(fastify, item as FieldValues);
+      }
+    }
+    // else {
+    //   console.log(`[${now.toISOString()}] 시세 수집 시간 아님, 크롤링 건너뜀`);
+    // }
+  };
+
+  // 가치투자 DB의 주식 종목에 대한 시세 크롤링
+  const fetchStocksByInvestment = async () => {
+    const now = dayjs().tz('Asia/Seoul');
+    const hour = now.hour();
+
+    // 오전 6시 ~ 오후 8시 (20시) 사이에만 실행
+    if (hour >= INVEST_START_TIME && hour < INVEST_END_TIME) {
+      console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}] 가치투자 시세 수집 시작, 크롤링`);
+      
+      // 가치투자 DB에 있는 종목들 가져오기
+      let data = await fastify.db.query("SELECT code FROM investment GROUP BY code");
+      let codes = data?.map((a) => a?.code?.replace("A", ""));
+
+      // 실시간 주가 가져오기
+      let results = await Promise.all(codes.map(getNaverStockSise));
+      let validResults = results.filter(Boolean);
 
       // console.log({ codes });
       // console.log(`[${now.toISOString()}] 시세 수집 결과:`, validResults);
@@ -92,8 +118,6 @@ export const startStockSiseService = (fastify: FastifyInstance) => {
       for (const item of validResults) {
         await updateStockSise(fastify, item as FieldValues);
       }
-
-      // TODO: DB 저장 로직 삽입
     }
     // else {
     //   console.log(`[${now.toISOString()}] 시세 수집 시간 아님, 크롤링 건너뜀`);
@@ -102,8 +126,10 @@ export const startStockSiseService = (fastify: FastifyInstance) => {
 
   // 최초 실행
   console.log(`[${dayjs().tz('Asia/Seoul').format("YYYY-MM-DD HH:mm:ss")}] start crawler!!!!!`);
-  fetchAllStocks();
+  fetchStocksByDashboard();
+  fetchStocksByInvestment();
 
-  // 1분마다 실행
-  setInterval(fetchAllStocks, INTERVAL_TIME);
+  // 5분마다 실행
+  setInterval(fetchStocksByDashboard, INTERVAL_TIME);
+  setInterval(fetchStocksByInvestment, INVEST_INTERVAL_TIME);
 };

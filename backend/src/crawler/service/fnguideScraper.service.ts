@@ -46,7 +46,7 @@ export const parseFnGuideConsensus = (tableHtml: string): ConsensusResult => {
   const roeVal = parseNumber(roeCell.attr("title") ?? roeCell.text());
 
   return {
-    netProfit: Number(niVal) * EUK, // 예: 111953.39 -> 111953.39 (title 기준)
+    equity: Number(niVal) * EUK, // 예: 111953.39 -> 111953.39 (title 기준)
     roe: roeVal, // 예: 9.94
   };
 };
@@ -88,7 +88,7 @@ export const parseFnGuideByYear = (tableHtml: string, year: number): ConsensusRe
   const roeVal = parseNumber(roeCell.attr("title") ?? roeCell.text());
 
   return {
-    netProfit: Number(niVal) * EUK, // 예: 111953.39 -> 111953.39 (title 기준)
+    equity: Number(niVal) * EUK, // 예: 111953.39 -> 111953.39 (title 기준)
     roe: roeVal, // 예: 9.94
   };
 };

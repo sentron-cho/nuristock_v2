@@ -42,6 +42,8 @@ import IconMoreHori from '@mui/icons-material/MoreHoriz';
 import IconMoreVert from '@mui/icons-material/MoreVert';
 
 import IconEditDocument from '@mui/icons-material/EditDocument';
+import IconDescription from '@mui/icons-material/Description';
+import IconDocument from '@mui/icons-material/DocumentScanner';
 
 const StyledUp = styled(IconPlayArrow, {
 	color: '$plus',
@@ -99,5 +101,7 @@ export {
 	IconRemovePlaylist,
 	IconMoreHori,
 	IconMoreVert,
-	IconEditDocument
+	IconEditDocument,
+	IconDescription,
+	IconDocument
 };

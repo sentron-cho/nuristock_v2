@@ -8,11 +8,11 @@ import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { useMemo } from 'react';
 import { URL } from '@shared/config/url.enum';
 import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
-import { NoData } from '@entites/NoData';
 import { TitleNavigation } from '@entites/TitleNavigation';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
 import { ProfitSummary } from '@features/profit/ui/ProfitSummary.ui';
 import { useNaviByOptions } from '@shared/hooks/useOptionNavi.hook';
+import { CardListWrap } from '@entites/Card';
 
 export const ProfitPerYearPageMo = () => {
 	const { param, navigate } = useCommonHook();
@@ -79,12 +79,11 @@ export const ProfitPerYearPageMo = () => {
 				{!data?.isEmpty && (
 					<Flex className='contents-layer' direction={'column'}>
 						{/* 컨텐츠 */}
-						<Flex className='card-list'>
+						<CardListWrap>
 							<ProfitCard data={data?.value} dividend={dividendData} />
-						</Flex>
+						</CardListWrap>
 					</Flex>
 				)}
-				{data?.isEmpty && <NoData />}
 			</Flex>
 		</PageContainer>
 	);

@@ -10,11 +10,10 @@ import {
 	// useUpdateInvestment,
 } from '@features/investment/api/investment.api';
 import { PopupType } from '@entites/Dialog';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { EID } from '@shared/config/default.config';
 import { ST } from '@shared/config/kor.lang';
 import { InvestmentItemType } from '@features/investment/api/investment.dto';
-import { useInvestmentHook } from '@features/investment/hook/Investment.hook';
 import { StockRegisterPopup } from '@features/dashboard/ui/StockRegister.popup';
 import { URL } from '@shared/config/url.enum';
 import { Loading } from '@entites/Loading';
@@ -29,7 +28,7 @@ const InvestmentPage = () => {
 
 	const { data, refetch } = useSelectInvestment();
 
-	const { data: list } = useInvestmentHook(data?.value);
+	// const { data: list } = useInvestmentHook(data);
 
 	const { mutateAsync: deleteData } = useDeleteInvestment();
 	const { mutateAsync: clearData } = useClearInvestment();
@@ -38,9 +37,9 @@ const InvestmentPage = () => {
 	// const { mutateAsync: createData } = useCreateInvestment();
 	// const { mutateAsync: updateData } = useUpdateInvestment();
 
-	useEffect(() => {
-		refetch();
-	}, []);
+	// useEffect(() => {
+	// 	refetch();
+	// }, []);
 
 	const onClick = (eid?: string, item?: InvestmentItemType) => {
 		if (eid === EID.SELECT) {
@@ -60,8 +59,8 @@ const InvestmentPage = () => {
 			showConfirm({
 				content: ST.WANT_TO_DELETE,
 				onClose: async (isOk) => {
-					if (isOk && item?.rowid) {
-						await deleteData(item.rowid);
+					if (isOk && item?.code) {
+						await deleteData({ code: item.code }); // 종목 전체 데이터 삭제
 						refetch();
 						showToast('info', ST.DELETEED);
 					}
@@ -93,7 +92,6 @@ const InvestmentPage = () => {
 		showConfirm({
 			content: ST.WANT_TO_UPDATE_NAVER,
 			onClose: async (isOk) => {
-				// console.log({ item });
 				if (isOk && item?.code) {
 					await updateByNaver({ targetYear: dayjs().format('YYYY'), code: item.code });
 					refetch();
@@ -110,8 +108,8 @@ const InvestmentPage = () => {
 
 	return (
 		<>
-			{isMobile && <InvestmentPageMo data={list} onClick={onClick} onRefresh={onRefresh} />}
-			{!isMobile && <InvestmentPageMo data={list} onClick={onClick} onRefresh={onRefresh} />}
+			{isMobile && <InvestmentPageMo data={data} onClick={onClick} onRefresh={onRefresh} />}
+			{!isMobile && <InvestmentPageMo data={data} onClick={onClick} onRefresh={onRefresh} />}
 
 			{/* 종목 추가 팝업 */}
 			{popup?.type === EID.ADD && (

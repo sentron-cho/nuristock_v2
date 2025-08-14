@@ -2,6 +2,8 @@ import clsx from 'clsx';
 import { PropsWithChildren } from 'react';
 import { Card as MuiCard, CardProps as MuiCardProps } from '@mui/material';
 import { styled } from '@styles/stitches.config';
+import Flex from './Flex';
+import { NoData } from './NoData';
 
 export const StyledCard = styled(MuiCard, {
 	'&.card': {
@@ -90,5 +92,16 @@ export const Card = ({ children, className, ...rest }: CardProps & PropsWithChil
 		<StyledCard {...rest} className={clsx('card', className)}>
 			{children}
 		</StyledCard>
+	);
+};
+
+export const CardListWrap = ({ children }: PropsWithChildren) => {
+	const isEmpty = !children || (children as [])?.length <= 0;
+
+	return (
+		<Flex className='card-list' flex={1} justify={'start'} align={'start'}>
+			{isEmpty && <NoData />}
+			{!isEmpty && children}
+		</Flex>
 	);
 };

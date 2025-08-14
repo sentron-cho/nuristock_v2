@@ -18,12 +18,14 @@ export const useNaviByOptions = ({ options, value }: { options?: OptionType[]; v
 	const next = useMemo(() => {
 		if (!options?.length || !value) return undefined;
 
+		
 		const index = options?.findIndex((a) => a?.value?.toString() === value?.toString()) + 1;
 		if (index >= options?.length) {
 			return options[0];
 		} else {
 			return options[index];
 		}
+
 	}, [options, value]);
 
 	// 현재

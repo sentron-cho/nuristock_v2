@@ -12,6 +12,7 @@ import { getDartReportByStock } from "../crawler/dartFinancial.js";
 import { getFnGuideConsensus } from "../crawler/service/fnguideScraper.service.js";
 import { getNaverConsensus } from "../crawler/service/naverScraper.service.js";
 import { ConsensusResult } from "../types/crowler.type.js";
+import { getNaverStockSise, updateStockSise } from "./../crawler/service/stockCrawler.service.js";
 
 const investRoute = (fastify: FastifyInstance) => {
   const updateInvestData = async (data?: InvestRefreshParams) => {
@@ -21,7 +22,6 @@ const investRoute = (fastify: FastifyInstance) => {
 
     const updateData = async (list: Record<string, ConsensusResult>, year: string) => {
       const value = list?.[year?.toString()];
-      console.log({ year, value });
 
       let params = {
         count: shares,
@@ -29,7 +29,7 @@ const investRoute = (fastify: FastifyInstance) => {
       } as Record<string, string | number>;
 
       value?.roe && (params["roe"] = value.roe?.toFixed(2));
-      value?.netProfit && (params["profit"] = value.netProfit);
+      value?.equity && (params["equity"] = value.equity);
 
       const sql = `UPDATE investment set ${makeUpdateSet(params)} WHERE code = '${code}' and sdate = '${year}'`;
       await fastify.db.query(sql);
@@ -46,7 +46,7 @@ const investRoute = (fastify: FastifyInstance) => {
       } else {
         // 올해부터 -3년전까지 업데이트
         const years = Object.keys(consensus)?.map((a) => Number(a));
-        for (let year = years?.[0]; year <= years?.[years?.length-1]; year++) {
+        for (let year = years?.[0]; year <= years?.[years?.length - 1]; year++) {
           await updateData(consensus, year?.toString());
         }
       }
@@ -60,9 +60,11 @@ const investRoute = (fastify: FastifyInstance) => {
         `SELECT k.*, m.name as name FROM investment k JOIN market m ON k.code = m.code;`
       );
 
-      return {
-        value: value,
-      };
+      const codes = value.map((a) => `'${a.code}'`).join(","); // ✅ 문자열로 변환
+      const sise =
+        codes?.length > 0 ? await fastify.db.query(`SELECT * FROM market WHERE code in (${codes})`) : undefined;
+
+      return { value, sise };
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.INVEST.ROOT }));
     }
@@ -73,6 +75,11 @@ const investRoute = (fastify: FastifyInstance) => {
     try {
       const { code } = req.body as InvestCreateType;
 
+      if (!code)
+        return reply
+          .status(500)
+          .send(withError({ code: "ER_NOT_ROWID", sqlMessage: "is not code!" } as SqlError, { tag: URL.INVEST.ROOT }));
+
       const start = Number(dayjs().add(-3, "year").format("YYYY"));
       const end = Number(dayjs().format("YYYY"));
       const type = INVEST_CRALER_TYPE.NONE;
@@ -81,6 +88,10 @@ const investRoute = (fastify: FastifyInstance) => {
       }
 
       await updateInvestData({ code } as InvestRefreshParams);
+
+      // 시세 데이터 업데이트
+      const sise = await getNaverStockSise(code?.replace("A", ""));
+      await updateStockSise(fastify, sise as FieldValues);
 
       reply.status(200).send({ value: code });
     } catch (error) {
@@ -116,31 +127,29 @@ const investRoute = (fastify: FastifyInstance) => {
       }
 
       // 안되면 차선으로 네이버로...
-      if (!values || !values?.netProfit || !values?.roe) {
+      if (!values || !values?.equity || !values?.roe) {
         values = await getNaverConsensus(code?.replace("A", ""));
         type = INVEST_CRALER_TYPE.NAVER;
       }
 
-      if (!values || !values?.netProfit || !values?.roe)
+      if (!values || !values?.equity || !values?.roe)
         reply
           .status(500)
           .send(
             withError({ code: "ER_NOT_UNKNOW", sqlMessage: "is not rowid!" } as SqlError, { tag: URL.INVEST.ROOT })
           );
 
-      console.log("[SCRAPE_CONSENSUS]", { values });
-
       // 네이버는 당기순이익만 가져오므로 직전년도 자기자본에서 당기순이익을 더하자
       const prevYear = dayjs().add(-1, "year").format("YYYY");
       const data = await fastify.db.query(
-        `SELECT profit FROM investment WHERE code = '${code}' AND sdate = '${prevYear}' `
+        `SELECT equity FROM investment WHERE code = '${code}' AND sdate = '${prevYear}' `
       );
 
       const EUK = 100000000; // 억원
-      const { netProfit, roe } = values as FieldValues;
-      const profit = Number(netProfit) * EUK + (type === INVEST_CRALER_TYPE.NAVER ? Number(data?.[0]?.profit) : 0);
+      const { roe } = values as ConsensusResult;
+      const equity = Number(values?.equity) * EUK + (type === INVEST_CRALER_TYPE.NAVER ? Number(data?.[0]?.equity) : 0);
 
-      const params = { roe: roe, profit: profit, ctype: type };
+      const params = { roe: roe, equity: equity, ctype: type };
       await fastify.db.query(
         `UPDATE investment SET ${makeUpdateSet(
           params as FieldValues
@@ -153,17 +162,18 @@ const investRoute = (fastify: FastifyInstance) => {
     }
   });
 
-  // 가치투자 종목 항목 삭제(데이터 초기화)
+  // 가치투자 종목 항목 삭제
   fastify.delete(URL.INVEST.ROOT, async (req, reply) => {
     try {
-      // const { rowid } = req.query as InvestCreateType;
+      const { rowid, code } = req.query as InvestCreateType;
 
-      // // 데이터 초기화
-      // const params = { roe: "", bs: "", profit: "", brate: "", rate1: "", rate2: "", rate3: "", rate4: "" };
-      // await fastify.db.query(`UPDATE investment SET ${makeUpdateSet(params as FieldValues)} WHERE rowid ='${rowid}';`);
+      if (code) {
+        await fastify.db.query(`DELETE FROM investment WHERE code='${code}';`);
+      } else if (rowid) {
+        await fastify.db.query(`DELETE FROM investment WHERE rowid=${rowid};`);
+      }
 
-      // await fastify.db.query(`DELETE FROM investment WHERE rowid=${rowid};`);
-      reply.status(200).send({ value: "" });
+      reply.status(200).send({ value: code || rowid });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.INVEST.ROOT }));
     }
@@ -175,11 +185,18 @@ const investRoute = (fastify: FastifyInstance) => {
       const { rowid } = req.body as InvestCreateType;
 
       // 데이터 초기화
-      const params = { roe: "", bs: "", profit: "", brate: "", rate1: "", rate2: "", rate3: "", rate4: "", ctype: "" };
+      const params = {
+        roe: "",
+        equity: "",
+        profit: "",
+        brate: "",
+        rate1: "",
+        rate2: "",
+        rate3: "",
+        rate4: "",
+        ctype: "",
+      };
       await fastify.db.query(`UPDATE investment SET ${makeUpdateSet(params as FieldValues)} WHERE rowid ='${rowid}';`);
-
-      console.log({ query: `UPDATE investment SET ${makeUpdateSet(params as FieldValues)} WHERE rowid ='${rowid}';` });
-
       reply.status(200).send({ value: rowid });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.INVEST.ROOT }));

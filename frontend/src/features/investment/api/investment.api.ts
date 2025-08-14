@@ -29,8 +29,8 @@ export const useCreateInvestment = () => {
 export const useDeleteInvestment = () => {
 	return useMutation({
 		mutationKey: ['INVESTMENT-D01'],
-		mutationFn: async (rowid: string | number) => {
-			return await api.delete(API.INVEST, { params: { rowid } });
+		mutationFn: async ({ rowid, code }: { rowid?: string | number; code?: string }) => {
+			return await api.delete(API.INVEST, { params: { rowid, code } });
 		},
 	});
 };
@@ -105,4 +105,3 @@ export const useSelectInvestmentReport = () => {
 // 		},
 // 	});
 // }
-

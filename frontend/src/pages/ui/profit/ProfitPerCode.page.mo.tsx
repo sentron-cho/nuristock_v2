@@ -13,6 +13,7 @@ import { URL } from '@shared/config/url.enum';
 import { TitleNavigation } from '@entites/TitleNavigation';
 import { ProfitSummary } from '@features/profit/ui/ProfitSummary.ui';
 import { ProfitCard } from '@features/profit/ui/ProfitCard.ui';
+import { CardListWrap } from '@entites/Card';
 
 export const ProfitPerCodePageMo = () => {
 	const { param, navigate } = useCommonHook();
@@ -94,9 +95,9 @@ export const ProfitPerCodePageMo = () => {
 				{!data?.isEmpty && (
 					<Flex className='contents-layer' direction={'column'}>
 						{/* 컨텐츠 */}
-						<Flex className='card-list'>
+						<CardListWrap>
 							<ProfitCard viewType='code' data={data?.value} dividend={dividendData} />
-						</Flex>
+						</CardListWrap>
 					</Flex>
 				)}
 			</Flex>

@@ -12,6 +12,6 @@ export type FactsResult = {
 };
 
 export type ConsensusResult = {
-  netProfit?: number; // 지배주주순이익 (또는 당기순이익)
+  equity?: number; // 지배주주지분 (또는 자기자본) 총계
   roe?: number; // ROE (%)
 };

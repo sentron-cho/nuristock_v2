@@ -40,6 +40,7 @@ interface ContentsHeaderProps {
 	sticky?: boolean;
 	stickyTop?: number | string;
 	minHeight?: number | string;
+	className?: string;
 }
 
 export const ContentsHeader = ({
@@ -47,9 +48,10 @@ export const ContentsHeader = ({
 	sticky = true,
 	stickyTop = 40,
 	minHeight,
+	className,
 }: ContentsHeaderProps & PropsWithChildren) => {
 	return (
-		<StyledFlex className={clsx('contents-header', { sticky })}
+		<StyledFlex className={clsx('contents-header', { sticky }, className)}
 			style={{ top: sticky ? stickyTop : 'unset', minHeight: minHeight }}>
 			<Flex className='box' align={'start'} direction={'column'}>
 				{children}

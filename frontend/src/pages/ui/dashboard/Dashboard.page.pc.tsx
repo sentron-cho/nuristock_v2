@@ -10,6 +10,7 @@ import { IconAdd } from '@entites/Icons';
 import { Title } from '@entites/Title';
 import { useDashboardHook } from '@features/dashboard/hook/Dashboard.hook';
 import clsx from 'clsx';
+import { CardListWrap } from '@entites/Card';
 
 const StyledPage = styled(PageContainer, {
 	'.contents-layer': {
@@ -65,22 +66,21 @@ export const DashboardPagePc = ({
 				<Flex className='contents-layer' direction={'column'}>
 					{/* 보유 종목 */}
 					<Flex direction={'column'}>
-						{/* <Title className='card-title' title={ST.KEEP_STOCK} /> */}
-						<Flex className='card-list'>
+						<CardListWrap>
 							{sortedKeeps?.map((item) => (
 								<DashboardCard sortType={sort} key={item.code} data={item} siseData={data?.sise} onClick={onClick} />
 							))}
-						</Flex>
+						</CardListWrap>
 					</Flex>
 
 					{/* 미보유 종목 */}
 					<Flex direction={'column'}>
 						<Title className='card-title' title={ST.TRADE_LIST} />
-						<Flex className='card-list'>
+						<CardListWrap>
 							{sortedTrades?.map((item) => (
 								<DashboardCard sortType={sort} key={item.code} data={item} siseData={data?.sise} onClick={onClick} />
 							))}
-						</Flex>
+						</CardListWrap>
 					</Flex>
 				</Flex>
 			</Flex>

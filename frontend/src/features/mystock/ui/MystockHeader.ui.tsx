@@ -52,8 +52,6 @@ export const MystockHeader = ({
 	onClickNavi?: (value?: string) => void;
 	onClickAdd?: () => void;
 }) => {
-	console.log({ keeps, sells });
-	
 	const onClick = (value?: string) => {
 		onClickNavi?.(value);
 	};

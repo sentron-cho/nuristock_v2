@@ -9,11 +9,10 @@ import {
 	// useUpdateInvestment,
 } from '@features/investment/api/investment.api';
 import { PopupType } from '@entites/Dialog';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { EID } from '@shared/config/default.config';
 import { ST } from '@shared/config/kor.lang';
 import { InvestmentItemType } from '@features/investment/api/investment.dto';
-import { useInvestmentHook } from '@features/investment/hook/Investment.hook';
 import { StockRegisterPopup } from '@features/dashboard/ui/StockRegister.popup';
 import { InvestmentDetailPageMo } from './InvestmentDetail.page.mo';
 
@@ -26,15 +25,13 @@ const InvestmentDetailPage = () => {
 
 	const { data, refetch } = useSelectInvestmentDetail(param?.id as string);
 
-	const { data: list } = useInvestmentHook(data?.value);
-
 	const { mutateAsync: deleteData } = useDeleteInvestment();
 	const { mutateAsync: refreshData } = useRefreshInvestment();
 	const { mutateAsync: selectReport } = useSelectInvestmentReport();
 
-	useEffect(() => {
-		refetch();
-	}, []);
+	// useEffect(() => {
+	// 	refetch();
+	// }, []);
 
 	const onClick = (eid?: string, item?: InvestmentItemType) => {
 		if (eid === EID.SELECT) {
@@ -43,8 +40,8 @@ const InvestmentDetailPage = () => {
 			showConfirm({
 				content: ST.WANT_TO_DELETE,
 				onClose: async (isOk) => {
-					if (isOk && item?.code) {
-						await deleteData(item.code);
+					if (isOk && item?.rowid) {
+						await deleteData({rowid: item.rowid});
 						refetch();
 						showToast('info', ST.DELETEED);
 					}
@@ -69,7 +66,6 @@ const InvestmentDetailPage = () => {
 		showConfirm({
 			content: ST.WANT_TO_REFRESH,
 			onClose: async (isOk) => {
-				console.log({ item });
 				if (isOk && item?.code) {
 					await refreshData({ targetYear: eid, code: item.code });
 					refetch();
@@ -81,7 +77,7 @@ const InvestmentDetailPage = () => {
 
 	const onClickReport = async (eid?: string, item?: InvestmentItemType) => {
 		console.log('[onClickReport]', { eid, item });
-		if (!item) return;
+		if (!item || !item?.code) return;
 
 		await selectReport({ targetYear: eid, code: item.code });
 		showToast('info', ST.SUCCESS);
@@ -90,10 +86,10 @@ const InvestmentDetailPage = () => {
 	return (
 		<>
 			{isMobile && (
-				<InvestmentDetailPageMo data={list} onClick={onClick} onRefresh={onRefresh} onClickReport={onClickReport} />
+				<InvestmentDetailPageMo data={data} onClick={onClick} onRefresh={onRefresh} onClickReport={onClickReport} />
 			)}
 			{!isMobile && (
-				<InvestmentDetailPageMo data={list} onClick={onClick} onRefresh={onRefresh} onClickReport={onClickReport} />
+				<InvestmentDetailPageMo data={data} onClick={onClick} onRefresh={onRefresh} onClickReport={onClickReport} />
 			)}
 
 			{/* 종목 추가 팝업 */}

@@ -16,7 +16,7 @@ import dayjs from 'dayjs';
 import { reverse, sortBy } from 'lodash';
 import { SubTitle } from '@entites/Title';
 import { NoData } from '@entites/NoData';
-import { Card } from '@entites/Card';
+import { Card, CardListWrap } from '@entites/Card';
 
 export const MyStcokKeepList = ({
 	list,
@@ -91,7 +91,7 @@ export const MyStcokTradeList = ({
 						</Flex>
 
 						{/* 내역 */}
-						<Flex className='card-list'>
+						<CardListWrap>
 							{items?.map((item) => (
 								<MyStockCard
 									viewType={'trade'}
@@ -101,7 +101,7 @@ export const MyStcokTradeList = ({
 									onClick={(eid, item) => onClick?.(eid, item as SellType)}
 								/>
 							))}
-						</Flex>
+						</CardListWrap>
 					</Flex>
 				);
 			})}

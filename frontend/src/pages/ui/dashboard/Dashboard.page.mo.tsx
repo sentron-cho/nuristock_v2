@@ -13,6 +13,7 @@ import { URL } from '@shared/config/url.enum';
 import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 import { DashboardHeader } from '@features/dashboard/ui/DashboardHeader.ui';
 import { FormProvider, useForm } from 'react-hook-form';
+import { CardListWrap } from '@entites/Card';
 
 const StyledPage = styled(PageContainer, {
 	'.contents-layer': {
@@ -117,7 +118,7 @@ export const DashboardPageMo = ({
 						{/* 보유 종목 */}
 						{viewType === 'keep' && (
 							<Flex className={clsx(swipeClass)} direction={'column'}>
-								<Flex className='card-list'>
+								<CardListWrap>
 									{sortedKeeps?.map((item) => (
 										<DashboardCard
 											viewType={viewType}
@@ -129,14 +130,14 @@ export const DashboardPageMo = ({
 											isFullDisplay={formMore}
 										/>
 									))}
-								</Flex>
+								</CardListWrap>
 							</Flex>
 						)}
 
 						{/* 미보유 종목 */}
 						{viewType === 'trade' && (
 							<Flex className={clsx(swipeClass)} direction={'column'}>
-								<Flex className='card-list'>
+								<CardListWrap>
 									{sortedTrades?.map((item) => (
 										<DashboardCard
 											viewType={viewType}
@@ -148,7 +149,7 @@ export const DashboardPageMo = ({
 											isFullDisplay={formMore}
 										/>
 									))}
-								</Flex>
+								</CardListWrap>
 							</Flex>
 						)}
 					</Flex>

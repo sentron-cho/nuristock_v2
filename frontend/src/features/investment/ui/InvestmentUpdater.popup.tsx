@@ -22,7 +22,7 @@ export const InvestmentUpdaterPopup = ({ item, onClose }: { item?: DataType; onC
 		defaultValues: {
 			count: withCommas(item?.count),
 			roe: withCommas(item?.roe),
-			bs: withCommas(item?.bs),
+			equity: withCommas(item?.equity),
 			profit: withCommas(item?.profit),
 			brate: withCommas(item?.brate),
 			rate1: withCommas(item?.rate1),
@@ -34,7 +34,7 @@ export const InvestmentUpdaterPopup = ({ item, onClose }: { item?: DataType; onC
 			z.object({
 				count: z.string().optional(),
 				roe: z.string().optional(),
-				bs: z.string().optional(),
+				equity: z.string().optional(),
 				profit: z.string().optional(),
 				brate: z.string().optional(),
 				rate1: z.string().optional(),
@@ -74,7 +74,7 @@ export const InvestmentUpdaterPopup = ({ item, onClose }: { item?: DataType; onC
 				</Flex>
 				<NumberInputForm id='count' label={ST.STOCKS_COUNT} formMethod={forms} focused />
 				<NumberInputForm id='roe' label={ST.ROE} formMethod={forms} focused />
-				<NumberInputForm id='bs' label={ST.BS} formMethod={forms} focused />
+				<NumberInputForm id='equity' label={ST.EQUITY} formMethod={forms} focused />
 				<NumberInputForm id='profit' label={ST.EXCESS_PROFIT} formMethod={forms} focused />
 				<NumberInputForm id='brate' label={ST.BASE_RATE} formMethod={forms} focused />
 			</StyledForm>

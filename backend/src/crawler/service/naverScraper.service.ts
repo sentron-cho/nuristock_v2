@@ -35,7 +35,7 @@ export const parseNaverConsensus = (tableHtml: string): ConsensusResult => {
   const roeVal = parseNumber(roeCell.attr("title") ?? roeCell.text());
 
   return {
-    netProfit: niVal, // 예: 111953.39 -> 111953.39 (title 기준)
+    equity: niVal, // 예: 111953.39 -> 111953.39 (title 기준)
     roe: roeVal, // 예: 9.94
   };
 };

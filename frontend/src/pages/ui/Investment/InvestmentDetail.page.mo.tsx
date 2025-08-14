@@ -6,12 +6,15 @@ import { EID } from '@shared/config/default.config';
 import { ST } from '@shared/config/kor.lang';
 import { IconAdd } from '@entites/Icons';
 import clsx from 'clsx';
-import { DashboardHeader } from '@features/dashboard/ui/DashboardHeader.ui';
-import { InvestmentItemType } from '@features/investment/api/investment.dto';
+import { InvestmentItemType, InvestmentResponse } from '@features/investment/api/investment.dto';
 import { useInvestmentHook } from '@features/investment/hook/Investment.hook';
-import { useMemo } from 'react';
-import { sortedByKey } from '@shared/libs/sort.lib';
 import { InvestmentDetailCard } from '@features/investment/ui/InvestmentDetailCard.ui';
+import { InvestmentDetailHeader } from './InvestmentDetailHeader.ui';
+import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
+import { URL } from '@shared/config/url.enum';
+import { useNaviByOptions } from '@shared/hooks/useOptionNavi.hook';
+import { useCommonHook } from '@shared/hooks/useCommon.hook';
+import { CardListWrap } from '@entites/Card';
 
 const StyledPage = styled(PageContainer, {
 	'.contents-layer': {
@@ -27,19 +30,31 @@ export const InvestmentDetailPageMo = ({
 	onRefresh,
 	onClickReport,
 }: {
-	data?: InvestmentItemType[];
+	data?: InvestmentResponse;
 	onClick?: (eid?: string, item?: InvestmentItemType) => void;
 	onRefresh?: (eid?: string, item?: InvestmentItemType) => void;
 	onClickReport?: (eid?: string, item?: InvestmentItemType) => void;
 }) => {
-	const { groupedByName } = useInvestmentHook(data);
-
-	const list = useMemo(() => {
-		return groupedByName && sortedByKey(Object.entries(groupedByName), 'title', true);
-	}, [groupedByName]);
+	const { navigate, param } = useCommonHook();
+	const { filteredByCode, naviOptions, selected } = useInvestmentHook(data);
+	const { prev, next } = useNaviByOptions({ options: naviOptions, value: param?.id });
 
 	const onClickItem = (eid?: string, item?: InvestmentItemType) => {
 		onRefresh?.(eid, item);
+	};
+
+	const { handlerSwipe, swipeClass } = useSwipePage({
+		onNextPage: (dir?: 'next' | 'prev') => {
+			if (dir === 'prev') {
+				return `${URL.INVEST}/${prev?.value}`;
+			} else {
+				return `${URL.INVEST}/${next?.value}`;
+			}
+		},
+	});
+
+	const onClickNavi = (value?: string) => {
+		navigate(`${URL.INVEST}/${value}`);
 	};
 
 	return (
@@ -57,13 +72,20 @@ export const InvestmentDetailPageMo = ({
 				/>
 
 				{/* 컨텐츠 헤더(요약) */}
-				<DashboardHeader />
+				<InvestmentDetailHeader
+					value={selected}
+					options={naviOptions}
+					data={filteredByCode?.[0]}
+					onClickNavi={onClickNavi}
+				/>
 
 				{/* 컨텐츠 */}
-				<Flex className={clsx('contents-layer')} direction={'column'}>
-					{list?.map((item) => {
-						return <InvestmentDetailCard title={item?.[0]} data={item?.[1]} onClick={onClickItem} onClickReport={onClickReport} />;
-					})}
+				<Flex className={clsx(swipeClass, 'contents-layer')} direction={'column'} {...handlerSwipe}>
+					<CardListWrap>
+						{filteredByCode?.map((item) => {
+							return <InvestmentDetailCard data={item} onClick={onClickItem} onClickReport={onClickReport} />;
+						})}
+					</CardListWrap>
 				</Flex>
 			</Flex>
 		</StyledPage>

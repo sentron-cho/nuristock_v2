@@ -132,3 +132,31 @@ export const valueOfweek = (date?: string | Date): string => {
 	const day = dayjs(date).toDate().getDay();
 	return weekDays[day];
 };
+
+// 9%와 같은 값을 0.09와 같은 백분율 숫자로 치환
+export const percentToDecimal = (percent: string | number): number => {
+	if (typeof percent === 'string') {
+		// 공백 제거 + % 제거 후 숫자로 변환
+		return parseFloat(percent.replace('%', '').trim()) / 100;
+	}
+
+	return percent / 100;
+};
+
+/**
+ * 문자열에서 숫자만 추출하여 number로 반환
+ * - 소수점 하나만 허용
+ * - 음수 부호 허용
+ * - 없으면 NaN 반환
+ */
+export const toNumeric = (value: string | number): number => {
+  if (typeof value === "number") return value;
+  if (typeof value !== "string") return NaN;
+
+  const numericString = value
+    .replace(/[^0-9.-]/g, "")     // 숫자, 마이너스, 소수점만 허용
+    .replace(/(?!^)-/g, "")       // 맨 앞이 아닌 '-' 제거
+    .replace(/(\..*)\./g, "$1");  // 소수점 두 번 이상이면 뒤 제거
+
+  return parseFloat(numericString);
+};
