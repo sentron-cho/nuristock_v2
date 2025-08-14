@@ -7,7 +7,7 @@ import { withCommas } from '@shared/libs/utils.lib';
 import { ST } from '@shared/config/kor.lang';
 import { useEffect, useState } from 'react';
 import { SCREEN } from '@shared/config/default.config';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 const SCREEN_TYPE = {
 	MOBILE: 'mobile',
@@ -25,6 +25,7 @@ export const Schema = {
 export const useCommonHook = () => {
 	const navigate = useNavigate();
 	const param = useParams();
+	const location = useLocation();
 
 	const [screen, setScreen] = useState<string>(SCREEN_TYPE.PC);
 	const [activePage, setActivePage] = useState(0);
@@ -61,5 +62,6 @@ export const useCommonHook = () => {
 		onBack,
 		activePage,
 		setActivePage,
+		location,
 	};
 };

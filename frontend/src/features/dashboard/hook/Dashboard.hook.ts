@@ -90,7 +90,6 @@ export const useDashboardHook = (initialData?: DashboardResponse) => {
 		const options = sorted?.map((a) => ({ value: a.code, label: a.name }));
 		options && options?.length > 0 && setLocalStorage(StorageDataKey.DASHBOARD_SORTED_KEEP, options);
 
-		console.log('[보유종목 리스트]', { sorted });
 		return sorted;
 	}, [list, sort]);
 
@@ -105,7 +104,6 @@ export const useDashboardHook = (initialData?: DashboardResponse) => {
 		const options = sorted?.map((a) => ({ value: a.code, label: a.name }));
 		options && options?.length > 0 && setLocalStorage(StorageDataKey.DASHBOARD_SORTED_TRADE, options);
 
-		console.log('[거래내역 리스트]', { sorted });
 		return sorted;
 	}, [list, sort]);
 

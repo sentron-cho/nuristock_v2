@@ -45,6 +45,10 @@ import IconEditDocument from '@mui/icons-material/EditDocument';
 import IconDescription from '@mui/icons-material/Description';
 import IconDocument from '@mui/icons-material/DocumentScanner';
 
+import IconForward from '@mui/icons-material/Forward';
+import IconRedo from '@mui/icons-material/Redo';
+import IconUndo from '@mui/icons-material/Undo';
+
 const StyledUp = styled(IconPlayArrow, {
 	color: '$plus',
 	transform: 'rotate(-90deg)',
@@ -103,5 +107,8 @@ export {
 	IconMoreVert,
 	IconEditDocument,
 	IconDescription,
-	IconDocument
+	IconDocument,
+	IconForward,
+	IconUndo,
+	IconRedo,
 };

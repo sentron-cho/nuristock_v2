@@ -172,8 +172,17 @@ export const DashboardCard = ({
 
 				{/* foot */}
 				<Flex className='foot' justify={'between'}>
-					{/* 네이버, 다음 버튼 */}
+					{/* 네이버, FNGUIDE 버튼 */}
 					<Flex gap={8} width={200}>
+						<Button
+							className='fnguide'
+							eid='fnguide'
+							icon={<IconLaunch />}
+							size='small'
+							title='FnGuide'
+							onClick={handleClick}
+							style={{ fontSize: 12, fontStretch: '80%' }}
+						/>
 						<Button
 							className='naver'
 							eid='naver'
@@ -181,8 +190,9 @@ export const DashboardCard = ({
 							size='small'
 							title='Naver'
 							onClick={handleClick}
+							style={{ fontSize: 12, fontStretch: '80%' }}
 						/>
-						<Button className='daum' eid='daum' icon={<IconLaunch />} size='small' title='Daum' onClick={handleClick} />
+						{/* <Button className='daum' eid='daum' icon={<IconLaunch />} size='small' title='Daum' onClick={handleClick} /> */}
 					</Flex>
 
 					{/* 시세 정보 표시 */}

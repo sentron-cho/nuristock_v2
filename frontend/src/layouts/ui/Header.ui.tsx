@@ -1,21 +1,174 @@
+// import React, { useEffect, useMemo, useState } from 'react';
+// import { Link, useLocation, useNavigate } from 'react-router-dom';
+// import Flex from '@entites/Flex';
+// import clsx from 'clsx';
+// import Typography from '@mui/material/Typography';
+// import IconMenu from '@mui/icons-material/Menu';
+// import IconMenuOpen from '@mui/icons-material/MenuOpen';
+// import IconLogo from '@mui/icons-material/MonetizationOn';
+// import { StyledHeader } from '../style/Header.style';
+// import { ST } from '@shared/config/kor.lang';
+// import { SCREEN } from '@shared/config/default.config';
+// import { Menus } from '@layouts/data/menu.data';
+
+// // === Component ===
+// const Header: React.FC = () => {
+// 	const navigate = useNavigate();
+// 	const { pathname } = useLocation();
+// 	const [isOpen, setOpen] = useState(false);
+
+// 	// ✅ 윈도우 리사이즈 시 메뉴 닫기
+// 	useEffect(() => {
+// 		const handleResize = () => {
+// 			const width = window.innerWidth;
+// 			width > SCREEN.MOBILE && isOpen && setOpen(false);
+// 		};
+
+// 		window.addEventListener('resize', handleResize);
+// 		return () => window.removeEventListener('resize', handleResize);
+// 	}, [isOpen]);
+
+// 	const menu = useMemo(() => Menus(), []);
+
+// 	return (
+// 		<StyledHeader>
+// 			<Flex className='header-bar' justify={'center'} width={'100vw'}>
+// 				<nav className='nav'>
+// 					{menu?.map((a) => (
+// 						<Link key={a.value} to={a.value} className={clsx('link', { active: a.value === pathname })}>
+// 							{a.label}
+// 						</Link>
+// 					))}
+// 				</nav>
+// 				<Flex className='mobile' justify={'between'}>
+// 					<Flex className='title-bar' justify={'center'} flex={1} gap={4}>
+// 						<Flex
+// 							className='box'
+// 							width={'fit-content'}
+// 							onClick={() => {
+// 								setOpen(false);
+// 								navigate('/');
+// 							}}
+// 						>
+// 							<IconLogo fontSize='medium' />
+// 							<Typography className='title'>{ST.STOCK_DIARY}</Typography>
+// 						</Flex>
+// 					</Flex>
+// 					<button className='menu-button' onClick={() => setOpen((prev) => !prev)}>
+// 						{isOpen ? <IconMenuOpen fontSize={'large'} /> : <IconMenu fontSize={'large'} />}
+// 					</button>
+// 				</Flex>
+// 			</Flex>
+
+// 			{isOpen && (
+// 				<Flex className='mobile-menu' direction={'column'}>
+// 					<Flex gap={4} className='menu-li' direction={'column'} align={'start'}>
+// 						{menu?.map((a) => (
+// 							<Link
+// 								key={a.value}
+// 								to={a.value}
+// 								className={clsx('link', { active: a.value === pathname })}
+// 								onClick={() => setOpen(false)}
+// 							>
+// 								{a.label}
+// 							</Link>
+// 						))}
+// 					</Flex>
+// 					<div className='menu-bg' onClick={() => setOpen(false)} />
+// 				</Flex>
+// 			)}
+// 		</StyledHeader>
+// 	);
+// };
+
+// export default Header;
+
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Flex from '@entites/Flex';
 import clsx from 'clsx';
 import Typography from '@mui/material/Typography';
-import IconMenu from '@mui/icons-material/Menu';
-import IconMenuOpen from '@mui/icons-material/MenuOpen';
 import IconLogo from '@mui/icons-material/MonetizationOn';
-import { StyledHeader } from '../style/Header.style';
+// import { StyledHeader } from '../style/Header.style';
 import { ST } from '@shared/config/kor.lang';
 import { SCREEN } from '@shared/config/default.config';
 import { Menus } from '@layouts/data/menu.data';
+import { URL } from '@shared/config/url.enum';
+import { IconArrowLeft, IconArrowRight, IconForward } from '@entites/Icons';
+import { styled } from '@styles/stitches.config';
+
+export const StyledHeader = styled('div', {
+	'.header-bar': {
+		userSelect: 'none',
+		position: 'sticky',
+		top: 0,
+		left: 0,
+		height: '40px',
+		backgroundColor: '$gray900',
+		color: '$white',
+		zIndex: 1200,
+
+		'.nav': {
+			display: 'flex',
+			gap: '$20',
+
+			'@sm': {
+				display: 'none',
+			},
+		},
+	},
+
+	'.link': {
+		fontSize: '1rem',
+		color: 'white',
+		textDecoration: 'none',
+		transition: 'color 0.2s',
+
+		'&:hover, &.active': {
+			color: '$warning',
+		},
+	},
+
+	'.btn-back': {
+		position: 'absolute',
+		left: 0,
+		paddingLeft: 20,
+		width: 60,
+		height: '100%',
+
+		svg: {
+			transform: 'rotate(180deg)',
+		},
+	},
+});
 
 // === Component ===
 const Header: React.FC = () => {
 	const navigate = useNavigate();
 	const { pathname } = useLocation();
 	const [isOpen, setOpen] = useState(false);
+
+	const isBackButton = useMemo(() => {
+		if (pathname.startsWith(URL.MYSTOCK)) {
+			return true;
+		} else if (pathname.startsWith(`${URL.PROFIT}/`)) {
+			return true;
+		} else if (pathname.startsWith(`${URL.INVEST}/`)) {
+			return true;
+		} else {
+			return false;
+		}
+	}, [pathname]);
+
+	const onClickBack = () => {
+		if (pathname.startsWith(URL.MYSTOCK)) {
+			navigate(URL.DASHBOARD);
+		} else if (pathname.startsWith(`${URL.PROFIT}/`)) {
+			navigate(URL.PROFIT);
+		} else if (pathname.startsWith(`${URL.INVEST}/`)) {
+			navigate(URL.INVEST);
+		}
+	};
 
 	// ✅ 윈도우 리사이즈 시 메뉴 닫기
 	useEffect(() => {
@@ -28,11 +181,12 @@ const Header: React.FC = () => {
 		return () => window.removeEventListener('resize', handleResize);
 	}, [isOpen]);
 
-	const menu = useMemo(() => Menus(), []);
+	const menu = useMemo(() => Menus(true, false), []);
 
 	return (
 		<StyledHeader>
 			<Flex className='header-bar' justify={'center'} width={'100vw'}>
+				{/* 데스크톱 메뉴 */}
 				<nav className='nav'>
 					{menu?.map((a) => (
 						<Link key={a.value} to={a.value} className={clsx('link', { active: a.value === pathname })}>
@@ -40,6 +194,8 @@ const Header: React.FC = () => {
 						</Link>
 					))}
 				</nav>
+
+				{/* 타이틀 */}
 				<Flex className='mobile' justify={'between'}>
 					<Flex className='title-bar' justify={'center'} flex={1} gap={4}>
 						<Flex
@@ -54,29 +210,15 @@ const Header: React.FC = () => {
 							<Typography className='title'>{ST.STOCK_DIARY}</Typography>
 						</Flex>
 					</Flex>
-					<button className='menu-button' onClick={() => setOpen((prev) => !prev)}>
-						{isOpen ? <IconMenuOpen fontSize={'large'} /> : <IconMenu fontSize={'large'} />}
-					</button>
 				</Flex>
-			</Flex>
 
-			{isOpen && (
-				<Flex className='mobile-menu' direction={'column'}>
-					<Flex gap={4} className='menu-li' direction={'column'} align={'start'}>
-						{menu?.map((a) => (
-							<Link
-								key={a.value}
-								to={a.value}
-								className={clsx('link', { active: a.value === pathname })}
-								onClick={() => setOpen(false)}
-							>
-								{a.label}
-							</Link>
-						))}
+				{/* 백버튼 */}
+				{isBackButton && (
+					<Flex className='btn-back' onClick={onClickBack}>
+						<IconForward />
 					</Flex>
-					<div className='menu-bg' onClick={() => setOpen(false)} />
-				</Flex>
-			)}
+				)}
+			</Flex>
 		</StyledHeader>
 	);
 };

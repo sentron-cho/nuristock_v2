@@ -13,14 +13,20 @@ export const URL = {
 	SELL: '/sell',
 	BUY: '/buy',
 	STOCKS: '/stocks',
+	MEMUS: '/menus',
 
-  // WEB: '/api',
+	// PROFIT_YEAR: '/profit/year',
+	// PROFIT_CODE: '/profit/code',
+
+	// WEB: '/api',
 	// BANKING: '/banking',
 	// CORPINFO: '/corpinfo',
 
 	REST: {
 		NAVER: 'https://finance.naver.com/item/main.nhn',
 		DAUM: 'https://finance.daum.net/quotes/',
+		FNGUIDE: (code: string) =>
+			`https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=${code}&cID=&MenuYn=Y&ReportGB=&NewMenuID=101&stkGb=701`,
 	},
 };
 

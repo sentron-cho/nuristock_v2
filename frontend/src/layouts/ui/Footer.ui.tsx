@@ -12,10 +12,15 @@ const Footer: React.FC = () => {
 	const { pathname } = useLocation();
 	const { isMobile } = useCommonHook();
 
-	const menu = useMemo(() => Menus(), [pathname]);
+	const menu = useMemo(() => Menus(false, true), [pathname]);
 
 	const onClickNav = (url: string) => {
-		navigate(url);
+		// 더보기 메뉴 화면에서 다시 더보기 메뉴 클릭시 이전 화면으로...
+		if (url === '/menus' && pathname === url) {
+			navigate(-1);
+		} else {
+			navigate(url);
+		}
 	};
 
 	if (!isMobile) return null;

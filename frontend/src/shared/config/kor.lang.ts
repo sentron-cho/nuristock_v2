@@ -169,6 +169,8 @@ const KOR = {
 		MARKET: '종목검색',
 		PROFIT: '투자손익',
 		INVEST: '가치투자',
+		MENUS: '메뉴',
+		MORE: '더보기',
 		DIVIDEND: '배당',
 
 		BANKING: '잔고',
