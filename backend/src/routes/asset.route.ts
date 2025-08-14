@@ -2,7 +2,7 @@ import { SqlError } from "mariadb/*";
 import { FastifyInstance } from "fastify";
 import { withError } from "../lib/error.js";
 import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
-import { FieldValues } from "../types/common.type.js";
+import { FieldValues } from "../types/data.type.js";
 import { AssetCreateType } from './../types/data.type.js';
 import URL from "../types/url.js";
 
