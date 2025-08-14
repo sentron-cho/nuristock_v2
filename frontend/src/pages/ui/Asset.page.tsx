@@ -13,7 +13,17 @@ import dayjs from 'dayjs';
 import { toCost } from '@shared/libs/utils.lib';
 
 const StyledPage = styled(PageContainer, {
-	'.contents-layer': {},
+	'.contents-layer': {
+		'.card-list': {
+			padding: '10px 0',
+
+			'.card': {
+				'.box': {
+					padding: '4px 10px',
+				},
+			},
+		},
+	},
 });
 
 const AssetPage = () => {
@@ -24,25 +34,23 @@ const AssetPage = () => {
 	return (
 		<>
 			<StyledPage>
-				<Flex direction={'column'}>
-					<PageTitleBar title={ST.ASSET} />
+				<PageTitleBar title={ST.ASSET} />
 
-					<Flex className='contents-layer' direction={'column'}>
-						<CardListWrap>
-							<Card className={clsx('card')}>
-								<Flex className={clsx('box border')} direction='column' gap={4}>
-									{list?.map((item) => {
-										return (
-											<Flex justify={'between'}>
-												<SubTitle title={dayjs(item.sdate).format('YYYY-MM-DD')} />
-												<Text text={toCost(item?.price)} />
-											</Flex>
-										);
-									})}
-								</Flex>
-							</Card>
-						</CardListWrap>
-					</Flex>
+				<Flex className='contents-layer' direction={'column'} flex={1}>
+					<CardListWrap>
+						<Card className={clsx('card')}>
+							<Flex className={clsx('box border')} direction='column' gap={4}>
+								{list?.map((item) => {
+									return (
+										<Flex className='row' justify={'between'}>
+											<SubTitle title={dayjs(item.sdate).format('YYYY-MM-DD')} />
+											<Text text={toCost(item?.price)} />
+										</Flex>
+									);
+								})}
+							</Flex>
+						</Card>
+					</CardListWrap>
 				</Flex>
 			</StyledPage>
 		</>

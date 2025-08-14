@@ -95,13 +95,17 @@ export const Card = ({ children, className, ...rest }: CardProps & PropsWithChil
 	);
 };
 
+export const StyledCardList = styled(Flex, {
+	// padding: '10px 0',
+})
+
 export const CardListWrap = ({ children }: PropsWithChildren) => {
 	const isEmpty = !children || (children as [])?.length <= 0;
 
 	return (
-		<Flex className='card-list' flex={1} justify={'start'} align={'start'}>
+		<StyledCardList className='card-list' flex={1} justify={'start'} align={'start'}>
 			{isEmpty && <NoData />}
 			{!isEmpty && children}
-		</Flex>
+		</StyledCardList>
 	);
 };

@@ -1,21 +1,25 @@
-import axios from 'axios';
-import * as cheerio from 'cheerio';
+import axios from "axios";
+import * as cheerio from "cheerio";
+import { FieldValues } from "../types/data.type";
+import dayjs from "dayjs";
 
-export const makeUpdateSet = (values?: Record<string, unknown>) => {
+export const makeUpdateSet = (values?: FieldValues) => {
   if (!values) return "";
 
-  return Object.keys(values)
-    .map((key) => `${key} = '${values[key]}'`)
+  const params = { utime: dayjs().format("YYYY-MM-DD HH:mm:ss"), ...values } as FieldValues;
+
+  return Object.keys(params)
+    .map((key) => `${key} = '${params[key]}'`)
     .join(", ");
 };
 
-export const makeInsertSet = (values?: Record<string, unknown>) => {
+export const makeInsertSet = (values?: FieldValues) => {
   if (!values) return "";
 
   const columns = Object.keys(values)
     .map((key) => `${key}`)
     .join(", ");
-  
+
   const params = Object.keys(values)
     .map((key) => `'${values[key]}'`)
     .join(", ");
@@ -28,20 +32,20 @@ export const getNaverPrice = async (code: string) => {
     const url = `https://finance.naver.com/item/main.nhn?code=${code}`;
     const { data } = await axios.get(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0', // 봇 차단 우회
+        "User-Agent": "Mozilla/5.0", // 봇 차단 우회
       },
     });
 
     const $ = cheerio.load(data);
-    const priceText = $('.no_today .blind').first().text();
+    const priceText = $(".no_today .blind").first().text();
 
-    console.log({url, priceText});
+    console.log({ url, priceText });
 
     return {
       code,
-      price: Number(priceText.replace(/,/g, '')),
+      price: Number(priceText.replace(/,/g, "")),
     };
   } catch (error) {
-    throw new Error('크롤링 실패');
+    throw new Error("크롤링 실패");
   }
 };

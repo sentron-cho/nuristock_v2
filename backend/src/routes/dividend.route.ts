@@ -3,7 +3,9 @@ import URL from "../types/url.js";
 import { FastifyInstance } from "fastify";
 import { withError } from "../lib/error.js";
 import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
-import { DividendCreateType, FieldValues } from "../types/data.type.js";
+import { DepositCreateType, DividendCreateType, FieldValues } from "../types/data.type.js";
+import { createDepositData } from "./deposit.route.js";
+import { DEPOSIT_TYPE } from "../types/enum.js";
 
 const dividendRoute = (fastify: FastifyInstance) => {
   // 배당 목록 조회
@@ -26,8 +28,15 @@ const dividendRoute = (fastify: FastifyInstance) => {
   // 배당 항목 추가
   fastify.post(URL.DIVIDEND.ROOT, async (req, reply) => {
     try {
-      const { code } = req.body as DividendCreateType;
+      const { code, price } = req.body as DividendCreateType;
       await fastify.db.query(`INSERT INTO divid ${makeInsertSet(req.body as FieldValues)}`);
+
+      // 매도금 예수금에 반영(가감)
+      await createDepositData(fastify, {
+        stype: DEPOSIT_TYPE.DIVIDEND,
+        price: Number(price),
+      } as DepositCreateType);
+
       reply.status(200).send({ value: code });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.DIVIDEND.ROOT }));

@@ -5,3 +5,11 @@ export enum INVEST_CRALER_TYPE {
   MANUAL = 'manual',
   FNGUIDE = 'fnguide',
 }
+
+export enum DEPOSIT_TYPE {
+	NONE = 'none',
+	MENUAL = 'menual',
+	SELL = 'sell',
+	BUY = 'buy',
+	DIVIDEND = 'dividend',
+}

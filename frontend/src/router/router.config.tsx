@@ -14,7 +14,7 @@ import MyStockPage from '@page/ui/Mystock/MyStock.page';
 import InvestmentDetailPage from '@page/ui/Investment/InvestmentDetailPage';
 import MenuPage from '@page/ui/Menu.page';
 import AssetPage from '@page/ui/Asset.page';
-import DepositPage from '@page/ui/Deposit.page';
+import DepositPage from '@page/ui/deposit/Deposit.page';
 
 const router = createBrowserRouter([
 	{

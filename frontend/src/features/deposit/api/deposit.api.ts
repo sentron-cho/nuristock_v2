@@ -28,8 +28,8 @@ export const useCreateDeposit = () => {
 export const useDeleteDeposit = () => {
 	return useMutation({
 		mutationKey: ['DEPOSIT-D01'],
-		mutationFn: async (params: { rowid: number; code: string }) => {
-			return await api.delete(API.DEPOSIT, { params });
+		mutationFn: async (rowid: number) => {
+			return await api.delete(API.DEPOSIT, { params: { rowid } });
 		},
 	});
 };

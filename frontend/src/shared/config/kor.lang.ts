@@ -213,6 +213,8 @@ const KOR = {
 	BASE_09: '평가율(W0.9)',
 	BASE_10: '평가율(W1.0)',
 
+	HEND_WRITING: '수기',
+
 	// DASHBOARD: {
 	// 	ADD: '종목 추가',
 

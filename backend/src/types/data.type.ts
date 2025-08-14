@@ -143,8 +143,8 @@ export interface AssetSearchParams {
 
 export interface DepositCreateType {
 	rowid?: number,
-	stype: string,
-	sdate: string,
+	stype?: string,
+	sdate?: string,
 	price: number,
 }
 

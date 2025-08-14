@@ -3,8 +3,10 @@ import URL from "../types/url.js";
 import { FastifyInstance } from "fastify";
 import { withError } from "../lib/error.js";
 import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
-import { MyStockKeepCreateType, MyStockSellCreateType, FieldValues } from "../types/data.type.js";
+import { MyStockKeepCreateType, MyStockSellCreateType, FieldValues, DepositCreateType } from "../types/data.type.js";
 import dayjs from "dayjs";
+import { createDepositData } from "./deposit.route.js";
+import { DEPOSIT_TYPE } from "../types/enum.js";
 
 const mystockRoute = (fastify: FastifyInstance) => {
   // 보유종목 목록 조회
@@ -72,7 +74,7 @@ const mystockRoute = (fastify: FastifyInstance) => {
   // 주식 매수 추가
   fastify.post(URL.MYSTOCK.BUY, async (req, reply) => {
     try {
-      const { code, scost, sdate } = req.body as MyStockKeepCreateType;
+      const { code, scost, sdate, count } = req.body as MyStockKeepCreateType;
 
       const sise = await fastify.db.query(`SELECT sise  FROM market WHERE code='${code}';`);
 
@@ -98,6 +100,9 @@ const mystockRoute = (fastify: FastifyInstance) => {
 
       await fastify.db.query(`INSERT INTO keeps ${makeInsertSet(req.body as FieldValues)};`);
       await updateDashboardKeep(code);
+      
+      // 매수금 예수금에 반영(차감)
+      await createDepositData(fastify, { stype: DEPOSIT_TYPE.BUY, price: Number(scost) * Number(count) * -1 } as DepositCreateType);
 
       reply.status(200).send({ value: code });
     } catch (error) {
@@ -139,7 +144,7 @@ const mystockRoute = (fastify: FastifyInstance) => {
   // 주식 매도 추가
   fastify.post(URL.MYSTOCK.SELL, async (req, reply) => {
     try {
-      const { code, rowid, ecost } = req.body as MyStockSellCreateType;
+      const { code, rowid, ecost, count } = req.body as MyStockSellCreateType;
 
       const params = JSON.parse(JSON.stringify(req?.body));
       delete params["rowid"];
@@ -147,6 +152,9 @@ const mystockRoute = (fastify: FastifyInstance) => {
       await fastify.db.query(`INSERT INTO sells ${makeInsertSet(params as Record<string, string>)};`);
       await fastify.db.query(`DELETE from keeps WHERE rowid=${rowid};`);
       await updateDashboardKeep(code, true);
+
+      // 매도금 예수금에 반영(가감)
+      await createDepositData(fastify, { stype: DEPOSIT_TYPE.SELL, price: Number(ecost) * Number(count) } as DepositCreateType);
 
       // 시세 업데이트
       const siseParams = {

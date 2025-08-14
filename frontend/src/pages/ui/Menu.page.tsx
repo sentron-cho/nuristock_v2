@@ -48,7 +48,6 @@ const MenuPage = () => {
 	}, [pathname]);
 
 	const onClick = (item: FieldValues) => {
-		console.log(item);
 		item?.value && navigate(item?.value);
 	};
 

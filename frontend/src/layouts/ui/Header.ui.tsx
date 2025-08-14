@@ -1,24 +1,27 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Flex from '@entites/Flex';
 import clsx from 'clsx';
 import Typography from '@mui/material/Typography';
 import IconLogo from '@mui/icons-material/MonetizationOn';
 import { ST } from '@shared/config/kor.lang';
-import { SCREEN } from '@shared/config/default.config';
 import { Menus } from '@layouts/data/menu.data';
 import { URL } from '@shared/config/url.enum';
 import { IconForward } from '@entites/Icons';
 import { styled } from '@styles/stitches.config';
 
 export const StyledHeader = styled('div', {
+	backgroundColor: '$gray900',
+
 	'.header-bar': {
+		maxWidth: '$pageWidth',
+		margin: 'auto',
 		userSelect: 'none',
 		position: 'sticky',
 		top: 0,
 		left: 0,
 		height: '40px',
-		backgroundColor: '$gray900',
+
 		color: '$white',
 		zIndex: 1200,
 
@@ -30,6 +33,11 @@ export const StyledHeader = styled('div', {
 				display: 'none',
 			},
 		},
+	},
+
+	'.title-bar': {
+		position: 'absolute',
+		left: 20,
 	},
 
 	'.link': {
@@ -54,13 +62,19 @@ export const StyledHeader = styled('div', {
 			transform: 'rotate(180deg)',
 		},
 	},
+
+	'@md': {
+		'.title-bar': {
+			position: 'unset',
+			justifyContent: 'center',
+		}
+	}
 });
 
 // === Component ===
 const Header: React.FC = () => {
 	const navigate = useNavigate();
 	const { pathname } = useLocation();
-	const [isOpen, setOpen] = useState(false);
 
 	const isBackButton = useMemo(() => {
 		if (pathname.startsWith(URL.MYSTOCK)) {
@@ -84,17 +98,6 @@ const Header: React.FC = () => {
 		}
 	};
 
-	// ✅ 윈도우 리사이즈 시 메뉴 닫기
-	useEffect(() => {
-		const handleResize = () => {
-			const width = window.innerWidth;
-			width > SCREEN.MOBILE && isOpen && setOpen(false);
-		};
-
-		window.addEventListener('resize', handleResize);
-		return () => window.removeEventListener('resize', handleResize);
-	}, [isOpen]);
-
 	const menu = useMemo(() => Menus(true, false), []);
 
 	return (
@@ -110,19 +113,15 @@ const Header: React.FC = () => {
 				</nav>
 
 				{/* 타이틀 */}
-				<Flex className='mobile' justify={'between'}>
-					<Flex className='title-bar' justify={'center'} flex={1} gap={4}>
-						<Flex
-							className='box'
-							width={'fit-content'}
-							onClick={() => {
-								setOpen(false);
-								navigate('/');
-							}}
-						>
-							<IconLogo fontSize='medium' />
-							<Typography className='title'>{ST.STOCK_DIARY}</Typography>
-						</Flex>
+				<Flex fullWidth={false} className={clsx('title-bar')} flex={1} gap={4}>
+					<Flex
+						className='box'
+						width={'fit-content'}
+						onClick={() => navigate('/')}
+						gap={4}
+					>
+						<IconLogo fontSize='medium' />
+						<Typography className='title'>{ST.STOCK_DIARY}</Typography>
 					</Flex>
 				</Flex>
 

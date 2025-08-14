@@ -84,12 +84,6 @@ const DividendPage = () => {
 				<Flex direction={'column'}>
 					<PageTitleBar
 						title={ST.DIVIDEND_HISTORY}
-						// selectProps={{
-						// 	options: stocks,
-						// 	value: selected,
-						// 	onChange: onChangeStock,
-						// 	border: false,
-						// }}
 						buttonProps={{
 							eid: EID.ADD,
 							icon: <IconAdd />,

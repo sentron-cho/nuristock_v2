@@ -18,11 +18,7 @@ import { OptionType } from '@shared/config/common.type';
 import { AutoCompleteForm } from '@entites/AutoComplete';
 import { SelectOptionType } from '@entites/SelectForm';
 
-const StyledForm = styled(Flex, {
-	input: {
-		// textAlign: 'right',
-	},
-});
+const StyledForm = styled(Flex, {});
 
 export const DividendRegisterPopup = ({
 	stocks,
