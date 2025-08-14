@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import URL from "../types/url.js";
 import { withError } from "../lib/error.js";
 import { InvestCreateType, InvestRefreshParams, ConsensusResult, FieldValues } from "../types/data.type.js";
-import { getYearlyFacts } from "../crawler/yearlyFacts.service.js";
+import { getYearlyFacts } from "../crawler/service/yearlyFacts.service.js";
 import { makeUpdateSet } from "../lib/db.util.js";
 import { INVEST_CRALER_TYPE } from "../types/enum.js";
 import { getDartReportByStock } from "../crawler/dartFinancial.js";

@@ -13,6 +13,8 @@ import ProfitPerYearPage from '../pages/ui/profit/ProfitPerYear.page';
 import MyStockPage from '@page/ui/Mystock/MyStock.page';
 import InvestmentDetailPage from '@page/ui/Investment/InvestmentDetailPage';
 import MenuPage from '@page/ui/Menu.page';
+import AssetPage from '@page/ui/Asset.page';
+import DepositPage from '@page/ui/Deposit.page';
 
 const router = createBrowserRouter([
 	{
@@ -78,6 +80,16 @@ const router = createBrowserRouter([
 				path: 'dividend',
 				element: <PageLayout />,
 				children: [{ index: true, element: <DividendPage /> }],
+			},
+			{
+				path: 'asset',
+				element: <PageLayout />,
+				children: [{ index: true, element: <AssetPage /> }],
+			},
+			{
+				path: 'deposit',
+				element: <PageLayout />,
+				children: [{ index: true, element: <DepositPage /> }],
 			},
 			{
 				path: 'menus',

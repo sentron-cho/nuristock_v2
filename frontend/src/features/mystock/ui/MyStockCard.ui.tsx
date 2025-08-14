@@ -30,7 +30,7 @@ export const MyStcokKeepList = ({
 	if (!list?.length) return <NoData />;
 
 	return (
-		<Flex className={'card-list'}>
+		<CardListWrap>
 			{list?.map((item) => (
 				<MyStockCard
 					viewType={'keep'}
@@ -40,7 +40,7 @@ export const MyStcokKeepList = ({
 					onClick={(eid, item) => onClick?.(eid, item as KeepType)}
 				/>
 			))}
-		</Flex>
+		</CardListWrap>
 	);
 };
 

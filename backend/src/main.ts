@@ -1,15 +1,18 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import dbPlugin from "./plugins/db.js"; // 🔥 DB 플러그인 추가
+import { startStockSiseService } from "./crawler/service/stockCrawler.service.js";
+import { startAssetTask } from "./task/asset.task.js";
 import dashboardRoute from "./routes/dashboard.route.js";
 import mystockRoute from "./routes/mystock.route.js";
 import marketRoute from "./routes/market.route.js";
 import profitRoute from "./routes/profit.route.js";
 import diaryRoute from "./routes/diary.route.js";
-import { startStockSiseService } from "./crawler/service/stockCrawler.service.js";
 import dividendRoute from "./routes/dividend.route.js";
 import appRoute from "./routes/app.route.js";
 import investRoute from "./routes/invest.route.js";
+import assetRoute from "./routes/asset.route.js";
+import depositRoute from "./routes/deposit.route.js";
 
 // dotenv.config({ path: '.env' });
 
@@ -40,10 +43,17 @@ await fastify.register(profitRoute); // 투자손익
 await fastify.register(diaryRoute); // 다이어리
 await fastify.register(dividendRoute); // 배당
 await fastify.register(investRoute); // 가치투자
+await fastify.register(assetRoute); // 투자금액
+await fastify.register(depositRoute); // 예수금
 
 // 크롤링 작업 시작
 fastify.ready().then(() => {
   startStockSiseService(fastify); // DB 주입
+});
+
+// 태스크 작업 시작
+fastify.ready().then(() => {
+  startAssetTask(fastify); // DB 주입
 });
 
 fastify.get("/", async (req, reply) => {

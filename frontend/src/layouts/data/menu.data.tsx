@@ -1,6 +1,6 @@
 import { ST } from '@shared/config/kor.lang';
 import { URL } from '@shared/config/url.enum';
-import { IconDiary, IconDividend, IconHome, IconInvest, IconMoreHori, IconSonic, IconStockSearch } from '@entites/Icons';
+import { IconAsset, IconDeposit, IconDiary, IconDividend, IconHome, IconInvest, IconMoreHori, IconSonic, IconStockSearch } from '@entites/Icons';
 
 export const Menus = (isAll = false, isMobile  = false) => {
 	const items = [
@@ -14,7 +14,9 @@ export const Menus = (isAll = false, isMobile  = false) => {
 
 	if (isAll) {
 		items.push(
-			{ value: URL.MARKET, label: ST.MENU.MARKET, icon: <IconStockSearch fontSize='small' /> }
+			{ value: URL.MARKET, label: ST.MENU.MARKET, icon: <IconStockSearch fontSize='small' /> },
+			{ value: URL.ASSET, label: ST.MENU.ASSET, icon: <IconAsset fontSize='small' /> },
+			{ value: URL.DEPOSIT, label: ST.MENU.DEPOSIT, icon: <IconDeposit fontSize='small' /> },
 		);
 	} else {
 		isMobile && items.push(

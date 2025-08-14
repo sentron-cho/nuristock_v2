@@ -7,6 +7,8 @@ import IconSonic from '@mui/icons-material/Assessment'; // 투자손익
 import IconStockSearch from '@mui/icons-material/QueryStats';
 import IconDividend from '@mui/icons-material/CreditScore'; // 배당
 import IconInvest from '@mui/icons-material/Balance'; // 가치투자
+import IconAsset from '@mui/icons-material/AssuredWorkload'; // 투자금
+import IconDeposit from '@mui/icons-material/CurrencyExchange'; // 예수금
 
 import IconDelete from '@mui/icons-material/Delete';
 import IconEdit from '@mui/icons-material/DriveFileRenameOutline';
@@ -111,4 +113,6 @@ export {
 	IconForward,
 	IconUndo,
 	IconRedo,
+	IconAsset,
+	IconDeposit
 };

@@ -46,7 +46,7 @@ export const getNaverStockSise = async (code: string) => {
 export const updateStockSise = async (fastify: FastifyInstance, item: FieldValues) => {
   try {
     const { code, sise, ecost, erate, updown, stime } = item;
-    const params = { sise, ecost, erate, updown, stime };
+    const params = { sise, ecost, erate, updown, stime, utime: dayjs().format('YYYY-MM-DD HH:mm:ss') };
     await fastify.db.query(`UPDATE market SET ${makeUpdateSet(params)} WHERE code = 'A${code}';`);
   } catch (error) {
     console.error(`[DB ERROR] ${item.code} 저장 실패`, error);

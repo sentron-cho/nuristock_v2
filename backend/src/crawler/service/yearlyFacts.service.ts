@@ -1,12 +1,12 @@
-import { FactsResult, YearRow } from "../types/data.type.js";
-import { getCorpCodeByStock } from "./dartCorpmap.js";
+import { FactsResult, YearRow } from "../../types/data.type.js";
+import { getCorpCodeByStock } from "../dartCorpmap.js";
 import {
   fetchEquity,
   fetchNetIncome,
   fetchROEIndicator,
   fetchLatestIssuedSharesByStock,
   LatestIssuedShares,
-} from "./dartFinancial.js";
+} from "../dartFinancial.js";
 
 export const getYearlyFacts = async (opts: {
   code6: string;

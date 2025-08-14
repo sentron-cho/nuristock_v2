@@ -118,6 +118,8 @@ const KOR = {
 	TAX: '제세금',
 	MORE_IN: '요약보기',
 	MORE_OUT: '전체보기',
+	ASSET: '투자금',
+	DEPOSIT: '예수금',
 
 	NO_SERVICE: '서비스 준비중',
 
@@ -169,9 +171,11 @@ const KOR = {
 		MARKET: '종목검색',
 		PROFIT: '투자손익',
 		INVEST: '가치투자',
+		DIVIDEND: '배당',
+		ASSET: '투자금',
+		DEPOSIT: '예수금',
 		MENUS: '메뉴',
 		MORE: '더보기',
-		DIVIDEND: '배당',
 
 		BANKING: '잔고',
 		BUCKET: '버킷',

@@ -5,6 +5,8 @@ export const URL = {
 	MYSTOCK: '/mystock',
 	DIARY: '/diary',
 	MARKET: '/market',
+	ASSET: '/asset',
+	DEPOSIT: '/deposit',
 	PROFIT: '/profit',
 	DAILY: '/daily',
 	DIVIDEND: '/dividend',
@@ -51,6 +53,8 @@ export const API = {
 	PROFIT: `${API_ROOT}/profit`,
 	PROFIT_YEARS: `${API_ROOT}/profit/years`,
 	DIVIDEND: `${API_ROOT}/dividend`,
+	ASSET: `${API_ROOT}/asset`,
+	DEPOSIT: `${API_ROOT}/deposit`,
 	APP: `${API_ROOT}/app`,
 	APP_CONFIG: `${API_ROOT}/app/config`,
 };

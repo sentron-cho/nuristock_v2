@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { EID } from '@shared/config/default.config';
 import Flex from '@entites/Flex';
 import { NoData } from '@entites/NoData';
-import { Card } from '@entites/Card';
+import { Card, CardListWrap } from '@entites/Card';
 import { styled } from '@styles/stitches.config';
 import { CardLineFiled } from '@features/common/ui/CardLineField.ui';
 import { SubTitle } from '@entites/Title';
@@ -43,7 +43,7 @@ export const DividendList = ({
 	if (!years?.length) return <NoData />;
 
 	return (
-		<Flex className={'card-list'}>
+		<CardListWrap>
 			{years?.map((item) => {
 				const { title } = item;
 				const data = list?.[title as string];
@@ -57,7 +57,7 @@ export const DividendList = ({
 					/>
 				);
 			})}
-		</Flex>
+		</CardListWrap>
 	);
 };
 
