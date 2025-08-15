@@ -23,7 +23,7 @@ const BackButton = styled(IconArrowLeft, {
 	position: 'fixed',
 	left: '10px',
 	bottom: '10px',
-	zIndex: 100,
+	zIndex: '$footerButton',
 	color: '$white',
 	background: '$primary',
 	borderRadius: '100px',

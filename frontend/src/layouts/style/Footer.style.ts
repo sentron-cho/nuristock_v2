@@ -9,7 +9,7 @@ export const StyledFooter = styled('div', {
 		height: '48px',
 		backgroundColor: '$gray900',
 		color: '$white',
-		zIndex: 1200,
+		zIndex: '$footer',
 		width: '100vw',
 		paddingTop: 6,
 

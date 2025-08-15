@@ -134,6 +134,18 @@ export const { styled, css, globalCss, theme, createTheme, config } = createStit
 			formMedium: '36px',
 			formLarge: '40px',
 		},
+		zIndices: {
+			loading: '99999999', //9 8개
+			footer: '3000',
+			menuPage: '2000',
+			header: '1200',
+			cardTitle: '1000',
+			pageTitleBar: '999',
+			pageContainer: '100',
+			footerButton: '99',
+			titleNavi: '10',
+			contentHeader: '10',
+		}
 	},
 	media: {
 		sm: '(max-width: 640px)',

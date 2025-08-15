@@ -5,7 +5,7 @@ import clsx from 'clsx';
 const StyledBox = styled(Box, {
 	'&.loading': {
 		width: '100vw',
-		zIndex: '9999999',
+		zIndex: '$loading',
 		background: '#00000020',
 
 		'&.fixed': {

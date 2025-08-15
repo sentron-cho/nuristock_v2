@@ -17,7 +17,7 @@ const StyledFlex = styled(Flex, {
 			background: '$bgcolor',
 			position: 'sticky',
 			top: 0,
-			zIndex: 10,
+			zIndex: '$titleNavi',
 			borderBottom: '1px solid $gray500',
 		},
 

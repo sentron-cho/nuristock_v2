@@ -179,7 +179,7 @@ const ScrollTopButton = styled(IconArrowUp, {
 	position: 'fixed',
 	right: '10px',
 	bottom: '10px',
-	zIndex: 100,
+	zIndex: '$pageContainer',
 	color: '$white',
 	background: '$primary',
 	borderRadius: '100px',

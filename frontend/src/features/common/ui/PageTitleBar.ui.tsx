@@ -8,7 +8,7 @@ import { ReactNode } from 'react';
 const StyledFlex = styled(Flex, {
 	position: 'sticky',
 	top: 0,
-	zIndex: '999',
+	zIndex: '$pageTitleBar',
 	padding: '0',
 	margin: 0,
 

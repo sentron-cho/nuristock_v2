@@ -9,7 +9,7 @@ const StyledFlex = styled(Flex, {
 		width: '100%',
 		padding: '$4',
 		background: '$bgcolor',
-		zIndex: 10,
+		zIndex: '$contentHeader',
 
 		'&.sticky': {
 			position: 'sticky',

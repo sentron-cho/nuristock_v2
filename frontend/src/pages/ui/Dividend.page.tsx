@@ -20,7 +20,7 @@ const StyledPage = styled(PageContainer, {
 			position: 'sticky',
 			top: 0,
 			textAlign: 'center',
-			zIndex: 1000,
+			zIndex: '$cardTitle',
 			lineHeight: '34px',
 			backgroundColor: '$bgcolor',
 			padding: '4px',
