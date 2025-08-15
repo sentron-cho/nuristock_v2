@@ -28,17 +28,30 @@ export const ProfitSummaryMain = ({ data, dividend }: { data?: ProfitItemType[];
 		const sonicTotal = parsed?.map((a) => Number(a.sonic))?.reduce((a, b) => a + b, 0);
 		const dividendTotal = dividend?.map((a) => Number(a.sonic))?.reduce((a, b) => a + b, 0);
 		const total = Number(sonicTotal) + Number(dividendTotal);
+		const assetTotal = parsed?.map((a) => Number(a?.asset))?.reduce((a, b) => a + b, 0);
+		const assetAvg = Math.round(Number(assetTotal) / Number(parsed?.length));
+
+		// console.log({ assetTotal, count: parsed?.length, assetAvg });
+		// const sonicRate = `${((Number(sonicTotal) / Number(buyTotal)) * 100).toFixed(1)} %`;
+		// const dividendRate = `${((Number(dividendTotal) / Number(buyTotal)) * 100).toFixed(1)} %`;
+		// const totalRate = `${((Number(total) / Number(buyTotal)) * 100).toFixed(1)} %`;
+
+		const sonicRate = `${((Number(sonicTotal) / Number(assetTotal)) * 100).toFixed(1)} %`; // 손익총액 / 투자총액
+		const dividendRate = `${((Number(dividendTotal) / Number(assetTotal)) * 100).toFixed(1)} %`;
+		const totalRate = `${((Number(total) / Number(assetTotal)) * 100).toFixed(1)} %`;
 
 		return {
 			type: valueOfPlusMinus(sonicTotal),
 			buy: toCost(buyTotal),
 			sell: toCost(sellTotal),
 			sonic: toCost(sonicTotal),
-			sonicRate: `${((Number(sonicTotal) / Number(buyTotal)) * 100).toFixed(1)} %`,
 			dividend: toCost(dividendTotal),
-			dividendRate: `${((Number(dividendTotal) / Number(buyTotal)) * 100).toFixed(1)} %`,
 			total: toCost(total),
-			totalRate: `${((Number(total) / Number(buyTotal)) * 100).toFixed(1)} %`,
+			asset: toCost(assetTotal),
+			sonicRate,
+			dividendRate,
+			totalRate,
+			assetAvg,
 		};
 	}, [parsed, dividend]);
 
@@ -46,6 +59,9 @@ export const ProfitSummaryMain = ({ data, dividend }: { data?: ProfitItemType[];
 		<ContentsHeader>
 			{item && (
 				<Flex direction={'column'}>
+					{/* 누적투자총액 */}
+					<SummaryField title={ST.ASSET} value={item.asset} />
+
 					{/* 매수 */}
 					<SummaryField title={ST.BUY} value={item.buy} />
 
@@ -71,17 +87,26 @@ export const ProfitSummary = ({ data }: { data?: FieldValues }) => {
 	const item = useMemo(() => {
 		const total = Number(data?.dividend) + Number(data?.sum);
 
+		const sonicRate = `${((Number(data?.sum) / Number(data?.assetTotal)) * 100).toFixed(1)} %` // 손익총액 / 투자총액
+		const dividendRate = `${((Number(data?.dividend) / Number(data?.assetTotal)) * 100).toFixed(1)} %`;
+		const totalRate = `${((Number(total) / Number(data?.assetTotal)) * 100).toFixed(1)} %`;
+		
+		// const sonicRate = `${((Number(data?.sum) / Number(data?.buyTotal)) * 100).toFixed(1)} %` // 손익총액 / 투자총액
+		// const dividendRate = `${((Number(data?.dividend) / Number(data?.buyTotal)) * 100).toFixed(1)} %`;
+		// const totalRate = `${((Number(total) / Number(data?.buyTotal)) * 100).toFixed(1)} %`;
+
 		return {
 			type: data?.type,
 			buy: toCost(data?.buyTotal),
 			sell: toCost(data?.sellTotal),
+			asset: toCost(data?.assetTotal),
 			sonic: toCost(data?.sum),
-			sonicRate: `${((Number(data?.sum) / Number(data?.buyTotal)) * 100).toFixed(1)} %`,
 			dividend: toCost(data?.dividend),
-			dividendRate: `${((Number(data?.dividend) / Number(data?.buyTotal)) * 100).toFixed(1)} %`,
 			total: toCost(total),
 			totalType: valueOfPlusMinus(total),
-			totalRate: `${((Number(total) / Number(data?.buyTotal)) * 100).toFixed(1)} %`,
+			sonicRate,
+			dividendRate,
+			totalRate,
 		};
 	}, [data]);
 
@@ -89,6 +114,9 @@ export const ProfitSummary = ({ data }: { data?: FieldValues }) => {
 		<ContentsHeader>
 			{item && (
 				<Flex direction={'column'}>
+					{/* 투자금 */}
+					{item.asset !== item.buy && <SummaryField title={ST.ASSET} value={item.asset} />}
+
 					{/* 매수 */}
 					<SummaryField title={ST.BUY} value={item.buy} />
 

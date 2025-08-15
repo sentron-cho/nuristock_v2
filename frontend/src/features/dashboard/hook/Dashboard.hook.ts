@@ -53,7 +53,7 @@ export const useDashboardHook = (initialData?: DashboardResponse) => {
 						const v = data?.sise?.find((b) => b.code === a.code)?.sise as number;
 						return a.kcount * v;
 					})
-					?.reduce((a, b) => a + b, 0)
+					?.reduce((a, b) => a + b, 0) + Number(deposit?.price)
 			: '';
 		const sonic = sell && captal && sell - captal;
 

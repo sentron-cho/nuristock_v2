@@ -87,21 +87,20 @@ const StyledRow = styled(Flex, {
 		position: 'relative',
 		padding: '4px',
 
-		'.main-row': {
-		},
+		'.main-row': {},
 
 		'.sub-row': {
 			paddingLeft: '8px',
 		},
 
-		// p: {
-		// 	'&.title': {
-		// 		fontSize: '16px',
-		// 	},
-		// },
-
 		'.title': {
 			color: 'black',
+		},
+
+		'.label': {
+			color: '$gray700',
+			fontSize: '12px',
+			fontStretch: '80%'
 		},
 
 		'.rate': {
@@ -118,6 +117,7 @@ export const ProfitCardField = ({
 	type,
 	title,
 	text,
+	label,
 	value,
 	height = 24,
 	onClick,
@@ -126,6 +126,7 @@ export const ProfitCardField = ({
 }: {
 	type?: string;
 	title?: string;
+	label?: string;
 	text?: string;
 	value?: string;
 	height?: number | string;
@@ -143,7 +144,12 @@ export const ProfitCardField = ({
 			gap={4}
 		>
 			<Flex className='main-row' direction={'row'}>
-				{title && <Text className='title' text={title} flex={1} {...titleProps} />}
+				{title && (
+					<Flex flex={1} gap={4}>
+						<Text className='title' text={title} {...titleProps} />
+						{label && <Text className='label' text={`[${label}]`}/>}
+					</Flex>
+				)}
 				{text && <Text className='rate' size='xs' align='right' text={text} />}
 				<Text className='value' text={value} flex={1} align={'right'} />
 			</Flex>

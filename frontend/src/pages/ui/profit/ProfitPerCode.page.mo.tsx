@@ -45,12 +45,16 @@ export const ProfitPerCodePageMo = () => {
 		const rate = ((sum / buyTotal) * 100).toFixed(2); // 매수 총액 대비 수익율
 		const type = valueOfPlusMinus(Number(sum));
 		const dividend = dividendByName?.[key]?.map((a) => a.price)?.reduce((a, b) => a + b, 0);
+		const assetTotal = buyTotal; // 투자총액 = 매수총액
+
+		// const assetTotal = value?.[0]?.asset;
 
 		return {
 			title: key,
 			type,
 			buyTotal,
 			sellTotal,
+			assetTotal,
 			rate,
 			sum,
 			value,

@@ -14,7 +14,7 @@ import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 import { ProfitItemType } from '@features/profit/api/profit.dto';
 import { TitleNavigation } from '@entites/TitleNavigation';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
-import { toCost, valueOfPlusMinus } from '@shared/libs/utils.lib';
+import { toCost, valueOfPlusMinus, withCommas } from '@shared/libs/utils.lib';
 import { ProfitSummaryMain } from '@features/profit/ui/ProfitSummary.ui';
 
 const StyledPage = styled(PageContainer, {
@@ -54,19 +54,22 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 		return (
 			items &&
 			sortedByKey(Object.values(items), 'title', true)?.map((item) => {
-				const { title, sonicRate } = item;
+				const { title, asset } = item;
 
 				const type = valueOfPlusMinus(item.sonic, 0);
 				const dividend = dividendPerYear?.find((b) => b.title === title);
 
 				const sonic = dividend ? Number(item.sonic) + Number(dividend?.sonic) : item.sonic;
-				const dividendRate = dividend ? ((Number(dividend?.sonic) / Number(item.sprice)) * 100).toFixed(1) : 0;
+				const calcSonicRate = ((sonic / asset) * 100).toFixed(1); // 손익금액 / 투자금액
+
+				// const dividendRate = dividend ? ((Number(dividend?.sonic) / Number(item.sprice)) * 100).toFixed(1) : 0;
+				// const calcSonicRate = dividend ? (Number(sonicRate) + Number(dividendRate)).toFixed(1) : sonicRate;
 
 				return {
 					...item,
 					type,
 					sonic: sonic,
-					sonicRate: dividend ? (Number(sonicRate) + Number(dividendRate)).toFixed(1) : sonicRate,
+					sonicRate: calcSonicRate,
 				};
 			})
 		);
@@ -132,13 +135,16 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 						<Card className={clsx('card')}>
 							<Flex className={clsx('box')} direction='column' gap={0}>
 								{years?.map((item, index) => {
-									const { title, sonic, sonicRate, type } = item;
+									const { title, sonic, sonicRate, asset, type } = item;
+									const shortAsset = `${withCommas((asset / 10000).toFixed(0))} ${ST.MAN}`;
+									// const shortAsset = `${toCost(asset)}`;
 
 									return (
 										<ProfitCardField
 											key={`profit-${index}`}
 											type={type}
 											title={title}
+											label={shortAsset}
 											text={`${sonicRate} %`}
 											value={toCost(sonic)}
 											onClick={() => onClickItemYear?.(item)}

@@ -120,6 +120,7 @@ const KOR = {
 	MORE_OUT: '전체보기',
 	ASSET: '투자금',
 	DEPOSIT: '예수금',
+	ACC_ASSET: '누적투자',
 
 	NO_SERVICE: '서비스 준비중',
 
@@ -154,7 +155,7 @@ const KOR = {
 	NO_HISTORY: '내역없음',
 
 	CAPITAL: '자본',
-	AT_MARKET_PRICE: '시세매도시',
+	VALUATION: '평가금액',
 	SONIC_COST: '손익금액',
 	SONIC_RATE: '손익율',
 

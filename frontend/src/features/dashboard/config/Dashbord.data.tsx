@@ -5,7 +5,7 @@ import { ST } from '@shared/config/kor.lang';
 export const DashboardSummaryData = (values?: string[]): SummaryDataType[] => {
 	return [
 		{ id: 'capital', label: ST.CAPITAL, value: values?.[0] || '' },
-		{ id: 'sise', label: ST.AT_MARKET_PRICE, value: values?.[1] || '' },
+		{ id: 'valuation', label: ST.VALUATION, value: values?.[1] || '' },
 		{ id: 'sonic', label: ST.SONIC, value: values?.[2] || '' },
 		{ id: 'deposit', label: ST.DEPOSIT, value: values?.[3] || '' },
 	];

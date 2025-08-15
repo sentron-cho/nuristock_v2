@@ -26,16 +26,19 @@ export const useProfitData = (initialYears?: YearDataType[], initialData?: Profi
 	// 메인 데이터
 	const data = useMemo(() => {
 		// console.log({ initialData });
+
 		return initialData?.value?.map((a) => {
 			const sprice = (a?.scost || 0) * (a?.count || 0);
 			const eprice = (a?.ecost || 0) * (a?.count || 0);
 			const sonic = (eprice || 0) - (sprice || 0);
+			const asset = initialData?.asset?.find(k => dayjs(a.edate).year() === dayjs(k.sdate).year())?.price;
 
 			return {
 				...a,
 				eprice,
 				sprice,
 				sonic,
+				asset,
 			};
 		});
 	}, [initialData]);
@@ -44,8 +47,6 @@ export const useProfitData = (initialYears?: YearDataType[], initialData?: Profi
 	const dividend = useMemo(() => {
 		return initialData?.dividend;
 	}, [initialData]);
-
-	console.log({ asset });
 
 	const summary = useMemo(() => {
 		const list = (data as DataType[])?.map((a) => Number(a.eprice) - Number(a.sprice));
