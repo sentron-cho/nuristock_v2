@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Menus } from '@layouts/data/menu.data';
 import Flex from '@entites/Flex';
 import { styled } from '@styles/stitches.config';
@@ -8,26 +8,11 @@ import clsx from 'clsx';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { keyframes } from '@stitches/react';
 
-// const overlayFadeIn = keyframes({
-// 	from: { opacity: 0 },
-// 	to: { opacity: 1 },
-// });
-
-const overlayFadeOut = keyframes({
-	from: { opacity: 1 },
-	to: { opacity: 0 },
-});
-
 // 전체 화면 패널이 살짝 아래에서 올라오며(overshoot) 자연스럽게 멈추는 느낌
 const panelSlideIn = keyframes({
 	'0%': { opacity: 0, transform: 'translate3d(0, 16px, 0) scale(0.995)' },
 	'60%': { opacity: 1, transform: 'translate3d(0, -2px, 0) scale(1.001)' },
 	'100%': { opacity: 1, transform: 'translate3d(0, 0, 0) scale(1)' },
-});
-
-const panelSlideOut = keyframes({
-	from: { opacity: 1, transform: 'translate3d(0, 0, 0) scale(1)' },
-	to: { opacity: 0, transform: 'translate3d(0, 12px, 0) scale(0.995)' },
 });
 
 export const StyledFlex = styled(Flex, {
@@ -45,14 +30,6 @@ export const StyledFlex = styled(Flex, {
 		// 열기 상태
 		'&.open': {
 			animation: `${panelSlideIn} 280ms cubic-bezier(0.22, 1, 0.36, 1) forwards`,
-		},
-
-		// 닫기 상태
-		'&.close': {
-			animation: `${panelSlideOut} 220ms cubic-bezier(0.4, 0, 1, 1) forwards`,
-			'&::before': {
-				animation: `${overlayFadeOut} 200ms ease-in forwards`,
-			},
 		},
 
 		// 콘텐츠 영역
@@ -110,15 +87,28 @@ export const StyledFlex = styled(Flex, {
 	},
 });
 
-const MenuPage = ({
-	className,
-	onClose,
-}: {
-	className?: string;
-	onClose?: () => void;
-}) => {
+const MenuPage = ({ className, onClose }: { className?: string; onClose?: () => void }) => {
 	const { navigate, location } = useCommonHook();
 	const { pathname } = location;
+
+	useEffect(() => {
+		// 팝업이 열릴 때 현재 위치에 dummy state를 추가
+		navigate(location.pathname, { replace: false, state: { modal: true } });
+
+		// 브라우저 뒤로가기 시 팝업 닫기
+		const handlePopState = () => {
+			location?.state?.modal && navigate(-1); // push로 넣었던 dummy state pop
+			onClose?.();
+		};
+
+		// popstate 이벤트 수동으로 감지
+		window.addEventListener('popstate', handlePopState);
+
+		return () => {
+			// 언마운트 시 이벤트 제거
+			window.removeEventListener('popstate', handlePopState);
+		};
+	}, []);
 
 	const menus = useMemo(() => {
 		return Menus(true);

@@ -1,7 +1,7 @@
 import mariadb from "mariadb";
 import dotenv from "dotenv";
 
-dotenv.config({ path: '.env' });
+dotenv.config({ path: ".env" });
 
 console.log("[SERVER ENV] ====> ", {
   host: process.env.DB_HOST,
@@ -17,6 +17,10 @@ export const pool = mariadb.createPool({
   password: process.env.DB_PASSWORD || "qlalfdldi",
   database: process.env.DB_NAME || "nuristock_v2",
   connectionLimit: 5,
+
+  // BigInt 처리
+  supportBigNumbers: true,
+  bigNumberStrings: true, // BIGINT/DECIMAL을 string으로 반환
 });
 
 export const db = {

@@ -4,9 +4,10 @@ import { ST } from '@shared/config/kor.lang';
 
 export const DashboardSummaryData = (values?: string[]): SummaryDataType[] => {
 	return [
-		{ id: '1', label: ST.CAPITAL, value: values?.[0] || '' },
-		{ id: '2', label: ST.AT_MARKET_PRICE, value: values?.[1] || '' },
-		{ id: '3', label: ST.SONIC, value: values?.[2] || '' },
+		{ id: 'capital', label: ST.CAPITAL, value: values?.[0] || '' },
+		{ id: 'sise', label: ST.AT_MARKET_PRICE, value: values?.[1] || '' },
+		{ id: 'sonic', label: ST.SONIC, value: values?.[2] || '' },
+		{ id: 'deposit', label: ST.DEPOSIT, value: values?.[3] || '' },
 	];
 };
 

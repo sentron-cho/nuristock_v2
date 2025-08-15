@@ -29,11 +29,7 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 	const { data: yearsData } = useSelectProfitYears();
 	const { data: profitData } = useSelectProfit();
 
-	const { summary, data, createSumData, createDividendSumData } = useProfitData(
-		yearsData?.value,
-		profitData?.value,
-		profitData?.dividend
-	);
+	const { summary, data, createSumData, createDividendSumData } = useProfitData(yearsData?.value, profitData);
 	const { navigate } = useCommonHook();
 
 	const { handlerSwipe, swipeClass } = useSwipePage({
@@ -126,7 +122,6 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 				{/* 연도별 */}
 				{viewType === 'year' && (
 					<Flex className={clsx(swipeClass)} direction={'column'} justify={'center'}>
-						
 						{/* 제목 */}
 						<TitleNavigation sticky options={naviOptions} value={viewType} onClick={onClick} />
 
@@ -160,7 +155,6 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 				{/* 종목별 */}
 				{viewType === 'code' && (
 					<Flex className={clsx(swipeClass)} direction={'column'}>
-						
 						{/* 제목 */}
 						<TitleNavigation sticky options={naviOptions} value={viewType} onClick={onClick} />
 

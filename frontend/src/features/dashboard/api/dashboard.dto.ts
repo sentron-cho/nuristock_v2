@@ -1,3 +1,5 @@
+import { AssetItemType } from '@features/asset/api/asset.dto';
+import { DepositItemType } from '@features/deposit/api/deposit.dto';
 import { MarketSiseDataType } from '@features/market/api/market.dto';
 
 export interface DashboardItemType {
@@ -21,6 +23,8 @@ export interface DashboardItemType {
 export interface DashboardResponse {
 	value?: DashboardItemType[];
 	sise?: DashboardSiseItemType[];
+	deposit?: DepositItemType;
+	asset?: AssetItemType;
 }
 
 export type DashboardSiseItemType = MarketSiseDataType;

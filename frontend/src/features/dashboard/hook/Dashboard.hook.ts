@@ -42,7 +42,11 @@ export const useDashboardHook = (initialData?: DashboardResponse) => {
 	);
 
 	const summaryData = useMemo(() => {
-		const captal = (list as DataType[])?.map((a) => a.kprice)?.reduce((a, b) => a + b, 0);
+		if (!data) return undefined;
+
+		const { deposit } = data;
+
+		const captal = (list as DataType[])?.map((a) => a.kprice)?.reduce((a, b) => a + b, 0) + Number(deposit?.price);
 		const sell = data?.sise
 			? (list as DataType[])
 					?.map((a) => {
@@ -53,7 +57,7 @@ export const useDashboardHook = (initialData?: DashboardResponse) => {
 			: '';
 		const sonic = sell && captal && sell - captal;
 
-		const values: string[] = [captal?.toString() || '', sell?.toString() || '', sonic?.toString() || ''];
+		const values: string[] = [captal?.toString() || '', sell?.toString() || '', sonic?.toString() || '', deposit?.price?.toString() || ''];
 		return SummaryData(values);
 	}, [list, data]);
 
@@ -122,5 +126,7 @@ export const useDashboardHook = (initialData?: DashboardResponse) => {
 		titleOptions,
 		sort,
 		onChangeSort,
+		asset: data?.asset, // 투자총액
+		deposit: data?.deposit, // 예수금
 	};
 };

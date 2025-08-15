@@ -6,6 +6,11 @@ import { FieldValues } from "../types/data.type.js";
 import { AssetCreateType } from './../types/data.type.js';
 import URL from "../types/url.js";
 
+export const selectLatestAsset = async (fastify: FastifyInstance): Promise<AssetCreateType | undefined> => {
+  const value = await fastify.db.query('SELECT * FROM asset ORDER BY rowid DESC limit 1;')
+  return value?.[0];
+}
+
 const assetRoute = (fastify: FastifyInstance) => {
   // 투자자산 목록 조회
   fastify.get(URL.ASSET.ROOT, async (_req, reply) => {

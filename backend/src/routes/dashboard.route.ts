@@ -4,11 +4,15 @@ import { withError } from "../lib/error.js";
 import { SqlError } from "mariadb/*";
 import { makeUpdateSet } from "../lib/db.util.js";
 import { DashboardCreateType } from "../types/data.type.js";
+import { selectLatestAsset } from "./asset.route.js";
+import { selectLatestDeposit } from "./deposit.route.js";
 
 const dashboardRoute = (fastify: FastifyInstance) => {
   fastify.get(URL.DASHBOARD.ROOT, async (_req, reply) => {
     try {
       const dashboard = await fastify.db.query("SELECT * FROM dashboard");
+      const asset = await selectLatestAsset(fastify); // 현재 기준 투자총액
+      const deposit = await selectLatestDeposit(fastify); // 현재 기준 예수금
 
       if (dashboard) {
         const codes = dashboard.map((a) => `'${a.code}'`).join(","); // ✅ 문자열로 변환
@@ -16,12 +20,16 @@ const dashboardRoute = (fastify: FastifyInstance) => {
 
         return {
           value: dashboard,
-          sise: sise,
+          sise,
+          asset,
+          deposit,
         };
       } else {
         return {
           value: dashboard,
           sise: undefined,
+          asset,
+          deposit,
         };
       }
     } catch (error) {

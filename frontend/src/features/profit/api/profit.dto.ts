@@ -1,3 +1,5 @@
+import { AssetItemType } from '@features/asset/api/asset.dto';
+import { DepositItemType } from '@features/deposit/api/deposit.dto';
 import { DividendItemType } from '@features/dividend/api/dividend.dto';
 import { MyStockKeepType } from '@features/mystock/api/mystock.dto';
 
@@ -16,6 +18,8 @@ export interface ProfitItemType extends MyStockKeepType {
 export interface ProfitResponse {
 	value?: ProfitItemType[];
 	dividend?: DividendItemType[];
+	asset?: AssetItemType[];
+	deposit?: DepositItemType;
 }
 
 export interface ProfitYearsItemType {

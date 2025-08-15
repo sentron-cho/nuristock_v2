@@ -1,25 +1,32 @@
 import { reverse, sortBy } from 'lodash';
 import { useMemo } from 'react';
-import { ProfitItemType as DataType, ProfitItemType, ProfitYearsItemType as YearDataType } from '../api/profit.dto';
+import {
+	ProfitItemType as DataType,
+	ProfitItemType,
+	ProfitResponse,
+	ProfitYearsItemType as YearDataType,
+} from '../api/profit.dto';
 import { SummaryData } from '../config/Profit.data';
 import dayjs from 'dayjs';
 import { FieldValues } from 'react-hook-form';
 import { DividendItemType } from '@features/dividend/api/dividend.dto';
 import { sortedByKey } from '@shared/libs/sort.lib';
 
-export const useProfitData = (
-	initialYears?: YearDataType[],
-	initialData?: DataType[],
-	initialDividend?: DividendItemType[]
-) => {
+export const useProfitData = (initialYears?: YearDataType[], initialData?: ProfitResponse) => {
 	// 년도별 합게 데이터
 	const years = useMemo(() => {
 		return reverse(sortBy(initialYears, 'year'));
 	}, [initialYears]);
 
+	// 자산 데이터
+	const asset = useMemo(() => {
+		return initialData?.asset;
+	}, [initialData]);
+
 	// 메인 데이터
 	const data = useMemo(() => {
-		return initialData?.map((a) => {
+		console.log({ initialData });
+		return initialData?.value?.map((a) => {
 			const sprice = (a?.scost || 0) * (a?.count || 0);
 			const eprice = (a?.ecost || 0) * (a?.count || 0);
 			const sonic = (eprice || 0) - (sprice || 0);
@@ -35,8 +42,10 @@ export const useProfitData = (
 
 	// 배당 데이터
 	const dividend = useMemo(() => {
-		return initialDividend;
-	}, [initialDividend]);
+		return initialData?.dividend;
+	}, [initialData]);
+
+	console.log({ asset });
 
 	const summary = useMemo(() => {
 		const list = (data as DataType[])?.map((a) => Number(a.eprice) - Number(a.sprice));
@@ -134,7 +143,10 @@ export const useProfitData = (
 			{} as Record<string, DividendItemType>
 		);
 
-		return sortedByKey(list, columnKey === 'name' ? 'price' : 'title', true)?.map((a) => ({ title: a?.title, sonic: a?.price })) as ProfitItemType[];
+		return sortedByKey(list, columnKey === 'name' ? 'price' : 'title', true)?.map((a) => ({
+			title: a?.title,
+			sonic: a?.price,
+		})) as ProfitItemType[];
 	};
 
 	// 키별 합게 데이터 생성
@@ -202,6 +214,7 @@ export const useProfitData = (
 		years,
 		data,
 		summary,
+		asset,
 		naviOptions,
 		createSumData,
 		groupedByYear,
