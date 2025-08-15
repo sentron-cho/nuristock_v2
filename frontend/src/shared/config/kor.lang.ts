@@ -218,29 +218,13 @@ const KOR = {
 
 	HEND_WRITING: '수기',
 
-	// DASHBOARD: {
-	// 	ADD: '종목 추가',
-
-	// 	CHART_A: '보유종목비율',
-	// 	CHART_B: '보유종목금액',
-	// 	CHART_C: '종목별손익',
-	// 	CHART_D: '종목별예상손익',
-	// 	RATE: '보유비율',
-	// 	UPDATE: '종목 수정',
-	// 	NAME: '주식(종목)명',
-	// 	NAVER: 'NAVER',
-	// 	DAUM: 'DAUM',
-	// 	HOME: 'HOMEPAGE',
-	// 	SELL: '매도',
-	// 	BUY: '매수',
-	// 	TOTAL: '현재가매도시',
-	// 	MAX_SUIC: '최대수익',
-	// 	MIN_SUIC: '최저수익',
-
-	// 	H: {
-	// 		NAME: '주식(종목) 명은 최대 50글자입니다.',
-	// 	},
-	// },
+	MAINBOARD: {
+		KEEP: '보유 상위',
+		SONIC_TOP: '평가손익(상위)',
+		SONIC_BOTTOM: '평가손실(상위)',
+		SELL: '최근 매도',
+		BUY: '최근 매수',
+	},
 
 	PROFIT_TABLE: {
 		YEAR: '년월',
@@ -254,74 +238,6 @@ const KOR = {
 		YSONICRATE: '년손익율[%]',
 		SONIC: '손익',
 	},
-
-	// DAILY: {
-	// 	DAY: '날짜',
-	// 	COST: '종가',
-	// 	PREVRATE: '전일비',
-	// 	CVAL: '대비',
-	// 	UPRATE: '등락률',
-	// 	COUNT: '거래량',
-	// 	ACCUM: '누적량',
-	// 	ORG: '기관',
-	// 	FRN: '외인',
-	// 	ALL: '전체',
-	// 	REST: '그외',
-	// 	WEEK: '5일',
-	// 	TEN: '10일',
-	// 	MONTH: '30일',
-	// 	FROM: '부터',
-	// 	MONTH3: '3개월',
-	// 	MONTH6: '5개월',
-	// 	YEAR1: '1년',
-	// 	YEAR2: '2년',
-	// 	YEAR3: '3년',
-	// 	YEAR5: '5년',
-	// 	YEAR10: '10년',
-	// 	FRN_ORG: '외인/기관 거래량',
-	// 	COST_RATE: '일별/누적 등락액',
-	// },
-
-	// MARKET: {
-	// 	COMP_INFO: '기업개요',
-	// 	INPUT_SEARCH: '종목명 또는 코드 입력',
-	// },
-
-	// BUCKET: {
-	// 	MONTH: '월단위',
-	// 	YEAR: '년단위',
-	// 	TH_YEAR: '년월',
-	// 	TH_BASE: '투자금',
-	// 	TH_SAVE: '추가',
-	// 	TH_RATE: '이율',
-	// 	TH_MSONIC: '목표수익',
-	// 	TH_RSONIC: '실제수익',
-	// 	TH_PRICE: '소계',
-	// 	INIT_PRICE: '초기투자금',
-	// 	FROM: ({
-	// 		start,
-	// 		year,
-	// 		save,
-	// 		rate,
-	// 		base,
-	// 	}: {
-	// 		start: string;
-	// 		year: string;
-	// 		save: string;
-	// 		rate: string;
-	// 		base: string;
-	// 	}) => `${start}월 부터 ${year}년간 매월 ${save}원씩 추가하고 년 ${rate}%의 수익이 날경우(초기 투자금 = ${base})`,
-	// 	MODAL_A: '시작 년월일',
-	// 	MODAL_B: '초기 투자금',
-	// 	MODAL_C: '매월 추가금',
-	// 	MODAL_D: '기간(년)',
-	// 	MODAL_E: '수익율(%)',
-	// 	DESC_BASE: '년(월) 시작시점의 투자 원금.',
-	// 	DESC_SAVE: '매월 일정한 저축성 투자 추가금.',
-	// 	DESC_RATE: '투자금에 대한 예상(목표) 이율(%).',
-	// 	DESC_SONIC: '투자금 * 이율(%)',
-	// 	DESC_PRICE: '투자금 + 추가금 + 수익.',
-	// },
 };
 
 export const ST = KOR;

@@ -4,6 +4,7 @@ import dbPlugin from "./plugins/db.js"; // 🔥 DB 플러그인 추가
 import { startStockSiseService } from "./crawler/service/stockCrawler.service.js";
 import { startAssetTask } from "./task/asset.task.js";
 import dashboardRoute from "./routes/dashboard.route.js";
+import mainboardRoute from "./routes/mainboard.route.js";
 import mystockRoute from "./routes/mystock.route.js";
 import marketRoute from "./routes/market.route.js";
 import profitRoute from "./routes/profit.route.js";
@@ -36,6 +37,7 @@ await fastify.register(dbPlugin);
 
 // 라우트 등록
 await fastify.register(appRoute); // 앱 설정
+await fastify.register(mainboardRoute); // 메인
 await fastify.register(dashboardRoute); // 대시보드
 await fastify.register(mystockRoute); // 보유주식/거래주식
 await fastify.register(marketRoute); // 종목

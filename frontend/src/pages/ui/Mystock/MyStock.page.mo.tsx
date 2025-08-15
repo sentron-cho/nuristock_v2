@@ -54,7 +54,7 @@ const StyledPage = styled(PageContainer, {
 				height: '40px',
 				lineHeight: '40px',
 				position: 'sticky',
-				top: '144px',
+				top: '132px',
 				zIndex: 9,
 
 				'.sum': {

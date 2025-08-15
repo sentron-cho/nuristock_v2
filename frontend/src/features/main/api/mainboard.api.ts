@@ -5,9 +5,9 @@ import api from '@shared/api/axios.config';
 
 export const useSelectMainboard = () => {
 	return useSuspenseQuery<unknown, Error, MainboardResponse>({
-		queryKey: ['DASHBOARD-R01'],
+		queryKey: ['MAINBOARD-R01'],
 		queryFn: async (): Promise<MainboardResponse> => {
-			const main = await api.get(API.DASHBOARD);
+			const main = await api.get(API.MAINBOARD);
 			return main.data;
 		},
 	});

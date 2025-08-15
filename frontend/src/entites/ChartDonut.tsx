@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Box } from '@mui/material';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Sector } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Sector, PieProps } from 'recharts';
 import { ST } from '@shared/config/kor.lang';
 import { ColoredSlice } from './Chart.type';
 import { styled } from '@styles/stitches.config';
@@ -12,53 +12,51 @@ type ChartDonutProps = {
 	data: ColoredSlice[]; // 상위에서 색상/percent 계산된 데이터
 	height?: number | string;
 	width?: number | string;
-	centerTitle?: string; // 예: '총'
-	centerValue?: string; // 예: '39,400,000원'
-	valueFormatter?: (v: number) => string;
+	title?: string; // 예: '총'
+	value?: string; // 예: '39,400,000원'
 	onSliceClick?: (s: ColoredSlice) => void;
+	chartProps?: PieProps;
 };
 
 const StyledBox = styled(Box, {
-  '&.chart-donut': {
-    position: 'relative',
-    
-    '.center-box': {
-      position: 'absolute',
-      left: 0,
-      top: 0,
-      zIndex: 1,
-      height: '100%',
-      width: '100%',
+	'&.chart-donut': {
+		position: 'relative',
 
-      '.cost': {
-        fontSize: '12px',
-      }
-      
-    }
-  }
+		'.center-box': {
+			position: 'absolute',
+			left: 0,
+			top: 0,
+			zIndex: 1,
+			height: '100%',
+			width: '100%',
+
+			'.cost': {
+				fontSize: '12px',
+			},
+		},
+	},
 });
 
 export const ChartDonut: FC<ChartDonutProps> = ({
 	data,
 	height = '100%',
 	width = '100%',
-	centerTitle = ST.ASSET,
-	centerValue,
-	valueFormatter = (v) => v.toLocaleString('ko-KR') + ST.WON,
+	title = ST.ASSET,
+	value,
 	onSliceClick,
+	chartProps,
 }) => {
 	return (
 		<StyledBox className={clsx('chart-donut')} sx={{ width: { xs: width, sm: width }, height }}>
 			<ResponsiveContainer width='100%' height='100%'>
 				<PieChart>
-					<Tooltip formatter={(v: any, _n: any, item: any) => [valueFormatter(Number(v)), item?.payload?.name]} />
 					<Pie
 						data={data}
 						dataKey='value'
 						nameKey='name'
 						startAngle={90}
 						endAngle={-270}
-						innerRadius='60%'
+						innerRadius='40%'
 						outerRadius='80%'
 						isAnimationActive
 						labelLine={false}
@@ -86,6 +84,7 @@ export const ChartDonut: FC<ChartDonutProps> = ({
 						// 	);
 						// }}
 						activeShape={(props: any) => <Sector {...props} outerRadius={(props.outerRadius as number) + 6} />}
+						{...chartProps}
 					>
 						{data.map((d, i) => (
 							<Cell key={`cell-${i}`} fill={d.color} />
@@ -94,10 +93,10 @@ export const ChartDonut: FC<ChartDonutProps> = ({
 				</PieChart>
 			</ResponsiveContainer>
 
-			{centerValue && (
+			{(title || value) && (
 				<Flex className='center-box' gap={10} direction={'column'} justify={'center'} align={'center'}>
-          <Text bold text={centerTitle} />						
-          <Text className='cost' text={centerValue} />
+					{title && <Text bold text={title} />}
+					{value && <Text className='cost' text={value} />}
 				</Flex>
 			)}
 		</StyledBox>

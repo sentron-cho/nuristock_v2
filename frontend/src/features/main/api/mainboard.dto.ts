@@ -3,16 +3,21 @@ import { DepositItemType } from '@features/deposit/api/deposit.dto';
 import { MarketSiseDataType } from '@features/market/api/market.dto';
 
 export interface MainboardItemType {
-	stockid: number;
-	userid: number;
 	code: string;
 	name: string;
-	kcount: number;
-	kprice: number;
-	ecount: number;
-	eprice: number;
-	sprice: number;
-	showyn: string;
+	kcount?: number;
+	kprice?: number;
+	ecount?: number;
+	eprice?: number;
+	sprice?: number;
+	showyn?: string;
+
+	count?: number;
+	ecost?: number;
+	scost?: number;
+	sdate?: string;
+	edate?: string;
+	type?: string;
 
 	sonic?: number;
 	sonicRate?: number;
@@ -22,6 +27,10 @@ export interface MainboardItemType {
 
 export interface MainboardResponse {
 	value?: MainboardItemType[];
+	keeps?: MainboardItemType[];
+	sells?: MainboardItemType[];
+	buys?: MainboardItemType[];
+	trades?: MainboardItemType[];
 	sise?: MainboardSiseItemType[];
 	deposit?: DepositItemType;
 	asset?: AssetItemType;

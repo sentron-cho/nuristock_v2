@@ -1,6 +1,9 @@
 export const ROOT_URL = "/api/v1";
 
 export const URL = {
+  MAINBOARD: {
+    ROOT: `${ROOT_URL}/main`,
+  },
   DASHBOARD: {
     ROOT: `${ROOT_URL}/dashboard`,
     SISE: `${ROOT_URL}/dashboard/sise`,

@@ -36,6 +36,7 @@ export const URL = {
 const API_ROOT = '/api/v1';
 
 export const API = {
+	MAINBOARD: `${API_ROOT}/main`,
 	DASHBOARD: `${API_ROOT}/dashboard`,
 	DIARY: `${API_ROOT}/diary`,
 	MYSTOCK: `${API_ROOT}/mystock`,

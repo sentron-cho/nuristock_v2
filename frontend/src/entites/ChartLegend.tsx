@@ -1,6 +1,5 @@
 import { FC } from 'react';
 import { Box, Stack } from '@mui/material';
-import { ST } from '@shared/config/kor.lang';
 import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
 import { ChartLegendProps } from './Chart.type';
@@ -10,45 +9,44 @@ import { Text } from './Text';
 
 const StyledBox = styled(Box, {
 	'&.chart-legend': {
-		// '.left': {
-		// 	width: '30%',
-		// },
-
-		// '.right': {
-		// 	width: '70%',
-		// },
+		'.title': {
+			fontSize: '14px',
+		},
 
 		'.label, .text': {
 			// maxWidth: '100px',
-      fontSize: '12px',
-      fontStretch: '80%'
-    },
-    
+			fontSize: '12px',
+			fontStretch: '80%',
+		},
+
+		'.right': {
+			paddingLeft: '20px',
+		},
+
 		'.text': {
-      fontSize: '10px',
-      fontStretch: '80%'
+			fontSize: '10px',
+			fontStretch: '80%',
+			color: '$gray700',
 		},
 	},
 });
 
 export const ChartLegend: FC<ChartLegendProps> = ({
 	data,
-	showRight = true,
-	valueFormatter = (v) => v.toLocaleString('ko-KR') + ST.WON,
-	onLegendClick,
+	valueFormatter = (v) => v.toLocaleString(),
+	onClick,
 }) => {
 	return (
 		<StyledBox className={clsx('chart-legend')} sx={{ flex: 1, minWidth: 0 }}>
-			<Stack spacing={1.0}>
+			<Stack spacing={0.4}>
 				{data.map((s) => (
 					<Box
 						key={s.key || s.name}
 						display='flex'
 						alignItems='center'
 						justifyContent='space-between'
-						gap={1.5}
-						sx={{ cursor: onLegendClick ? 'pointer' : 'default' }}
-						onClick={() => onLegendClick?.(s)}
+						sx={{ cursor: onClick ? 'pointer' : 'default' }}
+						onClick={() => onClick?.(s)}
 					>
 						<Flex fullWidth={false} className='left' gap={10} flex={1}>
 							{/* 범례 색상 */}
@@ -61,16 +59,19 @@ export const ChartLegend: FC<ChartLegendProps> = ({
 									flex: '0 0 auto',
 								}}
 							/>
-							{/* 타이틀 */}
-							<SubTitle className={clsx('title', 'ellipsis')} title={s.name} />
-						</Flex>
 
-						{showRight && (
-							<Flex fullWidth={false} className='right' justify={'between'} flex={1}>
-								{s?.label && <SubTitle className={clsx('label', 'ellipsis')} title={s.label} />}
-								{s?.value && <Text className={clsx('text', 'ellipsis')} text={valueFormatter(s.value)} />}
+							{/* 타이틀 */}
+							<Flex gap={4} flex={1}>
+								<SubTitle className={clsx('title', 'ellipsis')} title={s.name} />
+								{s?.value && <Text className={clsx('text', 'ellipsis')} text={`[${valueFormatter(s.value)}]`} />}
 							</Flex>
-						)}
+
+							{s?.label && (
+								<Flex flex={1} justify={'end'}>
+									<SubTitle className={clsx('label', 'ellipsis')} title={s.label} />
+								</Flex>
+							)}
+						</Flex>
 					</Box>
 				))}
 			</Stack>

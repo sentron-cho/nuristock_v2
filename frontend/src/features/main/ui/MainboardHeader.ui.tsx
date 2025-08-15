@@ -7,30 +7,28 @@ import { styled } from '@styles/stitches.config';
 import { ContentsHeader } from '@layouts/ui/ContentsHeader.ui';
 import clsx from 'clsx';
 import Flex from '@entites/Flex';
+import { toSemiCost } from '@shared/libs/utils.lib';
 
 type MainboardHeaderProps = {
 	data: ChartDataType[];
 	height?: number;
-	centerTitle?: string;
-	centerValue?: string;
+	title?: string;
+	value?: string;
 	valueFormatter?: (v: number) => string;
-	onSliceClick?: (s: ColoredSlice) => void;
-	onLegendClick?: (s: ColoredSlice) => void;
+	onClick?: (eid: string, s: ColoredSlice) => void;
 };
 
 const DEFAULT_COLORS = [
-	'#1f77b4', // 대한항공 블루
-	'#2ca02c', // 현대차 그린
-	'#17becf', // 기아 청록
-	'#ff7f0e', // 포스코 오렌지
-	'#f1c40f', // 우리은행 옐로
-	'#e377c2',
-	'#7f7f7f',
-	'#8c564b',
-	'#9467bd',
+	'#ff3030ff',
+	'#503dffff',
+	'#cf6a17ff',
+	'#52ff0eff',
+	'#de0ff1ff',
+	'#423b40ff',
+	'#ffe91fff',
+	'#ff7559ff',
+	'#50009bff',
 ];
-
-const formatKRW = (v: number) => v.toLocaleString('ko-KR', { maximumFractionDigits: 0 }) + ST.WON;
 
 const StyledFlex = styled(Flex, {
 	'.mainboard-header': {},
@@ -38,11 +36,9 @@ const StyledFlex = styled(Flex, {
 
 export const MainboardHeader: FC<MainboardHeaderProps> = ({
 	data,
-	centerTitle = ST.ASSET,
-	centerValue,
-	valueFormatter = formatKRW,
-	onSliceClick,
-	onLegendClick,
+	title = ST.ASSET,
+	value,
+	onClick,
 }) => {
 	const total = useMemo(() => data.reduce((acc, cur) => acc + (cur.value || 0), 0), [data]);
 
@@ -57,20 +53,19 @@ export const MainboardHeader: FC<MainboardHeaderProps> = ({
 	);
 
 	return (
-		<ContentsHeader className={clsx('mainboard-header')} stickyTop={0} height={280}>
+		<ContentsHeader className={clsx('mainboard-header')} stickyTop={0} height={240}>
 			<StyledFlex height={'100%'}>
 				{/* 왼쪽: 도넛 */}
 				<ChartDonut
 					data={withColor}
 					width={'50%'}
-					centerTitle={centerTitle}
-					centerValue={centerValue}
-					valueFormatter={valueFormatter}
-					onSliceClick={onSliceClick}
+					title={title}
+					value={value}
+					onSliceClick={(e) => onClick?.('slice', e)}
 				/>
 
 				{/* 오른쪽: 범례 */}
-				<ChartLegend data={withColor} valueFormatter={valueFormatter} onLegendClick={onLegendClick} />
+				<ChartLegend data={withColor} valueFormatter={(v) => toSemiCost(v)} onClick={(e) => onClick?.('legend', e)} />
 			</StyledFlex>
 		</ContentsHeader>
 	);

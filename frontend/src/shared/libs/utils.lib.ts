@@ -1,4 +1,5 @@
 import { EID } from '@shared/config/default.config';
+import { ST } from '@shared/config/kor.lang';
 import { SortOrder } from 'antd/es/table/interface';
 import dayjs from 'dayjs';
 
@@ -64,6 +65,20 @@ export const toShortCost = (v?: number | string) => {
 	}
 
 	return { value: isMinus ? Number(item?.value) * -1 : item?.value, unit: item?.unit };
+};
+
+export const toShortCostString = (v?: number | string) => {
+	const values = toShortCost(v);
+	return values ? `${values.value}${values.unit}` : '';
+};
+
+// 만원
+export const toSemiCost = (v?: number | string) => {
+	const isMinus = Number(v) < 0;
+	let num = Math.abs(Number(v));
+
+	const value = Math.ceil(num / 10000);
+	return withCommas(isMinus ? Number(value) * -1 : value) + `${ST.MAN}${ST.WON}`;
 };
 
 export const getCostColorType = (value?: string | number) => {

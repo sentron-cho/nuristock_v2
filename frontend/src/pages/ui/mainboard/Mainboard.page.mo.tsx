@@ -2,16 +2,27 @@ import { PageContainer } from '@features/common/ui/PageContainer.ui';
 import { styled } from '@styles/stitches.config';
 import Flex from '@entites/Flex';
 import clsx from 'clsx';
-import { FormProvider, useForm } from 'react-hook-form';
 import { MainboardHeader } from '@features/main/ui/MainboardHeader.ui';
 import { useMainboardHook } from '@features/main/hook/Mainboard.hook';
 import { MainboardItemType, MainboardResponse } from '@features/main/api/mainboard.dto';
-import { toCost } from '@shared/libs/utils.lib';
+import { ChartDataType } from '@entites/Chart.type';
+import { useMemo } from 'react';
+import { reverse, sortBy } from 'lodash';
+import { MainboardCard } from '@features/main/ui/MainboardCard.ui';
+import { SubTitle } from '@entites/Title';
+import { ST } from '@shared/config/kor.lang';
 
 const StyledPage = styled(PageContainer, {
 	'.contents-layer': {
-		'.card': {
-			cursor: 'pointer',
+		'.title-bar': {
+			width: '100%',
+			background: '$gray400',
+			textAlign: 'center',
+			height: '40px',
+			lineHeight: '40px',
+			position: 'sticky',
+			top: '240px',
+			zIndex: 9,
 		},
 	},
 });
@@ -23,31 +34,58 @@ export const MainboardPageMo = ({
 	data?: MainboardResponse;
 	onClick?: (eid?: string, item?: MainboardItemType) => void;
 }) => {
-	const { getConfig } = useMainboardHook(data);
+	const { totalPrice, keeps } = useMainboardHook(data);
 
-	const formMethods = useForm({ defaultValues: { more: getConfig('more')?.toString() === 'true' } });
+	const parsed = useMemo(() => {
+		const list = keeps?.map((a) => ({ name: a?.name, value: a?.kprice, key: a?.code }));
 
-	const mock = [
-		{ name: '현대차', value: 3000000, key: 'A005380' },
-		{ name: '포스코', value: 2000000, key: 'A005490' },
-		{ name: '기아', value: 500000, key: 'A000270' },
-		{ name: '대한항공', value: 2500000, key: 'A003490' },
-		{ name: '우리은행', value: 50000, key: 'A000030' },
-	];
+		return reverse(sortBy(list, ['value'])) as ChartDataType[];
+	}, [keeps]);
 
-	const total = mock?.map((a) => a.value).reduce((a, b) => a + b, 0);
+	const onClickChart = (eid: string, value: ChartDataType) => {
+		console.log({ eid, value });
+	};
 
 	return (
-		<FormProvider {...formMethods}>
-			<StyledPage>
+		<StyledPage>
+			<Flex direction={'column'} flex={1}>
 				{/* 컨텐츠 헤더(요약) */}
-				<MainboardHeader data={mock} centerValue={toCost(total)} />
+				<MainboardHeader data={parsed} value={totalPrice.toString()} onClick={onClickChart} />
 
 				{/* 컨텐츠 */}
-				<Flex className={clsx('contents-layer')} direction={'column'} onClick={() => onClick?.('main')}>
-					메인 컨텐츠
+				<Flex
+					className={clsx('contents-layer')}
+					flex={1}
+					direction={'column'}
+					onClick={() => onClick?.('main')}
+				>
+					<Flex direction={'column'}>
+						{/* 평가 손익 상위 */}
+						<Flex className='title-bar' justify={'center'}>
+							<SubTitle title={ST.MAINBOARD.SONIC_TOP} />
+						</Flex>
+						<MainboardCard viewType='soincTop' data={data} onClick={onClick} />
+
+						{/* 평가 손익 하위 */}
+						<Flex className='title-bar' justify={'center'}>
+							<SubTitle title={ST.MAINBOARD.SONIC_BOTTOM} />
+						</Flex>
+						<MainboardCard viewType='soincBottom' data={data} onClick={onClick} />
+
+						{/* 최근 매수 상위 */}
+						<Flex className='title-bar' justify={'center'}>
+							<SubTitle title={ST.MAINBOARD.BUY} />
+						</Flex>
+						<MainboardCard viewType='latestBuy' data={data} onClick={onClick} />
+
+						{/* 최근 매도 상위 */}
+						<Flex className='title-bar' justify={'center'}>
+							<SubTitle title={ST.MAINBOARD.SELL} />
+						</Flex>
+						<MainboardCard viewType='latestSell' data={data} onClick={onClick} />
+					</Flex>
 				</Flex>
-			</StyledPage>
-		</FormProvider>
+			</Flex>
+		</StyledPage>
 	);
 };
