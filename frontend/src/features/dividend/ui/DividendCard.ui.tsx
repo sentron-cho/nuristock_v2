@@ -88,6 +88,7 @@ export const DividendCard = ({
 					{data?.map((item) => {
 						return (
 							<CardLineFiled
+								key={item.rowid}
 								height={28}
 								title={item?.name as string}
 								text={`${item?.cost} x ${item?.count}`}

@@ -121,75 +121,72 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 
 	return (
 		<StyledPage className={clsx('profit', 'main')} summaryData={summary}>
-			<Flex className='contents-layer' direction={'column'} {...handlerSwipe}>
-				{/* 연도별 */}
-				{viewType === 'year' && (
-					<Flex className={clsx(swipeClass)} direction={'column'} justify={'center'}>
-						{/* 제목 */}
-						<TitleNavigation sticky options={naviOptions} value={viewType} onClick={onClick} />
+			<Flex direction={'column'} flex={1}>
+				{/* 제목 */}
+				<TitleNavigation sticky options={naviOptions} value={viewType} onClick={onClick} />
 
-						{/* 요약 */}
-						<ProfitSummaryMain data={data} dividend={dividendPerYear} />
+				{/* 요약 */}
+				<ProfitSummaryMain data={data} dividend={dividendPerYear} />
 
-						{/* 컨텐츠 */}
-						<Card className={clsx('card')}>
-							<Flex className={clsx('box')} direction='column' gap={0}>
-								{years?.map((item, index) => {
-									const { title, sonic, sonicRate, asset, type } = item;
-									const shortAsset = `${withCommas((asset / 10000).toFixed(0))} ${ST.MAN}`;
-									// const shortAsset = `${toCost(asset)}`;
+				{/* 컨텐츠 */}
+				<Flex className='contents-layer' direction={'column'} {...handlerSwipe}>
+					{/* 연도별 */}
+					{viewType === 'year' && (
+						<Flex className={clsx(swipeClass)} direction={'column'} justify={'center'}>
+							{/* 컨텐츠 */}
+							<Card className={clsx('card')}>
+								<Flex className={clsx('box')} direction='column' gap={0}>
+									{years?.map((item, index) => {
+										const { title, sonic, sonicRate, asset, type } = item;
+										const shortAsset = `${withCommas((asset / 10000).toFixed(0))} ${ST.MAN}`;
+										// const shortAsset = `${toCost(asset)}`;
 
-									return (
-										<ProfitCardField
-											key={`profit-${index}`}
-											type={type}
-											title={title}
-											label={shortAsset}
-											text={`${sonicRate} %`}
-											value={toCost(sonic)}
-											onClick={() => onClickItemYear?.(item)}
-											height={36}
-											titleProps={{ style: { fontSize: 16, fontWeight: 500 } }}
-										/>
-									);
-								})}
-							</Flex>
-						</Card>
-					</Flex>
-				)}
+										return (
+											<ProfitCardField
+												key={`profit-${index}`}
+												type={type}
+												title={title}
+												label={shortAsset}
+												text={`${sonicRate} %`}
+												value={toCost(sonic)}
+												onClick={() => onClickItemYear?.(item)}
+												height={36}
+												titleProps={{ style: { fontSize: 16, fontWeight: 500 } }}
+											/>
+										);
+									})}
+								</Flex>
+							</Card>
+						</Flex>
+					)}
 
-				{/* 종목별 */}
-				{viewType === 'code' && (
-					<Flex className={clsx(swipeClass)} direction={'column'}>
-						{/* 제목 */}
-						<TitleNavigation sticky options={naviOptions} value={viewType} onClick={onClick} />
+					{/* 종목별 */}
+					{viewType === 'code' && (
+						<Flex className={clsx(swipeClass)} direction={'column'}>
+							{/* 컨텐츠 */}
+							<Card className={clsx('card')}>
+								<Flex className={clsx('box')} direction='column' gap={0}>
+									{names?.map((item, index) => {
+										const { title, sonic, sonicRate, type } = item;
 
-						{/* 요약 */}
-						<ProfitSummaryMain data={years} dividend={dividendPerYear} />
-
-						{/* 컨텐츠 */}
-						<Card className={clsx('card')}>
-							<Flex className={clsx('box')} direction='column' gap={0}>
-								{names?.map((item, index) => {
-									const { title, sonic, sonicRate, type } = item;
-
-									return (
-										<ProfitCardField
-											key={`profit-${index}`}
-											type={type}
-											title={title}
-											text={`${sonicRate} %`}
-											value={toCost(sonic)}
-											onClick={() => onClickItemName?.(item)}
-											height={32}
-											titleProps={{ style: { fontSize: 16, fontWeight: 500 } }}
-										/>
-									);
-								})}
-							</Flex>
-						</Card>
-					</Flex>
-				)}
+										return (
+											<ProfitCardField
+												key={`profit-${index}`}
+												type={type}
+												title={title}
+												text={`${sonicRate} %`}
+												value={toCost(sonic)}
+												onClick={() => onClickItemName?.(item)}
+												height={32}
+												titleProps={{ style: { fontSize: 16, fontWeight: 500 } }}
+											/>
+										);
+									})}
+								</Flex>
+							</Card>
+						</Flex>
+					)}
+				</Flex>
 			</Flex>
 		</StyledPage>
 	);

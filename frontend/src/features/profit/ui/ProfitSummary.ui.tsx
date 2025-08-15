@@ -31,7 +31,6 @@ export const ProfitSummaryMain = ({ data, dividend }: { data?: ProfitItemType[];
 		const assetTotal = parsed?.map((a) => Number(a?.asset))?.reduce((a, b) => a + b, 0);
 		const assetAvg = Math.round(Number(assetTotal) / Number(parsed?.length));
 
-		// console.log({ assetTotal, count: parsed?.length, assetAvg });
 		// const sonicRate = `${((Number(sonicTotal) / Number(buyTotal)) * 100).toFixed(1)} %`;
 		// const dividendRate = `${((Number(dividendTotal) / Number(buyTotal)) * 100).toFixed(1)} %`;
 		// const totalRate = `${((Number(total) / Number(buyTotal)) * 100).toFixed(1)} %`;

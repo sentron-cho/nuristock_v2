@@ -70,21 +70,23 @@ export const ProfitPerYearPageMo = () => {
 
 	return (
 		<PageContainer className={clsx('profit', 'per-year')} summaryData={summary} isShowScrollTop={false}>
-			<Flex className={clsx(swipeClass)} flex={1} direction={'column'} {...handlerSwipe}>
+			<Flex direction={'column'} flex={1}>
 				{/* 헤드 */}
 				<TitleNavigation sticky options={naviOptions} value={param?.id} onClick={onClick} />
 
 				{/* 요약 */}
 				{!data?.isEmpty && <ProfitSummary data={data} />}
 
-				{!data?.isEmpty && (
-					<Flex className='contents-layer' direction={'column'}>
-						{/* 컨텐츠 */}
-						<CardListWrap>
-							<ProfitCard data={data?.value} dividend={dividendData} />
-						</CardListWrap>
-					</Flex>
-				)}
+				{/* 컨텐츠 */}
+				<Flex className={clsx(swipeClass)} flex={1} direction={'column'} {...handlerSwipe}>
+					{!data?.isEmpty && (
+						<Flex className='contents-layer' direction={'column'}>
+							<CardListWrap>
+								<ProfitCard data={data?.value} dividend={dividendData} />
+							</CardListWrap>
+						</Flex>
+					)}
+				</Flex>
 			</Flex>
 		</PageContainer>
 	);

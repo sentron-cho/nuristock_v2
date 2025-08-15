@@ -30,8 +30,8 @@ export const ProfitPerCodePageMo = () => {
 	} = useProfitData(undefined, profitData);
 
 	const name = useMemo(() => {
-		return profitData?.value?.find(a => a?.code === param?.id)?.name as string;
-	}, [param])
+		return profitData?.value?.find((a) => a?.code === param?.id)?.name as string;
+	}, [param]);
 
 	// 데이터
 	const data = useMemo(() => {
@@ -89,21 +89,23 @@ export const ProfitPerCodePageMo = () => {
 
 	return (
 		<PageContainer className={clsx('profit', 'per-code')} summaryData={summary}>
-			<Flex className={clsx(swipeClass)} flex={1} direction={'column'} {...handlerSwipe}>
+			<Flex direction={'column'} flex={1}>
 				{/* 헤드 */}
 				<TitleNavigation sticky options={naviOptions} value={param?.id} onClick={onClick} />
 
 				{/* 요약 */}
 				{!data?.isEmpty && <ProfitSummary data={data} />}
 
-				{!data?.isEmpty && (
-					<Flex className='contents-layer' direction={'column'}>
-						{/* 컨텐츠 */}
-						<CardListWrap>
-							<ProfitCard viewType='code' data={data?.value} dividend={dividendData} />
-						</CardListWrap>
-					</Flex>
-				)}
+				{/* 컨텐츠 */}
+				<Flex className={clsx(swipeClass)} flex={1} direction={'column'} {...handlerSwipe}>
+					{!data?.isEmpty && (
+						<Flex className='contents-layer' direction={'column'}>
+							<CardListWrap>
+								<ProfitCard viewType='code' data={data?.value} dividend={dividendData} />
+							</CardListWrap>
+						</Flex>
+					)}
+				</Flex>
 			</Flex>
 		</PageContainer>
 	);

@@ -59,7 +59,7 @@ export const InvestmentPageMo = ({
 			<Flex className={clsx('contents-layer')} direction={'column'}>
 				<CardListWrap>
 					{list?.map((item) => {
-						return <InvestmentCard title={item.name} data={item} onClick={onClickItem} />;
+						return <InvestmentCard key={item.rowid} title={item.name} data={item} onClick={onClickItem} />;
 					})}
 				</CardListWrap>
 			</Flex>
