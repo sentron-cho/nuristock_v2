@@ -14,9 +14,37 @@ export const selectLatestDeposit = async (fastify: FastifyInstance): Promise<Dep
 
 export const selectDepositByPerYear = async (fastify: FastifyInstance): Promise<DepositCreateType[] | undefined> => {
   try {
-    const query = `SELECT rowid, sdate, price FROM (
-          SELECT a.*, ROW_NUMBER() OVER ( PARTITION BY YEAR(a.sdate) ORDER BY a.sdate DESC ) AS rn FROM asset a
-        ) t WHERE t.rn = 1 ORDER BY t.sdate DESC;`;
+    const query = `
+            SELECT a.rowid, a.sdate, a.price
+            FROM (
+              SELECT
+                x.*,
+                STR_TO_DATE(CAST(x.sdate AS CHAR), '%Y%m%d') AS sdate_date
+              FROM asset x
+            ) a
+            JOIN (
+              SELECT
+                YEAR(STR_TO_DATE(CAST(sdate AS CHAR), '%Y%m%d')) AS y,
+                MAX(STR_TO_DATE(CAST(sdate AS CHAR), '%Y%m%d'))  AS max_sdate
+              FROM asset
+              GROUP BY YEAR(STR_TO_DATE(CAST(sdate AS CHAR), '%Y%m%d'))
+            ) m
+              ON YEAR(a.sdate_date) = m.y
+            AND a.sdate_date = m.max_sdate
+            LEFT JOIN (
+              SELECT
+                x.*,
+                STR_TO_DATE(CAST(x.sdate AS CHAR), '%Y%m%d') AS sdate_date
+              FROM asset x
+            ) z
+              ON YEAR(z.sdate_date) = m.y
+            AND z.sdate_date = a.sdate_date
+            AND (
+                  z.utime > a.utime
+              OR (z.utime = a.utime AND z.rowid > a.rowid)
+            )
+            WHERE z.rowid IS NULL
+            ORDER BY m.y DESC;`;
 
     return await fastify.db.query(query);
   } catch (error) {
@@ -25,9 +53,47 @@ export const selectDepositByPerYear = async (fastify: FastifyInstance): Promise<
 };
 
 export const selectDepositByPerMonth = async (fastify: FastifyInstance): Promise<DepositCreateType[] | undefined> => {
-  const query = `SELECT rowid, sdate, price FROM (
-          SELECT a.*, ROW_NUMBER() OVER ( PARTITION BY YEAR(a.sdate), MONTH(a.sdate) ORDER BY a.sdate DESC ) AS rn FROM asset a
-        ) AS t WHERE t.rn = 1 ORDER BY t.sdate DESC`;
+  // sdate가 YYYYMMDD(INT/VARCHAR)라 가정, DATE 변환 컬럼을 서브쿼리에서 생성
+  
+  const query = `
+            SELECT
+              a.rowid,
+              a.sdate,
+              a.price
+            FROM (
+              SELECT
+                x.*,
+                STR_TO_DATE(CAST(x.sdate AS CHAR), '%Y%m%d') AS sdate_date
+              FROM asset x
+            ) a
+            JOIN (
+              SELECT
+                YEAR(STR_TO_DATE(CAST(sdate AS CHAR), '%Y%m%d'))  AS y,
+                MONTH(STR_TO_DATE(CAST(sdate AS CHAR), '%Y%m%d')) AS m,
+                MAX(STR_TO_DATE(CAST(sdate AS CHAR), '%Y%m%d'))   AS max_sdate
+              FROM asset
+              GROUP BY
+                YEAR(STR_TO_DATE(CAST(sdate AS CHAR), '%Y%m%d')),
+                MONTH(STR_TO_DATE(CAST(sdate AS CHAR), '%Y%m%d'))
+            ) mm
+              ON YEAR(a.sdate_date)  = mm.y
+            AND MONTH(a.sdate_date) = mm.m
+            AND a.sdate_date        = mm.max_sdate
+            LEFT JOIN (
+              SELECT
+                x.*,
+                STR_TO_DATE(CAST(x.sdate AS CHAR), '%Y%m%d') AS sdate_date
+              FROM asset x
+            ) z
+              ON YEAR(z.sdate_date)  = mm.y
+            AND MONTH(z.sdate_date) = mm.m
+            AND z.sdate_date        = a.sdate_date
+            AND (
+                  z.utime > a.utime
+              OR (z.utime = a.utime AND z.rowid > a.rowid)
+            )
+            WHERE z.rowid IS NULL
+            ORDER BY mm.y DESC, mm.m DESC;`;
 
   return await fastify.db.query(query);
 };
