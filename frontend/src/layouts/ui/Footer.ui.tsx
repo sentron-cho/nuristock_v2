@@ -41,7 +41,8 @@ const Footer: React.FC = () => {
 								if (item.value === URL.DASHBOARD) active = true;
 							}
 
-							if (pathname === '/' && item?.value === URL.DASHBOARD) active = true;
+							// if (pathname === '/' && item?.value === URL.DASHBOARD) active = true;
+							if (pathname === '/' && item?.value === URL.MAIN) active = true;
 
 							return (
 								<Flex

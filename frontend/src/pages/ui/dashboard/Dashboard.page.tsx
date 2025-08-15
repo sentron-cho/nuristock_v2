@@ -43,9 +43,6 @@ const DashboardPage = ({ viewType = 'trade' }: { viewType?: 'trade' | 'keep' }) 
 			window.open(`${URL.REST.DAUM}${item?.code}`);
 		} else if (eid === 'fnguide') {
 			item?.code && window.open(`${URL.REST.FNGUIDE(item.code)}`);
-		} else if (eid === 'daily') {
-		} else if (eid === 'daily') {
-			// actions.go(URL.DAILY, { rowid: data.code });
 		} else if (eid) {
 			// eid === EID.ADD || eid === EID.EDIT || eid === EID.SISE
 			setPopup({

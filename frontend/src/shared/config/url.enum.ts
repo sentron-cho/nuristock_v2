@@ -1,6 +1,7 @@
 export const URL = {
 	ROOT: '/',
 
+	MAIN: '/main',
 	DASHBOARD: '/dashboard',
 	MYSTOCK: '/mystock',
 	DIARY: '/diary',

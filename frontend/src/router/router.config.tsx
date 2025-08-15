@@ -15,6 +15,7 @@ import InvestmentDetailPage from '@page/ui/Investment/InvestmentDetailPage';
 import MenuPage from '@page/ui/Menu.page';
 import AssetPage from '@page/ui/Asset.page';
 import DepositPage from '@page/ui/deposit/Deposit.page';
+import MainboardPage from '@page/ui/mainboard/Mainboard.page';
 
 const router = createBrowserRouter([
 	{
@@ -25,9 +26,16 @@ const router = createBrowserRouter([
 				index: true,
 				element: (
 					<PageLayout>
-						<DashboardPage viewType={'keep'} />
+						<MainboardPage />
 					</PageLayout>
 				),
+			},
+			{
+				path: 'main',
+				element: <PageLayout />,
+				children: [
+					{ index: true, element: <MainboardPage /> },
+				],
 			},
 			{
 				path: 'dashboard',
@@ -73,7 +81,7 @@ const router = createBrowserRouter([
 				element: <PageLayout />,
 				children: [
 					{ index: true, element: <InvestmentPage /> },
-					{ path: ':id', element: <InvestmentDetailPage /> }
+					{ path: ':id', element: <InvestmentDetailPage /> },
 				],
 			},
 			{

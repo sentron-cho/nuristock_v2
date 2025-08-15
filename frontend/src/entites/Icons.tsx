@@ -2,6 +2,7 @@ import { styled } from '@stitches/react';
 import { SvgIconProps } from '@mui/material';
 
 import IconHome from '@mui/icons-material/Home'; // 홈
+import IconDashboard from '@mui/icons-material/Dashboard'; // 대시보드
 import IconDiary from '@mui/icons-material/EventNote'; // 다이어리
 import IconSonic from '@mui/icons-material/Assessment'; // 투자손익
 import IconStockSearch from '@mui/icons-material/QueryStats';
@@ -114,5 +115,6 @@ export {
 	IconUndo,
 	IconRedo,
 	IconAsset,
-	IconDeposit
+	IconDeposit,
+	IconDashboard,
 };
