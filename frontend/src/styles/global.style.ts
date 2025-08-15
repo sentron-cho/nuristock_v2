@@ -61,6 +61,12 @@ export const globalStyles = globalCss({
 		},
 	},
 
+	'.ellipsis': {
+		whiteSpace: 'nowrap' /* 줄바꿈 방지 */,
+		overflow: 'hidden' /* 넘치는 내용 숨김 */,
+		textOverflow: 'ellipsis' /* 말줄임표(...) 표시 */,
+	},
+
 	'.swipe-left': {
 		opacity: 0,
 		transform: 'translateX(5%)',
