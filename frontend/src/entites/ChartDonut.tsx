@@ -14,7 +14,8 @@ type ChartDonutProps = {
 	width?: number | string;
 	title?: string; // 예: '총'
 	value?: string; // 예: '39,400,000원'
-	onSliceClick?: (s: ColoredSlice) => void;
+	onClickSlice?: (value?: ColoredSlice) => void;
+	onClickTitle?: () => void;
 	chartProps?: PieProps;
 };
 
@@ -43,7 +44,8 @@ export const ChartDonut: FC<ChartDonutProps> = ({
 	width = '100%',
 	title = ST.ASSET,
 	value,
-	onSliceClick,
+	onClickSlice,
+	onClickTitle,
 	chartProps,
 }) => {
 	return (
@@ -60,7 +62,7 @@ export const ChartDonut: FC<ChartDonutProps> = ({
 						outerRadius='80%'
 						isAnimationActive
 						labelLine={false}
-						onClick={(e) => e && onSliceClick?.(e.payload)}
+						onClick={(e) => onClickSlice?.(e?.payload)}
 						// label={(props: any) => {
 						// 	const { percent, cx, cy, midAngle, outerRadius, index } = props;
 						// 	if (percent * 100 < 6) return null; // 6% 미만 라벨 생략
@@ -94,7 +96,7 @@ export const ChartDonut: FC<ChartDonutProps> = ({
 			</ResponsiveContainer>
 
 			{(title || value) && (
-				<Flex className='center-box' gap={10} direction={'column'} justify={'center'} align={'center'}>
+				<Flex className='center-box' gap={10} direction={'column'} justify={'center'} align={'center'} onClick={() => onClickTitle?.()}>
 					{title && <Text bold text={title} />}
 					{value && <Text className='cost' text={value} />}
 				</Flex>

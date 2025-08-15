@@ -43,7 +43,12 @@ export const CardLineFiled = ({
 			className={clsx('col', type, className)}
 			justify={'between'}
 			style={height ? { lineHeight: height, height: height } : {}}
-			onClick={() => onClick?.()}
+			onClick={(e) => {
+				if (onClick) {
+					e?.stopPropagation();
+					onClick();
+				}
+			}}
 		>
 			<Flex className='left' gap={10} flex={1}>
 				<Text className='title' {...options?.title} text={title} />

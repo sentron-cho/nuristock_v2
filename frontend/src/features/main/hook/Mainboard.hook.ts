@@ -51,7 +51,7 @@ export const useMainboardCardHook = (initialData?: MainboardResponse) => {
 			const sonic = (row.eprice || 0) - (row.sprice || 0);
 			// const sonicRate = sonic !== 0 ? ((row.eprice || 0) / (row.sprice || 0)) * 100 - 100 : 0;
 			const siseSonic = siseValue ? (row?.kcount || 0) * siseValue - (row?.kprice || 0) : 0;
-			const sonicRate = sonic !== 0 ? siseSonic / (row?.kprice || 0) * 100 : 0;
+			const sonicRate = sonic !== 0 ? (siseSonic / (row?.kprice || 0)) * 100 : 0;
 
 			return {
 				...row,
@@ -66,18 +66,25 @@ export const useMainboardCardHook = (initialData?: MainboardResponse) => {
 		return items; // 최대 5개
 	}, [initialData]);
 
+	// 최근매수
 	const latestBuy = useMemo(() => {
 		const items = data?.buys?.map((row) => {
 			const siseValue = data?.sise?.find((a) => a.code === row.code)?.sise;
-			const sonic = (row.eprice || 0) - (row.sprice || 0);
-			const sonicRate = sonic !== 0 ? ((row.eprice || 0) / (row.sprice || 0)) * 100 - 100 : 0;
+			
+			const sisePrice = ((siseValue || 0) * (row?.count || 0))
 			const sprice = Number(row?.count) * Number(row?.scost);
+			const sonic = (sisePrice || 0) - (sprice || 0);
+			const sonicRate = sonic !== 0 ? (sisePrice / sprice) * 100 - 100 : 0;
+
+			// const sonic = (row.eprice || 0) - (row.sprice || 0);
+			// const sonicRate = sonic !== 0 ? ((row.eprice || 0) / (row.sprice || 0)) * 100 - 100 : 0;
+			// const sprice = Number(row?.count) * Number(row?.scost);
 
 			return {
 				...row,
 				sprice,
 				eprice: 0,
-				type: valueOfPlusMinus(siseValue),
+				type: valueOfPlusMinus(sonic),
 				sonic: sonic,
 				sonicRate: sonicRate,
 				sise: siseValue,
@@ -88,6 +95,7 @@ export const useMainboardCardHook = (initialData?: MainboardResponse) => {
 		return sortBy(items, ['sdate']);
 	}, [initialData]);
 
+	// 최근매도
 	const latestSell = useMemo(() => {
 		const items = data?.sells?.map((row) => {
 			const sprice = Number(row?.count) * Number(row?.scost);

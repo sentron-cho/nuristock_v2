@@ -30,9 +30,13 @@ const StyledPage = styled(PageContainer, {
 export const MainboardPageMo = ({
 	data,
 	onClick,
+	onClickTitle,
+	onClickChart,
 }: {
 	data?: MainboardResponse;
 	onClick?: (eid?: string, item?: MainboardItemType) => void;
+	onClickTitle?: (eid?: string) => void;
+	onClickChart?: (eid?: string, item?: ChartDataType) => void;
 }) => {
 	const { totalPrice, keeps } = useMainboardHook(data);
 
@@ -42,9 +46,10 @@ export const MainboardPageMo = ({
 		return reverse(sortBy(list, ['value'])) as ChartDataType[];
 	}, [keeps]);
 
-	const onClickChart = (eid: string, value: ChartDataType) => {
-		console.log({ eid, value });
-	};
+	// const onClickChart = (eid: string, value: ChartDataType) => {
+	// 	console.log({ eid, value });
+	// 	onClickChart(eid)
+	// };
 
 	return (
 		<StyledPage>
@@ -57,29 +62,29 @@ export const MainboardPageMo = ({
 					className={clsx('contents-layer')}
 					flex={1}
 					direction={'column'}
-					onClick={() => onClick?.('main')}
+					// onClick={() => onClick?.('main')}
 				>
 					<Flex direction={'column'}>
 						{/* 평가 손익 상위 */}
-						<Flex className='title-bar' justify={'center'}>
+						<Flex className='title-bar' justify={'center'} onClick={() => onClickTitle?.('sonicTop')}>
 							<SubTitle title={ST.MAINBOARD.SONIC_TOP} />
 						</Flex>
-						<MainboardCard viewType='soincTop' data={data} onClick={onClick} />
+						<MainboardCard viewType='sonicTop' data={data} onClick={onClick} />
 
 						{/* 평가 손익 하위 */}
-						<Flex className='title-bar' justify={'center'}>
+						<Flex className='title-bar' justify={'center'} onClick={() => onClickTitle?.('sonicBottom')}>
 							<SubTitle title={ST.MAINBOARD.SONIC_BOTTOM} />
 						</Flex>
-						<MainboardCard viewType='soincBottom' data={data} onClick={onClick} />
+						<MainboardCard viewType='sonicBottom' data={data} onClick={onClick} />
 
 						{/* 최근 매수 상위 */}
-						<Flex className='title-bar' justify={'center'}>
+						<Flex className='title-bar' justify={'center'} onClick={() => onClickTitle?.('latestBuy')}>
 							<SubTitle title={ST.MAINBOARD.BUY} />
 						</Flex>
 						<MainboardCard viewType='latestBuy' data={data} onClick={onClick} />
 
 						{/* 최근 매도 상위 */}
-						<Flex className='title-bar' justify={'center'}>
+						<Flex className='title-bar' justify={'center'} onClick={() => onClickTitle?.('latestSell')}>
 							<SubTitle title={ST.MAINBOARD.SELL} />
 						</Flex>
 						<MainboardCard viewType='latestSell' data={data} onClick={onClick} />

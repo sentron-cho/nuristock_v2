@@ -15,7 +15,7 @@ type MainboardHeaderProps = {
 	title?: string;
 	value?: string;
 	valueFormatter?: (v: number) => string;
-	onClick?: (eid: string, s: ColoredSlice) => void;
+	onClick?: (eid: string, item?: ColoredSlice) => void;
 };
 
 const DEFAULT_COLORS = [
@@ -61,11 +61,12 @@ export const MainboardHeader: FC<MainboardHeaderProps> = ({
 					width={'50%'}
 					title={title}
 					value={value}
-					onSliceClick={(e) => onClick?.('slice', e)}
+					onClickTitle={() => onClick?.('title')}
+					onClickSlice={(value) => onClick?.('slice', value)}
 				/>
 
 				{/* 오른쪽: 범례 */}
-				<ChartLegend data={withColor} valueFormatter={(v) => toSemiCost(v)} onClick={(e) => onClick?.('legend', e)} />
+				<ChartLegend data={withColor} valueFormatter={(v) => toSemiCost(v)} onClick={(v) => onClick?.('legend', v)} />
 			</StyledFlex>
 		</ContentsHeader>
 	);

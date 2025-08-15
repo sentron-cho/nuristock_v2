@@ -2,7 +2,6 @@ import { MainboardItemType as DataType, MainboardResponse } from '../api/mainboa
 import { withCommas } from '@shared/libs/utils.lib';
 import clsx from 'clsx';
 import Flex from '@entites/Flex';
-import { EID } from '@shared/config/default.config';
 import { CardLineFiled } from '@features/common/ui/CardLineField.ui';
 import { styled } from '@styles/stitches.config';
 import { useMainboardCardHook } from '../hook/Mainboard.hook';
@@ -32,28 +31,24 @@ const StyledFlex = styled(Flex, {
 });
 
 export const MainboardCard = ({
-	viewType = 'soincTop',
+	viewType = 'sonicTop',
 	data,
 	onClick,
 }: {
-	viewType?: 'soincTop' | 'soincBottom' | 'latestSell' | 'latestBuy';
+	viewType?: 'sonicTop' | 'sonicBottom' | 'latestSell' | 'latestBuy';
 	data?: MainboardResponse;
 	onClick?: (eid?: string, item?: DataType) => void;
 }) => {
 	const { sonicTop, sonicBottom, latestBuy, latestSell } = useMainboardCardHook(data);
 
-	const handleClick = (eid?: string) => {
-		// onClick?.(eid);
-		console.log({ eid });
-	};
-
 	return (
-		<StyledFlex className={clsx('layout')} gap={8} direction={'column'} onClick={() => handleClick(EID.SELECT)}>
-			{viewType === 'soincTop' &&
+		<StyledFlex className={clsx('layout')} gap={8} direction={'column'}>
+			{/* 평가손익 상위 */}
+			{viewType === 'sonicTop' &&
 				sonicTop?.map((item) => {
 					return (
 						<CardLineFiled
-							className={clsx('soinc-top', item.type)}
+							className={clsx('sonic-top', item.type)}
 							title={`${item.name} [${item.sonicRate.toFixed(1)}%]`}
 							value={withCommas(item.siseSonic)}
 							onClick={() => onClick?.(viewType, item)}
@@ -62,11 +57,12 @@ export const MainboardCard = ({
 					);
 				})}
 
-			{viewType === 'soincBottom' &&
+			{/* 평가손실 상위 */}
+			{viewType === 'sonicBottom' &&
 				sonicBottom?.map((item) => {
 					return (
 						<CardLineFiled
-							className={clsx('soinc-bottom', item.type)}
+							className={clsx('sonic-bottom', item.type)}
 							title={`${item.name} [${item.sonicRate.toFixed(1)}%]`}
 							value={withCommas(item.siseSonic)}
 							onClick={() => onClick?.(viewType, item)}
@@ -75,14 +71,15 @@ export const MainboardCard = ({
 					);
 				})}
 
+			{/* 최근매수 상위 */}
 			{viewType === 'latestBuy' &&
 				latestBuy?.map((item) => {
 					return (
 						<CardLineFiled
-							className={clsx('latest-buy')}
-							title={`${item.name}`}
+							className={clsx('latest-buy', item.type)}
+							title={`${item.name} [${item.sonicRate.toFixed(1)}%]`}
 							text={`${dayjs(item.sdate).format(DATE_FORMAT)}`}
-							value={withCommas(item.sprice)}
+							value={withCommas(item.sonic)}
 							suffix={{ text: '', value: ST.WON }}
 							onClick={() => onClick?.(viewType, item)}
 							options={{ title: { bold: true, flex: 1 }, text: { bold: false } }}
@@ -90,6 +87,7 @@ export const MainboardCard = ({
 					);
 				})}
 
+			{/* 최근매도 상위 */}
 			{viewType === 'latestSell' &&
 				latestSell?.map((item) => {
 					return (

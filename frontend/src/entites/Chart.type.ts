@@ -13,5 +13,5 @@ export interface ColoredSlice extends ChartDataType {
 export interface ChartLegendProps {
   data: ColoredSlice[]; // 상위에서 색상/percent 계산된 데이터
   valueFormatter?: (v: number) => string;
-  onClick?: (s: ColoredSlice) => void;
+  onClick?: (v: ColoredSlice) => void;
 }
