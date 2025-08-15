@@ -22,8 +22,7 @@ export const ProfitPerYearPageMo = () => {
 
 	const { summary, groupedByYear, dividendByYear, naviOptions, createTotal, createDividendSumData } = useProfitData(
 		yearsData?.value,
-		profitData?.value,
-		profitData?.dividend
+		profitData
 	);
 
 	// 데이터

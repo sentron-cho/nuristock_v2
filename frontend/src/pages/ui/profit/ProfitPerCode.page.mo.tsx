@@ -27,7 +27,7 @@ export const ProfitPerCodePageMo = () => {
 		dividendByName,
 		createTotal,
 		createDividendSumData,
-	} = useProfitData(undefined, profitData?.value, profitData?.dividend);
+	} = useProfitData(undefined, profitData);
 
 	const name = useMemo(() => {
 		return profitData?.value?.find(a => a?.code === param?.id)?.name as string;
