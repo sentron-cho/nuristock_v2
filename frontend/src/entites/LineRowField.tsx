@@ -75,7 +75,7 @@ export const RowField = ({
 		>
 			<Flex className='main-row' direction={'row'}>
 				{title && (
-					<Flex fullWidth={false} flex={2} gap={4}>
+					<Flex flex={2} fullWidth={false} gap={4}>
 						<Flex fullWidth={false} gap={2}>
 							<Text className='row-title' text={title} {...titleProps} />
 							{suffix?.title && <Text className='row-title-suffix' text={suffix?.title} />}
@@ -85,13 +85,13 @@ export const RowField = ({
 				)}
 
 				{text && (
-					<Flex fullWidth={false} className={clsx('row-text', type)} gap={2} justify={'end'} flex={1}>
+					<Flex flex={2} fullWidth={false} className={clsx('row-text', type)} gap={2} justify={'end'}>
 						<Text size='xs' text={text} {...textProps} />
 						{suffix?.text && <Text size='xs' className='row-text-suffix' text={suffix?.text} />}
 					</Flex>
 				)}
 
-				{value && <Flex fullWidth={false} className={clsx('row-value', type)} justify={'end'} flex={2} gap={2}>
+				{value && <Flex flex={3} fullWidth={false} className={clsx('row-value', type)} justify={'end'} gap={2}>
 					<Text text={value} {...valueProps} />
 					{suffix?.value && <Text className='row-value-suffix' text={suffix?.value} />}
 				</Flex>}

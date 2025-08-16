@@ -11,6 +11,7 @@ import { FieldValues } from 'react-hook-form';
 import { ProfitItemType } from '../api/profit.dto';
 import { useProfitData } from '../hook/ProfitData.hook';
 import { sortedByKey } from '@shared/libs/sort.lib';
+import { RowField } from '@entites/LineRowField';
 
 // 투자손익 메인 화면 요약
 export const ProfitSummaryMain = ({ data, dividend }: { data?: ProfitItemType[]; dividend?: ProfitItemType[] }) => {
@@ -86,13 +87,9 @@ export const ProfitSummary = ({ data }: { data?: FieldValues }) => {
 	const item = useMemo(() => {
 		const total = Number(data?.dividend) + Number(data?.sum);
 
-		const sonicRate = `${((Number(data?.sum) / Number(data?.assetTotal)) * 100).toFixed(1)} %` // 손익총액 / 투자총액
+		const sonicRate = `${((Number(data?.sum) / Number(data?.assetTotal)) * 100).toFixed(1)} %`; // 손익총액 / 투자총액
 		const dividendRate = `${((Number(data?.dividend) / Number(data?.assetTotal)) * 100).toFixed(1)} %`;
 		const totalRate = `${((Number(total) / Number(data?.assetTotal)) * 100).toFixed(1)} %`;
-		
-		// const sonicRate = `${((Number(data?.sum) / Number(data?.buyTotal)) * 100).toFixed(1)} %` // 손익총액 / 투자총액
-		// const dividendRate = `${((Number(data?.dividend) / Number(data?.buyTotal)) * 100).toFixed(1)} %`;
-		// const totalRate = `${((Number(total) / Number(data?.buyTotal)) * 100).toFixed(1)} %`;
 
 		return {
 			type: data?.type,
@@ -140,32 +137,13 @@ export const ProfitSummary = ({ data }: { data?: FieldValues }) => {
 	);
 };
 
-const StyledField = styled(Flex, {
-	'.rate': {
-		position: 'absolute',
-		transform: 'translateX(50%)',
-		right: '52%',
-		width: '60px',
-		textAlign: 'right',
-	},
-});
-
-const SummaryField = ({
-	type,
-	title,
-	text,
-	value,
-}: {
-	type?: string;
-	title?: string;
-	text?: string;
-	value: string;
-}) => {
+const SummaryField = (props: { type?: string; title?: string; text?: string; value: string }) => {
 	return (
-		<StyledField justify={'between'}>
-			<SubTitle className='title' title={title} flex={1} />
-			{text && <Text size='sm' className={clsx('rate', type)} align='right' text={text} />}
-			<Text className={clsx('sum', type)} bold flex={1} align='right' text={value} />
-		</StyledField>
+		<RowField
+			{...props}
+			titleProps={{ bold: true, size: 'md' }}
+			valueProps={{ bold: true }}
+			textProps={{ size: 'sm' }}
+		/>
 	);
 };

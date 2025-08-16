@@ -31,7 +31,7 @@ export const useProfitData = (initialYears?: YearDataType[], initialData?: Profi
 			const sprice = (a?.scost || 0) * (a?.count || 0);
 			const eprice = (a?.ecost || 0) * (a?.count || 0);
 			const sonic = (eprice || 0) - (sprice || 0);
-			const asset = initialData?.asset?.find(k => dayjs(a.edate).year() === dayjs(k.sdate).year())?.price;
+			const asset = initialData?.asset?.find((k) => dayjs(a.edate).year() === dayjs(k.sdate).year())?.price;
 
 			return {
 				...a,
@@ -144,9 +144,13 @@ export const useProfitData = (initialYears?: YearDataType[], initialData?: Profi
 			{} as Record<string, DividendItemType>
 		);
 
+		console.log({ list });
+
 		return sortedByKey(list, columnKey === 'name' ? 'price' : 'title', true)?.map((a) => ({
 			title: a?.title,
 			sonic: a?.price,
+			sonicRate: a?.cost,
+			type: 'dividend',
 		})) as ProfitItemType[];
 	};
 

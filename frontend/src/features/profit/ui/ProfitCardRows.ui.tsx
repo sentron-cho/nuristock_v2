@@ -62,14 +62,16 @@ export const ProfitCardRows = ({
 
 			<Flex direction={'column'} className='body'>
 				{data?.map((item, index) => {
-					const { title, sonic, sonicRate } = item;
-					const type = valueOfPlusMinus(sonic, 0);
+					const { title, sonic, sonicRate, type } = item;
+					const updownd = valueOfPlusMinus(sonic, 0);
+					const text = sonicRate ? (type === 'dividend' ? `${toCost(sonicRate)}` : `${sonicRate} %`) : '';
+
 					return (
 						<RowField
 							key={`profit-${index}`}
-							type={type}
+							type={updownd}
 							title={title}
-							text={sonicRate ? `${sonicRate} %` : undefined}
+							text={text}
 							value={toCost(sonic)}
 							onClick={() => onClickItem?.(item)}
 							height={rowHeight}

@@ -5,7 +5,6 @@ import { MyStockKeepType } from '@features/mystock/api/mystock.dto';
 
 export interface ProfitItemType extends MyStockKeepType {
 	name: string;
-	stockid: number;
 	ecost?: number;
 	edate?: string;
 	sonic?: number;
@@ -15,6 +14,7 @@ export interface ProfitItemType extends MyStockKeepType {
 	sonicRate?: number;
 
 	asset?: number;
+	type?: string;
 }
 
 export interface ProfitResponse {
