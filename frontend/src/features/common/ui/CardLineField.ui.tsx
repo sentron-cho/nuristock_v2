@@ -54,7 +54,7 @@ export const CardLineFiled = ({
 				<Text className='title' {...options?.title} text={title} />
 				<Flex className='middle' fullWidth={false} flex={1} gap={4} align={'end'}>
 					{text && (
-						<Flex fullWidth={false}>
+						<Flex fullWidth={false} gap={2}>
 							<Text className='text' bold {...options?.text} text={text} />
 							{suffix?.text && <Text bold {...options?.text} text={suffix.text} />}
 						</Flex>

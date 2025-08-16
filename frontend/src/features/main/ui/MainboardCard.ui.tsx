@@ -2,37 +2,16 @@ import { MainboardItemType as DataType, MainboardResponse } from '../api/mainboa
 import { withCommas } from '@shared/libs/utils.lib';
 import clsx from 'clsx';
 import Flex from '@entites/Flex';
-import { CardLineFiled } from '@features/common/ui/CardLineField.ui';
 import { styled } from '@styles/stitches.config';
 import { useMainboardCardHook } from '../hook/Mainboard.hook';
 import { ST } from '@shared/config/kor.lang';
 import dayjs from 'dayjs';
 import { DATE_FORMAT } from '@shared/config/common.constant';
+import { RowField } from '@entites/LineRowField';
 
 const StyledFlex = styled(Flex, {
 	'&.layout': {
 		padding: '$10',
-
-		'.left': {
-			flex: 3,
-			'.middle': {
-				justifyContent: 'right',
-				'p': {
-					fontSize: '12px',
-				}
-			}
-		},
-
-		'.right': {
-			flex: 2,
-		},
-
-		'.minus': {
-			color: '$minus',
-		},
-		'.plus': {
-			color: '$plus',
-		},
 	},
 });
 
@@ -51,66 +30,69 @@ export const MainboardCard = ({
 		<StyledFlex className={clsx('layout')} gap={8} direction={'column'}>
 			{/* 평가손익 상위 */}
 			{viewType === 'sonicTop' &&
-				sonicTop?.map((item) => {
+				sonicTop?.map((item, index) => {
 					return (
-						<CardLineFiled
+						<RowField
+							key={`st-${index}`}
 							className={clsx('sonic-top', item.type)}
 							title={`${item.name} [${item.sonicRate.toFixed(1)}%]`}
 							value={withCommas(item.siseSonic)}
 							text={`${withCommas(item.sise)}`}
-							// text={`${withCommas(item.sise)} x ${item.kcount}`}
-							// suffix={{ text: ST.JU, value: ST.WON }}
 							onClick={() => onClick?.(viewType, item)}
-							options={{ title: { bold: true, flex: 1 }, text: { bold: false } }}
+							valueProps={{ bold: true }}
+							suffix={{ text: ST.WON, value: ST.WON }}
 						/>
 					);
 				})}
 
 			{/* 평가손실 상위 */}
 			{viewType === 'sonicBottom' &&
-				sonicBottom?.map((item) => {
+				sonicBottom?.map((item, index) => {
 					return (
-						<CardLineFiled
+						<RowField
+							key={`sb-${index}`}
 							className={clsx('sonic-bottom', item.type)}
+							type={item.type}
 							title={`${item.name} [${item.sonicRate.toFixed(1)}%]`}
-							value={withCommas(item.siseSonic)}
 							text={`${withCommas(item.sise)}`}
-							// text={`${withCommas(item.sise)} x ${item.kcount}`}
-							// suffix={{ text: ST.JU, value: ST.WON }}
+							value={withCommas(item.siseSonic)}
 							onClick={() => onClick?.(viewType, item)}
-							options={{ title: { bold: true, flex: 1 }, text: { bold: false } }}
+							valueProps={{ bold: true }}
+							suffix={{ text: ST.WON, value: ST.WON }}
 						/>
 					);
 				})}
 
 			{/* 최근매수 상위 */}
 			{viewType === 'latestBuy' &&
-				latestBuy?.map((item) => {
+				latestBuy?.map((item, index) => {
 					return (
-						<CardLineFiled
+						<RowField
+							key={`lb-${index}`}
 							className={clsx('latest-buy', item.type)}
 							title={`${item.name} [${item.sonicRate.toFixed(1)}%]`}
 							text={`${dayjs(item.sdate).format(DATE_FORMAT)}`}
 							value={withCommas(item.sonic)}
-							suffix={{ text: '', value: ST.WON }}
 							onClick={() => onClick?.(viewType, item)}
-							options={{ title: { bold: true, flex: 1 }, text: { bold: false } }}
+							valueProps={{ bold: true }}
+							suffix={{ value: ST.WON }}
 						/>
 					);
 				})}
 
 			{/* 최근매도 상위 */}
 			{viewType === 'latestSell' &&
-				latestSell?.map((item) => {
+				latestSell?.map((item, index) => {
 					return (
-						<CardLineFiled
+						<RowField
+							key={`ls-${index}`}
 							className={clsx('latest-sell', item.type)}
 							title={`${item.name} [${item.sonicRate.toFixed(1)}%]`}
 							text={`${dayjs(item.edate).format(DATE_FORMAT)}`}
 							value={withCommas(item.sonic)}
-							suffix={{ text: '', value: ST.WON }}
 							onClick={() => onClick?.(viewType, item)}
-							options={{ title: { bold: true, flex: 1 }, text: { bold: false } }}
+							valueProps={{ bold: true }}
+							suffix={{ value: ST.WON }}
 						/>
 					);
 				})}

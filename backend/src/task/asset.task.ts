@@ -29,6 +29,7 @@ export const startAssetTask = (fastify: FastifyInstance) => {
     }
   };
 
+  // 이전의 자본 데이터 임의 저장
   // const test = async () => {
   //   const now = dayjs().tz("Asia/Seoul");
 
@@ -40,7 +41,7 @@ export const startAssetTask = (fastify: FastifyInstance) => {
   //   for (let k = 0; k < 14; k++) {
   //     const year = start.add(k, 'year');
   //     const nYear = Number(year?.format('YYYY'));
-  //     const price = nYear < 2020 ? 20 * 1000000 : 30 * 1000000;
+  //     const price = nYear < 2012 ? 10 * 1000000 : nYear < 2015 ? 20 * 1000000 : nYear < 2020 ? 30 * 1000000 : 40 * 1000000;
 
   //     for (let i = 0; i < 12; i++) {
   //       const date = year.add(i, "month").format("YYYYMMDD");
@@ -53,7 +54,7 @@ export const startAssetTask = (fastify: FastifyInstance) => {
   //   start = dayjs("20250101", "YYYYMMDD");
   //   for (let i = 0; i < 8; i++) {
   //     const date = start.add(i, "month").format("YYYYMMDD");
-  //     const params = { price: 40 * 1000000, sdate: date, utime: dayjs().format("YYYY-MM-DD HH:mm:ss") };
+  //     const params = { price: 45 * 1000000, sdate: date, utime: dayjs().format("YYYY-MM-DD HH:mm:ss") };
   //     await fastify.db.query(`INSERT INTO asset ${makeInsertSet(params)};`);
   //   }
   // };
