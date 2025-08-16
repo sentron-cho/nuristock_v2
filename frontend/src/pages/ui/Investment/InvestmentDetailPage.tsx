@@ -76,7 +76,6 @@ const InvestmentDetailPage = () => {
 	};
 
 	const onClickReport = async (eid?: string, item?: InvestmentItemType) => {
-		console.log('[onClickReport]', { eid, item });
 		if (!item || !item?.code) return;
 
 		await selectReport({ targetYear: eid, code: item.code });

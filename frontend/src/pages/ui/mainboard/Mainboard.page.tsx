@@ -10,8 +10,6 @@ const MainboardPage = () => {
 	const { data } = useSelectMainboard();
 
 	const onClick = (eid?: string, item?: MainboardItemType) => {
-		console.log({ eid, item });
-
 		switch (eid) {
 			case 'sonicTop':
 			case 'sonicBottom':
@@ -25,8 +23,6 @@ const MainboardPage = () => {
 	};
 
 	const onClickTitle = (eid?: string) => {
-		console.log({ eid });
-
 		switch (eid) {
 			case 'sonicTop':
 			case 'sonicBottom':

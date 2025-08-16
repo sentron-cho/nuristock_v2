@@ -11,12 +11,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 const App = () => {
 	const queryClient = new QueryClient();
 
-	// const mode = import.meta.env.MODE;
-	// const url = import.meta.env.BASE_URL;
-	// const api = import.meta.env.VITE_API_URL;
-	// const isProd = import.meta.env.PROD;
-	// console.log('[App]', { mode, isProd, url, api });
-
 	return (
 		<ConfirmProvider>
 			<AlertProvider>

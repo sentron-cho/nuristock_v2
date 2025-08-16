@@ -25,8 +25,6 @@ export const useProfitData = (initialYears?: YearDataType[], initialData?: Profi
 
 	// 메인 데이터
 	const data = useMemo(() => {
-		// console.log({ initialData });
-
 		return initialData?.value?.map((a) => {
 			const sprice = (a?.scost || 0) * (a?.count || 0);
 			const eprice = (a?.ecost || 0) * (a?.count || 0);
@@ -143,8 +141,6 @@ export const useProfitData = (initialYears?: YearDataType[], initialData?: Profi
 			},
 			{} as Record<string, DividendItemType>
 		);
-
-		console.log({ list });
 
 		return sortedByKey(list, columnKey === 'name' ? 'price' : 'title', true)?.map((a) => ({
 			title: a?.title,
