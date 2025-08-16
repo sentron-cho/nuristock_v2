@@ -3,7 +3,6 @@ import Flex from '@entites/Flex';
 import { useProfitData } from '@features/profit/hook/ProfitData.hook';
 import clsx from 'clsx';
 import { ST } from '@shared/config/kor.lang';
-import { ProfitCardField } from '@features/profit/ui/ProfitCardRows.ui';
 import { URL } from '@shared/config/url.enum';
 import { useMemo } from 'react';
 import { sortedByKey } from '@shared/libs/sort.lib';
@@ -16,6 +15,7 @@ import { TitleNavigation } from '@entites/TitleNavigation';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
 import { toCost, valueOfPlusMinus, withCommas } from '@shared/libs/utils.lib';
 import { ProfitSummaryMain } from '@features/profit/ui/ProfitSummary.ui';
+import { RowField } from '@entites/LineRowField';
 
 const StyledPage = styled(PageContainer, {
 	'.card': {
@@ -142,7 +142,7 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 										// const shortAsset = `${toCost(asset)}`;
 
 										return (
-											<ProfitCardField
+											<RowField
 												key={`profit-${index}`}
 												type={type}
 												title={title}
@@ -170,7 +170,7 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 										const { title, sonic, sonicRate, type } = item;
 
 										return (
-											<ProfitCardField
+											<RowField
 												key={`profit-${index}`}
 												type={type}
 												title={title}
