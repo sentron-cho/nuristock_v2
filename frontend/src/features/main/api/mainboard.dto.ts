@@ -10,7 +10,6 @@ export interface MainboardItemType {
 	ecount?: number;
 	eprice?: number;
 	sprice?: number;
-	showyn?: string;
 
 	count?: number;
 	ecost?: number;

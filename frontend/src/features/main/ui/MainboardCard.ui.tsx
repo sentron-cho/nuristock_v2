@@ -15,10 +15,16 @@ const StyledFlex = styled(Flex, {
 
 		'.left': {
 			flex: 3,
+			'.middle': {
+				justifyContent: 'right',
+				'p': {
+					fontSize: '12px',
+				}
+			}
 		},
 
 		'.right': {
-			flex: 1,
+			flex: 2,
 		},
 
 		'.minus': {
@@ -51,6 +57,9 @@ export const MainboardCard = ({
 							className={clsx('sonic-top', item.type)}
 							title={`${item.name} [${item.sonicRate.toFixed(1)}%]`}
 							value={withCommas(item.siseSonic)}
+							text={`${withCommas(item.sise)}`}
+							// text={`${withCommas(item.sise)} x ${item.kcount}`}
+							// suffix={{ text: ST.JU, value: ST.WON }}
 							onClick={() => onClick?.(viewType, item)}
 							options={{ title: { bold: true, flex: 1 }, text: { bold: false } }}
 						/>
@@ -65,6 +74,9 @@ export const MainboardCard = ({
 							className={clsx('sonic-bottom', item.type)}
 							title={`${item.name} [${item.sonicRate.toFixed(1)}%]`}
 							value={withCommas(item.siseSonic)}
+							text={`${withCommas(item.sise)}`}
+							// text={`${withCommas(item.sise)} x ${item.kcount}`}
+							// suffix={{ text: ST.JU, value: ST.WON }}
 							onClick={() => onClick?.(viewType, item)}
 							options={{ title: { bold: true, flex: 1 }, text: { bold: false } }}
 						/>

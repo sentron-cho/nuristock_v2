@@ -3,8 +3,6 @@ import { DepositItemType } from '@features/deposit/api/deposit.dto';
 import { MarketSiseDataType } from '@features/market/api/market.dto';
 
 export interface DashboardItemType {
-	stockid: number;
-	userid: number;
 	code: string;
 	name: string;
 	kcount: number;
@@ -12,7 +10,6 @@ export interface DashboardItemType {
 	ecount: number;
 	eprice: number;
 	sprice: number;
-	showyn: string;
 
 	sonic?: number;
 	sonicRate?: number;

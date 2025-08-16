@@ -38,7 +38,7 @@ export const MainboardPageMo = ({
 	onClickTitle?: (eid?: string) => void;
 	onClickChart?: (eid?: string, item?: ChartDataType) => void;
 }) => {
-	const { totalPrice, keeps } = useMainboardHook(data);
+	const { totalPrice, keeps, summaryData } = useMainboardHook(data);
 
 	const parsed = useMemo(() => {
 		const list = keeps?.map((a) => ({ name: a?.name, value: a?.kprice, key: a?.code }));
@@ -46,13 +46,8 @@ export const MainboardPageMo = ({
 		return reverse(sortBy(list, ['value'])) as ChartDataType[];
 	}, [keeps]);
 
-	// const onClickChart = (eid: string, value: ChartDataType) => {
-	// 	console.log({ eid, value });
-	// 	onClickChart(eid)
-	// };
-
 	return (
-		<StyledPage>
+		<StyledPage summaryData={summaryData}>
 			<Flex direction={'column'} flex={1}>
 				{/* 컨텐츠 헤더(요약) */}
 				<MainboardHeader data={parsed} value={totalPrice.toString()} onClick={onClickChart} />
