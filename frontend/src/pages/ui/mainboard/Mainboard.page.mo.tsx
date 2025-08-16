@@ -14,6 +14,8 @@ import { ST } from '@shared/config/kor.lang';
 
 const StyledPage = styled(PageContainer, {
 	'.contents-layer': {
+		background: 'white',
+
 		'.title-bar': {
 			width: '100%',
 			background: '$gray400',

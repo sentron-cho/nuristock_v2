@@ -12,6 +12,7 @@ import clsx from 'clsx';
 import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 import { MystockHeader } from '@features/mystock/ui/MystockHeader.ui';
 import { useNaviByOptions } from '@shared/hooks/useOptionNavi.hook';
+import { KEEP, TRADE } from '@shared/config/common.constant';
 
 const StyledPage = styled(PageContainer, {
 	'.page-titl-bar': {
@@ -108,13 +109,13 @@ export const MyStockPageMo = ({
 	};
 
 	const onClickHead = () => {
-		if (viewType === 'keep' && !tradeList?.length) {
+		if (viewType === TRADE && !tradeList?.length) {
 			return toastInfo(ST.NODATA);
-		} else if (viewType === 'trade' && !keepList?.length) {
+		} else if (viewType === TRADE && !keepList?.length) {
 			return toastInfo(ST.NODATA);
 		}
 
-		navigate(`${URL.MYSTOCK}/${viewType === 'keep' ? 'trade' : 'keep'}/${param?.id}`);
+		navigate(`${URL.MYSTOCK}/${viewType === KEEP ? TRADE : KEEP}/${param?.id}`);
 	};
 
 	return (
@@ -123,10 +124,10 @@ export const MyStockPageMo = ({
 				<Flex direction={'column'} flex={1}>
 					{/* 타이틀바 */}
 					<PageTitleBar
-						title={viewType === 'keep' ? ST.KEEP_LIST : ST.TRADE_LIST}
+						title={viewType === KEEP ? ST.KEEP_LIST : ST.TRADE_LIST}
 						buttonProps={{
 							eid: 'buy',
-							title: viewType === 'keep' ? ST.TRADE_LIST : ST.KEEP_LIST,
+							title: viewType === KEEP ? ST.TRADE_LIST : ST.KEEP_LIST,
 							buttonType: 'text',
 							color: 'primary',
 							onClick: onClickHead,
@@ -147,14 +148,14 @@ export const MyStockPageMo = ({
 
 					{/* 컨텐츠 */}
 					<Flex className='contents-layer' direction={'column'} {...handlerSwipe}>
-						{viewType === 'keep' && (
+						{viewType === KEEP && (
 							<Flex className={clsx(swipeClass)} direction={'column'}>
 								{/* 보유현황 */}
 								{!!keepList?.length && <MyStcokKeepList list={keepList} sise={data?.sise} onClick={onClickKeep} />}
 							</Flex>
 						)}
 
-						{viewType === 'trade' && (
+						{viewType === TRADE && (
 							<Flex className={swipeClass} direction={'column'}>
 								{/* 거래내역 */}
 								{!!tradeList?.length && <MyStcokTradeList list={tradeList} sise={data?.sise} onClick={onClickTrade} />}

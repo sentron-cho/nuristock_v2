@@ -9,8 +9,9 @@ const mainboardRoute = (fastify: FastifyInstance) => {
   fastify.get(URL.MAINBOARD.ROOT, async (_req, reply) => {
     try {
       const dashboard = await fastify.db.query("SELECT * FROM dashboard");
-      const sells = await fastify.db.query("SELECT k.*, m.name as name FROM sells k JOIN dashboard m ON k.code = m.code ORDER BY edate DESC limit 10;");
-      const buys = await fastify.db.query("SELECT k.*, m.name as name FROM keeps k JOIN dashboard m ON k.code = m.code ORDER BY sdate DESC limit 10;");
+      const latestSells = await fastify.db.query("SELECT k.*, m.name as name FROM sells k JOIN dashboard m ON k.code = m.code ORDER BY edate DESC limit 10;");
+      const latestBuys = await fastify.db.query("SELECT k.*, m.name as name FROM keeps k JOIN dashboard m ON k.code = m.code ORDER BY sdate DESC limit 10;");
+      const buys = await fastify.db.query("SELECT k.*, m.name as name FROM keeps k JOIN dashboard m ON k.code = m.code ORDER BY sdate DESC");
       const asset = await selectLatestAsset(fastify); // 현재 기준 투자총액
       const deposit = await selectLatestDeposit(fastify); // 현재 기준 예수금
 
@@ -19,14 +20,15 @@ const mainboardRoute = (fastify: FastifyInstance) => {
         const sise = await fastify.db.query(`SELECT * FROM market WHERE code in (${codes})`);
 
         return {
-          value: dashboard,
-          trades: dashboard?.filter(a => a?.eprice),
-          keeps: dashboard?.filter(a => a?.kprice),
+          value: dashboard, // 보유 및 거래 종목 전체
+          trades: dashboard?.filter(a => a?.eprice), // 보유 종목만
+          keeps: dashboard?.filter(a => a?.kprice), // 거래 종목만
+          latestSells, // 최근 매도 종목
+          latestBuys, // 최근 매수 종목
+          buys, // 매수 종목 전체
           sise,
           asset,
           deposit,
-          sells,
-          buys,
         };
       } else {
         return {

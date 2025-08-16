@@ -74,6 +74,7 @@ export const useMainboardHook = (initialData?: MainboardResponse) => {
 		keeps: data?.keeps,
 		asset: data?.asset,
 		deposit: data?.deposit,
+		buys: data?.buys,
 		totalPrice,
 	};
 };
@@ -114,7 +115,7 @@ export const useMainboardCardHook = (initialData?: MainboardResponse) => {
 
 	// 최근매수
 	const latestBuy = useMemo(() => {
-		const items = data?.buys?.map((row) => {
+		const items = data?.latestBuys?.map((row) => {
 			const siseValue = data?.sise?.find((a) => a.code === row.code)?.sise;
 
 			const sisePrice = (siseValue || 0) * (row?.count || 0);
@@ -143,7 +144,7 @@ export const useMainboardCardHook = (initialData?: MainboardResponse) => {
 
 	// 최근매도
 	const latestSell = useMemo(() => {
-		const items = data?.sells?.map((row) => {
+		const items = data?.latestSells?.map((row) => {
 			const sprice = Number(row?.count) * Number(row?.scost);
 			const eprice = Number(row?.count) * Number(row?.ecost);
 			const siseValue = data?.sise?.find((a) => a.code === row.code)?.sise;
@@ -179,6 +180,7 @@ export const useMainboardCardHook = (initialData?: MainboardResponse) => {
 		latestSell: reverse(sortBy(latestSell, ['edate'])).slice(0, 5),
 		asset: data?.asset,
 		deposit: data?.deposit,
+		buys: data?.buys,
 		totalPrice,
 	};
 };

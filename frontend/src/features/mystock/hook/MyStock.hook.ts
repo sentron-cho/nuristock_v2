@@ -2,9 +2,10 @@ import { MyStockKeepType, MyStockResponse, MyStockSellType } from './../api/myst
 import { useMemo } from 'react';
 import { reverse, sortBy } from 'lodash';
 import { OptionType } from '@shared/config/common.type';
-import { MyStockSummaryData as SummaryData } from '../config/MyStock.data';
+import { MyStockSummaryDataTrade as SummaryTrade, MyStockSummaryDataKeep as SummaryKeep } from '../config/MyStock.data';
 import { useParams } from 'react-router-dom';
 import { StorageDataKey, useStorageHook } from '@shared/hooks/useStorage.hook';
+import { KEEP } from '@shared/config/common.constant';
 
 export const useMyStockHook = (initialData?: MyStockResponse, viewType?: 'trade' | 'keep') => {
 	const { getLocalStorage } = useStorageHook();
@@ -31,7 +32,7 @@ export const useMyStockHook = (initialData?: MyStockResponse, viewType?: 'trade'
 		const sortedTrade = getLocalStorage(StorageDataKey.DASHBOARD_SORTED_TRADE) as OptionType[];
 		const sortedKeep = getLocalStorage(StorageDataKey.DASHBOARD_SORTED_KEEP) as OptionType[];
 
-		if (viewType === 'keep') {
+		if (viewType === KEEP) {
 			return sortedKeep || data?.stocks?.filter((a) => a.kcount)?.map((a) => ({ value: a.code, label: a.name }));
 		} else {
 			return sortedTrade || data?.stocks?.filter((a) => a.ecount)?.map((a) => ({ value: a.code, label: a.name }));
@@ -39,18 +40,32 @@ export const useMyStockHook = (initialData?: MyStockResponse, viewType?: 'trade'
 	}, [data?.stocks, viewType]);
 
 	const summaryData = useMemo(() => {
-		const buy = (data?.sells as MyStockSellType[])?.map((a) => a.scost * a.count)?.reduce((a, b) => a + b, 0);
-		const sell = (data?.sells as MyStockSellType[])?.map((a) => a.ecost * a.count)?.reduce((a, b) => a + b, 0);
-		const keep = (data?.keeps as MyStockKeepType[])?.map((a) => a.scost * a.count)?.reduce((a, b) => a + b, 0);
-		const sonic = buy && sell && sell - buy;
-		const values: string[] = [
-			buy?.toString() || '',
-			sell?.toString() || '',
-			keep?.toString() || '',
-			sonic?.toString() || '',
-		];
-		return SummaryData(values);
-	}, [data]);
+		if (viewType === KEEP) {
+			const buy = (data?.keeps as MyStockSellType[])?.map((a) => a.scost * a.count)?.reduce((a, b) => a + b, 0);
+			const valuation = (data?.keeps as MyStockSellType[])?.map((a) => (sise?.sise || 0) * a.count)?.reduce((a, b) => a + b, 0);
+			const siseSonic = valuation - buy;
+
+			const values: string[] = [
+				buy?.toString() || '',
+				valuation?.toString() || '',
+				siseSonic?.toString() || '',
+			];
+
+			return SummaryKeep(values);
+		} else {
+			const buy = (data?.sells as MyStockSellType[])?.map((a) => a.scost * a.count)?.reduce((a, b) => a + b, 0);
+			const sell = (data?.sells as MyStockSellType[])?.map((a) => a.ecost * a.count)?.reduce((a, b) => a + b, 0);
+			const keep = (data?.keeps as MyStockKeepType[])?.map((a) => a.scost * a.count)?.reduce((a, b) => a + b, 0);
+			const sonic = buy && sell && sell - buy;
+			const values: string[] = [
+				buy?.toString() || '',
+				sell?.toString() || '',
+				keep?.toString() || '',
+				sonic?.toString() || '',
+			];
+			return SummaryTrade(values);
+		}
+	}, [data, viewType, sise]);
 
 	return {
 		stocks,

@@ -1,11 +1,7 @@
 import Flex from '@entites/Flex';
-import { Text } from '@entites/Text';
-import { SubTitle } from '@entites/Title';
 import { ContentsHeader } from '@layouts/ui/ContentsHeader.ui';
 import { ST } from '@shared/config/kor.lang';
 import { toCost, valueOfPlusMinus } from '@shared/libs/utils.lib';
-import { styled } from '@styles/stitches.config';
-import clsx from 'clsx';
 import { useMemo } from 'react';
 import { FieldValues } from 'react-hook-form';
 import { ProfitItemType } from '../api/profit.dto';

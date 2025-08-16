@@ -26,9 +26,10 @@ export interface MainboardItemType {
 
 export interface MainboardResponse {
 	value?: MainboardItemType[];
-	keeps?: MainboardItemType[];
-	sells?: MainboardItemType[];
 	buys?: MainboardItemType[];
+	keeps?: MainboardItemType[];
+	latestSells?: MainboardItemType[];
+	latestBuys?: MainboardItemType[];
 	trades?: MainboardItemType[];
 	sise?: MainboardSiseItemType[];
 	deposit?: DepositItemType;
