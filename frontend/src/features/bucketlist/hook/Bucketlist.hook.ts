@@ -7,6 +7,7 @@ import { StorageDataKey, useStorageHook } from '@shared/hooks/useStorage.hook';
 
 export const useBucketlistHook = (refresh?: number) => {
 	const initialData: BucklistParamType = {
+		page: 1,
 		principal: 40_000_000,
 		rate: 0.15,
 		years: 10,
@@ -19,7 +20,7 @@ export const useBucketlistHook = (refresh?: number) => {
 	const params = useMemo(() => {
 		const id = param?.id || 1;
 		const item = (getLocalStorage(`${StorageDataKey.BUCKET_PARAMS}-${id}`) || initialData) as BucklistParamType;
-		return { ...item, page: id };
+		return { ...item, page: Number(id) };
 	}, [refresh, param]);
 
 	const data = useMemo(() => {
