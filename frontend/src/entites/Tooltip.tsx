@@ -3,6 +3,7 @@ import { IconProps } from '@mui/material';
 import { Tooltip as MuiTooltip, TooltipProps } from '@mui/material';
 import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
+import { ReactNode } from 'react';
 // import { styled } from '@mui/material/styles';
 
 const StyledTooltip = styled(MuiTooltip, {
@@ -22,14 +23,16 @@ export const Tooltip = ({
 	color = 'error',
 	className,
 	placement = 'bottom-end',
+	open,
 }: {
-	message?: string;
+	message?: string | ReactNode;
 	color?: IconProps['color'];
 	className?: string;
 	placement?: TooltipProps['placement'];
+	open?: boolean;
 }) => {
 	return (
-		<StyledTooltip className={clsx('tooltip', className)} title={message} arrow placement={placement}>
+		<StyledTooltip className={clsx('tooltip', className)} open={open} title={message} arrow placement={placement}>
 			<IconAlert className='icon' color={color} />
 		</StyledTooltip>
 	);

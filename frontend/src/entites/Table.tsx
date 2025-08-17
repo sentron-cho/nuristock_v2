@@ -18,6 +18,7 @@ interface TableProps extends MuiTableProps {
 	fixedRowCount?: number;
 	fullwidth?: boolean;
 	className?: string;
+	width?: number | string;
 }
 
 export const Table = ({
@@ -32,6 +33,7 @@ export const Table = ({
 	fixedRowCount,
 	fullwidth = true,
 	className,
+	width,
 	...rest
 }: TableProps) => {
 	const ref = useRef(null);
@@ -75,7 +77,8 @@ export const Table = ({
 			fullwidth={fullwidth}
 			loading={loading}
 			ref={ref}
-			className={clsx('table', { className, selection: !!onRowClick })}>
+			className={clsx('table', { className, selection: !!onRowClick })}
+		>
 			<MuiTable
 				// tableLayout={'fixed'}
 				columns={parsedHeader}
@@ -87,8 +90,9 @@ export const Table = ({
 				onRow={onRowClick ? (record) => ({ onClick: () => onRowClick(record) }) : undefined}
 				scroll={{
 					y: fixedRowCount ? 40 * fixedRowCount : undefined,
-					x: fullwidth ? (fixedRowCount ? (tableWidth || 0) - 20 : tableWidth) : undefined,
+					x: width || (fullwidth ? (fixedRowCount ? (tableWidth || 0) - 20 : tableWidth) : undefined),
 				}}
+				// style={{ width: '100%' }}
 				{...rest}
 			/>
 		</StyledTable>

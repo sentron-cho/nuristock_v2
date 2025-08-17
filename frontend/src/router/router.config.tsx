@@ -110,6 +110,7 @@ const router = createBrowserRouter([
 				element: <PageLayout />,
 				children: [
 					{ index: true, element: <BucketlistPage /> },
+					{ path: ':id', element: <BucketlistPage /> },
 				],
 			},
 			{ path: '*', element: <NotFoundPage /> },

@@ -1,19 +1,37 @@
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { BucketlistPageMo } from './Bucketlist.page.mo';
+import { useState } from 'react';
+import { PopupType } from '@entites/Dialog';
+import { EID } from '@shared/config/default.config';
+import { BucketlistRegister as RegisterPopup } from '@features/bucketlist/ui/BucketlistRegister.popup';
+import { BucklistParamType } from '@features/bucketlist/api/bucketlist.dto';
 
 const BucketlistPage = () => {
-  const { isMobile } = useCommonHook();
+	const { isMobile } = useCommonHook();
+	const [popup, setPopup] = useState<PopupType>();
+	const [refresh, setRefresh] = useState<number>();
 
-  return (
-    <>
-      {isMobile && (
-        <BucketlistPageMo />
-      )}
-      {!isMobile && (
-        <BucketlistPageMo />
-      )}
-    </>
-  );
+	const onClick = (eid?: string, item?: BucklistParamType) => {
+		if (eid === EID.SETTING) {
+			setPopup({
+        type: eid,
+        item: item,
+				onClose: (isOk) => {
+					isOk && setRefresh(new Date().valueOf());
+					setPopup(undefined);
+				},
+			});
+		}
+	};
+
+	return (
+		<>
+      {isMobile && <BucketlistPageMo refresh={refresh} onClick={onClick}  />}
+			{!isMobile && <BucketlistPageMo refresh={refresh} onClick={onClick}  />}
+
+			{popup?.type && <RegisterPopup item={popup?.item as BucklistParamType} onClose={popup.onClose} />}
+		</>
+	);
 };
 
 BucketlistPage.displayName = 'BucketlistPage';

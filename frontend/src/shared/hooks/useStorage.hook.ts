@@ -1,6 +1,7 @@
 export const StorageDataKey = {
 	DASHBOARD_SORTED_TRADE: 'dashboard-sorted-trade',
 	DASHBOARD_SORTED_KEEP: 'dashboard-sorted-keep',
+	BUCKET_PARAMS: 'bucket-params',
 }
 
 export const useStorageHook = () => {

@@ -167,6 +167,21 @@ const KOR = {
 	PER_DAYS: '일별',
 	INVEST: '가치투자',
 
+	INVESTMENT_SMIULATION: '투자 시뮬레이션',
+	INVESTMENT_FINAL: '최종 평가액',
+	INVESTMENT_SONIC: '순이익',
+	INVESTMENT_IN: '누적 투자금',
+
+	BUCKETLIST: {
+		PRINCIPAL: '원금',
+		RATE: '연이율(예 0.015)',
+		YEARS: '투자기간(년)',
+		ANNUAL: '매년추가투자액(연말)',
+		CHART: '자산성장곡선(추가투자 포함 vs 미포함)',
+		TABLE: '연도별 상세',
+		PAGE: '고유번호',
+	},
+
 	MENU: {
 		MAINBOARD: '메인',
 		DASHBOARD: '대시보드',
@@ -240,6 +255,16 @@ const KOR = {
 		SONICRATE: '손익율[%]',
 		YSONICRATE: '년손익율[%]',
 		SONIC: '손익',
+	},
+
+	BUCKET_TABLE: {
+		YEAR: '연도',
+		START: '연초 금액',
+		AFTER_GROWTH: '15% 적용 후',
+		CONTRIBUTION: '추가금',		
+		TOTAL: '연말 총액',
+		NOT_ADDED: '추가 없음',
+		INTEREST: '당해 이자',
 	},
 };
 
