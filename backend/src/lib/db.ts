@@ -11,14 +11,15 @@ console.log("[SERVER ENV] ====> ", {
 });
 
 export const pool = mariadb.createPool({
-  host: process.env.DB_HOST || "db.nurioweb.co.kr", //"localhost", // db.nurioweb.co.kr
+  host: process.env.DB_HOST || "nuriwebs.cafe24.com",
+  user: process.env.DB_USER || "nurimon",
   port: 3306,
-  user: process.env.DB_USER || "nurimon", // "root", // "nurimon"
   password: process.env.DB_PASSWORD || "qlalfdldi",
   database: process.env.DB_NAME || "nuristock_v2",
   connectionLimit: 5,
 
   // BigInt 처리
+  charset: 'utf8mb4',
   supportBigNumbers: true,
   bigNumberStrings: true, // BIGINT/DECIMAL을 string으로 반환
 });

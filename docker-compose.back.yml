@@ -1,19 +1,19 @@
-version: '3.8'
+version: '3'
 
 services:
   backend:
     image: sentron/nuristock_back
     container_name: nuristock-back
     restart: always
-    build:
-      context: ./backend
+    #build:
+    #  context: ./backend
     ports:
       - "3000:3000"
-    working_dir: /app
-    # volumes:
-    #   - ./backend:/app
-    env_file:
-      - ./backend/.env.prod
+    #working_dir: /app
+    #volumes:
+    #  - ./backend:/app
+    #env_file:
+    #  - ./backend/.env.prod
     environment:
       - NODE_ENV=production
 
@@ -21,8 +21,8 @@ services:
     image: sentron/nuristock_front
     container_name: nuristock-front
     restart: always
-    build:
-      context: ./frontend
+    #build:
+    #  context: ./frontend
     ports:
       - "8080:80" # 외부 8080 → Nginx 80 포트
     # volumes:

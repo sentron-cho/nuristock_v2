@@ -43,7 +43,8 @@ export const useMainboardHook = (initialData?: MainboardResponse) => {
 
 		const { deposit } = data;
 
-		const captal = (list as DataType[])?.map((a) => a?.kprice || 0)?.reduce((a, b) => a + b, 0) + Number(deposit?.price);
+		const captal =
+			(list as DataType[])?.map((a) => a?.kprice || 0)?.reduce((a, b) => a + b, 0) + Number(deposit?.price);
 		const sell = data?.sise
 			? (list as DataType[])
 					?.map((a) => {
@@ -123,10 +124,6 @@ export const useMainboardCardHook = (initialData?: MainboardResponse) => {
 			const sonic = (sisePrice || 0) - (sprice || 0);
 			const sonicRate = sonic !== 0 ? (sisePrice / sprice) * 100 - 100 : 0;
 
-			// const sonic = (row.eprice || 0) - (row.sprice || 0);
-			// const sonicRate = sonic !== 0 ? ((row.eprice || 0) / (row.sprice || 0)) * 100 - 100 : 0;
-			// const sprice = Number(row?.count) * Number(row?.scost);
-
 			return {
 				...row,
 				sprice,
@@ -166,6 +163,31 @@ export const useMainboardCardHook = (initialData?: MainboardResponse) => {
 		return items;
 	}, [initialData]);
 
+	// 매수 손익율 상위
+	const sonicBuy = useMemo(() => {
+		const items = data?.buys?.map((row) => {
+			const siseValue = data?.sise?.find((a) => a.code === row.code)?.sise;
+
+			const sisePrice = (siseValue || 0) * (row?.count || 0);
+			const sprice = Number(row?.count) * Number(row?.scost);
+			const sonic = (sisePrice || 0) - (sprice || 0);
+			const sonicRate = sonic !== 0 ? (sisePrice / sprice) * 100 - 100 : 0;
+
+			return {
+				...row,
+				sprice,
+				eprice: 0,
+				type: valueOfPlusMinus(sonic),
+				sonic: sonic,
+				sonicRate: sonicRate,
+				sise: siseValue,
+				siseSonic: siseValue ? (row?.kcount || 0) * siseValue - (row?.kprice || 0) : 0,
+			};
+		});
+
+		return items;
+	}, [initialData]);
+
 	return {
 		loaded: !isPending,
 		config,
@@ -178,6 +200,8 @@ export const useMainboardCardHook = (initialData?: MainboardResponse) => {
 		sonicBottom: sortBy(keeps, ['siseSonic']).slice(0, 5),
 		latestBuy: reverse(sortBy(latestBuy, ['sdate'])).slice(0, 5),
 		latestSell: reverse(sortBy(latestSell, ['edate'])).slice(0, 5),
+		sonicBuyTop: reverse(sortBy(sonicBuy, ['sonicRate'])).slice(0, 10),
+		sonicBuyBottom: sortBy(sonicBuy, ['sonicRate']).slice(0, 10),
 		asset: data?.asset,
 		deposit: data?.deposit,
 		buys: data?.buys,

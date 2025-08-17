@@ -52,6 +52,12 @@ import IconForward from '@mui/icons-material/Forward';
 import IconRedo from '@mui/icons-material/Redo';
 import IconUndo from '@mui/icons-material/Undo';
 
+import IconMenu from '@mui/icons-material/Menu';
+import IconMenuOpen from '@mui/icons-material/MenuOpen';
+import IconTune from '@mui/icons-material/Tune';
+
+import IconMoreSettings from '@mui/icons-material/SettingsEthernet';
+
 const StyledUp = styled(IconPlayArrow, {
 	color: '$plus',
 	transform: 'rotate(-90deg)',
@@ -117,4 +123,8 @@ export {
 	IconAsset,
 	IconDeposit,
 	IconDashboard,
+	IconMenu,
+	IconMenuOpen,
+	IconTune,
+	IconMoreSettings
 };

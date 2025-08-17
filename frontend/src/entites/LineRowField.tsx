@@ -15,8 +15,7 @@ const StyledRow = styled(Flex, {
 			paddingLeft: '8px',
 		},
 
-		'.row-title': {
-		},
+		'.row-title': {},
 
 		'.row-label': {
 			color: '$gray700',
@@ -24,9 +23,16 @@ const StyledRow = styled(Flex, {
 			fontStretch: '80%',
 		},
 
+		// '.row-text': {
+		// 	'.text': {
+		// 		fontStretch: '80%',
+		// 	}
+		// },
+
 		'&.minus, .minus': {
 			color: '$minus',
 		},
+
 		'&.plus, .plus': {
 			color: '$plus',
 		},
@@ -75,7 +81,7 @@ export const RowField = ({
 		>
 			<Flex className='main-row' direction={'row'}>
 				{title && (
-					<Flex flex={2} fullWidth={false} gap={4}>
+					<Flex flex={4} fullWidth={false} gap={4}>
 						<Flex fullWidth={false} gap={2}>
 							<Text className='row-title' text={title} {...titleProps} />
 							{suffix?.title && <Text className='row-title-suffix' text={suffix?.title} />}
@@ -91,10 +97,12 @@ export const RowField = ({
 					</Flex>
 				)}
 
-				{value && <Flex flex={3} fullWidth={false} className={clsx('row-value', type)} justify={'end'} gap={2}>
-					<Text text={value} {...valueProps} />
-					{suffix?.value && <Text className='row-value-suffix' text={suffix?.value} />}
-				</Flex>}
+				{value && (
+					<Flex flex={3} fullWidth={false} className={clsx('row-value', type)} justify={'end'} gap={2}>
+						<Text text={value} {...valueProps} />
+						{suffix?.value && <Text className='row-value-suffix' text={suffix?.value} />}
+					</Flex>
+				)}
 			</Flex>
 
 			{children && (

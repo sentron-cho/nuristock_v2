@@ -1,4 +1,5 @@
 import Flex from '@entites/Flex';
+import { CSSProperties } from '@mui/material';
 import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
 import { PropsWithChildren } from 'react';
@@ -42,6 +43,7 @@ interface ContentsHeaderProps {
 	minHeight?: number | string;
 	className?: string;
 	height?: number | string;
+	style?: CSSProperties;
 }
 
 export const ContentsHeader = ({
@@ -51,10 +53,11 @@ export const ContentsHeader = ({
 	minHeight,
 	height,
 	className,
+	style,
 }: ContentsHeaderProps & PropsWithChildren) => {
 	return (
 		<StyledFlex className={clsx('contents-header', { sticky }, className)}
-			style={{ top: sticky ? stickyTop : 'unset', minHeight: minHeight, height }}>
+			style={{ top: sticky ? stickyTop : 'unset', minHeight: minHeight, height, ...style }}>
 			<Flex className='box' align={'start'} direction={'column'}>
 				{children}
 			</Flex>

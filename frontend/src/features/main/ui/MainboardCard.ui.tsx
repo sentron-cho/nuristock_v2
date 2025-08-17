@@ -1,5 +1,5 @@
 import { MainboardItemType as DataType, MainboardResponse } from '../api/mainboard.dto';
-import { withCommas } from '@shared/libs/utils.lib';
+import { valueOfDateDiff, withCommas } from '@shared/libs/utils.lib';
 import clsx from 'clsx';
 import Flex from '@entites/Flex';
 import { styled } from '@styles/stitches.config';
@@ -20,11 +20,11 @@ export const MainboardCard = ({
 	data,
 	onClick,
 }: {
-	viewType?: 'sonicTop' | 'sonicBottom' | 'latestSell' | 'latestBuy';
+	viewType?: 'sonicBuyTop' | 'sonicBuyBottom' | 'sonicTop' | 'sonicBottom' | 'latestSell' | 'latestBuy';
 	data?: MainboardResponse;
 	onClick?: (eid?: string, item?: DataType) => void;
 }) => {
-	const { sonicTop, sonicBottom, latestBuy, latestSell } = useMainboardCardHook(data);
+	const { sonicTop, sonicBottom, latestBuy, latestSell, sonicBuyTop, sonicBuyBottom } = useMainboardCardHook(data);
 
 	return (
 		<StyledFlex className={clsx('layout')} gap={8} direction={'column'}>
@@ -89,6 +89,42 @@ export const MainboardCard = ({
 							className={clsx('latest-sell', item.type)}
 							title={`${item.name} [${item.sonicRate.toFixed(1)}%]`}
 							text={`${dayjs(item.edate).format(DATE_FORMAT)}`}
+							value={withCommas(item.sonic)}
+							onClick={() => onClick?.(viewType, item)}
+							valueProps={{ bold: true }}
+							suffix={{ value: ST.WON }}
+						/>
+					);
+				})}
+
+			{/* 매수 손익율 상위 */}
+			{viewType === 'sonicBuyTop' &&
+				sonicBuyTop?.map((item, index) => {
+					return (
+						<RowField
+							key={`ls-${index}`}
+							className={clsx('sonic-buy-top', item.type)}
+							title={`${item.name} [${item.sonicRate.toFixed(1)}%]`}
+							text={`${valueOfDateDiff(item.sdate, new Date())}`}
+							// text={`${dayjs(item.sdate).format(DATE_FORMAT)} ${valueOfDateDiff(item.sdate, new Date())}`}
+							value={withCommas(item.sonic)}
+							onClick={() => onClick?.(viewType, item)}
+							valueProps={{ bold: true }}
+							suffix={{ value: ST.WON }}
+						/>
+					);
+				})}
+			
+			{/* 매수 손실율 상위 */}
+			{viewType === 'sonicBuyBottom' &&
+				sonicBuyBottom?.map((item, index) => {
+					return (
+						<RowField
+							key={`ls-${index}`}
+							className={clsx('sonic-buy-bottom', item.type)}
+							title={`${item.name} [${item.sonicRate.toFixed(1)}%]`}
+							text={`${valueOfDateDiff(item.sdate, new Date())}`}
+							// text={`${dayjs(item.sdate).format(DATE_FORMAT)} ${valueOfDateDiff(item.sdate, new Date())}`}
 							value={withCommas(item.sonic)}
 							onClick={() => onClick?.(viewType, item)}
 							valueProps={{ bold: true }}

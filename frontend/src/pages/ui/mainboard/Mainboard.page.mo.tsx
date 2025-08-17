@@ -85,6 +85,18 @@ export const MainboardPageMo = ({
 							<SubTitle title={ST.MAINBOARD.SELL} />
 						</Flex>
 						<MainboardCard viewType='latestSell' data={data} onClick={onClick} />
+
+						{/* 매수 손익 상위 */}
+						<Flex className='title-bar' justify={'center'} onClick={() => onClickTitle?.('sonicBuyTop')}>
+							<SubTitle title={ST.MAINBOARD.SONIC_BUY_TOP} />
+						</Flex>
+						<MainboardCard viewType='sonicBuyTop' data={data} onClick={onClick} />
+
+						{/* 매수 손익 하위 */}
+						<Flex className='title-bar' justify={'center'} onClick={() => onClickTitle?.('sonicBuyBottom')}>
+							<SubTitle title={ST.MAINBOARD.SONIC_BUY_BOTTOM} />
+						</Flex>
+						<MainboardCard viewType='sonicBuyBottom' data={data} onClick={onClick} />
 					</Flex>
 				</Flex>
 			</Flex>

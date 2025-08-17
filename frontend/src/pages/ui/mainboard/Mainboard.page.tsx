@@ -11,26 +11,22 @@ const MainboardPage = () => {
 
 	const onClick = (eid?: string, item?: MainboardItemType) => {
 		switch (eid) {
-			case 'sonicTop':
-			case 'sonicBottom':
-			case 'latestBuy':
-				navigate(`${URL.MYSTOCK}/keep/${item?.code}`);
-				break;
 			case 'latestSell':
 				navigate(`${URL.MYSTOCK}/trade/${item?.code}`);
+				break;
+			default:
+				navigate(`${URL.MYSTOCK}/keep/${item?.code}`);
 				break;
 		}
 	};
 
 	const onClickTitle = (eid?: string) => {
 		switch (eid) {
-			case 'sonicTop':
-			case 'sonicBottom':
-			case 'latestBuy':
-				navigate(`${URL.DASHBOARD}/keep`);
-				break;
 			case 'latestSell':
 				navigate(`${URL.DASHBOARD}/trade`);
+				break;
+			default:
+				navigate(`${URL.DASHBOARD}/keep`);
 				break;
 		}
 	};

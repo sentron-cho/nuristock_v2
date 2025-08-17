@@ -222,6 +222,8 @@ const KOR = {
 		KEEP: '보유 상위',
 		SONIC_TOP: '평가손익(상위)',
 		SONIC_BOTTOM: '평가손실(상위)',
+		SONIC_BUY_TOP: '매수 손익율(상위)',
+		SONIC_BUY_BOTTOM: '매수 손실율(상위)',
 		SELL: '최근 매도',
 		BUY: '최근 매수',
 	},
