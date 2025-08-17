@@ -8,6 +8,7 @@ export const useDashboardHeaderHook = (initialData?: MainboardResponse) => {
 	const [isShowConfig, setShowConfig] = useState<boolean>(false);
 	const [isMoreBuy, setMoreBuy] = useState<boolean>(false);
 	const [isMoreSonic, setMoreSonic] = useState<boolean>(false);
+	const [isShow, setShow] = useState<boolean>(true);
 
 	const buy = useMemo(() => {
 		const { latestBuy } = mainboardData;
@@ -39,6 +40,10 @@ export const useDashboardHeaderHook = (initialData?: MainboardResponse) => {
 		setShowConfig((prev) => !prev);
 	}
 
+	const onClickShow = () => {
+		setShow((prev) => !prev);
+	}
+
 	return {
 		...mainboardData,
 		buy,
@@ -49,5 +54,7 @@ export const useDashboardHeaderHook = (initialData?: MainboardResponse) => {
 		onClickMoreSonic,
 		isShowConfig,
 		onClickShowConfig,
+		isShow,
+		onClickShow,
 	};
 };

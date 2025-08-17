@@ -10,6 +10,7 @@ import IconDividend from '@mui/icons-material/CreditScore'; // 배당
 import IconInvest from '@mui/icons-material/Balance'; // 가치투자
 import IconAsset from '@mui/icons-material/AssuredWorkload'; // 투자금
 import IconDeposit from '@mui/icons-material/CurrencyExchange'; // 예수금
+import IconBucket from '@mui/icons-material/AdsClick'; // 버킷
 
 import IconDelete from '@mui/icons-material/Delete';
 import IconEdit from '@mui/icons-material/DriveFileRenameOutline';
@@ -57,6 +58,9 @@ import IconMenuOpen from '@mui/icons-material/MenuOpen';
 import IconTune from '@mui/icons-material/Tune';
 
 import IconMoreSettings from '@mui/icons-material/SettingsEthernet';
+
+import IconZoomIn from '@mui/icons-material/ZoomInMap';
+import IconZoomOut from '@mui/icons-material/ZoomOutMap';
 
 const StyledUp = styled(IconPlayArrow, {
 	color: '$plus',
@@ -126,5 +130,8 @@ export {
 	IconMenu,
 	IconMenuOpen,
 	IconTune,
-	IconMoreSettings
+	IconMoreSettings,
+	IconZoomIn,
+	IconZoomOut,
+	IconBucket
 };

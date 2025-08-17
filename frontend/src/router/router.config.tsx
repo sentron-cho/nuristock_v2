@@ -10,12 +10,13 @@ import DiaryPage from '@page/ui/diary/Diary.page';
 import ProfitPage from '../pages/ui/profit/Profit.page';
 import ProfitPerCodePage from '@page/ui/profit/ProfitPerCode.page';
 import ProfitPerYearPage from '../pages/ui/profit/ProfitPerYear.page';
-import MyStockPage from '@page/ui/Mystock/MyStock.page';
+import MyStockPage from '@page/ui/mystock/MyStock.page';
 import InvestmentDetailPage from '@page/ui/Investment/InvestmentDetailPage';
 import MenuPage from '@page/ui/Menu.page';
 import AssetPage from '@page/ui/Asset.page';
 import DepositPage from '@page/ui/deposit/Deposit.page';
 import MainboardPage from '@page/ui/mainboard/Mainboard.page';
+import BucketlistPage from '@page/ui/bucketlist/Bucketlist.page';
 
 const router = createBrowserRouter([
 	{
@@ -103,6 +104,13 @@ const router = createBrowserRouter([
 				path: 'menus',
 				element: <PageLayout />,
 				children: [{ index: true, element: <MenuPage /> }],
+			},
+						{
+				path: 'bucket',
+				element: <PageLayout />,
+				children: [
+					{ index: true, element: <BucketlistPage /> },
+				],
 			},
 			{ path: '*', element: <NotFoundPage /> },
 		],

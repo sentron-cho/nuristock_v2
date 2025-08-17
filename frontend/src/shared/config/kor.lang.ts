@@ -226,6 +226,7 @@ const KOR = {
 		SONIC_BUY_BOTTOM: '매수 손실율(상위)',
 		SELL: '최근 매도',
 		BUY: '최근 매수',
+		SUMMARY: '요약 보기',
 	},
 
 	PROFIT_TABLE: {

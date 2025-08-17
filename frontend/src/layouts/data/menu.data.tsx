@@ -2,6 +2,7 @@ import { ST } from '@shared/config/kor.lang';
 import { URL } from '@shared/config/url.enum';
 import {
 	IconAsset,
+	IconBucket,
 	IconDashboard,
 	IconDeposit,
 	IconDiary,
@@ -27,7 +28,8 @@ export const Menus = (isAll = false, isMobile = false) => {
 			{ value: URL.INVEST, label: ST.MENU.INVEST, icon: <IconInvest fontSize='small' /> },
 			{ value: URL.MARKET, label: ST.MENU.MARKET, icon: <IconStockSearch fontSize='small' /> },
 			{ value: URL.ASSET, label: ST.MENU.ASSET, icon: <IconAsset fontSize='small' /> },
-			{ value: URL.DEPOSIT, label: ST.MENU.DEPOSIT, icon: <IconDeposit fontSize='small' /> }
+			{ value: URL.DEPOSIT, label: ST.MENU.DEPOSIT, icon: <IconDeposit fontSize='small' /> },
+			{ value: URL.BUCKET, label: ST.MENU.BUCKET, icon: <IconBucket fontSize='small' /> }
 		);
 	} else {
 		isMobile && items.push({ value: URL.MEMUS, label: ST.MENU.MORE, icon: <IconMoreHori fontSize='small' /> });
