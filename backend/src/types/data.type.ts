@@ -154,3 +154,6 @@ export interface DepositSearchParams {
 	sdate: string;
 }
 
+export interface BucketSearchParams {
+	page?: string;
+}

@@ -27,22 +27,25 @@ export const BucketlistRegister = ({
 	const forms = useForm({
 		defaultValues: isEditMode
 			? {
-					page: item?.page, // 투자 기간 (년)
+					page: item?.page, // 페이지 번호
+					startYear: item?.startYear, // 시작 년도
 					years: item?.years, // 투자 기간 (년)
-					rate: item?.rate, // 연 이율 (예: 0.15)
+					rate: (item?.rate || 0) * 100, // 연 이율 (예: 15%)
 					principal: withCommas(item?.principal), // 원금
 					annual: withCommas(item?.annual), // 매년 추가 투자액 (연말)
 				}
 			: {
 					page: 1,
-					years: '10',
-					rate: '0.15',
+					startYear: 2025,
+					years: 10,
+					rate: 15,
 					principal: '',
 					annual: '',
 				},
 		resolver: zodResolver(
 			z.object({
 				page: Schema.DefaultNumber,
+				startYear: Schema.DefaultNumber,
 				years: Schema.DefaultNumber,
 				rate: Schema.DefaultNumber,
 				principal: Schema.DefaultNumber,
@@ -58,20 +61,14 @@ export const BucketlistRegister = ({
 				async (fields) => {
 					const params = {
 						page: Number(toNumber(fields.page)),
+						startYear: Number(toNumber(fields.startYear)),
 						years: Number(toNumber(fields.years)),
-						rate: Number(toNumber(fields.rate)),
+						rate: Number((Number(toNumber(fields.rate)) / 100).toFixed(3)),
 						principal: Number(toNumber(fields.principal)),
 						annual: Number(toNumber(fields.annual)),
 					};
 
-					// if (isEditMode) {
-					// } else {
-					// }
-
-					console.log({ params });
-
 					setLocalStorage(`${StorageDataKey.BUCKET_PARAMS}-${params?.page}`, params);
-
 					onClose?.(isOk);
 				},
 				(error) => {
@@ -87,10 +84,11 @@ export const BucketlistRegister = ({
 		<Dialog title={`${ST.DIVIDEND}(${isEditMode ? ST.UPDATE : ST.ADD})`} onClose={onClickClose}>
 			<StyledForm direction={'column'} gap={20}>
 				<NumberInputForm id='page' label={ST.BUCKETLIST.PAGE} formMethod={forms} readOnly />
+				<NumberInputForm id='startYear' withComma={false} label={ST.BUCKETLIST.START_YEARS} formMethod={forms} maxLength={4} focused />
 				<NumberInputForm id='years' label={ST.BUCKETLIST.YEARS} formMethod={forms} maxLength={3} focused />
-				<NumberInputForm id='rate' label={ST.BUCKETLIST.RATE} formMethod={forms} maxLength={8} focused />
+				<NumberInputForm id='rate' label={ST.BUCKETLIST.RATE} formMethod={forms} maxLength={4} focused />
 				<NumberInputForm id='principal' label={ST.BUCKETLIST.PRINCIPAL} formMethod={forms} maxLength={12} autoFocus />
-				<NumberInputForm id='annual' label={ST.BUCKETLIST.ANNUAL} formMethod={forms} maxLength={8} focused />
+				<NumberInputForm id='annual' label={ST.BUCKETLIST.ANNUAL} formMethod={forms} maxLength={12} focused />
 			</StyledForm>
 		</Dialog>
 	);

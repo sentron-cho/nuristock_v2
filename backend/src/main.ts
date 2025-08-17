@@ -14,6 +14,7 @@ import appRoute from "./routes/app.route.js";
 import investRoute from "./routes/invest.route.js";
 import assetRoute from "./routes/asset.route.js";
 import depositRoute from "./routes/deposit.route.js";
+import bucketRoute from "./routes/bucket.route.js";
 
 // dotenv.config({ path: '.env' });
 
@@ -47,6 +48,7 @@ await fastify.register(dividendRoute); // 배당
 await fastify.register(investRoute); // 가치투자
 await fastify.register(assetRoute); // 투자금액
 await fastify.register(depositRoute); // 예수금
+await fastify.register(bucketRoute); // 버킷리스트
 
 // 크롤링 작업 시작
 fastify.ready().then(() => {

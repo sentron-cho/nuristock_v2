@@ -4,7 +4,7 @@ import Flex from '@entites/Flex';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { ST } from '@shared/config/kor.lang';
-import { BucklistParamType } from '@features/bucketlist/api/bucketlist.dto';
+import { BucklistParamType, BucklistResponse } from '@features/bucketlist/api/bucketlist.dto';
 import { useBucketlistHook } from '@features/bucketlist/hook/Bucketlist.hook';
 import { ChartLine } from '@entites/ChartLine';
 import { Table } from '@entites/Table';
@@ -27,8 +27,8 @@ const StyledPage = styled(PageContainer, {
 	},
 });
 
-export const BucketlistPageMo = ({ refresh, onClick }: { refresh?: number; onClick?: (eid?: string, item?: BucklistParamType) => void }) => {
-	const { summaryData, params, data, chartData, headers } = useBucketlistHook(refresh);
+export const BucketlistPageMo = ({ refresh, data, onClick }: { refresh?: number; data?: BucklistResponse, onClick?: (eid?: string, item?: BucklistParamType) => void }) => {
+	const { summaryData, params, list, chartData, headers, targetHeaders, targetList } = useBucketlistHook(data, refresh);
 
 	return (
 		<StyledPage summaryData={summaryData}>
@@ -55,7 +55,12 @@ export const BucketlistPageMo = ({ refresh, onClick }: { refresh?: number; onCli
 
 					<Flex className='bucket-table' direction={'column'} gap={10}>
 						<Title title={ST.BUCKETLIST.TABLE} />
-						<Table rowKey={'year'} headers={headers} data={data} width={'100%'} />
+						<Table rowKey={'year'} headers={headers} data={list} width={'100%'} />
+					</Flex>
+					
+					<Flex className='bucket-table target' direction={'column'} gap={10}>
+						<Title title={ST.BUCKETLIST.TARGET_TABLE} />
+						<Table rowKey={'year'} headers={targetHeaders} data={targetList} width={'100%'} />
 					</Flex>
 				</Flex>
 			</Flex>

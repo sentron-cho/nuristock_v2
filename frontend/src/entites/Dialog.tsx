@@ -18,23 +18,27 @@ import { FieldValues } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const StyledDialog = styled(MuiDialog, {
-	'.contents': {
-		minHeight: '100px',
-		// maxHeight: '400px',
-		height: '100%',
-	},
+	'&.dialog-popup': {
+		'zIndex': '$dialog',
 
-	'.MuiDialog-paperFullScreen': {
-		'.MuiDialogContent-root': {
-			padding: '20px 10px',
-			overflow: 'hidden',
-
-			'.contents': {
-				height: 'clac(100vh - 100px)',
-				maxHeight: 'unset',
+		'.contents': {
+			minHeight: '100px',
+			// maxHeight: '400px',
+			height: '100%',
+		},
+	
+		'.MuiDialog-paperFullScreen': {
+			'.MuiDialogContent-root': {
+				padding: '20px 10px',
+				overflow: 'hidden',
+	
+				'.contents': {
+					height: 'clac(100vh - 140px)',
+					maxHeight: 'unset',
+				},
 			},
 		},
-	},
+	}
 });
 
 interface DialogProps extends Omit<MuiDialogProps, 'open'> {
@@ -101,6 +105,7 @@ export const Dialog = ({
 
 	return (
 		<StyledDialog
+			className='dialog-popup'
 			fullScreen={fullScreen && isFullScreen}
 			onClose={backdrop ? onCancel : undefined}
 			aria-labelledby='dialog-box'

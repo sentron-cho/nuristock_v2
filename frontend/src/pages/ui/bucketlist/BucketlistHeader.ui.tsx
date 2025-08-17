@@ -2,10 +2,10 @@ import Flex from '@entites/Flex';
 import { ContentsHeader } from '@layouts/ui/ContentsHeader.ui';
 import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
-import { Title } from '@entites/Title';
 import { Text } from '@entites/Text';
 import { BucklistParamType } from '@features/bucketlist/api/bucketlist.dto';
 import { toCost } from '@shared/libs/utils.lib';
+import { ST } from '@shared/config/kor.lang';
 
 const StyledContents = styled(Flex, {
 	'&.bucket-header': {
@@ -43,21 +43,21 @@ export const BucketlistHeader = ({
 				<Flex className='contents' flex={1} gap={8} justify={'between'}>
 					{params && (
 						<Flex className='bucket-guide' direction={'column'} gap={4} align={'start'}>
-							<Title title='입력' />
+							{/* <Title title='입력' /> */}
 							<Flex justify={'between'}>
-								<Text text={`연이율`} />
-								<Text text={`${Math.round(params.rate * 100)}%`} />
-							</Flex>
-							<Flex justify={'between'}>
-								<Text text={`기간`} />
+								<Text text={ST.BUCKETLIST.YEARS} />
 								<Text text={`${params.years}년`} />
 							</Flex>
 							<Flex justify={'between'}>
-								<Text text={`원금`} />
+								<Text text={ST.BUCKETLIST.RATE} />
+								<Text text={`${Math.round(params.rate * 100)}%`} />
+							</Flex>
+							<Flex justify={'between'}>
+								<Text text={ST.BUCKETLIST.PRINCIPAL} />
 								<Text text={toCost(params.principal)} />
 							</Flex>
 							<Flex justify={'between'}>
-								<Text text={`연말 추가`} />
+								<Text text={ST.BUCKETLIST.ANNUAL} />
 								<Text text={toCost(params.annual)} />
 							</Flex>
 						</Flex>

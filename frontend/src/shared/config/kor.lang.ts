@@ -174,12 +174,14 @@ const KOR = {
 
 	BUCKETLIST: {
 		PRINCIPAL: '원금',
-		RATE: '연이율(예 0.015)',
+		RATE: '연이율(%)',
+		START_YEARS: '시작년도',
 		YEARS: '투자기간(년)',
-		ANNUAL: '매년추가투자액(연말)',
+		ANNUAL: '추가투자액',
 		CHART: '자산성장곡선(추가투자 포함 vs 미포함)',
 		TABLE: '연도별 상세',
 		PAGE: '고유번호',
+		TARGET_TABLE: '연도별 상세(목표달성)',
 	},
 
 	MENU: {
@@ -265,6 +267,9 @@ const KOR = {
 		TOTAL: '연말 총액',
 		NOT_ADDED: '추가 없음',
 		INTEREST: '당해 이자',
+
+		TARGET: '목표 금액',
+		RESULT: '실현 결과',
 	},
 };
 

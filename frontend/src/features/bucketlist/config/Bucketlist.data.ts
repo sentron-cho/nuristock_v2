@@ -19,7 +19,16 @@ export const Headers = ({ isMobile }: { isMobile?: boolean }): ColumnsType => {
 			title: TITLE.YEAR,
 			dataIndex: 'year',
 			key: 'year',
-			align: 'left',
+			align: 'center',
+			fixed: true,
+			width: 60,
+			hidden: true,
+		},
+		{
+			title: TITLE.YEAR,
+			dataIndex: 'date',
+			key: 'date',
+			align: 'center',
 			fixed: true,
 			width: 60,
 		},
@@ -68,6 +77,68 @@ export const Headers = ({ isMobile }: { isMobile?: boolean }): ColumnsType => {
 			align: 'right',
 			render: (v) => RenderPrice(Math.ceil(v)),
 			hidden: isMobile,
+		},
+	];
+
+	return items;
+};
+
+export const TargetHeaders = ({ isMobile }: { isMobile?: boolean }): ColumnsType => {
+	const TITLE = ST.BUCKET_TABLE;
+
+	const items: ColumnsType = [
+		{
+			title: TITLE.YEAR,
+			dataIndex: 'year',
+			key: 'year',
+			align: 'center',
+			fixed: true,
+			width: 60,
+			hidden: true,
+		},
+		{
+			title: TITLE.YEAR,
+			dataIndex: 'date',
+			key: 'date',
+			align: 'center',
+			fixed: true,
+			width: 60,
+		},
+		{
+			title: TITLE.START,
+			dataIndex: 'start',
+			key: 'start',
+			align: 'right',
+			render: (v) => RenderPrice(Math.ceil(v)),
+			hidden: isMobile,
+		},
+		{
+			title: TITLE.CONTRIBUTION,
+			dataIndex: 'contribution',
+			key: 'contribution',
+			align: 'right',
+			render: (v) => RenderPrice(Math.ceil(v)),
+			hidden: isMobile,
+		},
+		{
+			title: TITLE.TARGET,
+			dataIndex: 'end',
+			key: 'end',
+			align: 'right',
+			render: (v) => RenderPrice(Math.ceil(v)),
+		},
+		{
+			title: TITLE.RESULT,
+			dataIndex: 'result',
+			key: 'result',
+			align: 'right',
+			render: (v, row) => {
+				if (v) {
+					return RenderPrice(Math.ceil(v), { className: row?.type });
+				} else {
+					return '';
+				}
+			},
 		},
 	];
 

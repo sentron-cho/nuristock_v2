@@ -57,6 +57,7 @@ export const API = {
 	DIVIDEND: `${API_ROOT}/dividend`,
 	ASSET: `${API_ROOT}/asset`,
 	DEPOSIT: `${API_ROOT}/deposit`,
+	BUCKET: `${API_ROOT}/bucket`,
 	APP: `${API_ROOT}/app`,
 	APP_CONFIG: `${API_ROOT}/app/config`,
 };

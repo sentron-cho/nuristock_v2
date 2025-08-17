@@ -124,7 +124,7 @@ const MenuPage = ({ className, onClose }: { className?: string; onClose?: () => 
 			<Flex className='menus' direction={'row'}>
 				{menus?.map((item) => {
 					return (
-						<Flex className='btn-layout' onClick={() => onClick(item)}>
+						<Flex key={item.value} className='btn-layout' onClick={() => onClick(item)}>
 							<Flex className={clsx('btn-box')} gap={10} direction={'column'} justify={'center'} align={'center'}>
 								<Flex className='icon' justify={'center'}>
 									{item?.icon}
