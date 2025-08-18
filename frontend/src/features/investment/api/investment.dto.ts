@@ -1,3 +1,4 @@
+import { DashboardItemType } from './../../dashboard/api/dashboard.dto';
 import { MarketSiseDataType } from "@features/market/api/market.dto";
 
 export interface InvestmentItemType {
@@ -22,6 +23,7 @@ export interface InvestmentItemType {
 export interface InvestmentResponse {
 	value?: InvestmentItemType[];
 	sise?: MarketSiseDataType[];
+	dashboard?: DashboardItemType[];
 }
 
 export interface InvestmentSearchParam {

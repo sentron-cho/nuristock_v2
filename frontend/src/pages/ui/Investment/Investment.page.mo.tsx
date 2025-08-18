@@ -11,6 +11,11 @@ import { InvestmentCard } from '@features/investment/ui/InvestmentCard.ui';
 import { useInvestmentHook } from '@features/investment/hook/Investment.hook';
 import { InvestmentHeader } from '@features/investment/ui/InvestmentHeader.ui';
 import { CardListWrap } from '@entites/Card';
+import { URL } from '@shared/config/url.enum';
+import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
+import { useMemo } from 'react';
+import { TitleNavigation } from '@entites/TitleNavigation';
+import { useCommonHook } from '@shared/hooks/useCommon.hook';
 
 const StyledPage = styled(PageContainer, {
 	'.contents-layer': {
@@ -21,15 +26,26 @@ const StyledPage = styled(PageContainer, {
 });
 
 export const InvestmentPageMo = ({
+	viewType = 'keep',
 	data,
 	onClick,
 	onRefresh,
 }: {
+	viewType?: 'keep' | 'nokeep';
 	data?: InvestmentResponse;
 	onClick?: (eid?: string, item?: InvestmentItemType) => void;
 	onRefresh?: (eid?: string, item?: InvestmentItemType) => void;
 }) => {
-	const { dataByToday: list } = useInvestmentHook(data);
+	const { navigate } = useCommonHook();
+	const { keeps, nokeeps } = useInvestmentHook(data);
+
+	const { handlerSwipe, swipeClass } = useSwipePage({
+		onNextPage: () => {
+			return `${URL.INVEST}/${viewType === 'keep' ? 'nokeep' : 'keep'}`;
+		},
+	});
+
+	const list = useMemo(() => (viewType === 'keep' ? keeps : nokeeps), [viewType]);
 
 	const onClickItem = (eid?: string, item?: InvestmentItemType) => {
 		if (eid === 'refresh') {
@@ -39,11 +55,23 @@ export const InvestmentPageMo = ({
 		}
 	};
 
+	const onClickNavi = (eid?: string) => {
+		eid && navigate(`${URL.INVEST}/${eid}`);
+	};
+
+	const naviOptions = useMemo(
+		() => [
+			{ label: ST.KEEP, value: 'keep' },
+			{ label: ST.NO_KEEP, value: 'nokeep' },
+		],
+		[]
+	);
+
 	return (
 		<StyledPage>
 			{/* 타이틀바 */}
 			<PageTitleBar
-				title={ST.INVEST}
+				title={`${ST.INVEST}`}
 				buttonProps={{
 					eid: EID.ADD,
 					icon: <IconAdd />,
@@ -51,17 +79,20 @@ export const InvestmentPageMo = ({
 					onClick: onClick,
 				}}
 			/>
-
 			{/* 컨텐츠 헤더(요약) */}
 			<InvestmentHeader />
+			
+			<TitleNavigation sticky stickyTop={144} options={naviOptions} value={viewType} onClick={onClickNavi} />
 
 			{/* 컨텐츠 */}
-			<Flex className={clsx('contents-layer')} direction={'column'}>
-				<CardListWrap>
-					{list?.map((item) => {
-						return <InvestmentCard key={item.rowid} title={item.name} data={item} onClick={onClickItem} />;
-					})}
-				</CardListWrap>
+			<Flex className={clsx('contents-layer')} direction={'column'} {...handlerSwipe}>
+				<Flex className={clsx(swipeClass)} direction={'column'}>
+					<CardListWrap>
+						{list?.map((item) => {
+							return <InvestmentCard key={item.rowid} title={item.name} data={item} onClick={onClickItem} />;
+						})}
+					</CardListWrap>
+				</Flex>
 			</Flex>
 		</StyledPage>
 	);

@@ -20,7 +20,7 @@ import { Loading } from '@entites/Loading';
 import { InvestmentUpdaterPopup } from '@features/investment/ui/InvestmentUpdater.popup';
 import dayjs from 'dayjs';
 
-const InvestmentPage = () => {
+const InvestmentPage = ({ viewType }: { viewType?: 'keep' | 'nokeep' }) => {
 	const { isMobile, showToast, showConfirm, navigate } = useCommonHook();
 
 	const [popup, setPopup] = useState<PopupType>();
@@ -112,8 +112,8 @@ const InvestmentPage = () => {
 
 	return (
 		<>
-			{isMobile && <InvestmentPageMo data={data} onClick={onClick} onRefresh={onRefresh} />}
-			{!isMobile && <InvestmentPageMo data={data} onClick={onClick} onRefresh={onRefresh} />}
+			{isMobile && <InvestmentPageMo viewType={viewType} data={data} onClick={onClick} onRefresh={onRefresh} />}
+			{!isMobile && <InvestmentPageMo viewType={viewType} data={data} onClick={onClick} onRefresh={onRefresh} />}
 
 			{/* 종목 추가 팝업 */}
 			{popup?.type === EID.ADD && (

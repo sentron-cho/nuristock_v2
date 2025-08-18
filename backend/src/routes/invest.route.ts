@@ -61,8 +61,9 @@ const investRoute = (fastify: FastifyInstance) => {
       const codes = value.map((a) => `'${a.code}'`).join(","); // ✅ 문자열로 변환
       const sise =
         codes?.length > 0 ? await fastify.db.query(`SELECT * FROM market WHERE code in (${codes})`) : undefined;
+      const dashboard = await fastify.db.query("SELECT * FROM dashboard;");
 
-      return { value, sise };
+      return { value, sise, dashboard };
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.INVEST.ROOT }));
     }
@@ -76,16 +77,18 @@ const investRoute = (fastify: FastifyInstance) => {
       if (!code)
         return reply
           .status(500)
-          .send(withError({ code: ERROR.ER_NOT_ROWID, sqlMessage: "is not code!" } as SqlError, { tag: URL.INVEST.ROOT }));
-      
-      const isDup = await fastify.db.query(
-        `SELECT count(1) as name FROM investment WHERE code = '${code}';`
-      );
+          .send(
+            withError({ code: ERROR.ER_NOT_ROWID, sqlMessage: "is not code!" } as SqlError, { tag: URL.INVEST.ROOT })
+          );
 
-      if (isDup?.length > 0) {
+      const isDup = await fastify.db.query(`SELECT count(1) as count FROM investment WHERE code = '${code}';`);
+
+      if (isDup?.[0]?.count > 0) {
         return reply
           .status(500)
-          .send(withError({ code: ERROR.ER_DUP_ENTRY, sqlMessage: "duplicate code!" } as SqlError, { tag: URL.INVEST.ROOT }));
+          .send(
+            withError({ code: ERROR.ER_DUP_ENTRY, sqlMessage: "duplicate code!" } as SqlError, { tag: URL.INVEST.ROOT })
+          );
       }
 
       const start = Number(dayjs().add(-3, "year").format("YYYY"));
@@ -219,7 +222,9 @@ const investRoute = (fastify: FastifyInstance) => {
       if (!rowid)
         return reply
           .status(500)
-          .send(withError({ code: ERROR.ER_NOT_ROWID, sqlMessage: "is not rowid!" } as SqlError, { tag: URL.INVEST.ROOT }));
+          .send(
+            withError({ code: ERROR.ER_NOT_ROWID, sqlMessage: "is not rowid!" } as SqlError, { tag: URL.INVEST.ROOT })
+          );
 
       await fastify.db.query(
         `UPDATE investment SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`

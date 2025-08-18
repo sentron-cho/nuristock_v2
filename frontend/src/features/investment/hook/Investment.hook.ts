@@ -22,6 +22,7 @@ export const useInvestmentHook = (initialData?: InvestmentResponse) => {
 
 		return items;
 	}, [initialData]);
+	const dashboard = useMemo(() => initialData?.dashboard, [initialData]);
 
 	// 종목명별 데이터 추출
 	const groupedByName = useMemo(() => {
@@ -58,11 +59,29 @@ export const useInvestmentHook = (initialData?: InvestmentResponse) => {
 	const selected = useMemo(() => data?.find((a) => a.code === param?.id)?.code, [data, param]);
 
 	const naviOptions = useMemo(() => {
-		const items = groupedByName && Object.entries(groupedByName)?.map((a) => ({ value: a?.[1]?.[0]?.code, label: a?.[0] })) as OptionType[];
+		const items =
+			groupedByName &&
+			(Object.entries(groupedByName)?.map((a) => ({ value: a?.[1]?.[0]?.code, label: a?.[0] })) as OptionType[]);
 		return items as OptionType[];
 	}, [data]);
 
-	return { data, groupedByName, filteredByCode, dataByToday, sise, selected, naviOptions };
+	const keeps = useMemo(() => {
+		if (!dashboard || !dataByToday) return undefined;
+
+		const items = dataByToday?.filter((a) => !!dashboard?.find((b) => a.code === b.code));
+		console.log({ items });
+		return items;
+	}, [dataByToday, dashboard]);
+
+	const nokeeps = useMemo(() => {
+		if (!dashboard || !dataByToday) return undefined;
+
+		const items = dataByToday?.filter((a) => !dashboard?.find((b) => a.code === b.code));
+		console.log({ items });
+		return items;
+	}, [dataByToday, dashboard]);
+
+	return { data, groupedByName, filteredByCode, dataByToday, sise, selected, naviOptions, keeps, nokeeps };
 };
 
 type TargetList = 'rate1' | 'rate2' | 'rate3' | 'rate4';
