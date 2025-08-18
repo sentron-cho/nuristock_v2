@@ -5,7 +5,8 @@ import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { reverse, sortBy } from 'lodash';
 import { OptionType } from '@shared/config/common.type';
 import { calcValuePerShare } from '@shared/libs/investment.util';
-import { valueOfUpDown, withCommas } from '@shared/libs/utils.lib';
+import { toNumeric, valueOfUpDown, withCommas } from '@shared/libs/utils.lib';
+import { FieldValues } from 'react-hook-form';
 
 export const useInvestmentHook = (initialData?: InvestmentResponse) => {
 	const { param } = useCommonHook();
@@ -93,10 +94,12 @@ export const useInvestmentPerValueHook = (
 	const list = useMemo(() => {
 		return targetList?.map((target) => {
 			let value = calcValuePerShare({ ...data, rateKey: target });
+			const nTargetRate = toNumeric((data as FieldValues)?.[target]).toFixed(1);
 
 			return {
 				target: target,
 				value: withCommas(value),
+				rate: nTargetRate,
 				updown: valueOfUpDown(Number(value), Number(data?.sise)),
 			};
 		});
