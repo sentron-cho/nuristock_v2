@@ -20,7 +20,7 @@ import { Loading } from '@entites/Loading';
 import { InvestmentUpdaterPopup } from '@features/investment/ui/InvestmentUpdater.popup';
 import dayjs from 'dayjs';
 
-const InvestmentPage = ({ viewType }: { viewType?: 'keep' | 'nokeep' }) => {
+const InvestmentPage = ({ viewType }: { viewType?: 'keep' | 'nokeep' | 'trade' }) => {
 	const { isMobile, showToast, showConfirm, navigate } = useCommonHook();
 
 	const [popup, setPopup] = useState<PopupType>();
@@ -108,7 +108,7 @@ const InvestmentPage = ({ viewType }: { viewType?: 'keep' | 'nokeep' }) => {
 
 	const onFailure = () => {
 		setLoading(false);
-	}
+	};
 
 	return (
 		<>
@@ -117,7 +117,12 @@ const InvestmentPage = ({ viewType }: { viewType?: 'keep' | 'nokeep' }) => {
 
 			{/* 종목 추가 팝업 */}
 			{popup?.type === EID.ADD && (
-				<StockRegisterPopup viewType={'investment'} onClose={popup?.onClose} onSuccess={onSuccess} onFailure={onFailure} />
+				<StockRegisterPopup
+					viewType={'investment'}
+					onClose={popup?.onClose}
+					onSuccess={onSuccess}
+					onFailure={onFailure}
+				/>
 			)}
 
 			{/* 설정 업데이트 팝업 */}

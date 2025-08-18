@@ -7,7 +7,7 @@ import Flex from '@entites/Flex';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { styled } from '@styles/stitches.config';
-import { withCommas } from '@shared/libs/utils.lib';
+import { toNumber, withCommas } from '@shared/libs/utils.lib';
 import { useUpdateInvestment as useUpdate } from '../api/investment.api';
 import { SubTitle } from '@entites/Title';
 
@@ -18,12 +18,13 @@ const StyledForm = styled(Flex, {
 });
 
 export const InvestmentUpdaterPopup = ({ item, onClose }: { item?: DataType; onClose: (isOk: boolean) => void }) => {
+	console.log({ item });
 	const forms = useForm({
 		defaultValues: {
 			count: withCommas(item?.count),
 			roe: withCommas(item?.roe),
 			equity: withCommas(item?.equity),
-			profit: withCommas(item?.profit),
+			// profit: withCommas(item?.profit),
 			brate: withCommas(item?.brate),
 			rate1: withCommas(item?.rate1),
 			rate2: withCommas(item?.rate2),
@@ -35,7 +36,7 @@ export const InvestmentUpdaterPopup = ({ item, onClose }: { item?: DataType; onC
 				count: z.string().optional(),
 				roe: z.string().optional(),
 				equity: z.string().optional(),
-				profit: z.string().optional(),
+				// profit: z.string().optional(),
 				brate: z.string().optional(),
 				rate1: z.string().optional(),
 				rate2: z.string().optional(),
@@ -52,7 +53,13 @@ export const InvestmentUpdaterPopup = ({ item, onClose }: { item?: DataType; onC
 		if (isOk) {
 			forms?.handleSubmit(
 				async (fields) => {
-					const params = { rowid: item?.rowid, ...fields } as DataType;
+					const params = {
+						rowid: item?.rowid,
+						...fields,
+						// profit: toNumber(fields?.profit),
+						equity: toNumber(fields?.equity),
+						count: toNumber(fields?.count),
+					} as DataType;
 
 					await updateData(params);
 					onClose?.(isOk);
@@ -75,7 +82,7 @@ export const InvestmentUpdaterPopup = ({ item, onClose }: { item?: DataType; onC
 				<NumberInputForm id='count' label={ST.STOCKS_COUNT} formMethod={forms} focused />
 				<NumberInputForm id='roe' label={ST.ROE} formMethod={forms} focused />
 				<NumberInputForm id='equity' label={ST.EQUITY} formMethod={forms} focused />
-				<NumberInputForm id='profit' label={ST.EXCESS_PROFIT} formMethod={forms} focused />
+				{/* <NumberInputForm id='profit' label={ST.EXCESS_PROFIT} formMethod={forms} focused /> */}
 				<NumberInputForm id='brate' label={ST.BASE_RATE} formMethod={forms} focused />
 			</StyledForm>
 		</Dialog>

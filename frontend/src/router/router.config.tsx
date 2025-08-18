@@ -83,6 +83,7 @@ const router = createBrowserRouter([
 				children: [
 					{ index: true, element: <InvestmentPage viewType={'keep'} /> },
 					{ path: 'keep', element: <InvestmentPage viewType={'keep'} /> },
+					{ path: 'trade', element: <InvestmentPage viewType={'trade'} /> },
 					{ path: 'nokeep', element: <InvestmentPage viewType={'nokeep'} /> },
 
 					{ path: ':id', element: <InvestmentDetailPage /> },

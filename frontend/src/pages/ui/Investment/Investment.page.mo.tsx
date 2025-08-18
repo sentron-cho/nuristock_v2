@@ -16,6 +16,7 @@ import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 import { useMemo } from 'react';
 import { TitleNavigation } from '@entites/TitleNavigation';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
+import { useNaviByOptions } from '@shared/hooks/useOptionNavi.hook';
 
 const StyledPage = styled(PageContainer, {
 	'.contents-layer': {
@@ -31,21 +32,48 @@ export const InvestmentPageMo = ({
 	onClick,
 	onRefresh,
 }: {
-	viewType?: 'keep' | 'nokeep';
+	viewType?: 'keep' | 'nokeep' | 'trade';
 	data?: InvestmentResponse;
 	onClick?: (eid?: string, item?: InvestmentItemType) => void;
 	onRefresh?: (eid?: string, item?: InvestmentItemType) => void;
 }) => {
 	const { navigate } = useCommonHook();
-	const { keeps, nokeeps } = useInvestmentHook(data);
+	const { keeps, nokeeps, trade } = useInvestmentHook(data);
+
+	const naviOptions = useMemo(
+		() => [
+			{ label: ST.KEEP, value: 'keep' },
+			{ label: ST.NO_KEEP, value: 'trade' },
+			{ label: ST.NEXT_KEEP, value: 'nokeep' },
+		],
+		[]
+	);
 
 	const { handlerSwipe, swipeClass } = useSwipePage({
-		onNextPage: () => {
-			return `${URL.INVEST}/${viewType === 'keep' ? 'nokeep' : 'keep'}`;
+		onNextPage: (dir?: 'next' | 'prev') => {
+			// return `${URL.INVEST}/${viewType === 'keep' ? 'nokeep' : 'keep'}`;
+			if (dir === 'prev') {
+				return `${URL.INVEST}/${prev?.value}`;
+			} else {
+				return `${URL.INVEST}/${next?.value}`;
+			}
 		},
 	});
 
-	const list = useMemo(() => (viewType === 'keep' ? keeps : nokeeps), [viewType]);
+	const { prev, next } = useNaviByOptions({ options: naviOptions, value: viewType });
+
+	const list = useMemo(() => {
+		switch (viewType) {
+			case 'keep':
+				return keeps;
+			case 'trade':
+				return trade;
+			case 'nokeep':
+				return nokeeps;
+			default:
+				keeps;
+		}
+	}, [keeps, nokeeps, trade, viewType]);
 
 	const onClickItem = (eid?: string, item?: InvestmentItemType) => {
 		if (eid === 'refresh') {
@@ -58,14 +86,6 @@ export const InvestmentPageMo = ({
 	const onClickNavi = (eid?: string) => {
 		eid && navigate(`${URL.INVEST}/${eid}`);
 	};
-
-	const naviOptions = useMemo(
-		() => [
-			{ label: ST.KEEP, value: 'keep' },
-			{ label: ST.NO_KEEP, value: 'nokeep' },
-		],
-		[]
-	);
 
 	return (
 		<StyledPage>
@@ -81,7 +101,7 @@ export const InvestmentPageMo = ({
 			/>
 			{/* 컨텐츠 헤더(요약) */}
 			<InvestmentHeader />
-			
+
 			<TitleNavigation sticky stickyTop={144} options={naviOptions} value={viewType} onClick={onClickNavi} />
 
 			{/* 컨텐츠 */}

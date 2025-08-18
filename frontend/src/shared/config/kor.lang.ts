@@ -59,6 +59,7 @@ const KOR = {
 	SELL: '매도',
 	KEEP: '보유',
 	NO_KEEP: '미보유',
+	NEXT_KEEP: '투자예정',
 	YEAR_SONIC: '연수익',
 	YEAR_SONIC_DESC: '1년 기준 수익율',
 	MAX_PER_SONIC: '최대투자금대비',

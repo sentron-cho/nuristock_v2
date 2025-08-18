@@ -59,6 +59,7 @@ export const useInvestmentHook = (initialData?: InvestmentResponse) => {
 
 	const selected = useMemo(() => data?.find((a) => a.code === param?.id)?.code, [data, param]);
 
+	// 네비게이션 옵션
 	const naviOptions = useMemo(() => {
 		const items =
 			groupedByName &&
@@ -66,23 +67,33 @@ export const useInvestmentHook = (initialData?: InvestmentResponse) => {
 		return items as OptionType[];
 	}, [data]);
 
+	// 보유 종목
 	const keeps = useMemo(() => {
 		if (!dashboard || !dataByToday) return undefined;
 
-		const items = dataByToday?.filter((a) => !!dashboard?.find((b) => a.code === b.code));
-		console.log({ items });
+		const filtered = dashboard?.filter(a => !!a?.kcount);
+		const items = dataByToday?.filter((a) => !!filtered?.find((b) => a.code === b.code));
 		return items;
 	}, [dataByToday, dashboard]);
 
+		// 거래했던 종목
+	const trade = useMemo(() => {
+		if (!dashboard || !dataByToday) return undefined;
+
+		const filtered = dashboard?.filter(a => !a?.kcount);
+		const items = dataByToday?.filter((a) => !!filtered?.find((b) => a.code === b.code));
+		return items;
+	}, [dataByToday, dashboard]);
+
+	// 미보유 종목
 	const nokeeps = useMemo(() => {
 		if (!dashboard || !dataByToday) return undefined;
 
 		const items = dataByToday?.filter((a) => !dashboard?.find((b) => a.code === b.code));
-		console.log({ items });
 		return items;
 	}, [dataByToday, dashboard]);
 
-	return { data, groupedByName, filteredByCode, dataByToday, sise, selected, naviOptions, keeps, nokeeps };
+	return { data, groupedByName, filteredByCode, dataByToday, sise, selected, naviOptions, keeps, nokeeps, trade };
 };
 
 type TargetList = 'rate1' | 'rate2' | 'rate3' | 'rate4';

@@ -16,7 +16,7 @@ const StyledFlex = styled(Flex, {
 			padding: 8,
 		},
 
-		'.box': {
+		'.list-box': {
 			padding: 8,
 			background: '$gray200',
 		},
@@ -49,32 +49,32 @@ export const InvestmentInfoField = ({ data }: { data?: InvestmentItemType }) => 
 			{/* 상장 주식수 */}
 			<Flex className='title' justify={'between'} align={'center'} height={24}>
 				<Flex fullWidth={false} gap={4}>
-					<Text size='xs' text={`${ST.STOCKS_COUNT}:`} />
-					<Text bold size='xs' text={`${withCommas(data?.count)}${ST.JU}`} />
+					<Text size='sm' text={`${ST.STOCKS_COUNT}:`} />
+					<Text bold size='sm' text={`${withCommas(data?.count)}${ST.JU}`} />
 				</Flex>
 				<Flex fullWidth={false} gap={4}>
-					<Text size='xs' text={`${ST.ROE}:`} />
-					<Text bold size='xs' className={valueOfPlusMinus(Number(data?.roe))} text={` ${data?.roe}%`} />
+					<Text size='sm' text={`${ST.ROE}:`} />
+					<Text bold size='sm' className={valueOfPlusMinus(Number(data?.roe))} text={` ${data?.roe}%`} />
 				</Flex>
 			</Flex>
 
-			<Flex className='box' direction={'column'} gap={4}>
+			<Flex className='list-box' direction={'column'} gap={4}>
 				<Flex className='list-th' height={20}>
-					<Text bold size='xs' text={ST.SHARE_VALUE} flex={1} align='center' />
-					<Text bold size='xs' text={ST.CAPITAL} flex={1} align='center' />
-					<Text bold size='xs' text={'ROE'} flex={1} align='center' />
-					<Text bold size='xs' text={ST.BASE_RATE} flex={1} align='center' />
-					<Text bold size='xs' text={ST.EXCESS_PROFIT} flex={1} align='center' />
+					<Text size='sm' text={ST.SHARE_VALUE} flex={1} align='center' />
+					<Text size='sm' text={ST.CAPITAL} flex={1} align='center' />
+					<Text size='sm' text={'ROE'} flex={1} align='center' />
+					<Text size='sm' text={ST.BASE_RATE} flex={1} align='center' />
+					<Text size='sm' text={ST.EXCESS_PROFIT} flex={1} align='center' />
 				</Flex>
 
 				<Flex className='list-row'>
-					<Text bold size='xs' text={parsed?.shareValue?.value} flex={1} align='center' />
-					<Text bold size='xs' text={parsed?.equity?.value} flex={1} align='center' />
-					<Text bold size='xs' text={data?.roe} flex={1} align='center' />
-					<Text bold size='xs' text={withCommas(data?.brate)} flex={1} align='center' />
+					<Text bold size='sm' text={parsed?.shareValue?.value} flex={1} align='center' />
+					<Text bold size='sm' text={parsed?.equity?.value} flex={1} align='center' />
+					<Text bold size='sm' text={data?.roe} flex={1} align='center' />
+					<Text bold size='sm' text={withCommas(data?.brate)} flex={1} align='center' />
 					<Text
 						bold
-						size='xs'
+						size='sm'
 						className={clsx(valueOfPlusMinus(Number(parsed?.profit?.value)))}
 						text={parsed?.profit?.value}
 						flex={1}
@@ -89,7 +89,7 @@ export const InvestmentInfoField = ({ data }: { data?: InvestmentItemType }) => 
 const StyledPerValueField = styled(Flex, {
 	'&.per-value': {
 
-		'.box': {
+		'.list-box': {
 			padding: 8,
 			background: '$gray200',
 		},
@@ -121,10 +121,10 @@ export const PerValueField = ({ data }: { data?: InvestmentItemType }) => {
 				<Text bold text={ST.PER_VALUE} />
 			</Flex> */}
 
-			<Flex className='box' direction={'column'} gap={4}>
+			<Flex className='list-box' direction={'column'} gap={4}>
 				<Flex className={'labels'} height={20}>
 					{list?.map((item, index) => {
-						return <Text key={`lb-${index}`} flex={1} bold size='xs' text={`${item?.rate}`} align='center' />;
+						return <Text key={`lb-${index}`} flex={1} size='sm' text={`${item?.rate}`} align='center' />;
 					})}
 				</Flex>
 
@@ -136,7 +136,7 @@ export const PerValueField = ({ data }: { data?: InvestmentItemType }) => {
 								className={clsx(item?.updown)}
 								flex={1}
 								bold
-								size='xs'
+								size='sm'
 								text={`${item.value}${ST.WON}`}
 								align='center'
 							/>
