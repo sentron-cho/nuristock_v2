@@ -6,7 +6,7 @@ import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
 import { MyStockKeepCreateType, MyStockSellCreateType, FieldValues, DepositCreateType } from "../types/data.type.js";
 import dayjs from "dayjs";
 import { createDepositData } from "./deposit.route.js";
-import { DEPOSIT_TYPE } from "../types/enum.js";
+import { DEPOSIT_TYPE, ERROR } from "../types/enum.js";
 
 const mystockRoute = (fastify: FastifyInstance) => {
   // 보유종목 목록 조회
@@ -131,7 +131,7 @@ const mystockRoute = (fastify: FastifyInstance) => {
       if (!rowid)
         return reply
           .status(500)
-          .send(withError({ code: "ER_NOT_ROWID", sqlMessage: "is not rowid!" } as SqlError, { tag: URL.MYSTOCK.BUY }));
+          .send(withError({ code: ERROR.ER_NOT_ROWID, sqlMessage: "is not rowid!" } as SqlError, { tag: URL.MYSTOCK.BUY }));
 
       await fastify.db.query(`UPDATE keeps SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`);
       await updateDashboardKeep(code);
@@ -190,7 +190,7 @@ const mystockRoute = (fastify: FastifyInstance) => {
       if (!rowid)
         return reply
           .status(500)
-          .send(withError({ code: "ER_NOT_ROWID", sqlMessage: "is not rowid!" } as SqlError, { tag: URL.MYSTOCK.BUY }));
+          .send(withError({ code: ERROR.ER_NOT_ROWID, sqlMessage: "is not rowid!" } as SqlError, { tag: URL.MYSTOCK.BUY }));
 
       await fastify.db.query(`UPDATE sells SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`);
       await updateDashboardKeep(code, true);

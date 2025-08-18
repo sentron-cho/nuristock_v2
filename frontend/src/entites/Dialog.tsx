@@ -13,32 +13,33 @@ import {
 	DialogProps as MuiDialogProps,
 } from '@mui/material';
 import { styled } from '@styles/stitches.config';
+import clsx from 'clsx';
 import { PropsWithChildren, useEffect } from 'react';
 import { FieldValues } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const StyledDialog = styled(MuiDialog, {
 	'&.dialog-popup': {
-		'zIndex': '$dialog',
+		zIndex: '$dialog',
 
 		'.contents': {
 			minHeight: '100px',
 			// maxHeight: '400px',
 			height: '100%',
 		},
-	
+
 		'.MuiDialog-paperFullScreen': {
 			'.MuiDialogContent-root': {
 				padding: '20px 10px',
 				overflow: 'hidden',
-	
+
 				'.contents': {
 					height: 'clac(100vh - 140px)',
 					maxHeight: 'unset',
 				},
 			},
 		},
-	}
+	},
 });
 
 interface DialogProps extends Omit<MuiDialogProps, 'open'> {
@@ -64,7 +65,7 @@ export const Dialog = ({
 }: DialogProps & PropsWithChildren) => {
 	const theme = useTheme();
 	const isFullScreen = useMediaQuery(theme.breakpoints.down('md'));
-	
+
 	const navigate = useNavigate();
 	const location = useLocation();
 
@@ -105,7 +106,6 @@ export const Dialog = ({
 
 	return (
 		<StyledDialog
-			className='dialog-popup'
 			fullScreen={fullScreen && isFullScreen}
 			onClose={backdrop ? onCancel : undefined}
 			aria-labelledby='dialog-box'
@@ -114,6 +114,7 @@ export const Dialog = ({
 			open={true}
 			onKeyDown={handleKeyDown}
 			{...props}
+			className={clsx('dialog-popup', props?.className)}
 		>
 			<DialogTitle title={title} onClose={onCancel} />
 

@@ -6,7 +6,7 @@ import { withError } from "../lib/error.js";
 import { InvestCreateType, InvestRefreshParams, ConsensusResult, FieldValues } from "../types/data.type.js";
 import { getYearlyFacts } from "../crawler/service/yearlyFacts.service.js";
 import { makeUpdateSet } from "../lib/db.util.js";
-import { INVEST_CRALER_TYPE } from "../types/enum.js";
+import { ERROR, INVEST_CRALER_TYPE } from "../types/enum.js";
 import { getDartReportByStock } from "../crawler/dartFinancial.js";
 import { getFnGuideConsensus } from "../crawler/service/fnguideScraper.service.js";
 import { getNaverConsensus } from "../crawler/service/naverScraper.service.js";
@@ -76,7 +76,17 @@ const investRoute = (fastify: FastifyInstance) => {
       if (!code)
         return reply
           .status(500)
-          .send(withError({ code: "ER_NOT_ROWID", sqlMessage: "is not code!" } as SqlError, { tag: URL.INVEST.ROOT }));
+          .send(withError({ code: ERROR.ER_NOT_ROWID, sqlMessage: "is not code!" } as SqlError, { tag: URL.INVEST.ROOT }));
+      
+      const isDup = await fastify.db.query(
+        `SELECT count(1) as name FROM investment WHERE code = '${code}';`
+      );
+
+      if (isDup?.length > 0) {
+        return reply
+          .status(500)
+          .send(withError({ code: ERROR.ER_DUP_ENTRY, sqlMessage: "duplicate code!" } as SqlError, { tag: URL.INVEST.ROOT }));
+      }
 
       const start = Number(dayjs().add(-3, "year").format("YYYY"));
       const end = Number(dayjs().format("YYYY"));
@@ -134,7 +144,7 @@ const investRoute = (fastify: FastifyInstance) => {
         reply
           .status(500)
           .send(
-            withError({ code: "ER_NOT_UNKNOW", sqlMessage: "is not rowid!" } as SqlError, { tag: URL.INVEST.ROOT })
+            withError({ code: ERROR.ER_NOT_UNKNOW, sqlMessage: "is not rowid!" } as SqlError, { tag: URL.INVEST.ROOT })
           );
 
       // 네이버는 당기순이익만 가져오므로 직전년도 자기자본에서 당기순이익을 더하자
@@ -209,7 +219,7 @@ const investRoute = (fastify: FastifyInstance) => {
       if (!rowid)
         return reply
           .status(500)
-          .send(withError({ code: "ER_NOT_ROWID", sqlMessage: "is not rowid!" } as SqlError, { tag: URL.INVEST.ROOT }));
+          .send(withError({ code: ERROR.ER_NOT_ROWID, sqlMessage: "is not rowid!" } as SqlError, { tag: URL.INVEST.ROOT }));
 
       await fastify.db.query(
         `UPDATE investment SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`

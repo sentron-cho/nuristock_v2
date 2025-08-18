@@ -1,6 +1,7 @@
 export const StorageDataKey = {
 	DASHBOARD_SORTED_TRADE: 'dashboard-sorted-trade',
 	DASHBOARD_SORTED_KEEP: 'dashboard-sorted-keep',
+	DASHBOARD_CONFIG_MORE: 'dashboard-config-more',
 	BUCKET_PARAMS: 'bucket-params',
 }
 

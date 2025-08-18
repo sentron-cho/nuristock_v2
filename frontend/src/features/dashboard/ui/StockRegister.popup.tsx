@@ -59,10 +59,12 @@ export const StockRegisterPopup = ({
 	viewType = 'dashboard',
 	onClose,
 	onSuccess,
+	onFailure,
 }: {
 	viewType?: 'dashboard' | 'investment';
 	onClose: (isOk: boolean) => void;
 	onSuccess?: () => void;
+	onFailure?: () => void;
 }) => {
 	const { showAlert } = useCommonHook();
 
@@ -82,7 +84,7 @@ export const StockRegisterPopup = ({
 
 	const filtered = useMemo(() => {
 		if (search && search?.length > 0) {
-			const items = list?.filter((a) => a?.text.includes(search))?.slice(0, 50);
+			const items = list?.filter((a) => a?.text?.toLowerCase().includes(search.toLowerCase()))?.slice(0, 50);
 			return items;
 		} else {
 			return list?.slice(0, 50);
@@ -106,9 +108,13 @@ export const StockRegisterPopup = ({
 					if (viewType === 'dashboard') {
 						await createData({ ...selected, name: forms?.getValues('title') || selected?.name });
 					} else {
-						createInvestment({ ...selected, name: forms?.getValues('title') || selected?.name })?.then(() => {
-							onSuccess?.();
-						});
+						createInvestment({ ...selected, name: forms?.getValues('title') || selected?.name })
+							?.then(() => {
+								onSuccess?.();
+							})
+							.catch(() => {
+								onFailure?.();
+							});
 					}
 					// showToast('registered');
 					onClose?.(isOk);

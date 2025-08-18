@@ -6,6 +6,7 @@ import { FieldValues } from "../types/data.type.js";
 import { DepositCreateType } from "../types/data.type.js";
 import URL from "../types/url.js";
 import dayjs from "dayjs";
+import { ERROR } from "../types/enum.js";
 
 export const selectLatestDeposit = async (fastify: FastifyInstance): Promise<DepositCreateType | undefined> => {
   const value = await fastify.db.query("SELECT rowid, sdate, price FROM deposit ORDER BY rowid DESC limit 1;");
@@ -190,7 +191,7 @@ const depositRoute = (fastify: FastifyInstance) => {
         return reply
           .status(500)
           .send(
-            withError({ code: "ER_NOT_ROWID", sqlMessage: "is not rowid!" } as SqlError, { tag: URL.DEPOSIT.ROOT })
+            withError({ code: ERROR.ER_NOT_ROWID, sqlMessage: "is not rowid!" } as SqlError, { tag: URL.DEPOSIT.ROOT })
           );
 
       await fastify.db.query(`UPDATE deposit SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`);

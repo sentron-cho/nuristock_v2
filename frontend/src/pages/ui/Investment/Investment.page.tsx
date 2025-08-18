@@ -106,6 +106,10 @@ const InvestmentPage = () => {
 		refetch();
 	};
 
+	const onFailure = () => {
+		setLoading(false);
+	}
+
 	return (
 		<>
 			{isMobile && <InvestmentPageMo data={data} onClick={onClick} onRefresh={onRefresh} />}
@@ -113,7 +117,7 @@ const InvestmentPage = () => {
 
 			{/* 종목 추가 팝업 */}
 			{popup?.type === EID.ADD && (
-				<StockRegisterPopup viewType={'investment'} onClose={popup?.onClose} onSuccess={onSuccess} />
+				<StockRegisterPopup viewType={'investment'} onClose={popup?.onClose} onSuccess={onSuccess} onFailure={onFailure} />
 			)}
 
 			{/* 설정 업데이트 팝업 */}

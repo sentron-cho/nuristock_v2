@@ -5,7 +5,7 @@ import { withError } from "../lib/error.js";
 import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
 import { DepositCreateType, DividendCreateType, FieldValues } from "../types/data.type.js";
 import { createDepositData } from "./deposit.route.js";
-import { DEPOSIT_TYPE } from "../types/enum.js";
+import { DEPOSIT_TYPE, ERROR } from "../types/enum.js";
 
 const dividendRoute = (fastify: FastifyInstance) => {
   // 배당 목록 조회
@@ -64,7 +64,7 @@ const dividendRoute = (fastify: FastifyInstance) => {
         return reply
           .status(500)
           .send(
-            withError({ code: "ER_NOT_ROWID", sqlMessage: "is not rowid!" } as SqlError, { tag: URL.DIVIDEND.ROOT })
+            withError({ code: ERROR.ER_NOT_ROWID, sqlMessage: "is not rowid!" } as SqlError, { tag: URL.DIVIDEND.ROOT })
           );
 
       await fastify.db.query(`UPDATE divid SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`);

@@ -13,3 +13,9 @@ export enum DEPOSIT_TYPE {
 	BUY = 'buy',
 	DIVIDEND = 'dividend',
 }
+
+export const ERROR = {
+	ER_DUP_ENTRY : 'ER_DUP_ENTRY',
+	ER_NOT_ROWID : 'ER_NOT_ROWID',
+	ER_NOT_UNKNOW : 'ER_NOT_UNKNOW',
+}

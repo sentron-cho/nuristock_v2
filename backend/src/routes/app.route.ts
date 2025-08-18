@@ -5,6 +5,7 @@ import { withError } from "../lib/error.js";
 import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
 import { FieldValues } from "../types/data.type.js";
 import { AppConfigDataType } from "../types/data.type.js";
+import { ERROR } from "../types/enum.js";
 
 const appRoute = (fastify: FastifyInstance) => {
   // 앱 설정 목록 조회
@@ -62,7 +63,7 @@ const appRoute = (fastify: FastifyInstance) => {
         return reply
           .status(500)
           .send(
-            withError({ code: "ER_NOT_ROWID", sqlMessage: "is not rowid!" } as SqlError, { tag: URL.APP.CONFIG })
+            withError({ code: ERROR.ER_NOT_ROWID, sqlMessage: "is not rowid!" } as SqlError, { tag: URL.APP.CONFIG })
           );
 
       await fastify.db.query(`UPDATE app SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`);

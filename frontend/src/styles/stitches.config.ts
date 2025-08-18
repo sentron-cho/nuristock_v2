@@ -136,7 +136,8 @@ export const { styled, css, globalCss, theme, createTheme, config } = createStit
 		},
 		zIndices: {
 			loading: '99999999', //9 8개
-			dialog: '99999',
+			toast: '91000',
+			dialog: '90000',
 			footer: '3000',
 			menuPage: '2000',
 			header: '1200',

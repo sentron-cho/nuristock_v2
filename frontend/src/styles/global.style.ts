@@ -16,6 +16,10 @@ export const globalStyles = globalCss({
 		// overflowY: 'auto',
 	},
 
+	'#root .notistack-SnackbarContainer': {
+		zIndex: '$toast'
+	},
+
 	'.contents-wrap, .MuiTypography-root': {
 		fontFamily: '$body !important',
 	},

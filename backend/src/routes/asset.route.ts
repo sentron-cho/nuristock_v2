@@ -5,6 +5,7 @@ import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
 import { FieldValues } from "../types/data.type.js";
 import { AssetCreateType } from './../types/data.type.js';
 import URL from "../types/url.js";
+import { ERROR } from "../types/enum.js";
 
 export const selectLatestAsset = async (fastify: FastifyInstance): Promise<AssetCreateType | undefined> => {
   const value = await fastify.db.query('SELECT * FROM asset ORDER BY rowid DESC limit 1;')
@@ -56,7 +57,7 @@ const assetRoute = (fastify: FastifyInstance) => {
       if (!rowid)
         return reply
           .status(500)
-          .send(withError({ code: "ER_NOT_ROWID", sqlMessage: "is not rowid!" } as SqlError, { tag: URL.ASSET.ROOT }));
+          .send(withError({ code: ERROR.ER_NOT_ROWID, sqlMessage: "is not rowid!" } as SqlError, { tag: URL.ASSET.ROOT }));
 
       await fastify.db.query(`UPDATE asset SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`);
       reply.status(200).send({ value: rowid });

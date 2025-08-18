@@ -15,7 +15,6 @@ const InnerSnackbarInit = () => {
 };
 
 export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
-	
 	// 스낵바 각각에 Close 버튼을 추가
 	const action = useCallback(
 		(snackbarId: string | number) => (
