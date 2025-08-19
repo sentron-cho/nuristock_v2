@@ -121,9 +121,11 @@ const KOR = {
 	MORE_IN: '요약보기',
 	MORE_OUT: '전체보기',
 	ASSET: '투자금',
+	EVALUATION: '평가금액',
 	DEPOSIT: '예수금',
 	ACC_ASSET: '누적투자',
 	INVESTMENT_STATUS: '투자 현황',
+	ASSETVSEVALUATION: '투자금 VS 평가금액',
 
 	NO_SERVICE: '서비스 준비중',
 

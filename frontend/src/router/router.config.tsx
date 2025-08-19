@@ -96,9 +96,7 @@ const router = createBrowserRouter([
 				path: 'asset',
 				element: <PageLayout />,
 				children: [
-					{ index: true, element: <AssetPage viewType={'asset'} /> },
-					{ path: 'asset', element: <AssetPage viewType={'asset'} /> },
-					{ path: 'evaluation', element: <AssetPage viewType={'evaluation'} /> },
+					{ index: true, element: <AssetPage /> },
 				],
 			},
 			{

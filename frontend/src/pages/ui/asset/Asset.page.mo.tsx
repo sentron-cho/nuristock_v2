@@ -2,51 +2,66 @@ import { styled } from '@styles/stitches.config';
 import { PageContainer } from '../../../features/common/ui/PageContainer.ui';
 import Flex from '@entites/Flex';
 import { ST } from '@shared/config/kor.lang';
-import { Card, CardListWrap } from '@entites/Card';
-import { SubTitle, Title } from '@entites/Title';
+import { CardListWrap } from '@entites/Card';
+import { Title } from '@entites/Title';
 import { Text } from '@entites/Text';
 import { useAssetData } from '@features/asset/hook/Asset.hook';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
-import { toCost } from '@shared/libs/utils.lib';
+import { toCost, valueOfPlusMinus } from '@shared/libs/utils.lib';
 import { AssetItemType, AssetResponse } from '@features/asset/api/asset.dto';
-import { TitleNavigation } from '@entites/TitleNavigation';
 import { useMemo } from 'react';
-import { useCommonHook } from '@shared/hooks/useCommon.hook';
-import { URL } from '@shared/config/url.enum';
-import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 import { ChartLineBox } from '@entites/ChartLine';
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { CHART_COLORS } from '@entites/Chart.type';
 
 const StyledPage = styled(PageContainer, {
-	'.contents-layer': {
-		'.card-list': {
-			padding: '10px 0',
+	'.asset-chart': {
+		padding: 4,
+		'.box': {
+			background: '$white',
+		},
+	},
 
-			'.card': {
-				'.box': {
-					padding: '4px 10px',
-				},
+	'.contents-layer': {
+		'.list-header': {
+			background: '$gray400',
+			position: 'sticky',
+			top: 0,
+			zIndex: '$titleNavi',
+			borderBottom: '1px solid $gray500',
+		},
+
+		'.list': {
+			padding: '0',
+
+			'.list-body': {
+				padding: '4px 10px',
 			},
+		},
+
+		'.minus': {
+			color: '$minus',
+		},
+
+		'.plus': {
+			color: '$plus',
 		},
 	},
 });
 
-export const AssetPageMo = ({
-	viewType = 'asset',
-	data,
-}: {
-	viewType?: 'asset' | 'evaluation';
-	data?: AssetResponse;
-}) => {
-	const { navigate } = useCommonHook();
+export const AssetPageMo = ({ data }: { data?: AssetResponse }) => {
+	// const { navigate } = useCommonHook();
 	const { data: asset, evaluation } = useAssetData(data);
 
 	const list = useMemo(() => {
-		if (viewType === 'asset') return asset;
-		else return evaluation;
-	}, [viewType, data]);
+		if (!asset || !evaluation) return undefined;
+
+		return asset?.map<AssetItemType & { cprice?: number }>((a) => ({
+			...a,
+			cprice: evaluation?.find((b) => b.sdate === a.sdate)?.price || 0,
+		}));
+	}, [asset, evaluation]);
 
 	const chartData = useMemo(() => {
 		if (!asset || !evaluation) return undefined;
@@ -57,31 +72,13 @@ export const AssetPageMo = ({
 		}));
 	}, [asset, evaluation]);
 
-	const onClick = (eid?: string) => {
-		eid && navigate(`${URL.ASSET}/${eid}`);
-	};
-
-	const { handlerSwipe, swipeClass } = useSwipePage({
-		onNextPage: () => {
-			return `${URL.ASSET}/${viewType === 'asset' ? 'evaluation' : 'asset'}`;
-		},
-	});
-
-	const naviOptions = useMemo(
-		() => [
-			{ label: ST.ASSET, value: 'asset' },
-			{ label: ST.VALUATION, value: 'evaluation' },
-		],
-		[]
-	);
-
 	return (
 		<>
 			<StyledPage>
 				{/* <PageTitleBar title={ST.ASSET} /> */}
 
-				<Flex className='bucket-chart' direction={'column'} gap={10}>
-					<Title title={ST.BUCKETLIST.CHART} />
+				<Flex className='asset-chart' direction={'column'} gap={10}>
+					<Title title={ST.ASSETVSEVALUATION} />
 					<Flex className='box' direction={'column'} gap={10}>
 						<ChartLineBox>
 							<ResponsiveContainer>
@@ -122,24 +119,33 @@ export const AssetPageMo = ({
 				</Flex>
 
 				{/* 제목 */}
-				<TitleNavigation sticky options={naviOptions} value={viewType} onClick={onClick} />
 
-				<Flex className='contents-layer' direction={'column'} flex={1} {...handlerSwipe}>
+				<Flex className='contents-layer' direction={'column'} flex={1}>
+					<Flex className='list-header' justify={'between'} height={34}>
+						<Text bold text={ST.DATE} flex={1} textAlign={'center'} />
+						<Text bold text={ST.EVALUATION} flex={1} textAlign={'center'} />
+						<Text bold text={ST.ASSET} flex={1} textAlign={'center'} />
+					</Flex>
+
 					<CardListWrap>
-						<Card className={clsx('card')}>
-							<Flex className={clsx('box border')} direction='column' gap={4}>
-								<Flex className={clsx(swipeClass)} direction={'column'} justify={'center'}>
-									{list?.map((item) => {
-										return (
-											<Flex key={`asset-${item.rowid}`} className='row' justify={'between'} height={28}>
-												<SubTitle title={dayjs(item.sdate).format('YYYY-MM-DD')} />
-												<Text text={toCost(item?.price)} />
-											</Flex>
-										);
-									})}
-								</Flex>
+						<Flex className={clsx('list')}>
+							<Flex className={clsx('list-body')} direction='column' gap={4}>
+								{list?.map((item) => {
+									return (
+										<Flex key={`asset-${item.rowid}`} className='row' justify={'between'} height={28}>
+											<Text text={dayjs(item.sdate).format('YYYY-MM-DD')} flex={1} />
+											<Text
+												className={valueOfPlusMinus(item?.cprice, item.price)}
+												text={item?.cprice ? toCost(item?.cprice) : ''}
+												flex={2}
+												align='right'
+											/>
+											<Text text={toCost(item?.price)} flex={2} align='right' />
+										</Flex>
+									);
+								})}
 							</Flex>
-						</Card>
+						</Flex>
 					</CardListWrap>
 				</Flex>
 			</StyledPage>
