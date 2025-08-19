@@ -2,7 +2,7 @@ import Fastify from "fastify";
 import cors from "@fastify/cors";
 import dbPlugin from "./plugins/db.js"; // 🔥 DB 플러그인 추가
 import { startStockSiseService } from "./crawler/service/stockCrawler.service.js";
-import { startAssetTask } from "./task/asset.task.js";
+import { startAssetTask, startEvalutionPriceTask } from "./task/asset.task.js";
 import dashboardRoute from "./routes/dashboard.route.js";
 import mainboardRoute from "./routes/mainboard.route.js";
 import mystockRoute from "./routes/mystock.route.js";
@@ -52,12 +52,13 @@ await fastify.register(bucketRoute); // 버킷리스트
 
 // 크롤링 작업 시작
 fastify.ready().then(() => {
-  startStockSiseService(fastify); // DB 주입
+  startStockSiseService(fastify);
 });
 
 // 태스크 작업 시작
 fastify.ready().then(() => {
-  startAssetTask(fastify); // DB 주입
+  startAssetTask(fastify); // 일별 투자금액 수집
+  startEvalutionPriceTask(fastify); // 일별 평가금액 수집(시세반영)
 });
 
 fastify.get("/", async (req, reply) => {

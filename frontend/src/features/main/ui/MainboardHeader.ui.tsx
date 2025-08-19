@@ -1,6 +1,6 @@
 import { FC, useMemo } from 'react';
 import { ChartLegend } from '@entites/ChartLegend';
-import { ChartDataType, ColoredSlice } from '@entites/Chart.type';
+import { CHART_COLORS, ChartDataType, ColoredSlice } from '@entites/Chart.type';
 import { ChartDonut } from '@entites/ChartDonut';
 import { ST } from '@shared/config/kor.lang';
 import { styled } from '@styles/stitches.config';
@@ -18,17 +18,7 @@ type MainboardHeaderProps = {
 	onClick?: (eid: string, item?: ColoredSlice) => void;
 };
 
-const DEFAULT_COLORS = [
-	'#ff3030ff',
-	'#503dffff',
-	'#cf6a17ff',
-	'#52ff0eff',
-	'#de0ff1ff',
-	'#423b40ff',
-	'#ffe91fff',
-	'#ff7559ff',
-	'#50009bff',
-];
+const DEFAULT_COLORS = Object.values(CHART_COLORS);
 
 const StyledFlex = styled(Flex, {
 	'.mainboard-header': {},

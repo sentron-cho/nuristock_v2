@@ -17,14 +17,16 @@ const StyledFlex = styled(Flex, {
 
 export const MainboardCard = ({
 	viewType = 'sonicTop',
+	isMore = false,
 	data,
 	onClick,
 }: {
 	viewType?: 'sonicBuyTop' | 'sonicBuyBottom' | 'sonicTop' | 'sonicBottom' | 'latestSell' | 'latestBuy';
+	isMore?: boolean;
 	data?: MainboardResponse;
 	onClick?: (eid?: string, item?: DataType) => void;
 }) => {
-	const { sonicTop, sonicBottom, latestBuy, latestSell, sonicBuyTop, sonicBuyBottom } = useMainboardCardHook(data);
+	const { sonicTop, sonicBottom, latestBuy, latestSell, sonicBuyTop, sonicBuyBottom } = useMainboardCardHook(data,isMore);
 
 	return (
 		<StyledFlex className={clsx('layout')} gap={8} direction={'column'}>
@@ -114,7 +116,7 @@ export const MainboardCard = ({
 						/>
 					);
 				})}
-			
+
 			{/* 매수 손실율 상위 */}
 			{viewType === 'sonicBuyBottom' &&
 				sonicBuyBottom?.map((item, index) => {

@@ -1,13 +1,19 @@
-import { reverse, sortBy } from 'lodash';
-import { useMemo } from 'react';
+import { cloneDeep, reverse, sortBy } from 'lodash';
+import { useMemo, useState } from 'react';
 import { MainboardItemType as DataType, MainboardResponse } from '../api/mainboard.dto';
 import { useAppConfigHook } from '@shared/hooks/useAppConfig.hook';
 import { APP_GROUP } from '@shared/config/default.config';
 import { toSemiCost, valueOfPlusMinus } from '@shared/libs/utils.lib';
 import { MainboardSummaryData as SummaryData } from '../config/Mainboard.data';
+import { StorageDataKey, useStorageHook } from '@shared/hooks/useStorage.hook';
 
 export const useMainboardHook = (initialData?: MainboardResponse) => {
 	const { data: config, getConfig, createConfig, isPending } = useAppConfigHook({ group: APP_GROUP.DASHBOARD });
+	const { setLocalStorage, getLocalStorage } = useStorageHook();
+
+	const initConfig = getLocalStorage(StorageDataKey.MAINBOARD_CONFIG_MORE) as boolean[];
+	const DEFAULT_MORE = [false, false, false, false, false, false];
+	const [isMoreList, setMoreList] = useState<boolean[]>(initConfig || DEFAULT_MORE);
 
 	const data = useMemo(() => initialData, [initialData]);
 
@@ -64,6 +70,15 @@ export const useMainboardHook = (initialData?: MainboardResponse) => {
 		return SummaryData(values);
 	}, [list, data]);
 
+	const onClickMore = (index: number = 0, value: boolean = true) => {
+		const more = cloneDeep(isMoreList);
+		more?.[index] !== undefined && (more[index] = value);
+
+		console.log({ more });
+		setMoreList(more);
+		setLocalStorage(StorageDataKey.MAINBOARD_CONFIG_MORE, more);
+	};
+
 	return {
 		loaded: !isPending,
 		config,
@@ -77,10 +92,12 @@ export const useMainboardHook = (initialData?: MainboardResponse) => {
 		deposit: data?.deposit,
 		buys: data?.buys,
 		totalPrice,
+		isMoreList,
+		onClickMore,
 	};
 };
 
-export const useMainboardCardHook = (initialData?: MainboardResponse) => {
+export const useMainboardCardHook = (initialData?: MainboardResponse, isMore: boolean = false) => {
 	const { data: config, getConfig, createConfig, isPending } = useAppConfigHook({ group: APP_GROUP.DASHBOARD });
 
 	const data = useMemo(() => initialData, [initialData]);
@@ -188,6 +205,8 @@ export const useMainboardCardHook = (initialData?: MainboardResponse) => {
 		return items;
 	}, [initialData]);
 
+	const max = isMore ? 10 : 3;
+
 	return {
 		loaded: !isPending,
 		config,
@@ -196,12 +215,12 @@ export const useMainboardCardHook = (initialData?: MainboardResponse) => {
 		list: data?.value,
 		trades: data?.trades,
 		keeps,
-		sonicTop: reverse(sortBy(keeps, ['siseSonic'])).slice(0, 5),
-		sonicBottom: sortBy(keeps, ['siseSonic']).slice(0, 5),
-		latestBuy: reverse(sortBy(latestBuy, ['sdate'])).slice(0, 5),
-		latestSell: reverse(sortBy(latestSell, ['edate'])).slice(0, 5),
-		sonicBuyTop: reverse(sortBy(sonicBuy, ['sonicRate'])).slice(0, 10),
-		sonicBuyBottom: sortBy(sonicBuy, ['sonicRate']).slice(0, 10),
+		sonicTop: reverse(sortBy(keeps, ['siseSonic'])).slice(0, max),
+		sonicBottom: sortBy(keeps, ['siseSonic']).slice(0, max),
+		latestBuy: reverse(sortBy(latestBuy, ['sdate'])).slice(0, max),
+		latestSell: reverse(sortBy(latestSell, ['edate'])).slice(0, max),
+		sonicBuyTop: reverse(sortBy(sonicBuy, ['sonicRate'])).slice(0, max),
+		sonicBuyBottom: sortBy(sonicBuy, ['sonicRate']).slice(0, max),
 		asset: data?.asset,
 		deposit: data?.deposit,
 		buys: data?.buys,

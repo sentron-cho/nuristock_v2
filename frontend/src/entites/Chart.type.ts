@@ -1,3 +1,16 @@
+export const CHART_COLORS = {
+  RED: '#ff3030ff',
+  BLUE: '#503dffff',
+  ORANGE: '#cf6a17ff',
+  GREEN: '#52ff0eff',
+  PUPPLE: '#de0ff1ff',
+  GRAY: '#423b40ff',
+  YELLOW: '#ffe91fff',
+  DARKRED: '#7e0000ff',
+  DARKBLUE: '#50009bff',
+};
+
+
 export interface ChartDataType {
   name: string; // 종목명 (예: '현대차')
   value: number; // 금액(원) — 실제에선 보유금액

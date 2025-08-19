@@ -31,6 +31,9 @@ export const URL = {
   ASSET: {
     ROOT: `${ROOT_URL}/asset`,
   },
+  EVALUATION: {
+    ROOT: `${ROOT_URL}/evaluation`,
+  },
   BUCKET: {
     ROOT: `${ROOT_URL}/bucket`,
   },

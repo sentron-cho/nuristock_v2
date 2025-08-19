@@ -8,7 +8,12 @@ export const useAssetData = (initialData?: AssetResponse) => {
 		return reverse(sortBy(initialData?.value, 'sdate')) as DataType[];
 	}, [initialData]);
 
+	const evaluation = useMemo(() => {
+		return reverse(sortBy(initialData?.evaluation, 'sdate')) as DataType[];
+	}, [initialData]);
+
 	return {
 		data,
+		evaluation,
 	};
 };

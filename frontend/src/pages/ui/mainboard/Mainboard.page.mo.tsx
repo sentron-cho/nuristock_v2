@@ -11,21 +11,12 @@ import { reverse, sortBy } from 'lodash';
 import { MainboardCard } from '@features/main/ui/MainboardCard.ui';
 import { SubTitle } from '@entites/Title';
 import { ST } from '@shared/config/kor.lang';
+import { IconButtonToggle } from '@entites/IconButton';
+import { IconExpandDown, IconExpandUp } from '@entites/Icons';
 
 const StyledPage = styled(PageContainer, {
 	'.contents-layer': {
 		background: 'white',
-
-		'.title-bar': {
-			width: '100%',
-			background: '$gray400',
-			textAlign: 'center',
-			height: '40px',
-			lineHeight: '40px',
-			position: 'sticky',
-			top: '240px',
-			zIndex: 9,
-		},
 	},
 });
 
@@ -40,7 +31,7 @@ export const MainboardPageMo = ({
 	onClickTitle?: (eid?: string) => void;
 	onClickChart?: (eid?: string, item?: ChartDataType) => void;
 }) => {
-	const { totalPrice, keeps, summaryData } = useMainboardHook(data);
+	const { totalPrice, keeps, summaryData, isMoreList, onClickMore } = useMainboardHook(data);
 
 	const parsed = useMemo(() => {
 		const list = keeps?.map((a) => ({ name: a?.name, value: a?.kprice, key: a?.code }));
@@ -63,43 +54,105 @@ export const MainboardPageMo = ({
 				>
 					<Flex direction={'column'}>
 						{/* 평가 손익 상위 */}
-						<Flex className='title-bar' justify={'center'} onClick={() => onClickTitle?.('sonicTop')}>
-							<SubTitle title={ST.MAINBOARD.SONIC_TOP} />
-						</Flex>
-						<MainboardCard viewType='sonicTop' data={data} onClick={onClick} />
+						<ListTitle
+							title={ST.MAINBOARD.SONIC_TOP}
+							isMore={isMoreList?.[0]}
+							onClickTitle={() => onClickTitle?.('sonicTop')}
+							onClickMore={() => onClickMore?.(0, !isMoreList?.[0])}
+						/>
+
+						<MainboardCard viewType='sonicTop' isMore={isMoreList?.[0]} data={data} onClick={onClick} />
 
 						{/* 평가 손익 하위 */}
-						<Flex className='title-bar' justify={'center'} onClick={() => onClickTitle?.('sonicBottom')}>
-							<SubTitle title={ST.MAINBOARD.SONIC_BOTTOM} />
-						</Flex>
-						<MainboardCard viewType='sonicBottom' data={data} onClick={onClick} />
+						<ListTitle
+							title={ST.MAINBOARD.SONIC_BOTTOM}
+							isMore={isMoreList?.[1]}
+							onClickTitle={() => onClickTitle?.('sonicBottom')}
+							onClickMore={() => onClickMore?.(1, !isMoreList?.[1])}
+						/>
+						<MainboardCard viewType='sonicBottom' isMore={isMoreList?.[1]} data={data} onClick={onClick} />
 
 						{/* 최근 매수 상위 */}
-						<Flex className='title-bar' justify={'center'} onClick={() => onClickTitle?.('latestBuy')}>
-							<SubTitle title={ST.MAINBOARD.BUY} />
-						</Flex>
-						<MainboardCard viewType='latestBuy' data={data} onClick={onClick} />
+						<ListTitle
+							title={ST.MAINBOARD.BUY}
+							isMore={isMoreList?.[2]}
+							onClickTitle={() => onClickTitle?.('latestBuy')}
+							onClickMore={() => onClickMore?.(2, !isMoreList?.[2])}
+						/>
+						<MainboardCard viewType='latestBuy' isMore={isMoreList?.[2]} data={data} onClick={onClick} />
 
 						{/* 최근 매도 상위 */}
-						<Flex className='title-bar' justify={'center'} onClick={() => onClickTitle?.('latestSell')}>
-							<SubTitle title={ST.MAINBOARD.SELL} />
-						</Flex>
-						<MainboardCard viewType='latestSell' data={data} onClick={onClick} />
+						<ListTitle
+							title={ST.MAINBOARD.SELL}
+							isMore={isMoreList?.[3]}
+							onClickTitle={() => onClickTitle?.('latestSell')}
+							onClickMore={() => onClickMore?.(3, !isMoreList?.[3])}
+						/>
+						<MainboardCard viewType='latestSell' isMore={isMoreList?.[3]} data={data} onClick={onClick} />
 
 						{/* 매수 손익 상위 */}
-						<Flex className='title-bar' justify={'center'} onClick={() => onClickTitle?.('sonicBuyTop')}>
-							<SubTitle title={ST.MAINBOARD.SONIC_BUY_TOP} />
-						</Flex>
-						<MainboardCard viewType='sonicBuyTop' data={data} onClick={onClick} />
+						<ListTitle
+							title={ST.MAINBOARD.SONIC_BUY_TOP}
+							isMore={isMoreList?.[4]}
+							onClickTitle={() => onClickTitle?.('sonicBuyTop')}
+							onClickMore={() => onClickMore?.(4, !isMoreList?.[4])}
+						/>
+						<MainboardCard viewType='sonicBuyTop' isMore={isMoreList?.[4]} data={data} onClick={onClick} />
 
 						{/* 매수 손익 하위 */}
-						<Flex className='title-bar' justify={'center'} onClick={() => onClickTitle?.('sonicBuyBottom')}>
-							<SubTitle title={ST.MAINBOARD.SONIC_BUY_BOTTOM} />
-						</Flex>
-						<MainboardCard viewType='sonicBuyBottom' data={data} onClick={onClick} />
+						<ListTitle
+							title={ST.MAINBOARD.SONIC_BUY_BOTTOM}
+							isMore={isMoreList?.[5]}
+							onClickTitle={() => onClickTitle?.('sonicBuyBottom')}
+							onClickMore={() => onClickMore?.(5, !isMoreList?.[5])}
+						/>
+						<MainboardCard viewType='sonicBuyBottom' isMore={isMoreList?.[5]} data={data} onClick={onClick} />
 					</Flex>
 				</Flex>
 			</Flex>
 		</StyledPage>
+	);
+};
+
+const StyledListTitle = styled(Flex, {
+	'&.list-title': {
+		position: 'sticky',
+		width: '100%',
+		background: '$gray400',
+		textAlign: 'center',
+		height: '40px',
+		lineHeight: '40px',
+		top: '240px',
+		zIndex: 9,
+
+		'.more': {
+			position: 'absolute',
+			right: 14,
+		},
+	},
+});
+
+const ListTitle = ({
+	title,
+	isMore,
+	onClickMore,
+	onClickTitle,
+}: {
+	title?: string;
+	isMore?: boolean;
+	onClickMore?: () => void;
+	onClickTitle?: () => void;
+}) => {
+	return (
+		<StyledListTitle className='list-title' justify={'center'} onClick={onClickTitle}>
+			<SubTitle title={title} height={30} />
+			<IconButtonToggle
+				className='more'
+				trueIcon={<IconExpandUp />}
+				falseIcon={<IconExpandDown />}
+				value={isMore}
+				onClick={onClickMore}
+			/>
+		</StyledListTitle>
 	);
 };

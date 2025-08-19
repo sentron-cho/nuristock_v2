@@ -6,6 +6,11 @@ export interface AssetItemType {
 
 export interface AssetResponse {
 	value?: AssetItemType[];
+	evaluation?: EvaluationItemType[];
 }
 
-export interface AssetCreateType extends AssetItemType {}
+export type AssetCreateType = AssetItemType;
+
+export type EvaluationItemType = AssetItemType;
+export type EvaluationResponse = AssetResponse;
+export type EvaluationCreateType = AssetItemType;

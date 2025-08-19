@@ -13,7 +13,7 @@ import ProfitPerYearPage from '../pages/ui/profit/ProfitPerYear.page';
 import MyStockPage from '@page/ui/mystock/MyStock.page';
 import InvestmentDetailPage from '@page/ui/Investment/InvestmentDetailPage';
 import MenuPage from '@page/ui/Menu.page';
-import AssetPage from '@page/ui/Asset.page';
+import AssetPage from '@page/ui/asset/Asset.page';
 import DepositPage from '@page/ui/deposit/Deposit.page';
 import MainboardPage from '@page/ui/mainboard/Mainboard.page';
 import BucketlistPage from '@page/ui/bucketlist/Bucketlist.page';
@@ -34,9 +34,7 @@ const router = createBrowserRouter([
 			{
 				path: 'main',
 				element: <PageLayout />,
-				children: [
-					{ index: true, element: <MainboardPage /> },
-				],
+				children: [{ index: true, element: <MainboardPage /> }],
 			},
 			{
 				path: 'dashboard',
@@ -97,7 +95,11 @@ const router = createBrowserRouter([
 			{
 				path: 'asset',
 				element: <PageLayout />,
-				children: [{ index: true, element: <AssetPage /> }],
+				children: [
+					{ index: true, element: <AssetPage viewType={'asset'} /> },
+					{ path: 'asset', element: <AssetPage viewType={'asset'} /> },
+					{ path: 'evaluation', element: <AssetPage viewType={'evaluation'} /> },
+				],
 			},
 			{
 				path: 'deposit',
@@ -109,7 +111,7 @@ const router = createBrowserRouter([
 				element: <PageLayout />,
 				children: [{ index: true, element: <MenuPage /> }],
 			},
-						{
+			{
 				path: 'bucket',
 				element: <PageLayout />,
 				children: [
