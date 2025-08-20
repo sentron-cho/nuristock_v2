@@ -40,6 +40,7 @@ export const globalStyles = globalCss({
 	},
 
 	'.autocomplete-popper': {
+		zIndex: '$popper !important',
 		'&.small': {
 			'.MuiAutocomplete-listbox > li': {
 				lineHeight: '$formSmall',

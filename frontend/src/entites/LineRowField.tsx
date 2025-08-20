@@ -53,6 +53,7 @@ export interface RowFieldProps {
 	valueProps?: TextProps;
 	children?: ReactNode;
 	suffix?: { title?: string; text?: string; value?: string };
+	buttons?: ReactNode;
 }
 
 export const RowField = ({
@@ -69,6 +70,7 @@ export const RowField = ({
 	valueProps,
 	children,
 	suffix,
+	buttons,
 }: RowFieldProps) => {
 	return (
 		<StyledRow
@@ -103,6 +105,8 @@ export const RowField = ({
 						{suffix?.value && <Text className='row-value-suffix' text={suffix?.value} />}
 					</Flex>
 				)}
+
+				{buttons && <Flex fullWidth={false}>{buttons}</Flex>}
 			</Flex>
 
 			{children && (

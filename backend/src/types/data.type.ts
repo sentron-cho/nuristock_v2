@@ -47,7 +47,7 @@ export interface DiarySearchParams {
 
 export interface DividendCreateType {
   rowid?: number;
-  code: string;
+  code?: string;
   cost: number;
   count: number;
   sdate: string;

@@ -76,6 +76,8 @@ const AutoComplete = <SelectOptionType,>({
 
 	// const isError = useMemo(() => error || !!innerError, [error, innerError]);
 
+	console.log({options: props?.options})
+
 	return (
 		<StyledAutoCompleteForm
 			className={clsx('autocomplete-form', size, { error: error, readonly: readOnly, disabled })}

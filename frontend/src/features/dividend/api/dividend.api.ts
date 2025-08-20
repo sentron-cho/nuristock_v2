@@ -28,7 +28,7 @@ export const useCreateDividend = () => {
 export const useDeleteDividend = () => {
 	return useMutation({
 		mutationKey: ['DIVIDEND-D01'],
-		mutationFn: async (params: { rowid: number; code: string }) => {
+		mutationFn: async (params: { rowid?: number; code?: string }) => {
 			return await api.delete(API.DIVIDEND, { params });
 		},
 	});

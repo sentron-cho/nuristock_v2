@@ -46,10 +46,10 @@ const dividendRoute = (fastify: FastifyInstance) => {
   // 배당 항목 삭제
   fastify.delete(URL.DIVIDEND.ROOT, async (req, reply) => {
     try {
-      const { rowid, code } = req.query as DividendCreateType;
+      const { rowid } = req.query as DividendCreateType;
 
       await fastify.db.query(`DELETE FROM divid WHERE rowid=${rowid};`);
-      reply.status(200).send({ value: code });
+      reply.status(200).send({ value: rowid });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.DIVIDEND.ROOT }));
     }

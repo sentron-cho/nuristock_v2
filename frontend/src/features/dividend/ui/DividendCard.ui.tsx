@@ -5,10 +5,12 @@ import Flex from '@entites/Flex';
 import { NoData } from '@entites/NoData';
 import { Card, CardListWrap } from '@entites/Card';
 import { styled } from '@styles/stitches.config';
-import { CardLineFiled } from '@features/common/ui/CardLineField.ui';
 import { SubTitle } from '@entites/Title';
 import { Text } from '@entites/Text';
 import { toCost } from '@shared/libs/utils.lib';
+import { RowField } from '@entites/LineRowField';
+import { IconDelete } from '@entites/Icons';
+import { IconButton } from '@entites/IconButton';
 
 export const StyledCard = styled(Card, {
 	'&.card': {
@@ -33,12 +35,12 @@ export const DividendList = ({
 	years,
 	list,
 	onClick,
-	onClickItem
+	onClickItem,
 }: {
 	years?: DataType[];
 	list?: Record<string, DataType[]>;
 	onClick?: (eid?: string, item?: DataType) => void;
-	onClickItem?: (item?: DataType) => void;
+	onClickItem?: (eid?: string, item?: DataType) => void;
 }) => {
 	if (!years?.length) return <NoData />;
 
@@ -70,12 +72,8 @@ export const DividendCard = ({
 	year?: DataType;
 	data?: DataType[];
 	onClick?: (eid?: string, year?: DataType) => void;
-	onClickItem?: (item: DataType) => void;
+	onClickItem?: (eid?: string, item?: DataType) => void;
 }) => {
-	// const handleClick = (eid?: string) => {
-	// 	onClick?.(eid, year);
-	// };
-
 	return (
 		<StyledCard className={clsx('card', { sm: !history })}>
 			<Flex className='box border' direction='column'>
@@ -87,15 +85,18 @@ export const DividendCard = ({
 				<Flex className='body' direction={'column'}>
 					{data?.map((item) => {
 						return (
-							<CardLineFiled
+							<RowField
 								key={item.rowid}
 								height={28}
 								title={item?.name as string}
 								text={`${item?.cost} x ${item?.count}`}
 								value={toCost(item?.price)}
-								suffix={{}}
-								options={{ title: { bold: false }, text: { bold: false }, value: { bold: false } }}
-								onClick={() => onClickItem?.(item)}
+								onClick={() => onClickItem?.(EID.EDIT, item)}
+								buttons={
+									<Flex style={{ paddingLeft: 4 }}>
+										<IconButton icon={<IconDelete />} onClick={() => onClickItem?.(EID.DELETE, item)} />
+									</Flex>
+								}
 							/>
 						);
 					})}

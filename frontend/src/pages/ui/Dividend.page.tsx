@@ -1,7 +1,7 @@
 import { styled } from '@styles/stitches.config';
 import { PageContainer } from '../../features/common/ui/PageContainer.ui';
 import { useMemo, useState } from 'react';
-import { useSelectDividend as useSelect } from '@features/dividend/api/dividend.api';
+import { useDeleteDividend, useSelectDividend as useSelect } from '@features/dividend/api/dividend.api';
 import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { IconAdd } from '@entites/Icons';
@@ -13,6 +13,7 @@ import { DividendItemType as DataType } from '@features/dividend/api/dividend.dt
 import { DividendList } from '@features/dividend/ui/DividendCard.ui';
 import { useDividendData } from '@features/dividend/hook/Dividend.hook';
 import { sortedByKey } from '@shared/libs/sort.lib';
+import { useCommonHook } from '@shared/hooks/useCommon.hook';
 
 const StyledPage = styled(PageContainer, {
 	'.contents-layer': {
@@ -44,11 +45,13 @@ const StyledPage = styled(PageContainer, {
 });
 
 const DividendPage = () => {
-	const [popup, setPopup] = useState<PopupType>();
+	const { showConfirm } = useCommonHook();
 
 	const { data, refetch } = useSelect();
-
 	const { data: list, stocks, summary, createSumData, groupedByYear } = useDividendData(data);
+	const { mutateAsync: deleteData } = useDeleteDividend();
+
+	const [popup, setPopup] = useState<PopupType>();
 
 	const years = useMemo(() => {
 		const items = createSumData(list, 'year');
@@ -67,15 +70,27 @@ const DividendPage = () => {
 		}
 	};
 
-	const onClickItem = (item?: DataType) => {
-		setPopup({
-			type: EID.EDIT,
-			item: item,
-			onClose: (isOk) => {
-				isOk && refetch();
-				setPopup(undefined);
-			},
-		});
+	const onClickItem = (eid?: string, item?: DataType) => {
+		if (eid === EID.EDIT) {
+			setPopup({
+				type: eid,
+				item: item,
+				onClose: (isOk) => {
+					isOk && refetch();
+					setPopup(undefined);
+				},
+			});
+		} else if (eid === EID.DELETE) {
+			showConfirm({
+				content: ST.WANT_TO_DELETE,
+				onClose: async (isOk) => {
+					if (isOk && item?.rowid) {
+						await deleteData({ rowid: item.rowid });
+						refetch();
+					}
+				},
+			});
+		}
 	};
 
 	return (
