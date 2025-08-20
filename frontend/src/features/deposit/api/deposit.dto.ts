@@ -3,6 +3,7 @@ export interface DepositItemType {
 	stype?: string;
 	sdate: string;
 	price: number;
+	tax?: number;
 }
 
 export interface DepositResponse {

@@ -18,8 +18,8 @@ export const startAssetTask = (fastify: FastifyInstance) => {
     // DB 저장
     if (data && data?.[0]) {
       const { price } = data?.[0];
-      const today = dayjs().format("YYYYMMDD");
-      const params = { price, sdate: today, utime: dayjs().format("YYYY-MM-DD HH:mm:ss") };
+      const today = dayjs().tz("Asia/Seoul").format("YYYYMMDD");
+      const params = { price, sdate: today, utime: dayjs().tz("Asia/Seoul").format("YYYY-MM-DD HH:mm:ss") };
       const value = await fastify.db.query(`SELECT rowid FROM asset WHERE sdate='${today}';`);
       if (value?.length > 0) {
         await fastify.db.query(`UPDATE asset SET ${makeUpdateSet(params)} WHERE sdate = '${today}';`);
@@ -51,8 +51,8 @@ export const startEvalutionPriceTask = (fastify: FastifyInstance) => {
     // DB 저장
     if (data && data?.[0]) {
       const { price } = data?.[0];
-      const today = dayjs().format("YYYYMMDD");
-      const params = { price, sdate: today, utime: dayjs().format("YYYY-MM-DD HH:mm:ss") };
+      const today = dayjs().tz("Asia/Seoul").format("YYYYMMDD");
+      const params = { price, sdate: today, utime: dayjs().tz("Asia/Seoul").format("YYYY-MM-DD HH:mm:ss") };
       const value = await fastify.db.query(`SELECT rowid FROM evaluation WHERE sdate='${today}';`);
       if (value?.length > 0) {
         await fastify.db.query(`UPDATE evaluation SET ${makeUpdateSet(params)} WHERE sdate = '${today}';`);

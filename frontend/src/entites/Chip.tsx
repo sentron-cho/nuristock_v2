@@ -2,11 +2,11 @@ import { Stack, Chip as MuiChip, ChipProps as MuiChipProps, StackProps } from '@
 import { styled } from '@stitches/react';
 import clsx from 'clsx';
 
-export interface ChipProps extends Omit<MuiChipProps, 'onClick'> {
+export interface ChipProps extends Omit<MuiChipProps, 'onClick' | 'size'> {
 	label: string;
 	id?: string;
 	value?: string;
-	size?: 'xsmall' & MuiChipProps['size'];
+	size?: 'small' | 'xsmall' | 'medium';
 	onClick?: (eid?: string) => void;
 }
 
@@ -14,11 +14,11 @@ const StyledChip = styled(MuiChip, {
 	'&.chip': {
 		borderRadius: '4px',
 
-		'&.xmall': {
+		'&.xsmall': {
 			height: '20px',
 			lineHeight: '18px',
-
 			borderRadius: '4px',
+
 			'.MuiChip-label': {
 				padding: '0 4px',
 				fontSize: '12px',
@@ -42,10 +42,10 @@ const StyledChip = styled(MuiChip, {
 export const Chip = (props: ChipProps) => {
 	return (
 		<StyledChip
-			className={clsx('chip', props?.size || 'xmall')}
-			size={props?.size}
 			variant='outlined'
 			{...props}
+			size={props?.size as MuiChipProps['size']}
+			className={clsx('chip', props?.size, props?.className)}
 			onClick={() => props?.onClick?.(props?.id || props?.value)}
 		/>
 	);

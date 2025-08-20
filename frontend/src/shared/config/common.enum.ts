@@ -5,7 +5,7 @@ export enum UseYn {
 
 export enum Deposit {
 	NONE = 'none',
-	MENUAL = 'menual',
+	MANUAL = 'manual',
 	SELL = 'sell',
 	BUY = 'buy',
 	DIVIDEND = 'dividend',

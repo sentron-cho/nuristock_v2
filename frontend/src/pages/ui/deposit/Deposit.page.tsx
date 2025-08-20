@@ -3,18 +3,17 @@ import { PageContainer } from '../../../features/common/ui/PageContainer.ui';
 import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { ST } from '@shared/config/kor.lang';
-import { Card, CardListWrap } from '@entites/Card';
-import clsx from 'clsx';
 import { useDeleteDeposit, useSelectDeposit } from '@features/deposit/api/deposit.api';
-import { useDepositData } from '@features/deposit/hook/Deposit.hook';
+import { useDepositHook } from '@features/deposit/hook/Deposit.hook';
 import { EID } from '@shared/config/default.config';
 import { IconAdd } from '@entites/Icons';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { PopupType } from '@entites/Dialog';
 import { DepositRegisterPopup as RegisterPopup } from '@features/deposit/ui/DepositRegister.popup';
 import { DepositItemType } from '@features/deposit/api/deposit.dto';
-import { DepositCardLineField } from '@features/deposit/ui/DepositCardLineField';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
+import { GridList } from '@entites/GridList';
+import { GridHeader } from '@features/deposit/config/deposit.data';
 
 const StyledPage = styled(PageContainer, {
 	'.contents-layer': {
@@ -33,8 +32,12 @@ const StyledPage = styled(PageContainer, {
 const DepositPage = () => {
 	const { showConfirm } = useCommonHook();
 	const { data, refetch } = useSelectDeposit();
-	const { data: list } = useDepositData(data);
+	const { data: list } = useDepositHook(data);
 	const { mutateAsync: deleteData } = useDeleteDeposit();
+
+	const header = useMemo(() => {
+		return GridHeader({ onClick: (eid, item) => onClick(eid, item) });
+	}, []);
 
 	const [popup, setPopup] = useState<PopupType>();
 
@@ -47,9 +50,9 @@ const DepositPage = () => {
 					setPopup(undefined);
 				},
 			});
-		} else if (eid === EID.EDIT) {
+		} else if (eid === EID.SELECT) {
 			setPopup({
-				type: eid,
+				type: EID.EDIT,
 				item: item,
 				onClose: (isOk) => {
 					isOk && refetch();
@@ -83,17 +86,7 @@ const DepositPage = () => {
 				/>
 
 				<Flex className='contents-layer' direction={'column'} flex={1}>
-					<CardListWrap>
-						{list?.length && (
-							<Card className={clsx('card')}>
-								<Flex className={clsx('box border')} direction='column' gap={4}>
-									{list?.map((item) => {
-										return <DepositCardLineField item={item} onClick={onClick} />;
-									})}
-								</Flex>
-							</Card>
-						)}
-					</CardListWrap>
+					<GridList header={header} data={list} onClick={(eid, item) => onClick(eid, item as DepositItemType)} />
 				</Flex>
 			</StyledPage>
 

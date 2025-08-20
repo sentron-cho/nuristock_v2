@@ -8,7 +8,7 @@ export enum INVEST_CRALER_TYPE {
 
 export enum DEPOSIT_TYPE {
 	NONE = 'none',
-	MENUAL = 'menual',
+	MANUAL = 'manual',
 	SELL = 'sell',
 	BUY = 'buy',
 	DIVIDEND = 'dividend',

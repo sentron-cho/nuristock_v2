@@ -103,7 +103,7 @@ export const selectDepositByYear = async (
   fastify: FastifyInstance,
   year: string // YYYY
 ): Promise<DepositCreateType[] | undefined> => {
-  const query = `SELECT rowid, sdate, price FROM asset WHERE BETWEEN CONCAT(${year}, '0101') AND CONCAT(${year}, '1231') ORDER BY sdate ASC;`;
+  const query = `SELECT rowid, sdate, stype, price FROM asset WHERE BETWEEN CONCAT(${year}, '0101') AND CONCAT(${year}, '1231') ORDER BY sdate ASC;`;
 
   return await fastify.db.query(query);
 };
@@ -112,7 +112,7 @@ export const selectDepositByMonth = async (
   fastify: FastifyInstance,
   month: string // YYYYMM
 ): Promise<DepositCreateType[] | undefined> => {
-  const query = `SELECT rowid, sdate, price FROM asset WHERE BETWEEN CONCAT(${month}, '01') AND CONCAT(${month}, '31') ORDER BY sdate ASC;
+  const query = `SELECT rowid, sdate, stype, price FROM asset WHERE BETWEEN CONCAT(${month}, '01') AND CONCAT(${month}, '31') ORDER BY sdate ASC;
 `;
 
   return await fastify.db.query(query);
@@ -130,7 +130,7 @@ export const createDepositData = async (
     if (lastDeposit?.length > 0) {
       const params = {
         ...data,
-        sdate: dayjs().format("YYYYMMDDHHmmss"),
+        sdate: dayjs().tz("Asia/Seoul").format("YYYYMMDDHHmmss"),
         price: Number(lastDeposit[0]?.price) + Number(data?.price),
       };
       value = await fastify.db.query(`INSERT INTO deposit ${makeInsertSet(params as unknown as FieldValues)}`);
@@ -149,7 +149,7 @@ const depositRoute = (fastify: FastifyInstance) => {
   // 예수금 목록 조회
   fastify.get(URL.DEPOSIT.ROOT, async (_req, reply) => {
     try {
-      const value = await fastify.db.query(`SELECT rowid, sdate, price FROM deposit;`);
+      const value = await fastify.db.query(`SELECT rowid, sdate, stype, price FROM deposit;`);
 
       return {
         value: value,

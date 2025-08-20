@@ -150,6 +150,7 @@ export interface DepositCreateType {
   stype?: string;
   sdate?: string;
   price: number;
+  tax?: number;
 }
 
 export interface DepositSearchParams {

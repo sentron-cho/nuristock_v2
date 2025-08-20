@@ -238,6 +238,11 @@ const KOR = {
 	BASE_10: '평가율(W1.0)',
 
 	HEND_WRITING: '수기',
+	
+	PRICE_BEFORE_TAX: '금액(세전)',
+	PRICE_AFTER_TAX: '금액(세후)',
+	PRICE_TAX: '세금',
+
 
 	MAINBOARD: {
 		KEEP: '보유 상위',
