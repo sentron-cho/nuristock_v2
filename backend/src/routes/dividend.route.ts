@@ -6,6 +6,7 @@ import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
 import { DepositCreateType, DividendCreateType, FieldValues } from "../types/data.type.js";
 import { createDepositData } from "./deposit.route.js";
 import { DEPOSIT_TYPE, ERROR } from "../types/enum.js";
+import dayjs from "dayjs";
 
 const dividendRoute = (fastify: FastifyInstance) => {
   // 배당 목록 조회
@@ -28,7 +29,7 @@ const dividendRoute = (fastify: FastifyInstance) => {
   // 배당 항목 추가
   fastify.post(URL.DIVIDEND.ROOT, async (req, reply) => {
     try {
-      const { code, price, cost, count } = req.body as DividendCreateType;
+      const { code, price, cost, count, sdate } = req.body as DividendCreateType;
       await fastify.db.query(`INSERT INTO divid ${makeInsertSet(req.body as FieldValues)}`);
 
       // 매도금 예수금에 반영(가감)
@@ -36,6 +37,7 @@ const dividendRoute = (fastify: FastifyInstance) => {
         stype: DEPOSIT_TYPE.DIVIDEND,
         price: Number(price), // 세후
         tax: (Number(cost) * Number(count)) - Number(price), // 세금
+        sdate: `${dayjs(sdate).format('YYYYMMDD')}${dayjs().tz("Asia/Seoul").format('HHmmss')}`,
       } as DepositCreateType);
 
       reply.status(200).send({ value: code });

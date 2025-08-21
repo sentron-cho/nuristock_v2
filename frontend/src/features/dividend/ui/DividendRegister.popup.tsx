@@ -131,7 +131,7 @@ export const DividendRegisterPopup = ({
 					id='price'
 					label={ST.DIVIDEND_TOTAL}
 					formMethod={forms}
-					maxLength={8}
+					maxLength={12}
 					focused
 					onChange={onChangeTax}
 				/>

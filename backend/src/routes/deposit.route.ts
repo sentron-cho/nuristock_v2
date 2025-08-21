@@ -55,7 +55,7 @@ export const selectDepositByPerYear = async (fastify: FastifyInstance): Promise<
 
 export const selectDepositByPerMonth = async (fastify: FastifyInstance): Promise<DepositCreateType[] | undefined> => {
   // sdate가 YYYYMMDD(INT/VARCHAR)라 가정, DATE 변환 컬럼을 서브쿼리에서 생성
-  
+
   const query = `
             SELECT
               a.rowid,
@@ -129,8 +129,8 @@ export const createDepositData = async (
     const lastDeposit = await fastify.db.query("SELECT * FROM deposit ORDER BY rowid desc limit 1;");
     if (lastDeposit?.length > 0) {
       const params = {
-        ...data,
         sdate: dayjs().tz("Asia/Seoul").format("YYYYMMDDHHmmss"),
+        ...data,
         price: Number(lastDeposit[0]?.price) + Number(data?.price),
       };
       value = await fastify.db.query(`INSERT INTO deposit ${makeInsertSet(params as unknown as FieldValues)}`);

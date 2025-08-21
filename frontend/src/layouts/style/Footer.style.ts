@@ -16,10 +16,14 @@ export const StyledFooter = styled('div', {
 		'.nav': {
 			'.scroll': {
 				overflowX: 'scroll',
+
+				'&::-webkit-scrollbar': {
+					display: 'none',
+				},
 			},
 
 			'.link': {
-				minWidth: 52,
+				minWidth: 50,
 
 				'&.active': {
 					color: '$warning',
@@ -37,12 +41,12 @@ export const StyledFooter = styled('div', {
 			},
 
 			'.home': {
-				borderRight: '1px solid $gray700'
+				borderRight: '1px solid $gray700',
 			},
 
 			'.more': {
-				borderLeft: '1px solid $gray700'
-			}
+				borderLeft: '1px solid $gray700',
+			},
 		},
 	},
 });
