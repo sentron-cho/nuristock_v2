@@ -74,7 +74,6 @@ export const useMainboardHook = (initialData?: MainboardResponse) => {
 		const more = cloneDeep(isMoreList);
 		more?.[index] !== undefined && (more[index] = value);
 
-		console.log({ more });
 		setMoreList(more);
 		setLocalStorage(StorageDataKey.MAINBOARD_CONFIG_MORE, more);
 	};

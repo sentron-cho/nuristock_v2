@@ -14,7 +14,13 @@ export const StyledFooter = styled('div', {
 		paddingTop: 6,
 
 		'.nav': {
+			'.scroll': {
+				overflowX: 'scroll',
+			},
+
 			'.link': {
+				minWidth: 52,
+
 				'&.active': {
 					color: '$warning',
 				},
@@ -29,6 +35,14 @@ export const StyledFooter = styled('div', {
 					margin: 0,
 				},
 			},
+
+			'.home': {
+				borderRight: '1px solid $gray700'
+			},
+
+			'.more': {
+				borderLeft: '1px solid $gray700'
+			}
 		},
 	},
 });

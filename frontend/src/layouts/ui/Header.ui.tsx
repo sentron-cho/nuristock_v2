@@ -98,7 +98,7 @@ const Header: React.FC = () => {
 		}
 	};
 
-	const menu = useMemo(() => Menus(true, false), []);
+	const menu = useMemo(() => Menus(), []);
 
 	return (
 		<StyledHeader>

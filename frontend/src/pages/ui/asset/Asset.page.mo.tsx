@@ -87,7 +87,6 @@ export const AssetPageMo = ({ data }: { data?: AssetResponse }) => {
 									<XAxis dataKey='sdate' tickFormatter={(v) => `${dayjs(v).format('MM/DD')}`} />
 									<YAxis
 										tickFormatter={(v) => {
-											console.log({ v });
 											return `${Math.round(v / 10_000) <= 0 ? 0 : Math.round(v / 10_000) + ST.MAN}`;
 										}}
 									/>

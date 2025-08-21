@@ -7,6 +7,9 @@ import { FieldValues } from 'react-hook-form';
 import clsx from 'clsx';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { keyframes } from '@stitches/react';
+import { ST } from '@shared/config/kor.lang';
+import { URL } from '@shared/config/url.enum';
+import { IconHome } from '@entites/Icons';
 
 // 전체 화면 패널이 살짝 아래에서 올라오며(overshoot) 자연스럽게 멈추는 느낌
 const panelSlideIn = keyframes({
@@ -111,7 +114,7 @@ const MenuPage = ({ className, onClose }: { className?: string; onClose?: () => 
 	}, []);
 
 	const menus = useMemo(() => {
-		return Menus(true);
+		return [{ value: URL.MAIN, label: ST.MENU.MAINBOARD, icon: <IconHome fontSize='small' /> }, ...Menus()];
 	}, [pathname]);
 
 	const onClick = (item: FieldValues) => {

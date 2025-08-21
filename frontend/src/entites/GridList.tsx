@@ -66,8 +66,6 @@ const StyledGridList = styled(Flex, {
 
 export const GridList = ({ header, data, headHeight, rowHeight, onClick }: GridListProps) => {
 	const onClickItem = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, item: FieldValues) => {
-		console.log({ item });
-
 		if (onClick) {
 			e.stopPropagation();
 			onClick(EID.SELECT, item);

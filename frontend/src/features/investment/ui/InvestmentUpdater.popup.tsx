@@ -18,7 +18,6 @@ const StyledForm = styled(Flex, {
 });
 
 export const InvestmentUpdaterPopup = ({ item, onClose }: { item?: DataType; onClose: (isOk: boolean) => void }) => {
-	console.log({ item });
 	const forms = useForm({
 		defaultValues: {
 			count: withCommas(item?.count),
