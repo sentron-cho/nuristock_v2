@@ -26,9 +26,9 @@ export const DepositRegisterPopup = ({ item, onClose }: { item?: DataType; onClo
 			? {
 					// stype: '', // manual
 					sdate: dayjs(item?.sdate).toDate(),
-					price: withCommas(item?.price), // 세전
+					price: withCommas(item?.tax ? item?.price + item?.tax : item?.price), // 세전
 					priceAfterTax: withCommas(item?.price), // 세후
-					priceTax: 0, // 세금
+					priceTax: withCommas(item?.tax), // 세금
 				}
 			: {
 					sdate: new Date(),
@@ -88,7 +88,7 @@ export const DepositRegisterPopup = ({ item, onClose }: { item?: DataType; onClo
 		const after = forms?.getValues('priceAfterTax') as string; // 세후 금액
 		if (before && after) {
 			const value = Number(toNumeric(before)) - Number(toNumeric(after));
-			forms?.setValue('priceTax', withCommas(value));
+			forms?.setValue('priceTax', withCommas(value) || 0);
 		}
 	};
 

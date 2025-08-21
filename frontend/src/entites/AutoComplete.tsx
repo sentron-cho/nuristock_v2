@@ -72,12 +72,6 @@ const AutoComplete = <SelectOptionType,>({
 	size = 'medium',
 	...props
 }: BaseAutoCompleteProps<SelectOptionType>) => {
-	// const [innerError, setInnerError] = useState<string>();
-
-	// const isError = useMemo(() => error || !!innerError, [error, innerError]);
-
-	console.log({options: props?.options})
-
 	return (
 		<StyledAutoCompleteForm
 			className={clsx('autocomplete-form', size, { error: error, readonly: readOnly, disabled })}

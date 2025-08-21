@@ -28,13 +28,14 @@ const dividendRoute = (fastify: FastifyInstance) => {
   // 배당 항목 추가
   fastify.post(URL.DIVIDEND.ROOT, async (req, reply) => {
     try {
-      const { code, price } = req.body as DividendCreateType;
+      const { code, price, cost, count } = req.body as DividendCreateType;
       await fastify.db.query(`INSERT INTO divid ${makeInsertSet(req.body as FieldValues)}`);
 
       // 매도금 예수금에 반영(가감)
       await createDepositData(fastify, {
         stype: DEPOSIT_TYPE.DIVIDEND,
-        price: Number(price),
+        price: Number(price), // 세후
+        tax: (Number(cost) * Number(count)) - Number(price), // 세금
       } as DepositCreateType);
 
       reply.status(200).send({ value: code });

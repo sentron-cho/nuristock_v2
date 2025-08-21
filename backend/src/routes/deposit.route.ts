@@ -149,7 +149,7 @@ const depositRoute = (fastify: FastifyInstance) => {
   // 예수금 목록 조회
   fastify.get(URL.DEPOSIT.ROOT, async (_req, reply) => {
     try {
-      const value = await fastify.db.query(`SELECT rowid, sdate, stype, price FROM deposit;`);
+      const value = await fastify.db.query(`SELECT * FROM deposit;`);
 
       return {
         value: value,

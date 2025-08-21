@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 export const makeUpdateSet = (values?: FieldValues) => {
   if (!values) return "";
 
-  const params = { utime: dayjs().format("YYYY-MM-DD HH:mm:ss"), ...values } as FieldValues;
+  const params = { utime: dayjs().tz("Asia/Seoul").format("YYYY-MM-DD HH:mm:ss"), ...values } as FieldValues;
 
   return Object.keys(params)
     .map((key) => `${key} = '${params[key]}'`)
@@ -24,7 +24,7 @@ export const makeInsertSet = (values?: FieldValues) => {
     .map((key) => `'${values[key]}'`)
     .join(", ");
 
-  return ` (${columns}) VALUES (${params})`;
+  return ` (${columns}, utime) VALUES (${params}, '${dayjs().tz("Asia/Seoul").format("YYYY-MM-DD HH:mm:ss")}')`;
 };
 
 export const getNaverPrice = async (code: string) => {

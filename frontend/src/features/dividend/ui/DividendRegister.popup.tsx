@@ -1,6 +1,6 @@
 import { NumberInputForm } from '@entites/TextInputForm';
 import { Dialog } from '@entites/Dialog';
-import { useForm } from 'react-hook-form';
+import { FieldValues, useForm } from 'react-hook-form';
 import { DividendItemType as DataType, DividendStockType as StockType } from '../api/dividend.dto';
 import { ST } from '@shared/config/kor.lang';
 import Flex from '@entites/Flex';
@@ -9,7 +9,7 @@ import { z } from 'zod';
 import { styled } from '@styles/stitches.config';
 import { DatePickerForm } from '@entites/DatePickerForm';
 import dayjs from 'dayjs';
-import { toNumber, withCommas } from '@shared/libs/utils.lib';
+import { toNumber, toNumeric, withCommas } from '@shared/libs/utils.lib';
 import { Schema } from '@shared/hooks/useCommon.hook';
 import { useCreateDividend as useCreate, useUpdateDividend as useUpdate } from '../api/dividend.api';
 import { DATE_DB_FORMAT } from '@shared/config/common.constant';
@@ -40,12 +40,14 @@ export const DividendRegisterPopup = ({
 					cost: withCommas(item?.cost),
 					count: withCommas(item?.count),
 					price: withCommas(item?.price),
+					tax: withCommas(Number(item?.cost) * Number(item?.count) - Number(item?.price)),
 				}
 			: {
 					date: new Date(),
 					cost: '',
 					count: '',
 					price: '',
+					tax: '',
 				},
 		resolver: zodResolver(
 			z.object({
@@ -54,6 +56,7 @@ export const DividendRegisterPopup = ({
 				cost: Schema.DefaultNumber,
 				count: Schema.DefaultNumber,
 				price: Schema.DefaultNumber,
+				tax: Schema.DefaultNumber,
 			})
 		),
 		shouldFocusError: true,
@@ -90,6 +93,7 @@ export const DividendRegisterPopup = ({
 			onClose?.(false);
 		}
 	};
+	// 23010
 
 	const onChange = (option: SelectOptionType | null) => {
 		if (option) {
@@ -101,14 +105,45 @@ export const DividendRegisterPopup = ({
 		}
 	};
 
+	const onChangeTax = () => {
+		const { price, cost, count } = forms?.getValues() as FieldValues as DataType;
+
+		if (price && cost && count) {
+			forms?.setValue('tax', withCommas(toNumeric(cost) * toNumeric(count) - toNumeric(price)));
+		}
+	};
+
 	return (
 		<Dialog title={`${ST.DIVIDEND}(${isEditMode ? ST.UPDATE : ST.ADD})`} onClose={onClickClose}>
 			<StyledForm direction={'column'} gap={20}>
 				<DatePickerForm id='date' label={ST.DATE} placeholder={ST.IN_DATE} formMethod={forms} align='right' />
 				<AutoCompleteForm id='code' formMethod={forms} options={stockOptions || []} onChange={onChange} />
 				<NumberInputForm id='count' label={ST.STOCK_COUNT} formMethod={forms} maxLength={8} focused />
-				<NumberInputForm id='cost' label={ST.STOCK_PER_COST} formMethod={forms} maxLength={12} autoFocus />
-				<NumberInputForm id='price' label={ST.DIVIDEND_TOTAL} formMethod={forms} maxLength={8} focused />
+				<NumberInputForm
+					id='cost'
+					label={ST.STOCK_PER_COST}
+					formMethod={forms}
+					maxLength={12}
+					autoFocus
+					onChange={onChangeTax}
+				/>
+				<NumberInputForm
+					id='price'
+					label={ST.DIVIDEND_TOTAL}
+					formMethod={forms}
+					maxLength={8}
+					focused
+					onChange={onChangeTax}
+				/>
+				<NumberInputForm
+					id='tax'
+					label={ST.PRICE_TAX}
+					formMethod={forms}
+					maxLength={8}
+					focused
+					readOnly
+					onChange={onChangeTax}
+				/>
 			</StyledForm>
 		</Dialog>
 	);

@@ -17,7 +17,7 @@ export const globalStyles = globalCss({
 	},
 
 	'#root .notistack-SnackbarContainer': {
-		zIndex: '$toast'
+		zIndex: '$toast',
 	},
 
 	'.contents-wrap, .MuiTypography-root': {
@@ -37,6 +37,10 @@ export const globalStyles = globalCss({
 		'.MuiTooltip-arrow': {
 			color: '$black',
 		},
+	},
+
+	'.MuiDialog-root.MuiModal-root': {
+		zIndex: '$dialog',
 	},
 
 	'.autocomplete-popper': {
