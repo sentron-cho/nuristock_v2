@@ -25,15 +25,13 @@ const StyledPage = styled(PageContainer, {
 export const MainboardPageMo = ({
 	data,
 	onClick,
-	onClickTitle,
 	onClickChart,
 }: {
 	data?: MainboardResponse;
 	onClick?: (eid?: string, item?: MainboardItemType) => void;
-	onClickTitle?: (eid?: string) => void;
 	onClickChart?: (eid?: string, item?: ChartDataType) => void;
 }) => {
-	const { totalPrice, keeps, summaryData, isMoreList, onClickMore } = useMainboardHook(data);
+	const { totalPrice, keeps, summaryData, isMoreList, onClickMore, sortList, onClickSort } = useMainboardHook(data);
 
 	const parsed = useMemo(() => {
 		const list = keeps?.map((a) => ({ name: a?.name, value: a?.kprice, key: a?.code }));
@@ -81,63 +79,32 @@ export const MainboardPageMo = ({
 						{/* 평가 손익 상위 */}
 						<ListTitle
 							stickyTop={stickTop}
-							title={ST.MAINBOARD.SONIC_TOP}
+							title={sortList?.[0] ==='asc' ? ST.MAINBOARD.SONIC_TOP :  ST.MAINBOARD.SONIC_BOTTOM}
 							isMore={isMoreList?.[0]}
-							onClickTitle={() => onClickTitle?.('sonicTop')}
+							onClickTitle={() => onClickSort?.(0, sortList?.[0] === 'asc' ? 'desc' : 'asc')}
 							onClickMore={() => onClickMore?.(0, !isMoreList?.[0])}
 						/>
-
-						<MainboardCard viewType='sonicTop' isMore={isMoreList?.[0]} data={data} onClick={onClick} />
-
-						{/* 평가 손익 하위 */}
-						<ListTitle
-							stickyTop={stickTop}
-							title={ST.MAINBOARD.SONIC_BOTTOM}
-							isMore={isMoreList?.[1]}
-							onClickTitle={() => onClickTitle?.('sonicBottom')}
-							onClickMore={() => onClickMore?.(1, !isMoreList?.[1])}
-						/>
-						<MainboardCard viewType='sonicBottom' isMore={isMoreList?.[1]} data={data} onClick={onClick} />
+						<MainboardCard viewType='sonic' isMore={isMoreList?.[0]} data={data} onClick={onClick} sortType={sortList?.[0]} />
 
 						{/* 최근 매수 상위 */}
 						<ListTitle
 							stickyTop={stickTop}
-							title={ST.MAINBOARD.BUY}
-							isMore={isMoreList?.[2]}
-							onClickTitle={() => onClickTitle?.('latestBuy')}
-							onClickMore={() => onClickMore?.(2, !isMoreList?.[2])}
+							title={sortList?.[1] ==='asc' ? ST.MAINBOARD.BUY :  ST.MAINBOARD.SELL}
+							isMore={isMoreList?.[1]}
+							onClickTitle={() => onClickSort?.(1, sortList?.[1] === 'asc' ? 'desc' : 'asc')}
+							onClickMore={() => onClickMore?.(1, !isMoreList?.[1])}
 						/>
-						<MainboardCard viewType='latestBuy' isMore={isMoreList?.[2]} data={data} onClick={onClick} />
-
-						{/* 최근 매도 상위 */}
-						<ListTitle
-							stickyTop={stickTop}
-							title={ST.MAINBOARD.SELL}
-							isMore={isMoreList?.[3]}
-							onClickTitle={() => onClickTitle?.('latestSell')}
-							onClickMore={() => onClickMore?.(3, !isMoreList?.[3])}
-						/>
-						<MainboardCard viewType='latestSell' isMore={isMoreList?.[3]} data={data} onClick={onClick} />
+						<MainboardCard viewType='latest' isMore={isMoreList?.[1]} data={data} onClick={onClick} sortType={sortList?.[1]} />
 
 						{/* 매수 손익 상위 */}
 						<ListTitle
 							stickyTop={stickTop}
-							title={ST.MAINBOARD.SONIC_BUY_TOP}
-							isMore={isMoreList?.[4]}
-							onClickTitle={() => onClickTitle?.('sonicBuyTop')}
-							onClickMore={() => onClickMore?.(4, !isMoreList?.[4])}
+							title={sortList?.[2] ==='asc' ? ST.MAINBOARD.SONIC_BUY_TOP :  ST.MAINBOARD.SONIC_BUY_BOTTOM}
+							isMore={isMoreList?.[2]}
+							onClickTitle={() => onClickSort?.(2, sortList?.[2] === 'asc' ? 'desc' : 'asc')}
+							onClickMore={() => onClickMore?.(2, !isMoreList?.[2])}
 						/>
-						<MainboardCard viewType='sonicBuyTop' isMore={isMoreList?.[4]} data={data} onClick={onClick} />
-
-						{/* 매수 손익 하위 */}
-						<ListTitle
-							stickyTop={stickTop}
-							title={ST.MAINBOARD.SONIC_BUY_BOTTOM}
-							isMore={isMoreList?.[5]}
-							onClickTitle={() => onClickTitle?.('sonicBuyBottom')}
-							onClickMore={() => onClickMore?.(5, !isMoreList?.[5])}
-						/>
-						<MainboardCard viewType='sonicBuyBottom' isMore={isMoreList?.[5]} data={data} onClick={onClick} />
+						<MainboardCard viewType='sonicBuy' isMore={isMoreList?.[2]} data={data} onClick={onClick} sortType={sortList?.[2]} />
 					</Flex>
 				</Flex>
 			</Flex>

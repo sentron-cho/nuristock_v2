@@ -20,16 +20,6 @@ const MainboardPage = () => {
 		}
 	};
 
-	const onClickTitle = (eid?: string) => {
-		switch (eid) {
-			case 'latestSell':
-				navigate(`${URL.DASHBOARD}/trade`);
-				break;
-			default:
-				navigate(`${URL.DASHBOARD}/keep`);
-				break;
-		}
-	};
 
 	const onClickChart = (eid?: string, value?: ChartDataType) => {
 		if (eid === 'legend') {
@@ -42,10 +32,10 @@ const MainboardPage = () => {
 	return (
 		<>
 			{isMobile && (
-				<MainboardPageMo data={data} onClick={onClick} onClickTitle={onClickTitle} onClickChart={onClickChart} />
+				<MainboardPageMo data={data} onClick={onClick} onClickChart={onClickChart} />
 			)}
 			{!isMobile && (
-				<MainboardPageMo data={data} onClick={onClick} onClickTitle={onClickTitle} onClickChart={onClickChart} />
+				<MainboardPageMo data={data} onClick={onClick} onClickChart={onClickChart} />
 			)}
 		</>
 	);

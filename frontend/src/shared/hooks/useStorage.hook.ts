@@ -4,6 +4,7 @@ export const StorageDataKey = {
 	DASHBOARD_CONFIG_MORE: 'dashboard-config-more',
 	DASHBOARD_CONFIG_MORE_ALL: 'dashboard-config-more-all',
 	MAINBOARD_CONFIG_MORE: 'mainboard-config-more',
+	MAINBOARD_CONFIG_SORT: 'mainboard-config-sort',
 	BUCKET_PARAMS: 'bucket-params',
 }
 

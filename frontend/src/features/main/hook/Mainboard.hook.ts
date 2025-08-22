@@ -11,9 +11,14 @@ export const useMainboardHook = (initialData?: MainboardResponse) => {
 	const { data: config, getConfig, createConfig, isPending } = useAppConfigHook({ group: APP_GROUP.DASHBOARD });
 	const { setLocalStorage, getLocalStorage } = useStorageHook();
 
+	
 	const initConfig = getLocalStorage(StorageDataKey.MAINBOARD_CONFIG_MORE) as boolean[];
-	const DEFAULT_MORE = [false, false, false, false, false, false];
+	const DEFAULT_MORE = [false, false, false];
 	const [isMoreList, setMoreList] = useState<boolean[]>(initConfig || DEFAULT_MORE);
+
+	const initConfigSort = getLocalStorage(StorageDataKey.MAINBOARD_CONFIG_SORT) as ('asc' | 'desc')[];
+	const DEFAULT_SORT = ['asc', 'asc', 'asc'];
+	const [sortList, setSortList] = useState<('asc' | 'desc')[]>(initConfigSort || DEFAULT_SORT);
 
 	const data = useMemo(() => initialData, [initialData]);
 
@@ -77,6 +82,14 @@ export const useMainboardHook = (initialData?: MainboardResponse) => {
 		setMoreList(more);
 		setLocalStorage(StorageDataKey.MAINBOARD_CONFIG_MORE, more);
 	};
+	
+	const onClickSort = (index: number = 0, value: 'asc' | 'desc' = 'asc') => {
+		const sort = cloneDeep(sortList);
+		sort?.[index] !== undefined && (sort[index] = value);
+
+		setSortList(sort);
+		setLocalStorage(StorageDataKey.MAINBOARD_CONFIG_SORT, sort);
+	};
 
 	return {
 		loaded: !isPending,
@@ -93,11 +106,13 @@ export const useMainboardHook = (initialData?: MainboardResponse) => {
 		totalPrice,
 		isMoreList,
 		onClickMore,
+		sortList,
+		onClickSort,
 	};
 };
 
-export const useMainboardCardHook = (initialData?: MainboardResponse, isMore: boolean = false) => {
-	const { data: config, getConfig, createConfig, isPending } = useAppConfigHook({ group: APP_GROUP.DASHBOARD });
+export const useMainboardCardHook = (initialData?: MainboardResponse, isMore: boolean = false, sortType: 'asc' | 'desc' = 'asc') => {
+	const { data: config, getConfig, createConfig, isPending } = useAppConfigHook({ group: APP_GROUP.DASHBOARD,  });
 
 	const data = useMemo(() => initialData, [initialData]);
 
@@ -206,6 +221,20 @@ export const useMainboardCardHook = (initialData?: MainboardResponse, isMore: bo
 
 	const max = isMore ? 10 : 3;
 
+	const sonic = useMemo(() => {
+		return sortType === 'asc' ? reverse(sortBy(keeps, ['siseSonic'])).slice(0, max) : sortBy(keeps, ['siseSonic']).slice(0, max);
+	}, [sortType, max, keeps]);
+
+	const latest = useMemo(() => {
+		if (sortType === 'asc') return reverse(sortBy(latestBuy, ['sdate'])).slice(0, max);
+		else return reverse(sortBy(latestSell, ['edate'])).slice(0, max)
+	}, [latestBuy, latestSell, sortType, max]);
+
+	const sonicBuyList = useMemo(() => {
+		if (sortType === 'asc') return reverse(sortBy(sonicBuy, ['sonicRate'])).slice(0, max)
+		else return sortBy(sonicBuy, ['sonicRate']).slice(0, max);
+	}, [sonicBuy, max, sortType]);
+
 	return {
 		loaded: !isPending,
 		config,
@@ -214,15 +243,14 @@ export const useMainboardCardHook = (initialData?: MainboardResponse, isMore: bo
 		list: data?.value,
 		trades: data?.trades,
 		keeps,
-		sonicTop: reverse(sortBy(keeps, ['siseSonic'])).slice(0, max),
-		sonicBottom: sortBy(keeps, ['siseSonic']).slice(0, max),
-		latestBuy: reverse(sortBy(latestBuy, ['sdate'])).slice(0, max),
-		latestSell: reverse(sortBy(latestSell, ['edate'])).slice(0, max),
-		sonicBuyTop: reverse(sortBy(sonicBuy, ['sonicRate'])).slice(0, max),
-		sonicBuyBottom: sortBy(sonicBuy, ['sonicRate']).slice(0, max),
+		sonic,
+		latest,
+		sonicBuy: sonicBuyList,
 		asset: data?.asset,
 		deposit: data?.deposit,
 		buys: data?.buys,
 		totalPrice,
+		latestBuy: reverse(sortBy(latestBuy, ['sdate'])),
+		sonicBuyTop: reverse(sortBy(sonicBuy, ['sonicRate'])),
 	};
 };

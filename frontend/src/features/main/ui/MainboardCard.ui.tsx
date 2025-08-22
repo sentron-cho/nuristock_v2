@@ -16,23 +16,29 @@ const StyledFlex = styled(Flex, {
 });
 
 export const MainboardCard = ({
-	viewType = 'sonicTop',
+	viewType = 'sonic',
+	sortType = 'asc',
 	isMore = false,
 	data,
 	onClick,
 }: {
-	viewType?: 'sonicBuyTop' | 'sonicBuyBottom' | 'sonicTop' | 'sonicBottom' | 'latestSell' | 'latestBuy';
+	viewType?: 'sonicBuy' | 'sonic' | 'latest';
+	sortType?: 'desc' | 'asc';
 	isMore?: boolean;
 	data?: MainboardResponse;
 	onClick?: (eid?: string, item?: DataType) => void;
 }) => {
-	const { sonicTop, sonicBottom, latestBuy, latestSell, sonicBuyTop, sonicBuyBottom } = useMainboardCardHook(data,isMore);
+	const { sonic, latest, sonicBuy } = useMainboardCardHook(
+		data,
+		isMore,
+		sortType,
+	);
 
 	return (
 		<StyledFlex className={clsx('layout')} gap={8} direction={'column'}>
 			{/* 평가손익 상위 */}
-			{viewType === 'sonicTop' &&
-				sonicTop?.map((item, index) => {
+			{viewType === 'sonic' &&
+				sonic?.map((item, index) => {
 					return (
 						<RowField
 							key={`st-${index}`}
@@ -48,7 +54,7 @@ export const MainboardCard = ({
 				})}
 
 			{/* 평가손실 상위 */}
-			{viewType === 'sonicBottom' &&
+			{/* {viewType === 'sonicBottom' &&
 				sonicBottom?.map((item, index) => {
 					return (
 						<RowField
@@ -63,11 +69,11 @@ export const MainboardCard = ({
 							suffix={{ text: ST.WON, value: ST.WON }}
 						/>
 					);
-				})}
+				})} */}
 
 			{/* 최근매수 상위 */}
-			{viewType === 'latestBuy' &&
-				latestBuy?.map((item, index) => {
+			{viewType === 'latest' &&
+				latest?.map((item, index) => {
 					return (
 						<RowField
 							key={`lb-${index}`}
@@ -83,7 +89,7 @@ export const MainboardCard = ({
 				})}
 
 			{/* 최근매도 상위 */}
-			{viewType === 'latestSell' &&
+			{/* {viewType === 'latestSell' &&
 				latestSell?.map((item, index) => {
 					return (
 						<RowField
@@ -97,11 +103,11 @@ export const MainboardCard = ({
 							suffix={{ value: ST.WON }}
 						/>
 					);
-				})}
+				})} */}
 
 			{/* 매수 손익율 상위 */}
-			{viewType === 'sonicBuyTop' &&
-				sonicBuyTop?.map((item, index) => {
+			{viewType === 'sonicBuy' &&
+				sonicBuy?.map((item, index) => {
 					return (
 						<RowField
 							key={`ls-${index}`}
@@ -118,7 +124,7 @@ export const MainboardCard = ({
 				})}
 
 			{/* 매수 손실율 상위 */}
-			{viewType === 'sonicBuyBottom' &&
+			{/* {viewType === 'sonicBuyBottom' &&
 				sonicBuyBottom?.map((item, index) => {
 					return (
 						<RowField
@@ -133,7 +139,7 @@ export const MainboardCard = ({
 							suffix={{ value: ST.WON }}
 						/>
 					);
-				})}
+				})} */}
 		</StyledFlex>
 	);
 };
