@@ -23,8 +23,13 @@ export const makeInsertSet = (values?: FieldValues) => {
   const params = Object.keys(values)
     .map((key) => `'${values[key]}'`)
     .join(", ");
+  
+  if (values?.utime) {
+    return ` (${columns}) VALUES (${params})`;
+  } else {
+    return ` (${columns}, utime) VALUES (${params}, '${dayjs().tz("Asia/Seoul").format("YYYY-MM-DD HH:mm:ss")}')`;
+  }
 
-  return ` (${columns}, utime) VALUES (${params}, '${dayjs().tz("Asia/Seoul").format("YYYY-MM-DD HH:mm:ss")}')`;
 };
 
 export const getNaverPrice = async (code: string) => {

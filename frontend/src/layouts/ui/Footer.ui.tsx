@@ -44,7 +44,7 @@ const Footer: React.FC = () => {
 							gap={4}
 						>
 							<IconHome fontSize='small' />
-							<p className='text'>{ST.MENU.DASHBOARD}</p>
+							<p className='text'>{ST.MENU.MAINBOARD}</p>
 						</Flex>
 
 						<Flex className='scroll' gap={10} >

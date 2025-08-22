@@ -8,6 +8,9 @@ import { ContentsHeader } from '@layouts/ui/ContentsHeader.ui';
 import clsx from 'clsx';
 import Flex from '@entites/Flex';
 import { toSemiCost } from '@shared/libs/utils.lib';
+import { IconButtonToggle } from '@entites/IconButton';
+import { IconZoomIn, IconZoomOut } from '@entites/Icons';
+import { SubTitle } from '@entites/Title';
 
 type MainboardHeaderProps = {
 	data: ChartDataType[];
@@ -16,20 +19,27 @@ type MainboardHeaderProps = {
 	value?: string;
 	valueFormatter?: (v: number) => string;
 	onClick?: (eid: string, item?: ColoredSlice) => void;
+	isShow?: boolean;
+	onClickShow?: (isShow?: boolean) => void;
 };
 
 const DEFAULT_COLORS = Object.values(CHART_COLORS);
 
-const StyledFlex = styled(Flex, {
-	'.mainboard-header': {},
+const StyledHeader = styled(ContentsHeader, {
+	'&.mainboard-header': {
+		'.box': {
+			border: '1px solid $primaryhover',
+		},
+
+		'.more-all': {
+			position: 'absolute',
+			left: 14,
+			zIndex: 1,
+		},
+	},
 });
 
-export const MainboardHeader: FC<MainboardHeaderProps> = ({
-	data,
-	title = ST.ASSET,
-	value,
-	onClick,
-}) => {
+export const MainboardHeader: FC<MainboardHeaderProps> = ({ isShow, onClickShow, data, title = ST.ASSET, value, onClick }) => {
 	const total = useMemo(() => data.reduce((acc, cur) => acc + (cur.value || 0), 0), [data]);
 
 	const withColor: ColoredSlice[] = useMemo(
@@ -43,21 +53,37 @@ export const MainboardHeader: FC<MainboardHeaderProps> = ({
 	);
 
 	return (
-		<ContentsHeader className={clsx('mainboard-header')} stickyTop={0} height={240}>
-			<StyledFlex height={'100%'}>
-				{/* 왼쪽: 도넛 */}
-				<ChartDonut
-					data={withColor}
-					width={'50%'}
-					title={title}
-					value={value}
-					onClickTitle={() => onClick?.('title')}
-					onClickSlice={(value) => onClick?.('slice', value)}
-				/>
+		<StyledHeader className={clsx('mainboard-header')} stickyTop={0} height={'fit-content'}>
+			<IconButtonToggle
+				className='more-all'
+				trueIcon={<IconZoomIn />}
+				falseIcon={<IconZoomOut />}
+				value={isShow}
+				onClick={onClickShow}
+			/>
 
-				{/* 오른쪽: 범례 */}
-				<ChartLegend data={withColor} valueFormatter={(v) => toSemiCost(v)} onClick={(v) => onClick?.('legend', v)} />
-			</StyledFlex>
-		</ContentsHeader>
+			{!isShow && (
+				<Flex className='title-bar' justify={'center'}>
+					<SubTitle title={ST.MAINBOARD.SUMMARY} height={30} />
+				</Flex>
+			)}
+
+			{isShow && (
+				<Flex height={240}>
+					{/* 왼쪽: 도넛 */}
+					<ChartDonut
+						data={withColor}
+						width={'50%'}
+						title={title}
+						value={value}
+						onClickTitle={() => onClick?.('title')}
+						onClickSlice={(value) => onClick?.('slice', value)}
+					/>
+
+					{/* 오른쪽: 범례 */}
+					<ChartLegend data={withColor} valueFormatter={(v) => toSemiCost(v)} onClick={(v) => onClick?.('legend', v)} />
+				</Flex>
+			)}
+		</StyledHeader>
 	);
 };

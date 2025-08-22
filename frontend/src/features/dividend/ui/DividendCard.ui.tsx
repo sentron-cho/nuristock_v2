@@ -11,6 +11,8 @@ import { toCost } from '@shared/libs/utils.lib';
 import { RowField } from '@entites/LineRowField';
 import { IconDelete } from '@entites/Icons';
 import { IconButton } from '@entites/IconButton';
+import dayjs from 'dayjs';
+import { DATE_FORMAT } from '@shared/config/common.constant';
 
 export const StyledCard = styled(Card, {
 	'&.card': {
@@ -32,27 +34,30 @@ export const StyledCard = styled(Card, {
 });
 
 export const DividendList = ({
-	years,
+	viewType = 'year',
+	head,
 	list,
 	onClick,
 	onClickItem,
 }: {
-	years?: DataType[];
+	viewType?: 'year' | 'code';
+	head?: DataType[];
 	list?: Record<string, DataType[]>;
 	onClick?: (eid?: string, item?: DataType) => void;
 	onClickItem?: (eid?: string, item?: DataType) => void;
 }) => {
-	if (!years?.length) return <NoData />;
+	if (!head?.length) return <NoData />;
 
 	return (
 		<CardListWrap>
-			{years?.map((item) => {
+			{head?.map((item) => {
 				const { title } = item;
 				const data = list?.[title as string];
 				return (
 					<DividendCard
 						key={item.rowid}
-						year={item}
+						viewType={viewType}
+						head={item}
 						data={data}
 						onClick={(eid, value) => onClick?.(eid, value)}
 						onClickItem={onClickItem}
@@ -64,12 +69,14 @@ export const DividendList = ({
 };
 
 export const DividendCard = ({
-	year,
+	viewType = 'year',
+	head,
 	data,
 	onClick,
 	onClickItem,
 }: {
-	year?: DataType;
+	viewType?: 'year' | 'code',
+	head?: DataType;
 	data?: DataType[];
 	onClick?: (eid?: string, year?: DataType) => void;
 	onClickItem?: (eid?: string, item?: DataType) => void;
@@ -77,9 +84,9 @@ export const DividendCard = ({
 	return (
 		<StyledCard className={clsx('card', { sm: !history })}>
 			<Flex className='box border' direction='column'>
-				<Flex className='head' justify={'between'} onClick={() => onClick?.(EID.SELECT, year)}>
-					<SubTitle title={year?.title} />
-					<Text bold text={`${toCost(year?.price)}`} />
+				<Flex className='head' justify={'between'} onClick={() => onClick?.(EID.SELECT, head)}>
+					<SubTitle title={head?.title} />
+					<Text bold text={`${toCost(head?.price)}`} />
 				</Flex>
 
 				<Flex className='body' direction={'column'}>
@@ -88,7 +95,7 @@ export const DividendCard = ({
 							<RowField
 								key={item.rowid}
 								height={28}
-								title={item?.name as string}
+								title={(viewType === 'year' ? `[${dayjs(item?.sdate).format('MM/DD')}] ${item?.name}` : dayjs(item?.sdate).format(DATE_FORMAT)) as string}
 								text={`${item?.cost} x ${item?.count}`}
 								value={toCost(item?.price)}
 								onClick={() => onClickItem?.(EID.EDIT, item)}

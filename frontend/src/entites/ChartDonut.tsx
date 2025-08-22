@@ -17,19 +17,25 @@ type ChartDonutProps = {
 	onClickSlice?: (value?: ColoredSlice) => void;
 	onClickTitle?: () => void;
 	chartProps?: PieProps;
+	isClick?: boolean;
 };
 
 const StyledBox = styled(Box, {
 	'&.chart-donut': {
 		position: 'relative',
 
+		'.no-click': {
+			pointerEvents: 'none' /* 모든 클릭 막음 */,
+		},
+
 		'.center-box': {
 			position: 'absolute',
-			left: 0,
-			top: 0,
+			left: '50%',
+			top: '50%',
 			zIndex: 1,
-			height: '100%',
-			width: '100%',
+			height: 'fit-content',
+			width: 'fit-content',
+			transform: 'translate(-50%, -50%)',
 
 			'.cost': {
 				fontSize: '12px',
@@ -47,11 +53,17 @@ export const ChartDonut: FC<ChartDonutProps> = ({
 	onClickSlice,
 	onClickTitle,
 	chartProps,
+	isClick = false,
 }) => {
 	return (
-		<StyledBox className={clsx('chart-donut')} sx={{ width: { xs: width, sm: width }, height }}>
+		<StyledBox
+			className={clsx('chart-donut')}
+			sx={{ width: { xs: width, sm: width }, height }}
+		>
 			<ResponsiveContainer width='100%' height='100%'>
-				<PieChart>
+				<PieChart
+					className={clsx({ 'no-click': !isClick })}
+				>
 					<Pie
 						data={data}
 						dataKey='value'
@@ -60,31 +72,9 @@ export const ChartDonut: FC<ChartDonutProps> = ({
 						endAngle={-270}
 						innerRadius='40%'
 						outerRadius='80%'
-						isAnimationActive
+						isAnimationActive={false}
 						labelLine={false}
 						onClick={(e) => onClickSlice?.(e?.payload)}
-						// label={(props: any) => {
-						// 	const { percent, cx, cy, midAngle, outerRadius, index } = props;
-						// 	if (percent * 100 < 6) return null; // 6% 미만 라벨 생략
-
-						// 	const RADIAN = Math.PI / 180;
-						// 	const r = outerRadius + 12;
-						// 	const x = cx + r * Math.cos(-midAngle * RADIAN);
-						// 	const y = cy + r * Math.sin(-midAngle * RADIAN);
-
-						// 	return (
-						// 		<text
-						// 			x={x}
-						// 			y={y}
-						// 			fill={data[index].color}
-						// 			textAnchor={x > cx ? 'start' : 'end'}
-						// 			dominantBaseline='central'
-						// 			style={{ fontSize: 12, fontWeight: 700 }}
-						// 		>
-						// 			{`${data[index].name} ${Math.round(percent * 100)}%`}
-						// 		</text>
-						// 	);
-						// }}
 						activeShape={(props: any) => <Sector {...props} outerRadius={(props.outerRadius as number) + 6} />}
 						{...chartProps}
 					>
@@ -96,7 +86,14 @@ export const ChartDonut: FC<ChartDonutProps> = ({
 			</ResponsiveContainer>
 
 			{(title || value) && (
-				<Flex className='center-box' gap={10} direction={'column'} justify={'center'} align={'center'} onClick={() => onClickTitle?.()}>
+				<Flex
+					className='center-box'
+					gap={10}
+					direction={'column'}
+					justify={'center'}
+					align={'center'}
+					onClick={() => onClickTitle?.()}
+				>
 					{title && <Text bold text={title} />}
 					{value && <Text className='cost' text={value} />}
 				</Flex>

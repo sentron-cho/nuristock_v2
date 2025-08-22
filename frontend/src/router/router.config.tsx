@@ -5,7 +5,7 @@ import DashboardPage from '../pages/ui/dashboard/Dashboard.page';
 import NotFoundPage from '../pages/ui/common/NotFound.page';
 import MarketPage from '../pages/ui/Market.page';
 import InvestmentPage from '../pages/ui/Investment/Investment.page';
-import DividendPage from '@page/ui/Dividend.page';
+import DividendPage from '@page/ui/dividend/Dividend.page';
 import DiaryPage from '@page/ui/diary/Diary.page';
 import ProfitPage from '../pages/ui/profit/Profit.page';
 import ProfitPerCodePage from '@page/ui/profit/ProfitPerCode.page';
@@ -90,14 +90,16 @@ const router = createBrowserRouter([
 			{
 				path: 'dividend',
 				element: <PageLayout />,
-				children: [{ index: true, element: <DividendPage /> }],
+				children: [
+					{ index: true, element: <DividendPage viewType={'year'} /> },
+					{ path: 'year', element: <DividendPage viewType={'year'} /> },
+					{ path: 'code', element: <DividendPage viewType={'code'} /> },
+				],
 			},
 			{
 				path: 'asset',
 				element: <PageLayout />,
-				children: [
-					{ index: true, element: <AssetPage /> },
-				],
+				children: [{ index: true, element: <AssetPage /> }],
 			},
 			{
 				path: 'deposit',
