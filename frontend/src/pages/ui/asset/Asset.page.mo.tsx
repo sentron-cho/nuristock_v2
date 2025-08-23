@@ -14,6 +14,7 @@ import { useMemo } from 'react';
 import { ChartLineBox } from '@entites/ChartLine';
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { CHART_COLORS } from '@entites/Chart.type';
+import { sortBy } from 'lodash';
 
 const StyledPage = styled(PageContainer, {
 	'.asset-chart': {
@@ -66,10 +67,12 @@ export const AssetPageMo = ({ data }: { data?: AssetResponse }) => {
 	const chartData = useMemo(() => {
 		if (!asset || !evaluation) return undefined;
 
-		return evaluation?.map<AssetItemType & { cprice?: number }>((a) => ({
+		const items = evaluation?.map<AssetItemType & { cprice?: number }>((a) => ({
 			...a,
 			cprice: asset?.find((b) => b.sdate === a.sdate)?.price || 0,
 		}));
+
+		return sortBy(items, ['sdate']);
 	}, [asset, evaluation]);
 
 	return (

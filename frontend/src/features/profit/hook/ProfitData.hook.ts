@@ -29,6 +29,7 @@ export const useProfitData = (initialYears?: YearDataType[], initialData?: Profi
 			const sprice = (a?.scost || 0) * (a?.count || 0);
 			const eprice = (a?.ecost || 0) * (a?.count || 0);
 			const sonic = (eprice || 0) - (sprice || 0);
+			const sonicRate = Number((sonic / sprice * 100).toFixed(1));
 			const asset = initialData?.asset?.find((k) => dayjs(a.edate).year() === dayjs(k.sdate).year())?.price;
 
 			return {
@@ -37,6 +38,7 @@ export const useProfitData = (initialYears?: YearDataType[], initialData?: Profi
 				sprice,
 				sonic,
 				asset,
+				sonicRate,
 			};
 		});
 	}, [initialData]);
@@ -65,6 +67,21 @@ export const useProfitData = (initialYears?: YearDataType[], initialData?: Profi
 					acc[year] = [];
 				}
 				acc[year].push(item);
+				return acc;
+			},
+			{} as Record<string, typeof data>
+		);
+	}, [data]);
+
+	// 월별 데이터 추출
+	const groupedByMonth = useMemo(() => {
+		return data?.reduce(
+			(acc, item) => {
+				const month = dayjs(item['edate']).format('YYYYMM'); // '20241104' → '202411'
+				if (!acc[month]) {
+					acc[month] = [];
+				}
+				acc[month].push(item);
 				return acc;
 			},
 			{} as Record<string, typeof data>
@@ -150,7 +167,7 @@ export const useProfitData = (initialYears?: YearDataType[], initialData?: Profi
 		})) as ProfitItemType[];
 	};
 
-	// 키별 합게 데이터 생성
+	// 키별 합계 데이터 생성
 	const createSumData = (data?: DataType[], columnKey: 'name' | 'month' | 'year' = 'name') => {
 		return data?.reduce(
 			(acc, curr) => {
@@ -220,6 +237,7 @@ export const useProfitData = (initialYears?: YearDataType[], initialData?: Profi
 		createSumData,
 		groupedByYear,
 		groupedByName,
+		groupedByMonth,
 		dividendByYear,
 		dividendByName,
 		createDividendSumData,

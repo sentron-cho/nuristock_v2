@@ -3,6 +3,7 @@ import { Text, TextProps } from '@entites/Text';
 import clsx from 'clsx';
 import { styled } from '@styles/stitches.config';
 import { ReactNode } from 'react';
+import { CSSProperties } from '@mui/material';
 
 const StyledRow = styled(Flex, {
 	'&.row': {
@@ -54,6 +55,7 @@ export interface RowFieldProps {
 	children?: ReactNode;
 	suffix?: { title?: string; text?: string; value?: string };
 	buttons?: ReactNode;
+	style?: CSSProperties;
 }
 
 export const RowField = ({
@@ -71,6 +73,7 @@ export const RowField = ({
 	children,
 	suffix,
 	buttons,
+	style,
 }: RowFieldProps) => {
 	return (
 		<StyledRow
@@ -80,6 +83,7 @@ export const RowField = ({
 			onClick={() => onClick?.()}
 			height={children ? 'auto' : height}
 			gap={4}
+			style={style}
 		>
 			<Flex className='main-row' direction={'row'}>
 				{title && (

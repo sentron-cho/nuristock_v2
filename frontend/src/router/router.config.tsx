@@ -17,6 +17,7 @@ import AssetPage from '@page/ui/asset/Asset.page';
 import DepositPage from '@page/ui/deposit/Deposit.page';
 import MainboardPage from '@page/ui/mainboard/Mainboard.page';
 import BucketlistPage from '@page/ui/bucketlist/Bucketlist.page';
+import ProfitPerDayPage from '@page/ui/profit/ProfitPerDay.page';
 
 const router = createBrowserRouter([
 	{
@@ -68,6 +69,7 @@ const router = createBrowserRouter([
 					{ path: 'code', element: <ProfitPage viewType={'code'} /> },
 					{ path: 'year/:id', element: <ProfitPerYearPage /> },
 					{ path: 'code/:id', element: <ProfitPerCodePage /> },
+					{ path: 'day/:id', element: <ProfitPerDayPage /> },
 				],
 			},
 			{

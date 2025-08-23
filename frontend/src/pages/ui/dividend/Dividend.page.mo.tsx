@@ -64,7 +64,7 @@ export const DividendPageMo = ({
 			return { titleList, dataList: groupedByYear };
 		} else {
 			const items = createSumData(list, 'name');
-			const titleList = items && sortedByKey(Object.values(items), 'name', true);
+			const titleList = items && sortedByKey(Object.values(items), 'price', true);
 			return { titleList, dataList: groupedByName };
 		}
 	}, [data, viewType]);
@@ -74,14 +74,6 @@ export const DividendPageMo = ({
 			return `${URL.DIVIDEND}/${viewType === 'year' ? 'code' : 'year'}`;
 		},
 	});
-
-	// const onClickItemYear = (item: DividendItemType) => {
-	// 	navigate(`${URL.PROFIT}/year/${item?.title}`);
-	// };
-
-	// const onClickItemName = (item: DividendItemType) => {
-	// 	navigate(`${URL.PROFIT}/code/${item?.code}`);
-	// };
 
 	const onClickNavi = (eid?: string) => {
 		eid && navigate(`${URL.DIVIDEND}/${eid}`);

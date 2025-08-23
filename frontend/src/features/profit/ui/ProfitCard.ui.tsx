@@ -53,6 +53,18 @@ export const ProfitCard = ({
 		}
 	};
 
+	const onClickPerDay = (item: ProfitItemType) => {
+		navigate(`${URL.PROFIT}/day/${item?.title?.substring(0, 4)}`);
+	};
+
+	const onClickDividend = () => {
+		if (viewType === 'year') {
+			navigate(`${URL.DIVIDEND}/code`);
+		} else {
+			navigate(`${URL.DIVIDEND}/year`);
+		}
+	};
+
 	return (
 		<Card className={clsx('card')}>
 			<Flex className={clsx('box border')} direction='column' gap={10}>
@@ -61,11 +73,13 @@ export const ProfitCard = ({
 
 				{/* 배당 */}
 				{dividend && dividend?.length > 0 && (
-					<ProfitCardRows title={ST.PER_DIVIDEND} className='dividend' data={dividend} />
+					<ProfitCardRows title={ST.PER_DIVIDEND} className='dividend' data={dividend} onClickItem={onClickDividend} />
 				)}
 
 				{/* 월별 */}
-				{second && <ProfitCardRows title={second.title} className='months' data={second.data} />}
+				{second && (
+					<ProfitCardRows title={second.title} className='months' data={second.data} onClickItem={onClickPerDay} />
+				)}
 			</Flex>
 		</Card>
 	);
