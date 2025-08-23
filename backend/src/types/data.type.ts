@@ -66,6 +66,7 @@ export interface InvestCreateType {
   rowid?: number;
   code?: string; // 종목코드
   name?: string; // 종목명
+  ctype?: string; // 크롤러 타입
   count?: string; // 상장주식수
   sdate?: string; // 기준년도
   roe?: string; // ROE

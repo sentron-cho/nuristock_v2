@@ -10,3 +10,11 @@ export enum Deposit {
 	BUY = 'buy',
 	DIVIDEND = 'dividend',
 }
+
+export enum CRALER_TYPE {
+  NONE = 'none',
+  DART = 'dart',
+  NAVER = 'naver',
+  MANUAL = 'manual',
+  FNGUIDE = 'fnguide',
+}

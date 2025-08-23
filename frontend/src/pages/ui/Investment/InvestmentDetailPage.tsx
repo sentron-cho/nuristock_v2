@@ -3,18 +3,14 @@ import {
 	useDeleteInvestment,
 	useRefreshInvestment,
 	useSelectInvestmentDetail,
-	useSelectInvestmentReport,
-	// useSelectInvestment,
-	// useCreateInvestment,
-	// useUpdateInvestment,
 } from '@features/investment/api/investment.api';
 import { PopupType } from '@entites/Dialog';
 import { useState } from 'react';
 import { EID } from '@shared/config/default.config';
 import { ST } from '@shared/config/kor.lang';
 import { InvestmentItemType } from '@features/investment/api/investment.dto';
-import { StockRegisterPopup } from '@features/dashboard/ui/StockRegister.popup';
 import { InvestmentDetailPageMo } from './InvestmentDetail.page.mo';
+import { InvestmentUpdaterPopup } from '@features/investment/ui/InvestmentUpdater.popup';
 
 const InvestmentDetailPage = () => {
 	const { isMobile } = useCommonHook();
@@ -27,11 +23,6 @@ const InvestmentDetailPage = () => {
 
 	const { mutateAsync: deleteData } = useDeleteInvestment();
 	const { mutateAsync: refreshData } = useRefreshInvestment();
-	const { mutateAsync: selectReport } = useSelectInvestmentReport();
-
-	// useEffect(() => {
-	// 	refetch();
-	// }, []);
 
 	const onClick = (eid?: string, item?: InvestmentItemType) => {
 		if (eid === EID.SELECT) {
@@ -41,58 +32,44 @@ const InvestmentDetailPage = () => {
 				content: ST.WANT_TO_DELETE,
 				onClose: async (isOk) => {
 					if (isOk && item?.rowid) {
-						await deleteData({rowid: item.rowid});
+						await deleteData({ rowid: item.rowid });
 						refetch();
 						showToast('info', ST.DELETEED);
 					}
 				},
 			});
-		} else {
-			// if (eid) {
-			// eid === EID.ADD || eid === EID.EDIT || eid === EID.SISE
-			eid &&
-				setPopup({
-					type: eid,
-					item: item,
-					onClose: (isOk: boolean) => {
-						setPopup(undefined);
-						isOk && refetch();
-					},
-				});
+		} else if (eid === EID.EDIT) {
+			setPopup({
+				type: eid,
+				item: item,
+				onClose: (isOk) => {
+					setPopup(undefined);
+					isOk && refetch();
+				},
+			});
+		} else if (eid === 'refresh') {
+			showConfirm({
+				content: ST.WANT_TO_REFRESH,
+				onClose: async (isOk) => {
+					if (isOk && item?.code) {
+						await refreshData({ targetYear: item.sdate, code: item.code });
+						refetch();
+						showToast('info', ST.SUCCESS);
+					}
+				},
+			});
 		}
-	};
-
-	const onRefresh = (eid?: string, item?: InvestmentItemType) => {
-		showConfirm({
-			content: ST.WANT_TO_REFRESH,
-			onClose: async (isOk) => {
-				if (isOk && item?.code) {
-					await refreshData({ targetYear: eid, code: item.code });
-					refetch();
-					showToast('info', ST.SUCCESS);
-				}
-			},
-		});
-	};
-
-	const onClickReport = async (eid?: string, item?: InvestmentItemType) => {
-		if (!item || !item?.code) return;
-
-		await selectReport({ targetYear: eid, code: item.code });
-		showToast('info', ST.SUCCESS);
 	};
 
 	return (
 		<>
-			{isMobile && (
-				<InvestmentDetailPageMo data={data} onClick={onClick} onRefresh={onRefresh} onClickReport={onClickReport} />
-			)}
-			{!isMobile && (
-				<InvestmentDetailPageMo data={data} onClick={onClick} onRefresh={onRefresh} onClickReport={onClickReport} />
-			)}
+			{isMobile && <InvestmentDetailPageMo data={data} onClick={onClick} />}
+			{!isMobile && <InvestmentDetailPageMo data={data} onClick={onClick} />}
 
-			{/* 종목 추가 팝업 */}
-			{popup?.type === EID.ADD && <StockRegisterPopup viewType={'investment'} onClose={popup?.onClose} />}
+			{/* 수정 업데이트 팝업 */}
+			{popup?.type === EID.EDIT && (
+				<InvestmentUpdaterPopup item={popup?.item as InvestmentItemType} onClose={popup?.onClose} />
+			)}
 		</>
 	);
 };

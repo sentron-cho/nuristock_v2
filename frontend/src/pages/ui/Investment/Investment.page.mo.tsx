@@ -15,7 +15,6 @@ import { URL } from '@shared/config/url.enum';
 import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 import { useMemo } from 'react';
 import { TitleNavigation } from '@entites/TitleNavigation';
-import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { useNaviByOptions } from '@shared/hooks/useOptionNavi.hook';
 
 const StyledPage = styled(PageContainer, {
@@ -30,14 +29,11 @@ export const InvestmentPageMo = ({
 	viewType = 'keep',
 	data,
 	onClick,
-	onRefresh,
 }: {
 	viewType?: 'keep' | 'nokeep' | 'trade';
 	data?: InvestmentResponse;
 	onClick?: (eid?: string, item?: InvestmentItemType) => void;
-	onRefresh?: (eid?: string, item?: InvestmentItemType) => void;
 }) => {
-	const { navigate } = useCommonHook();
 	const { keeps, nokeeps, trade } = useInvestmentHook(data);
 
 	const naviOptions = useMemo(
@@ -75,18 +71,6 @@ export const InvestmentPageMo = ({
 		}
 	}, [keeps, nokeeps, trade, viewType]);
 
-	const onClickItem = (eid?: string, item?: InvestmentItemType) => {
-		if (eid === 'refresh') {
-			onRefresh?.(eid, item);
-		} else {
-			onClick?.(eid, item);
-		}
-	};
-
-	const onClickNavi = (eid?: string) => {
-		eid && navigate(`${URL.INVEST}/${eid}`);
-	};
-
 	return (
 		<StyledPage>
 			{/* 타이틀바 */}
@@ -102,14 +86,15 @@ export const InvestmentPageMo = ({
 			{/* 컨텐츠 헤더(요약) */}
 			<InvestmentHeader />
 
-			<TitleNavigation sticky stickyTop={144} options={naviOptions} value={viewType} onClick={onClickNavi} />
+			{/* 네이게이션 */}
+			<TitleNavigation sticky stickyTop={144} options={naviOptions} value={viewType} onClick={onClick} />
 
 			{/* 컨텐츠 */}
 			<Flex className={clsx('contents-layer')} direction={'column'} {...handlerSwipe}>
 				<Flex className={clsx(swipeClass)} direction={'column'}>
 					<CardListWrap>
 						{list?.map((item) => {
-							return <InvestmentCard key={item.rowid} title={item.name} data={item} onClick={onClickItem} />;
+							return <InvestmentCard key={item.rowid} title={item.name} data={item} onClick={onClick} />
 						})}
 					</CardListWrap>
 				</Flex>

@@ -11,6 +11,7 @@ const ERROR = {
 	"ER_DUP_ENTRY" : '중복된 데이터 입니다.',
 	"ER_NOT_ROWID" : '존재하지 않는 ROWID 입니다.',
 	"ER_NOT_UNKNOW" : '알수 없는 오류입니다.',
+	"ER_NOT_UPDATED" : '업데이트 할 수 없습니다.',
 } as Record<string, string>
 
 // ✅ 공통 에러 처리 인터셉터

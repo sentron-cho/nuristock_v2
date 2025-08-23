@@ -88,19 +88,6 @@ const InvestmentPage = ({ viewType }: { viewType?: 'keep' | 'nokeep' | 'trade' }
 		}
 	};
 
-	const onRefresh = (_eid?: string, item?: InvestmentItemType) => {
-		showConfirm({
-			content: ST.WANT_TO_UPDATE_NAVER,
-			onClose: async (isOk) => {
-				if (isOk && item?.code) {
-					await updateByNaver({ targetYear: dayjs().format('YYYY'), code: item.code });
-					refetch();
-					showToast('info', ST.SUCCESS);
-				}
-			},
-		});
-	};
-
 	const onSuccess = () => {
 		setLoading(false);
 		refetch();
@@ -112,8 +99,8 @@ const InvestmentPage = ({ viewType }: { viewType?: 'keep' | 'nokeep' | 'trade' }
 
 	return (
 		<>
-			{isMobile && <InvestmentPageMo viewType={viewType} data={data} onClick={onClick} onRefresh={onRefresh} />}
-			{!isMobile && <InvestmentPageMo viewType={viewType} data={data} onClick={onClick} onRefresh={onRefresh} />}
+			{isMobile && <InvestmentPageMo viewType={viewType} data={data} onClick={onClick} />}
+			{!isMobile && <InvestmentPageMo viewType={viewType} data={data} onClick={onClick} />}
 
 			{/* 종목 추가 팝업 */}
 			{popup?.type === EID.ADD && (

@@ -23,7 +23,7 @@ export const Title = ({ title, className, ...props }: TitleProps) => {
 
 export const SubTitle = ({ fontSize = 'medium', fontWeight = 'bold', title, className, ...props }: TitleProps) => {
 	return (
-		<StyledTitle {...props} fontWeight={fontWeight} fontSize={fontSize} className={clsx('sut-title', className)}>
+		<StyledTitle {...props} fontWeight={fontWeight} fontSize={fontSize} className={clsx('sub-title', className)}>
 			{title}
 		</StyledTitle>
 	);

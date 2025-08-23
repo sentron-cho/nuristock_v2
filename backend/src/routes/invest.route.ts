@@ -27,10 +27,13 @@ const investRoute = (fastify: FastifyInstance) => {
       } as Record<string, string | number>;
 
       value?.roe && (params["roe"] = value.roe?.toFixed(2));
-      value?.equity && (params["equity"] = value.equity);
+      value?.equity && (params["equity"] = value.equity?.toFixed(0));
 
-      const sql = `UPDATE investment set ${makeUpdateSet(params)} WHERE code = '${code}' and sdate = '${year}'`;
-      await fastify.db.query(sql);
+      if (params?.roe && params?.equity) {
+        const sql = `UPDATE investment set ${makeUpdateSet(params)} WHERE code = '${code}' and sdate = '${year}'`;
+        await fastify.db.query(sql);
+        return true;
+      } else return false;
     };
 
     const facts = await getYearlyFacts({ code6: code?.replace("A", ""), from: Number(dayjs().format("YYYY")) });
@@ -40,13 +43,15 @@ const investRoute = (fastify: FastifyInstance) => {
     if (shares && consensus) {
       if (targetYear) {
         // 해당 년도만 업데이트
-        await updateData(consensus, targetYear?.toString());
+        return await updateData(consensus, targetYear?.toString());
       } else {
         // 올해부터 -3년전까지 업데이트
         const years = Object.keys(consensus)?.map((a) => Number(a));
         for (let year = years?.[0]; year <= years?.[years?.length - 1]; year++) {
           await updateData(consensus, year?.toString());
         }
+
+        return true;
       }
     }
   };
@@ -110,12 +115,42 @@ const investRoute = (fastify: FastifyInstance) => {
     }
   });
 
-  // 가치투자 종목 항목 데이터 갱신(DART 사업보고서 기준 연간실적)
+  // 가치투자 종목 항목 수정
+  fastify.put(URL.INVEST.ROOT, async (req, reply) => {
+    try {
+      const { rowid, ctype } = req.body as InvestCreateType;
+
+      if (!rowid)
+        return reply
+          .status(500)
+          .send(
+            withError({ code: ERROR.ER_NOT_ROWID, sqlMessage: "is not rowid!" } as SqlError, { tag: URL.INVEST.ROOT })
+          );
+
+      await fastify.db.query(
+        `UPDATE investment SET ${makeUpdateSet({
+          ...(req.body || {}),
+          ctype: ctype || INVEST_CRALER_TYPE.MANUAL,
+        } as FieldValues)} WHERE rowid ='${rowid}';`
+      );
+      reply.status(200).send({ value: rowid });
+    } catch (error) {
+      reply.status(500).send(withError(error as SqlError, { tag: URL.INVEST.ROOT }));
+    }
+  });
+
+  // 가치투자 종목 항목 데이터 갱신
   fastify.put(URL.INVEST.REFRESH, async (req, reply) => {
     try {
       const { code } = req.body as InvestRefreshParams;
+      const res = await updateInvestData(req?.body as InvestRefreshParams);
 
-      await updateInvestData(req?.body as InvestRefreshParams);
+      if (!res)
+        return reply
+          .status(500)
+          .send(
+            withError({ code: ERROR.ER_NOT_UPDATED, sqlMessage: "is not updated!" } as SqlError, { tag: URL.INVEST.ROOT })
+          );
 
       reply.status(200).send({ value: code });
     } catch (error) {
@@ -208,27 +243,6 @@ const investRoute = (fastify: FastifyInstance) => {
         ctype: "",
       };
       await fastify.db.query(`UPDATE investment SET ${makeUpdateSet(params as FieldValues)} WHERE rowid ='${rowid}';`);
-      reply.status(200).send({ value: rowid });
-    } catch (error) {
-      reply.status(500).send(withError(error as SqlError, { tag: URL.INVEST.ROOT }));
-    }
-  });
-
-  // 가치투자 종목 항목 수정
-  fastify.put(URL.INVEST.ROOT, async (req, reply) => {
-    try {
-      const { rowid } = req.body as InvestCreateType;
-
-      if (!rowid)
-        return reply
-          .status(500)
-          .send(
-            withError({ code: ERROR.ER_NOT_ROWID, sqlMessage: "is not rowid!" } as SqlError, { tag: URL.INVEST.ROOT })
-          );
-
-      await fastify.db.query(
-        `UPDATE investment SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`
-      );
       reply.status(200).send({ value: rowid });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.INVEST.ROOT }));

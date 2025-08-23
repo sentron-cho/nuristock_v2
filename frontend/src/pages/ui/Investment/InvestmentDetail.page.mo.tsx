@@ -27,21 +27,13 @@ const StyledPage = styled(PageContainer, {
 export const InvestmentDetailPageMo = ({
 	data,
 	onClick,
-	onRefresh,
-	onClickReport,
 }: {
 	data?: InvestmentResponse;
 	onClick?: (eid?: string, item?: InvestmentItemType) => void;
-	onRefresh?: (eid?: string, item?: InvestmentItemType) => void;
-	onClickReport?: (eid?: string, item?: InvestmentItemType) => void;
 }) => {
 	const { navigate, param } = useCommonHook();
 	const { filteredByCode, naviOptions, selected } = useInvestmentHook(data);
 	const { prev, next } = useNaviByOptions({ options: naviOptions, value: param?.id });
-
-	const onClickItem = (eid?: string, item?: InvestmentItemType) => {
-		onRefresh?.(eid, item);
-	};
 
 	const { handlerSwipe, swipeClass } = useSwipePage({
 		onNextPage: (dir?: 'next' | 'prev') => {
@@ -83,7 +75,7 @@ export const InvestmentDetailPageMo = ({
 				<Flex className={clsx(swipeClass, 'contents-layer')} direction={'column'} {...handlerSwipe}>
 					<CardListWrap>
 						{filteredByCode?.map((item) => {
-							return <InvestmentDetailCard data={item} onClick={onClickItem} onClickReport={onClickReport} />;
+							return <InvestmentDetailCard key={`in-${item?.rowid}`} data={item} onClick={onClick} />;
 						})}
 					</CardListWrap>
 				</Flex>

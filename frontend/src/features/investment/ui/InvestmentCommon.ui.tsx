@@ -88,7 +88,6 @@ export const InvestmentInfoField = ({ data }: { data?: InvestmentItemType }) => 
 
 const StyledPerValueField = styled(Flex, {
 	'&.per-value': {
-
 		'.list-box': {
 			padding: 8,
 			background: '$gray200',
@@ -146,4 +145,37 @@ export const PerValueField = ({ data }: { data?: InvestmentItemType }) => {
 			</Flex>
 		</StyledPerValueField>
 	);
+};
+
+const StyledChip = styled('span', {
+	'&.chip': {
+		border: '1px solid $gray700',
+		borderRadius: 100,
+		backgroundColor: '$gray',
+		width: '20px',
+		height: '20px',
+		textAlign: 'center',
+		lineHeight: '18px',
+		fontSize: '$xs',
+		fontWeight: 700,
+		// position: 'absolute',
+		// top: -10,
+		// left: -6,
+
+		'&.fnguide': {
+			backgroundColor: '$primary',
+			borderColor: '$primaryhover',
+			color: '$white',
+		},
+
+		'&.manual': {
+			backgroundColor: '$gray700',
+			borderColor: '$gray600',
+			color: '$white',
+		},
+	},
+});
+
+export const InvestmentChip = ({ data }: { data?: InvestmentItemType }) => {
+	return <StyledChip className={clsx('chip', data?.ctype)}>{data?.ctype?.substring(0, 1).toUpperCase()}</StyledChip>;
 };

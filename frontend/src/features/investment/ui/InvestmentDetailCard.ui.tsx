@@ -1,33 +1,38 @@
 import { Card } from '@entites/Card';
 import Flex from '@entites/Flex';
-import { Title } from '@entites/Title';
+import { SubTitle } from '@entites/Title';
 import { InvestmentItemType } from '../api/investment.dto';
-import { IconDocument, IconRefresh } from '@entites/Icons';
+import { IconEdit, IconRefresh } from '@entites/Icons';
 import dayjs from 'dayjs';
 import { Text } from '@entites/Text';
-import { InvestmentInfoField, PerValueField } from './InvestmentCommon.ui';
+import { InvestmentChip, InvestmentInfoField, PerValueField } from './InvestmentCommon.ui';
+import { ST } from '@shared/config/kor.lang';
+import { IconButton } from '@entites/IconButton';
+import { EID } from '@shared/config/default.config';
 
 export const InvestmentDetailCard = ({
 	data,
 	onClick,
-	onClickReport,
 }: {
 	data?: InvestmentItemType;
 	onClick?: (eid?: string, item?: InvestmentItemType) => void;
-	onClickReport?: (eid?: string, item?: InvestmentItemType) => void;
 }) => {
-
 	return (
 		<Card>
 			<Flex className='box border' direction='column'>
 				<Flex className='head' justify={'between'}>
 					<Flex flex={1} gap={10}>
-						<Title title={`${data?.sdate}년`} />
-						<Text text={`(${dayjs(data?.utime).format('YYYY-MM-DD HH:mm')})`} />
+						<Flex className='title-box' fullWidth={false} gap={4}>
+							<InvestmentChip data={data} />
+							<SubTitle title={`${data?.sdate}${ST.YEAR}`} />
+						</Flex>
+
+						<Text size='xs' text={`(${dayjs(data?.utime).format('YYYY-MM-DD HH:mm')})`} />
 					</Flex>
 					<Flex fullWidth={false}>
-						<IconRefresh onClick={() => onClick?.(data?.sdate?.toString(), data)} />
-						<IconDocument onClick={() => onClickReport?.(data?.sdate?.toString(), data)} />
+						<IconButton icon={<IconRefresh />} onClick={() => onClick?.('refresh', data)} />
+						<IconButton icon={<IconEdit />} onClick={() => onClick?.(EID.EDIT, data)} />
+						{/* <IconDocument onClick={() => onClickReport?.(data?.sdate?.toString(), data)} /> */}
 					</Flex>
 				</Flex>
 				<Flex className='body' direction={'column'} gap={4}>

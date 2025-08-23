@@ -48,7 +48,7 @@ export const toShortCost = (v?: number | string) => {
 
 	let item: { value: string | number; unit: string };
 
-	if (num > 99999999999) {
+	if (num > 999999999999) {
 		// 조원 ~
 		item = { value: (num / 1000000000000).toFixed(1), unit: `${COST.JO}${COST.WON}` };
 	} else if (num > 99999999) {
@@ -56,10 +56,10 @@ export const toShortCost = (v?: number | string) => {
 		item = { value: (num / 100000000).toFixed(1), unit: `${COST.EUK}${COST.WON}` };
 	} else if (num > 9999999) {
 		// 천만원 ~ 억원
-		item = { value: Math.ceil(num / 10000000), unit: `${COST.CHEN}${COST.MAN}${COST.WON}` };
+		item = { value: Math.round(num / 10000000), unit: `${COST.CHEN}${COST.MAN}${COST.WON}` };
 	} else if (num > 9999) {
 		// 만원 ~ 백만원
-		item = { value: Math.ceil(num / 10000), unit: `${COST.MAN}${COST.WON}` };
+		item = { value: Math.round(num / 10000), unit: `${COST.MAN}${COST.WON}` };
 	} else {
 		item = { value: withCommas(v) || '', unit: '' };
 	}

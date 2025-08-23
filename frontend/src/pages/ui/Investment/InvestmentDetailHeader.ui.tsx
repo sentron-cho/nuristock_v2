@@ -18,7 +18,7 @@ const StyledContents = styled(Flex, {
 			'.rate': {
 				color: '$gray700',
 				fontSize: 12,
-			}
+			},
 		},
 
 		'.up': {
@@ -55,8 +55,8 @@ export const InvestmentDetailHeader = ({
 			{/* 주당가치 */}
 			<StyledContents className={clsx('investment-header')} flex={1} direction={'column'}>
 				<Flex className='contents' flex={1} gap={8} justify={'between'}>
-					{list?.map((item) => (
-						<Flex direction={'column'} gap={4}>
+					{list?.map((item, index) => (
+						<Flex key={`inhe-${index}`} direction={'column'} gap={4}>
 							<Text className={'rate'} text={`[W ${data?.[item?.target]}]`} />
 							<Title className={clsx('value', item?.updown)} title={`${item?.value}${ST.WON}`} />
 						</Flex>
