@@ -11,7 +11,6 @@ import { TitleNavigation } from '@entites/TitleNavigation';
 import { PageContainer } from '@features/common/ui/PageContainer.ui';
 import { ProfitSummary } from '@features/profit/ui/ProfitSummary.ui';
 import { useNaviByOptions } from '@shared/hooks/useOptionNavi.hook';
-import { CardListWrap } from '@entites/Card';
 import { RowField } from '@entites/LineRowField';
 import dayjs from 'dayjs';
 import { styled } from '@styles/stitches.config';

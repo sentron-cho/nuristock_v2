@@ -243,6 +243,8 @@ const KOR = {
 	PRICE_AFTER_TAX: '금액(세후)',
 	PRICE_TAX: '세금',
 
+	EXIST_DATA_INVEST: '년도 데이터는 등록 되어 있습니다.',
+
 
 	MAINBOARD: {
 		KEEP: '보유 상위',

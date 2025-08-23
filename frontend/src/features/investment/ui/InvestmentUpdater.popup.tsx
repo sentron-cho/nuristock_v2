@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { styled } from '@styles/stitches.config';
 import { toNumber, toShortCost, withCommas } from '@shared/libs/utils.lib';
-import { useUpdateInvestment as useUpdate } from '../api/investment.api';
+import { useUpdateInvestment as useUpdate, useCreateInvestmentYear as useCreate } from '../api/investment.api';
 import { SubTitle } from '@entites/Title';
 import { Text } from '@entites/Text';
 import { useMemo } from 'react';
@@ -28,7 +28,15 @@ const StyledForm = styled(Flex, {
 	},
 });
 
-export const InvestmentUpdaterPopup = ({ item, onClose }: { item?: DataType; onClose: (isOk: boolean) => void }) => {
+export const InvestmentUpdaterPopup = ({
+	type = 'edit',
+	item,
+	onClose,
+}: {
+	type?: 'edit' | 'add';
+	item?: DataType;
+	onClose: (isOk: boolean) => void;
+}) => {
 	const forms = useForm({
 		defaultValues: {
 			count: withCommas(item?.count),
@@ -58,6 +66,7 @@ export const InvestmentUpdaterPopup = ({ item, onClose }: { item?: DataType; onC
 	});
 
 	const { mutateAsync: updateData } = useUpdate();
+	const { mutateAsync: createData } = useCreate();
 
 	const selectedEquity = forms?.watch('equity');
 	const guide = useMemo(() => {
@@ -80,10 +89,8 @@ export const InvestmentUpdaterPopup = ({ item, onClose }: { item?: DataType; onC
 						}
 					);
 					const ctype = isDirty ? CRALER_TYPE.MANUAL : CRALER_TYPE.FNGUIDE;
-					console.log({ ctype });
 
 					const params = {
-						rowid: item?.rowid,
 						...fields,
 						// profit: toNumber(fields?.profit),
 						equity: toNumber(fields?.equity),
@@ -91,7 +98,11 @@ export const InvestmentUpdaterPopup = ({ item, onClose }: { item?: DataType; onC
 						ctype: ctype,
 					} as DataType;
 
-					await updateData(params);
+					if (type === 'edit') {
+						await updateData({ ...params, rowid: item?.rowid });
+					} else {
+						await createData({ ...params, code: item?.code, sdate: item?.sdate });
+					}
 					onClose?.(isOk);
 				},
 				(error) => {

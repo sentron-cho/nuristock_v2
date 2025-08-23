@@ -96,12 +96,12 @@ export const useSelectInvestmentReport = () => {
 	});
 };
 
-// export const useSelectInvestmentReport = (code?: string) => {
-// 	return useSuspenseQuery<unknown, Error, InvestmentResponse>({
-// 		queryKey: ['INVESTMENT-R03', code],
-// 		queryFn: async (): Promise<InvestmentResponse> => {
-// 			const main = await api.get(API.INVEST_REPORT, { params: { code } });
-// 			return main.data;
-// 		},
-// 	});
-// }
+// 신규 년도 추가
+export const useCreateInvestmentYear = () => {
+	return useMutation({
+		mutationKey: ['INVESTMENT-C02'],
+		mutationFn: async (data: InvestmentItemType) => {
+			return await api.post(API.INVEST_YEAR, data);
+		},
+	});
+};

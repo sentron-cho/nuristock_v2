@@ -4,10 +4,6 @@ import {
 	useClearInvestment,
 	useDeleteInvestment,
 	useSelectInvestment,
-	useUpdateInvestmentByNaver,
-	// useRefreshInvestment,
-	// useCreateInvestment,
-	// useUpdateInvestment,
 } from '@features/investment/api/investment.api';
 import { PopupType } from '@entites/Dialog';
 import { useState } from 'react';
@@ -18,7 +14,6 @@ import { StockRegisterPopup } from '@features/dashboard/ui/StockRegister.popup';
 import { URL } from '@shared/config/url.enum';
 import { Loading } from '@entites/Loading';
 import { InvestmentUpdaterPopup } from '@features/investment/ui/InvestmentUpdater.popup';
-import dayjs from 'dayjs';
 
 const InvestmentPage = ({ viewType }: { viewType?: 'keep' | 'nokeep' | 'trade' }) => {
 	const { isMobile, showToast, showConfirm, navigate } = useCommonHook();
@@ -28,18 +23,8 @@ const InvestmentPage = ({ viewType }: { viewType?: 'keep' | 'nokeep' | 'trade' }
 
 	const { data, refetch } = useSelectInvestment();
 
-	// const { data: list } = useInvestmentHook(data);
-
 	const { mutateAsync: deleteData } = useDeleteInvestment();
 	const { mutateAsync: clearData } = useClearInvestment();
-	// const { mutateAsync: refreshData } = useRefreshInvestment();
-	const { mutateAsync: updateByNaver } = useUpdateInvestmentByNaver();
-	// const { mutateAsync: createData } = useCreateInvestment();
-	// const { mutateAsync: updateData } = useUpdateInvestment();
-
-	// useEffect(() => {
-	// 	refetch();
-	// }, []);
 
 	const onClick = (eid?: string, item?: InvestmentItemType) => {
 		if (eid === EID.SELECT) {

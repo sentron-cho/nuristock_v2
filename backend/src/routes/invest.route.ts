@@ -5,7 +5,7 @@ import URL from "../types/url.js";
 import { withError } from "../lib/error.js";
 import { InvestCreateType, InvestRefreshParams, ConsensusResult, FieldValues } from "../types/data.type.js";
 import { getYearlyFacts } from "../crawler/service/yearlyFacts.service.js";
-import { makeUpdateSet } from "../lib/db.util.js";
+import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
 import { ERROR, INVEST_CRALER_TYPE } from "../types/enum.js";
 import { getDartReportByStock } from "../crawler/dartFinancial.js";
 import { getFnGuideConsensus } from "../crawler/service/fnguideScraper.service.js";
@@ -139,6 +139,31 @@ const investRoute = (fastify: FastifyInstance) => {
     }
   });
 
+  // 가치투자 종목 항목 신규 년도 추가
+  fastify.post(URL.INVEST.YEAR, async (req, reply) => {
+    try {
+      const { sdate } = req.body as InvestCreateType;
+
+      await fastify.db.query(
+        `INSERT INTO investment ${makeInsertSet({
+          ...(req.body || {}),
+          ctype: INVEST_CRALER_TYPE.MANUAL,
+        } as FieldValues)};`
+      );
+
+      const sql = `INSERT INTO investment ${makeInsertSet({
+        ...(req.body || {}),
+        ctype: INVEST_CRALER_TYPE.MANUAL,
+      } as FieldValues)};`;
+
+      console.log({ sql });
+
+      reply.status(200).send({ value: sdate });
+    } catch (error) {
+      reply.status(500).send(withError(error as SqlError, { tag: URL.INVEST.ROOT }));
+    }
+  });
+
   // 가치투자 종목 항목 데이터 갱신
   fastify.put(URL.INVEST.REFRESH, async (req, reply) => {
     try {
@@ -149,7 +174,9 @@ const investRoute = (fastify: FastifyInstance) => {
         return reply
           .status(500)
           .send(
-            withError({ code: ERROR.ER_NOT_UPDATED, sqlMessage: "is not updated!" } as SqlError, { tag: URL.INVEST.ROOT })
+            withError({ code: ERROR.ER_NOT_UPDATED, sqlMessage: "is not updated!" } as SqlError, {
+              tag: URL.INVEST.ROOT,
+            })
           );
 
       reply.status(200).send({ value: code });

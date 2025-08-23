@@ -32,7 +32,7 @@ export const InvestmentDetailPageMo = ({
 	onClick?: (eid?: string, item?: InvestmentItemType) => void;
 }) => {
 	const { navigate, param } = useCommonHook();
-	const { filteredByCode, naviOptions, selected } = useInvestmentHook(data);
+	const { filteredByCode, naviOptions, selected, sise } = useInvestmentHook(data);
 	const { prev, next } = useNaviByOptions({ options: naviOptions, value: param?.id });
 
 	const { handlerSwipe, swipeClass } = useSwipePage({
@@ -59,7 +59,7 @@ export const InvestmentDetailPageMo = ({
 						eid: EID.ADD,
 						icon: <IconAdd />,
 						title: ST.ADD,
-						onClick: onClick,
+						onClick: () => onClick?.(EID.ADD, filteredByCode?.[0]),
 					}}
 				/>
 
@@ -68,6 +68,7 @@ export const InvestmentDetailPageMo = ({
 					value={selected}
 					options={naviOptions}
 					data={filteredByCode?.[0]}
+					sise={sise?.find((a) => a?.code === param.id)}
 					onClickNavi={onClickNavi}
 				/>
 

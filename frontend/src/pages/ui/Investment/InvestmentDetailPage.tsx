@@ -11,11 +11,12 @@ import { ST } from '@shared/config/kor.lang';
 import { InvestmentItemType } from '@features/investment/api/investment.dto';
 import { InvestmentDetailPageMo } from './InvestmentDetail.page.mo';
 import { InvestmentUpdaterPopup } from '@features/investment/ui/InvestmentUpdater.popup';
+import dayjs from 'dayjs';
 
 const InvestmentDetailPage = () => {
 	const { isMobile } = useCommonHook();
 
-	const { showToast, showConfirm, param } = useCommonHook();
+	const { showToast, showAlert, showConfirm, param } = useCommonHook();
 
 	const [popup, setPopup] = useState<PopupType>();
 
@@ -38,6 +39,19 @@ const InvestmentDetailPage = () => {
 					}
 				},
 			});
+		} else if (eid === EID.ADD) {
+			if (item?.sdate === dayjs().format('YYYY')) {
+				showAlert({ content: `[${item.sdate}] ${ST.EXIST_DATA_INVEST}` });
+			} else {
+				setPopup({
+					type: eid,
+					item: { ...item, sdate: dayjs().format('YYYY'), equity: undefined },
+					onClose: (isOk) => {
+						setPopup(undefined);
+						isOk && refetch();
+					},
+				});
+			}
 		} else if (eid === EID.EDIT) {
 			setPopup({
 				type: eid,
@@ -68,7 +82,12 @@ const InvestmentDetailPage = () => {
 
 			{/* 수정 업데이트 팝업 */}
 			{popup?.type === EID.EDIT && (
-				<InvestmentUpdaterPopup item={popup?.item as InvestmentItemType} onClose={popup?.onClose} />
+				<InvestmentUpdaterPopup type={'edit'} item={popup?.item as InvestmentItemType} onClose={popup?.onClose} />
+			)}
+
+			{/* 추가 업데이트 팝업 */}
+			{popup?.type === EID.ADD && (
+				<InvestmentUpdaterPopup type={'add'} item={popup?.item as InvestmentItemType} onClose={popup?.onClose} />
 			)}
 		</>
 	);
