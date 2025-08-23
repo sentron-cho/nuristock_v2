@@ -135,7 +135,7 @@ export const ProfitPerDayPageMo = () => {
 				<StyledFlex className={clsx(swipeClass)} flex={1} direction={'column'} {...handlerSwipe}>
 					{!data?.isEmpty && (
 						<Flex className='contents-layer' direction={'column'}>
-							<CardListWrap>
+							<Flex direction={'column'}>
 								{titleList?.map((item) => {
 									const { title, sonic, sonicRate } = item;
 									const list = reverse(sortBy(dataList?.[item?.title?.replace('-', '') as string], ['edate']));
@@ -151,7 +151,7 @@ export const ProfitPerDayPageMo = () => {
 												titleProps={{ bold: true }}
 												valueProps={{ bold: true }}
 												suffix={{ text: '%' }}
-												style={{ top: 200 }}
+												style={{ top: data?.dividend ? 202 : 154 }}
 											/>
 
 											<Flex className='list-body' direction={'column'}>
@@ -174,7 +174,7 @@ export const ProfitPerDayPageMo = () => {
 										</Flex>
 									);
 								})}
-							</CardListWrap>
+							</Flex>
 						</Flex>
 					)}
 				</StyledFlex>

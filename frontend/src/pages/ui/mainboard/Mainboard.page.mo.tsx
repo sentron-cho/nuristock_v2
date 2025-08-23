@@ -42,7 +42,7 @@ export const MainboardPageMo = ({
 	const { setLocalStorage, getLocalStorage } = useStorageHook();
 	const [isShow, setShow] = useState<boolean>(true);
 
-	const stickTop = useMemo(() => (isShow ? 240 : 48), [isShow]);
+	const stickTop = useMemo(() => (isShow ? 258 : 48), [isShow]);
 
 	useEffect(() => {
 		const initConfig = getLocalStorage(StorageDataKey.DASHBOARD_CONFIG_MORE_ALL) as FieldValues;
