@@ -28,6 +28,16 @@ const StyledFlex = styled(Flex, {
 		},
 	},
 
+	'.summary-layout': {
+		padding: '0px 8px',
+
+		'.summary-box': {
+			padding: '10px 4px',
+			borderRadius: 4,
+			background: '$white',
+		},
+	},
+
 	'.contents-form': {
 		// marginTop: '$10',
 
@@ -35,18 +45,18 @@ const StyledFlex = styled(Flex, {
 			padding: '0 14px',
 		},
 
-		'.plus': {
-			color: '$plus',
-		},
-
-		'.minus': {
-			color: '$minus',
-		},
-
 		'.detail': {
 			padding: '0 20px',
 			opacity: '0.8',
 		},
+	},
+
+	'.plus': {
+		color: '$plus',
+	},
+
+	'.minus': {
+		color: '$minus',
 	},
 });
 
@@ -61,6 +71,18 @@ export const ContentsView = ({
 }) => {
 	const buyList = useMemo(() => data?.buy || [], [data]);
 	const sellList = useMemo(() => data?.sell || [], [data]);
+
+	const summary = useMemo(() => {
+		if (!data?.buy?.length && !data?.sell?.length) return undefined;
+
+		const buy = data?.buy?.map((a) => Number(a.sprice))?.reduce((a, b) => a + b, 0);
+		const sell = data?.sell?.map((a) => Number(a.eprice))?.reduce((a, b) => a + b, 0);
+		const sonic = data?.sell?.map((a) => Number(a.sonic))?.reduce((a, b) => a + b, 0);
+		const rate = data?.sell?.map((a) => Number(a.sonicRate))?.reduce((a, b) => a + b, 0);
+		const sonicRate = (Number(rate) / (data?.sell?.length || 1)).toFixed(2)
+
+		return { buy, sell, sonic, sonicRate };
+	}, [data]);
 
 	const onChange = (eid: 'prev' | 'next' | 'now') => {
 		let selected: dayjs.Dayjs = dayjs(date);
@@ -95,6 +117,35 @@ export const ContentsView = ({
 				</Flex>
 				<IconArrowRight className='icon' onClick={() => onChange('next')} />
 			</Flex>
+
+			{/* 요약 */}
+			{summary && (
+				<Flex className='summary-layout'>
+					<Flex className='summary-box' direction={'column'} gap={4}>
+						<Flex className='sm-head' align={'center'}>
+							<Text size='xs' text={ST.BUY} flex={1} textAlign={'center'} />
+							<Text size='xs' text={ST.SELL} flex={1} textAlign={'center'} />
+							<Text
+								size='xs'
+								className={clsx(valueOfPlusMinus(Number(summary.sonicRate)))}
+								text={summary.sonicRate ? `${ST.SONIC}(${summary.sonicRate}%)` : ST.SONIC}
+								flex={1}
+								textAlign={'center'}
+							/>
+						</Flex>
+						<Flex className='sm-body'>
+							<Text text={summary.buy ? toCost(summary.buy) : ''} flex={1} textAlign={'center'} />
+							<Text text={summary.sell ? toCost(summary.sell) : ''} flex={1} textAlign={'center'} />
+							<Text
+								className={clsx(valueOfPlusMinus(summary.sonic))}
+								text={summary.sonic ? toCost(summary.sonic) : ''}
+								flex={1}
+								textAlign={'center'}
+							/>
+						</Flex>
+					</Flex>
+				</Flex>
+			)}
 
 			{buyList?.length > 0 && <ContentsForm type='keep' data={buyList} />}
 			{sellList?.length > 0 && <ContentsForm type='trade' data={sellList} />}

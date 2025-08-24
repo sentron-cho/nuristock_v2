@@ -33,6 +33,22 @@ const marketRoute = (fastify: FastifyInstance) => {
       reply.status(500).send(withError(error as SqlError, { tag: URL.MARKET.SISE }));
     }
   });
+
+  // 종목 전체 목록 조회
+  fastify.get(URL.MARKET.SEARCH, async (req, reply) => {
+    try {
+      const { all = false } = req.query as MarketSiseUpdateDataType;
+      let query = `SELECT code, name, type, state FROM market ORDER BY name ASC;`;
+      if (!all) {
+        query += ` WHERE state != 'close'`;
+      }
+      const list = await fastify.db.query(query);
+      return { value: list as MarketSelectDataType[] };
+    } catch (error) {
+      reply.status(500).send(withError(error as SqlError, { tag: URL.MARKET.ROOT }));
+    }
+  });
+
 };
 
 export default marketRoute;

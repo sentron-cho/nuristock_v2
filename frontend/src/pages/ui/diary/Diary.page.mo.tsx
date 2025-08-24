@@ -27,7 +27,7 @@ const StyledPage = styled(PageContainer, {
 	'@md': {
 		'&.main': {
 			height: 'calc(100vh - 80px)',
-		}
+		},
 	},
 });
 
@@ -52,11 +52,11 @@ export const DiaryPageMo = () => {
 		});
 
 		arrayBuys?.forEach((a) => {
-			!temps[a?.[0]] && (temps[a?.[0]] = { buy: 0 });
+			!temps[a?.[0]] && (temps[a?.[0]] = { buy: { count: 0, sum: 0, type: '' } });
 			temps[a[0]]['buy'] = a?.[1];
 		});
 		arraySells?.forEach((a) => {
-			!temps[a?.[0]] && (temps[a?.[0]] = { sell: 0 });
+			!temps[a?.[0]] && (temps[a?.[0]] = { sell: { count: 0, sum: 0, type: '' } });
 			temps[a[0]]['sell'] = a?.[1];
 		});
 
@@ -104,7 +104,7 @@ export const DiaryPageMo = () => {
 
 	return (
 		<StyledPage className={clsx('diary', 'main')} summaryData={summary}>
-			<Flex flex={1}  className='view-box' direction={'column'} align={'start'}>
+			<Flex flex={1} className='view-box' direction={'column'} align={'start'}>
 				{/* 캘린더 뷰 */}
 				<Flex {...handlerMonthSwipe}>
 					<CalendarView

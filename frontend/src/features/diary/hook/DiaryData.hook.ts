@@ -3,6 +3,8 @@ import { useMemo, useState } from 'react';
 import { DiaryItemType as DataType } from '../api/diary.dto';
 import { SummaryData } from '../config/Diary.data';
 import dayjs from 'dayjs';
+import { CalendarCellDataType } from '../ui/CalendarCell.ui';
+import { valueOfPlusMinus } from '@shared/libs/utils.lib';
 
 export type CountPerDayType = { date: string; count: number };
 
@@ -57,15 +59,17 @@ export const useDiaryData = (initialKeepData?: DataType[], initialTradeData?: Da
 
 	// 날자별 건수 데이터 생성
 	const countPerDays = useMemo(() => {
-		const buys: Record<string, number> = {};
-		const sells: Record<string, number> = {};
+		const buys: Record<string, CalendarCellDataType> = {};
+		const sells: Record<string, CalendarCellDataType> = {};
 
 		// 매수 종목 일자별 데이터
 		keeps?.forEach(
 			(item) => {
 				const key = dayjs(item.sdate).format('YYYY-MM-DD');
-				!buys[key] && (buys[key] = 0);
-				buys[key] += 1;
+				!buys[key] && (buys[key] = { count: 0, sum: 0, type: '' });
+				buys[key]['count'] += 1;
+				buys[key]['sum'] += (item?.sonic || 0);
+				buys[key]['type'] = valueOfPlusMinus(buys[key]['sum']);
 			},
 			{} as Record<string, DataType>
 		);
@@ -74,8 +78,10 @@ export const useDiaryData = (initialKeepData?: DataType[], initialTradeData?: Da
 		trades?.forEach(
 			(item) => {
 				const key = dayjs(item.edate).format('YYYY-MM-DD');
-				!sells[key] && (sells[key] = 0);
-				sells[key] += 1;
+				!sells[key] && (sells[key] = { count: 0, sum: 0, type: '' });
+				sells[key]['count'] += 1;
+				sells[key]['sum'] += (item?.sonic || 0);
+				sells[key]['type'] = valueOfPlusMinus(sells[key]['sum']);
 			},
 			{} as Record<string, DataType>
 		);

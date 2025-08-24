@@ -45,6 +45,7 @@ export const API = {
 	MYSTOCK_SELL: `${API_ROOT}/mystock/sell`,
 	STOCK: `${API_ROOT}/stock`,
 	MARKET: `${API_ROOT}/market`,
+	MARKET_SEARCH: `${API_ROOT}/market/search`,
 	MARKET_SISE: `${API_ROOT}/market/sise`,
 	MARKET_COUNT: `${API_ROOT}/market/vcount`,
 	INVEST: `${API_ROOT}/invest`,

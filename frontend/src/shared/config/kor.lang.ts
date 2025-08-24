@@ -171,6 +171,9 @@ const KOR = {
 	PER_DAYS: '일별',
 	INVEST: '가치투자',
 
+	PER_OPEN: '상장종목',
+	PER_CLOSE: '상폐종목',
+
 	INVESTMENT_SMIULATION: '투자 시뮬레이션',
 	INVESTMENT_FINAL: '최종 평가액',
 	INVESTMENT_SONIC: '순이익',

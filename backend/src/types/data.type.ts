@@ -109,11 +109,18 @@ export interface ProfitSearchParams {
   year?: string;
 }
 
+export interface MarketSearchDataType {
+  code: string;
+  name: string;
+  type: string;
+  state: string;
+}
+
 export interface MarketSelectDataType {
   code: string;
   name: string;
   type: string;
-  state: number;
+  state: string;
   stime: string;
   updown: string;
   sise: number;

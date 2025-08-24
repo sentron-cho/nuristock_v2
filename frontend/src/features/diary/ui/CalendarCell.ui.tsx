@@ -9,18 +9,23 @@ import dayjs from 'dayjs';
 import { useMemo } from 'react';
 
 const StyledCell = styled(Flex, {
-  borderTop: '1px solid $gray500',
-	// borderTop: '1px solid $gray500',
-	// borderRadius: '$sm',
+	borderTop: '1px solid $gray500',
 	height: '60px',
 	padding: '$4',
 	textAlign: 'center',
 	cursor: 'pointer',
 
-	// '.text': {
-	// 	fontSize: 10,
-	// 	lineHeight: 1.2,
-	// },
+	'.buy': {
+		color: '$greenhover'
+	},
+
+	'.minus': {
+		color: '$minus',
+	},
+
+	'.plus': {
+		color: '$plus',
+	},
 
 	variants: {
 		isCurrentMonth: {
@@ -34,7 +39,9 @@ const StyledCell = styled(Flex, {
 	},
 });
 
-export type CalendarTypeData = { buy?: number; sell?: number };
+export type CalendarCellDataType = { count: number; sum: number; type: string };
+
+export type CalendarTypeData = { buy?: CalendarCellDataType; sell?: CalendarCellDataType };
 
 type CalendarCellProps = {
 	date: string | Date;
@@ -62,8 +69,8 @@ export const CalendarCell = ({ date, data, onClick, isCurrentMonth, selected }: 
 			<Text className='title' text={dayjs(date).date()} />
 
 			<Flex className='text' direction={'column'} gap={2}>
-				{data?.buy && <Text size='xs' text={`${ST.BUY}(${data?.buy})`} />}
-				{data?.sell && <Text size='xs' text={`${ST.SELL}(${data?.sell})`} />}
+				{data?.buy && <Text size='xs' className={clsx('buy')} text={`${ST.BUY}(${data?.buy?.count})`} />}
+				{data?.sell && <Text size='xs' className={clsx(data?.sell?.type)} text={`${ST.SELL}(${data?.sell?.count})`} />}
 			</Flex>
 		</StyledCell>
 	);

@@ -35,3 +35,14 @@ export interface MarketSiseUpdateDataType {
 	erate: number;
 	ecost: number;
 }
+
+export interface MarketSearchDataType {
+  code: string;
+  name: string;
+  type: string;
+  state: string;
+}
+
+export interface MarketSearchResponse {
+	value?: MarketSearchDataType[];
+}
