@@ -71,6 +71,8 @@ export const REST_API = {
   DART_EQUITY: `${DART_BASE}/fnlttMultiAcnt.json`,
   DART_ROE: `${DART_BASE}/fnlttSinglIndx.json`,
   DART_SHARES: `${DART_BASE}/stockTotqySttus.json`,
+  DART_COMPANY: `${DART_BASE}/company.json`,
+  DART_FS: `${DART_BASE}/fnlttSinglAcntAll.json`,
 
   FNGUIDE_ROOT: `${FNGUIDE_ROOT}/`,
   FNGUIDE_MAIN: `${FNGUIDE_ROOT}/SVO2/ASP/SVD_Main.asp`,

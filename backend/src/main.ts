@@ -15,6 +15,7 @@ import investRoute from "./routes/invest.route.js";
 import assetRoute from "./routes/asset.route.js";
 import depositRoute from "./routes/deposit.route.js";
 import bucketRoute from "./routes/bucket.route.js";
+import { startMystockTask } from "./task/mystock.task.js";
 
 // dotenv.config({ path: '.env' });
 
@@ -59,6 +60,7 @@ fastify.ready().then(() => {
 fastify.ready().then(() => {
   startAssetTask(fastify); // 일별 투자금액 수집
   startEvalutionPriceTask(fastify); // 일별 평가금액 수집(시세반영)
+  startMystockTask(fastify); // 일별 투자금액 수집
 });
 
 fastify.get("/", async (req, reply) => {

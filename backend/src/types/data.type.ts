@@ -27,6 +27,9 @@ export type YearRow = {
   shares?: number; // 연말(12/31) 상장주식수 (KRX)
   equity?: number; // 자본총계 (DART)
   roe?: number; // ROE (%)
+  eps?: number; // EPS
+  per?: number; // PER
+  netIncome?: number; // 당기순이익
 };
 
 export type FactsResult = {
@@ -169,4 +172,20 @@ export interface DepositSearchParams {
 
 export interface BucketSearchParams {
   page?: string;
+}
+
+export interface StockDartBasicType {
+  corpCode: string; // 8자리 코드
+  year: number; // 대상년도
+  reprtCode: string; // 리포트 코드
+  // 원천값
+  netIncome?: number; // 당기순이익
+  equity?: number; // 자본(지배주주)
+  debt?: number; // 부채
+  parValue?: number;
+  shares?: number; // 발행주식수
+  // 파생값
+  eps?: number; // EPS
+  roe?: number; // ROE
+  debtRatio?: number; // 부채비율
 }

@@ -31,3 +31,12 @@ export const useSelectMarketSearch = ({ all }: { all?: boolean }) => {
 		},
 	});
 };
+
+export const useUpdateMarketSearch = () => {
+	return useMutation({
+		mutationKey: ['MARKET-SISE-U02'],
+		mutationFn: async (data: { code: string }) => {
+			return await api.put(API.MARKET_SEARCH, data);
+		},
+	});
+};

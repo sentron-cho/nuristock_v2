@@ -3,7 +3,7 @@ import { PageContainer } from '../../../features/common/ui/PageContainer.ui';
 import { useMemo } from 'react';
 import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
-import { IconAdd } from '@entites/Icons';
+import { IconAdd, IconRefresh } from '@entites/Icons';
 import { ST } from '@shared/config/kor.lang';
 import { EID } from '@shared/config/default.config';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
@@ -16,6 +16,8 @@ import { useMarketHook } from '@features/market/hook/Market.hook';
 import { Text } from '@entites/Text';
 import { withCommas } from '@shared/libs/utils.lib';
 import { TextInputForm } from '@entites/TextInputForm';
+import { IconButton } from '@entites/IconButton';
+import { useUpdateMarketSearch } from '@features/market/api/market.api';
 
 const StyledPage = styled(PageContainer, {
 	background: '$white',
@@ -58,6 +60,7 @@ export const MarketPageMo = ({
 }) => {
 	const { navigate } = useCommonHook();
 	const { list, totalCount } = useMarketHook(data, viewType);
+	const { mutateAsync: updateData } = useUpdateMarketSearch();
 
 	// console.log({ totalCount, list });
 
@@ -78,6 +81,10 @@ export const MarketPageMo = ({
 		],
 		[]
 	);
+
+	const onClickRefresh = (code?: string) => {
+		code && updateData({ code: code });
+	};
 
 	return (
 		<>
@@ -113,9 +120,10 @@ export const MarketPageMo = ({
 						<Flex className={clsx('box', swipeClass)} direction={'column'}>
 							{list?.map((item) => {
 								return (
-									<Flex className='row' height={24}>
+									<Flex key={item?.code} className='row' height={24}>
 										<Text text={item.name} flex={1} textAlign={'left'} />
 										<Text text={item.code} flex={1} textAlign={'right'} />
+										<IconButton icon={<IconRefresh />} onClick={() => onClickRefresh(item?.code)} />
 									</Flex>
 								);
 							})}

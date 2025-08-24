@@ -34,12 +34,17 @@ export const getYearlyFacts = async (opts: {
       const equity = corpCode ? await fetchEquity(corpCode, y).catch(() => undefined) : undefined;
 
       let roe: number | undefined;
+      let ni: number | undefined;
+
       if (corpCode) {
+        // 당기순이익
+        ni = await fetchNetIncome(corpCode, y).catch(() => undefined);
+
         if (y >= 2023) {
           roe = await fetchROEIndicator(corpCode, y).catch(() => undefined);
         }
+
         if (roe == null) {
-          const ni = await fetchNetIncome(corpCode, y).catch(() => undefined);
           const avgEq =
             prevEquity != null && equity != null ? (prevEquity + equity) / 2 : equity ?? prevEquity ?? undefined;
           if (ni != null && avgEq) {
@@ -48,7 +53,14 @@ export const getYearlyFacts = async (opts: {
         }
       }
 
-      rows.push({ year: y, shares: shares.shares, equity, roe });
+      rows.push({
+        year: y, // 대상년도
+        shares: shares.shares, // 주식수
+        equity, // 자본(지배주주지분)
+        roe, // ROE
+        netIncome: ni, // 당기순이익
+        eps: ni ? (ni / shares.shares) * 100 : 0,
+      });
 
       if (equity != null) prevEquity = equity;
     }

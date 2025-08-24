@@ -2,6 +2,7 @@ import axios from "axios";
 import { getCorpCodeByStock } from "./dartCorpmap.js";
 import { REST_API } from "../types/url.js";
 import { TIME_OUT } from "../types/constants.js";
+import { saveText } from "../lib/writefile.js";
 
 const URL_EQUITY = REST_API.DART_EQUITY;
 const URL_ROE = REST_API.DART_ROE;
@@ -80,6 +81,8 @@ export const fetchNetIncome = async (corpCode8: string, year: number): Promise<n
 
   const list = data?.list as any[] | undefined;
   if (!Array.isArray(list)) return;
+
+  saveText("netincome.json", JSON.stringify(data));
 
   const target =
     list.find(
@@ -166,7 +169,7 @@ export const getDartReportByStock = async (code6: string, year: number): Promise
   };
 
   const { data } = await axios.get(URL_SHARES, { params, timeout: TIME_OUT });
-  // saveText("report", JSON.stringify(data));
+  // saveText("report.json", JSON.stringify(data));
 
   return data?.list;
 };
