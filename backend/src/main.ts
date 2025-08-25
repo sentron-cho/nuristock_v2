@@ -60,7 +60,7 @@ fastify.ready().then(() => {
 fastify.ready().then(() => {
   startAssetTask(fastify); // 일별 투자금액 수집
   startEvalutionPriceTask(fastify); // 일별 평가금액 수집(시세반영)
-  startMystockTask(fastify); // 일별 투자금액 수집
+  startMystockTask(fastify); // 주식 종목 투자 정보 수집
 });
 
 fastify.get("/", async (req, reply) => {

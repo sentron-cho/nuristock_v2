@@ -1,9 +1,9 @@
 import { styled } from '@styles/stitches.config';
 import { PageContainer } from '../../../features/common/ui/PageContainer.ui';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
-import { IconAdd, IconRefresh } from '@entites/Icons';
+import { IconAdd } from '@entites/Icons';
 import { ST } from '@shared/config/kor.lang';
 import { EID } from '@shared/config/default.config';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
@@ -15,9 +15,9 @@ import { MarketItemType, MarketSearchResponse } from '@features/market/api/marke
 import { useMarketHook } from '@features/market/hook/Market.hook';
 import { Text } from '@entites/Text';
 import { withCommas } from '@shared/libs/utils.lib';
-import { TextInputForm } from '@entites/TextInputForm';
-import { IconButton } from '@entites/IconButton';
-import { useUpdateMarketSearch } from '@features/market/api/market.api';
+import { Chip } from '@entites/Chip';
+import { SearchFieldForm } from '@entites/SearchFieldForm';
+import { useForm } from 'react-hook-form';
 
 const StyledPage = styled(PageContainer, {
 	background: '$white',
@@ -28,6 +28,7 @@ const StyledPage = styled(PageContainer, {
 		padding: '10px',
 		paddingBottom: '0',
 		background: '$bgcolor',
+		zIndex: 1,
 
 		'.total': {
 			paddingTop: 10,
@@ -59,10 +60,14 @@ export const MarketPageMo = ({
 	onClick?: (eid?: string, item?: MarketItemType) => void;
 }) => {
 	const { navigate } = useCommonHook();
-	const { list, totalCount } = useMarketHook(data, viewType);
-	const { mutateAsync: updateData } = useUpdateMarketSearch();
+	const { list, totalCount, moreMax, setSearch } = useMarketHook(data, viewType);
 
-	// console.log({ totalCount, list });
+	const formMethod = useForm();
+
+	const search = formMethod?.watch('searchtext');
+	useEffect(() => {
+		setSearch(search);
+	}, [search]);
 
 	const { handlerSwipe, swipeClass } = useSwipePage({
 		onNextPage: () => {
@@ -82,9 +87,26 @@ export const MarketPageMo = ({
 		[]
 	);
 
-	const onClickRefresh = (code?: string) => {
-		code && updateData({ code: code });
-	};
+	useEffect(() => {
+		const scrollEl = document.querySelector('.scroll-view');
+		if (!scrollEl) return;
+
+		const onScroll = () => {
+			const { scrollTop, clientHeight, scrollHeight } = scrollEl;
+			const nearBottom = scrollTop + clientHeight >= scrollHeight * 0.9;
+			nearBottom && moreMax();
+		};
+
+		scrollEl.addEventListener('scroll', onScroll);
+
+		return () => scrollEl.removeEventListener('scroll', onScroll);
+	}, []);
+
+	useEffect(() => {
+		const scrollEl = document.querySelector('.scroll-view');
+		if (!scrollEl) return;
+		scrollEl.scrollTo({ top: 0, behavior: 'smooth' });
+	}, [viewType]);
 
 	return (
 		<>
@@ -105,13 +127,13 @@ export const MarketPageMo = ({
 
 					{/* 검색 */}
 					<Flex className='head' direction={'column'}>
-						<Flex className='search'>
+						<Flex className='search-box'>
 							{/* <Text text={ST.CLOSE_STOCK}/> */}
-							<TextInputForm id='search' placeholder={ST.INPUT_SEARCH} />
+							<SearchFieldForm id='searchtext' placeholder={ST.INPUT_SEARCH} formMethod={formMethod} />
 						</Flex>
 						<Flex className='total' justify={'start'}>
-							<Text size='xs' text={'TOTAL : '} />
-							<Text size='xs' text={withCommas(totalCount)} />
+							{/* <Text size='xs' text={'TOTAL : '} /> */}
+							{totalCount && <Text size='xs' text={`${withCommas(list?.length || 0)} / ${withCommas(totalCount)}`} />}
 						</Flex>
 					</Flex>
 
@@ -120,10 +142,11 @@ export const MarketPageMo = ({
 						<Flex className={clsx('box', swipeClass)} direction={'column'}>
 							{list?.map((item) => {
 								return (
-									<Flex key={item?.code} className='row' height={24}>
+									<Flex key={item?.code} className='row' height={28}>
 										<Text text={item.name} flex={1} textAlign={'left'} />
+										{item.mtime && <Chip size='xsmall' label={item.mtime} color='primary' />}
 										<Text text={item.code} flex={1} textAlign={'right'} />
-										<IconButton icon={<IconRefresh />} onClick={() => onClickRefresh(item?.code)} />
+										{/* <IconButton icon={<IconRefresh />} onClick={() => onClickRefresh(item?.code)} /> */}
 									</Flex>
 								);
 							})}

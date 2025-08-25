@@ -40,7 +40,8 @@ export interface MarketSearchDataType {
   code: string;
   name: string;
   type: string;
-  state: string;
+	state: string;
+	mtime: string;
 }
 
 export interface MarketSearchResponse {

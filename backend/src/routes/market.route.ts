@@ -37,7 +37,7 @@ const marketRoute = (fastify: FastifyInstance) => {
   fastify.get(URL.MARKET.SEARCH, async (req, reply) => {
     try {
       const { all = false } = req.query as MarketSiseUpdateDataType;
-      let query = `SELECT code, name, type, state FROM market ORDER BY name ASC;`;
+      let query = `SELECT code, name, type, state, mtime FROM market ORDER BY name ASC;`;
       if (!all) {
         query += ` WHERE state != 'close'`;
       }

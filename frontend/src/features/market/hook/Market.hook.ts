@@ -1,24 +1,39 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { MarketSearchResponse } from '../api/market.dto';
 
 export const useMarketHook = (initialData?: MarketSearchResponse, viewType: 'kospi' | 'kosdaq' = 'kospi') => {
 	const [isShowClose, setShowClose] = useState(false);
-	const [max, setMax] = useState(200);
+	const [perItem] = useState(100);
+	const [max, setMax] = useState(perItem);
+	const [search, setSearch] = useState<string>();
+
+	useEffect(() => {
+		setMax(perItem);
+	}, [viewType]);
 
 	const data = useMemo(() => initialData?.value, [initialData]);
 
 	const list = useMemo(() => {
-		const filtered = data?.filter(a => a?.type?.toUpperCase() === viewType.toUpperCase());
+		const filtered = data?.filter((a) => a?.type?.toUpperCase() === viewType.toUpperCase());
 		let items = filtered;
 
 		if (!isShowClose) {
-			items = filtered?.filter(a => a.state === 'open');
+			items = filtered?.filter((a) => a.state === 'open');
+		}
+
+		if (search) {
+			items = items?.filter(a => a.code.includes(search) || a.name.includes(search));
+			console.log({ search, items });
 		}
 
 		return items;
-	}, [data, isShowClose, viewType]);
+	}, [data, isShowClose, viewType, search]);
 
 	const totalCount = useMemo(() => list?.length, [list]);
+
+	const moreMax = () => {
+		setMax((prev) => prev + perItem);
+	};
 
 	return {
 		data,
@@ -26,7 +41,9 @@ export const useMarketHook = (initialData?: MarketSearchResponse, viewType: 'kos
 		totalCount,
 		max,
 		setMax,
+		moreMax,
 		isShowClose,
 		setShowClose,
+		setSearch,
 	};
 };

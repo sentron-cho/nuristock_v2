@@ -40,14 +40,14 @@ export const DividendRegisterPopup = ({
 					cost: withCommas(item?.cost),
 					count: withCommas(item?.count),
 					price: withCommas(item?.price),
-					tax: withCommas(Number(item?.cost) * Number(item?.count) - Number(item?.price)),
+					tax: withCommas(Number(item?.cost) * Number(item?.count) - Number(item?.price)) || 0,
 				}
 			: {
 					date: new Date(),
 					cost: '',
 					count: '',
 					price: '',
-					tax: '',
+					tax: 0,
 				},
 		resolver: zodResolver(
 			z.object({
@@ -93,7 +93,6 @@ export const DividendRegisterPopup = ({
 			onClose?.(false);
 		}
 	};
-	// 23010
 
 	const onChange = (option: SelectOptionType | null) => {
 		if (option) {
@@ -109,7 +108,7 @@ export const DividendRegisterPopup = ({
 		const { price, cost, count } = forms?.getValues() as FieldValues as DataType;
 
 		if (price && cost && count) {
-			forms?.setValue('tax', withCommas(toNumeric(cost) * toNumeric(count) - toNumeric(price)));
+			forms?.setValue('tax', withCommas(toNumeric(cost) * toNumeric(count) - toNumeric(price)) || 0);
 		}
 	};
 

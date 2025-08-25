@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { getMystockInfo } from "../crawler/service/mystockInfoScraper.service.js";
 import { FieldValues, StockDartBasicType } from "../types/data.type.js";
 
-const INTERVAL_TIME = 1 * 60 * 1000; // 1분마다
+const INTERVAL_TIME = 1 * 30 * 1000; // 1분마다
 
 // 주식 현재가 시세 크롤링
 export const startMystockTask = (fastify: FastifyInstance) => {
@@ -12,15 +12,18 @@ export const startMystockTask = (fastify: FastifyInstance) => {
   const start = async () => {
     const now = dayjs().tz("Asia/Seoul");
 
-    console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}] 보유금액 수집!`);
+    // console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}] 주식 종목 투자 정보 수집!`);
 
     const year = dayjs().add(-1, "year").year();
-    const sql = `select code, name, type from market where state='open' and type != 'CLOSE' and (mtime != '${year}' or mtime is null) order by name limit 1;`;
+    const sql = `select code, name, type from market where state='open' and type != 'CLOSE' and (mtime != '${year}' or mtime is null) order by type DESC, name limit 1;`;
     const data = await fastify.db.query(sql);
+
+    // console.log({sql})
+    console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}: 종목정보수집] ==> `, {data: data?.[0]});
 
     // DB 저장
     if (data && data?.[0]) {
-      const { code, name } = data?.[0];
+      const { code } = data?.[0];
 
       const stock = await fastify.db.query(`SELECT code, name FROM market WHERE code='${code}';`);
 
@@ -31,6 +34,12 @@ export const startMystockTask = (fastify: FastifyInstance) => {
           to: dayjs().add(-1, "year").year(),
         });
         const { value } = res as { value: StockDartBasicType[] };
+
+        // 값이 없을 경우 패스
+        if (!value?.length) {
+          await fastify.db.query(`UPDATE market SET mtime='${year}' where code='${code}';`);
+          return;
+        }
 
         for (const row of value) {
           const params = {
@@ -48,7 +57,7 @@ export const startMystockTask = (fastify: FastifyInstance) => {
 
           const count = await fastify.db.query(
             `SELECT count(1) as count FROM marketinfo WHERE code='${code}' AND cdate='${params?.cdate}';`
-          );
+          );          
 
           if (!Number(count?.[0]?.count || 0)) {
             await fastify.db.query(`INSERT INTO marketinfo ${makeInsertSet(params as FieldValues)};`);
