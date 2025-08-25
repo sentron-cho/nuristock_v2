@@ -73,7 +73,7 @@ export const startMystockTask = (fastify: FastifyInstance) => {
 
   // 최초 실행
   console.log(`[${dayjs().tz("Asia/Seoul").format("YYYY-MM-DD HH:mm:ss")}] start asset task!!!!!`);
-  start();
 
-  setInterval(start, INTERVAL_TIME);
+  // start();
+  // setInterval(start, INTERVAL_TIME);
 };

@@ -90,7 +90,11 @@ export const fetchDartBasicSnapshot = async (
     fs_div: "CFS", // ✅ 연결 재무제표 (필수) CFS(연결), OFS(개별)
   };
 
-  const { data: fsData } = await axios.get(URL_FS, { params: fsParams, timeout: TIME_OUT });
+  const res = await axios.get(URL_FS, { params: fsParams, timeout: TIME_OUT });
+  console.log({URL_FS, fsParams});
+  console.log(res);
+
+  const { data: fsData } = res;
   const fsList = fsData?.list as any[] | undefined;
 
   // 디버깅/검증용 저장 (선택)
