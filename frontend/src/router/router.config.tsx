@@ -18,6 +18,7 @@ import DepositPage from '@page/ui/deposit/Deposit.page';
 import MainboardPage from '@page/ui/mainboard/Mainboard.page';
 import BucketlistPage from '@page/ui/bucketlist/Bucketlist.page';
 import ProfitPerDayPage from '@page/ui/profit/ProfitPerDay.page';
+import ResearchPage from '@page/ui/research/Research.page';
 
 const router = createBrowserRouter([
 	{
@@ -123,6 +124,15 @@ const router = createBrowserRouter([
 				children: [
 					{ index: true, element: <BucketlistPage /> },
 					{ path: ':id', element: <BucketlistPage /> },
+				],
+			},
+			{
+				path: 'research',
+				element: <PageLayout />,
+				children: [
+					{ index: true, element: <ResearchPage viewType='kospi' /> },
+					{ path: 'kospi', element: <ResearchPage viewType='kospi' /> },
+					{ path: 'kosdaq', element: <ResearchPage viewType='kosdaq' /> }
 				],
 			},
 			{ path: '*', element: <NotFoundPage /> },

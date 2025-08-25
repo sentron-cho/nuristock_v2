@@ -189,3 +189,22 @@ export interface StockDartBasicType {
   roe?: number; // ROE
   debtRatio?: number; // 부채비율
 }
+
+export interface ResearchSearchParams {
+  code?: string;
+  year?: string;
+  all?: boolean;
+}
+
+export interface ResearchDataType extends StockDartBasicType {
+  code: string;
+  name: string;
+  type: string;
+  state: string;
+  stime: string;
+  updown: string;
+  sise: number;
+  erate: number;
+  ecost: number;
+  mtime: string;
+}

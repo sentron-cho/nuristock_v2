@@ -2,6 +2,7 @@ import axios from "axios";
 import { REST_API } from "../types/url.js";
 import { TIME_OUT } from "../types/constants.js";
 import { StockDartBasicType } from "../types/data.type.js";
+import { saveText } from "../lib/writefile.js";
 
 const URL_FS = REST_API.DART_FS;
 const URL_COMPANY = REST_API.DART_COMPANY;
@@ -27,7 +28,7 @@ const pickAccount = (
     sjDivPrefer = ["IS", "BS"], // 손익계산서, 재무상태표
     fsPrefer = ["CFS", "OFS"], // 연결 우선, 없으면 개별
     // 계정명 후보 (한국어/IFRS tag)
-    accountNames = [] as Array<string | RegExp>,
+    accountNames = ['ifrs-full_Equity'] as Array<string | RegExp>,
   }: {
     sjDivPrefer?: string[];
     fsPrefer?: string[];
@@ -43,6 +44,7 @@ const pickAccount = (
     if (sjDivPrefer.some((sj) => row.sj_div === sj || inc(row.sj_nm, sj))) s += 10;
     // 연결/개별
     if (fsPrefer.some((fs) => row.fs_div === fs || inc(row.fs_nm, fs === "CFS" ? "연결" : "개별"))) s += 10;
+    // if (row.account_id === 'ifrs-full_Equity') s += 10;
     // 계정명
     if (
       accountNames.some((a) =>
@@ -113,11 +115,14 @@ export const fetchDartBasicSnapshot = async (
     sjDivPrefer: ["BS"],
     fsPrefer: ["CFS", "OFS"],
     accountNames: [
+      'ifrs-full_Equity', // ifrs-full_Equity
       "자본총계",
       "지배기업의 소유주에게 귀속되는 자본",
-      /equity/i, // ifrs-full_Equity
     ],
   });
+
+  // console.log({ equityRow });
+
   const equityTotal = toNum(equityRow?.thstrm_amount);
 
   // 부채총계
@@ -163,11 +168,12 @@ export const fetchDartBasicSnapshot = async (
     toNum(companyData?.tot_shrs) ??
     toNum(companyData?.total_shares) ??
     toNum(companyData?.stocks) ??
-    toNum(companyData?.total) ?? shares;
+    toNum(companyData?.total) ??
+    shares;
 
   // 3) 파생값 계산
   const EPS = netIncome && totalShares ? netIncome / totalShares : undefined;
-  const ROE = netIncome && equityTotal ? netIncome / equityTotal : undefined;
+  const ROE = netIncome && equityTotal ? netIncome / equityTotal * 100 : undefined;
   const debtRatio = liabilitiesTotal && equityTotal && equityTotal !== 0 ? liabilitiesTotal / equityTotal : undefined;
 
   return {

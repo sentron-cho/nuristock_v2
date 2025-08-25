@@ -196,6 +196,7 @@ const KOR = {
 		DASHBOARD: '대시보드',
 		DIARY: '다이어리',
 		MARKET: '종목검색',
+		RESEARCH: '투자조사',
 		PROFIT: '투자손익',
 		INVEST: '가치투자',
 		DIVIDEND: '배당',
@@ -285,6 +286,14 @@ const KOR = {
 		TARGET: '목표 금액',
 		RESULT: '실현 결과',
 	},
+
+	RESEARCH_TABLE: {
+		NAME: '주식명',
+		COUNT: '발행주식수',
+		ROE: 'ROE',
+		PROFIT: '당기순이익',
+		ASSET: '자본',
+	}
 };
 
 export const ST = KOR;

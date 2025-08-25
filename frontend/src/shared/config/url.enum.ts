@@ -6,6 +6,7 @@ export const URL = {
 	MYSTOCK: '/mystock',
 	DIARY: '/diary',
 	MARKET: '/market',
+	RESEARCH: '/research',
 	ASSET: '/asset',
 	DEPOSIT: '/deposit',
 	PROFIT: '/profit',
@@ -63,4 +64,5 @@ export const API = {
 	BUCKET: `${API_ROOT}/bucket`,
 	APP: `${API_ROOT}/app`,
 	APP_CONFIG: `${API_ROOT}/app/config`,
+	RESEARCH: `${API_ROOT}/research`,
 };

@@ -19,6 +19,9 @@ export const URL = {
     SISE: `${ROOT_URL}/market/sise`,
     SEARCH: `${ROOT_URL}/market/search`,
   },
+  RESEARCH: {
+    ROOT: `${ROOT_URL}/research`,
+  },
   PROFIT: {
     ROOT: `${ROOT_URL}/profit`,
     YEARS: `${ROOT_URL}/profit/years`,

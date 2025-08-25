@@ -11,6 +11,7 @@ import IconInvest from '@mui/icons-material/Balance'; // 가치투자
 import IconAsset from '@mui/icons-material/AssuredWorkload'; // 투자금
 import IconDeposit from '@mui/icons-material/CurrencyExchange'; // 예수금
 import IconBucket from '@mui/icons-material/AdsClick'; // 버킷
+import IconResearch from '@mui/icons-material/Troubleshoot'; // 버킷
 
 import IconDelete from '@mui/icons-material/Delete';
 import IconEdit from '@mui/icons-material/DriveFileRenameOutline';
@@ -133,5 +134,6 @@ export {
 	IconMoreSettings,
 	IconZoomIn,
 	IconZoomOut,
-	IconBucket
+	IconBucket,
+	IconResearch
 };
