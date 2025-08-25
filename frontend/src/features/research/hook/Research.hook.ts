@@ -33,14 +33,14 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		// 나머지
 		const rest = items?.filter((a) => Number(a.roe) <= 0 || Number(a.equity) <= 0 || Number(a.profit) <= 0);
 
-		console.log({ count: items?.length, preferred: preferred?.length, rest: rest?.length });
+		// console.log({ count: items?.length, preferred: preferred?.length, rest: rest?.length });
 
 		// 정렬
 		items = [...reverse(sortBy(preferred, ['roe'])), ...rest];
 
 		if (search) {
 			items = items?.filter((a) => a.code?.includes(search) || a.name?.includes(search));
-			console.log({ search, items });
+			// console.log({ search, items });
 		}
 
 		return items?.map((a) => {
