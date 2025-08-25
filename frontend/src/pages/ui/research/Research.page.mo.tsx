@@ -46,6 +46,13 @@ const StyledPage = styled(PageContainer, {
 
 			'.row': {},
 		},
+
+		'.minus': {
+			color: '$minus',
+		},
+		'.plus': {
+			color: '$plus',
+		},
 	},
 });
 
@@ -70,12 +77,12 @@ export const ResearchPageMo = ({
 
 	const { handlerSwipe, swipeClass } = useSwipePage({
 		onNextPage: () => {
-			return `${URL.MARKET}/${viewType === 'kospi' ? 'kosdaq' : 'kospi'}`;
+			return `${URL.RESEARCH}/${viewType === 'kospi' ? 'kosdaq' : 'kospi'}`;
 		},
 	});
 
 	const onClickNavi = (eid?: string) => {
-		eid && navigate(`${URL.MARKET}/${eid}`);
+		eid && navigate(`${URL.RESEARCH}/${eid}`);
 	};
 
 	const naviOptions = useMemo(
@@ -152,10 +159,10 @@ export const ResearchPageMo = ({
 									<Flex key={item?.code} className='row' height={28} onClick={() => onClick?.(EID.SELECT, item)}>
 										{/* <Text size='xs' text={`${item.name}(${item.code})`} flex={3} textAlign={'left'} /> */}
 										<Text size='xs' text={`${item.name}`} flex={2} textAlign={'left'} />
-										<Text size='xs' text={toSemiCost(item.scount).replace(ST.WON, ST.JU)} flex={2} textAlign={'right'} />
-										<Text size='xs' text={item.roe} flex={1} textAlign={'right'} />
-										<Text size='xs' text={toShortCostString(item.equity)} flex={2} textAlign={'right'} />
-										<Text size='xs' text={toShortCostString(item.profit)} flex={2} textAlign={'right'} />
+										<Text size='xs' className={clsx(item.countType)} text={toSemiCost(item.scount).replace(ST.WON, ST.JU)} flex={2} textAlign={'right'} />
+										<Text size='xs' className={clsx(item.roeType)} text={item.roe} flex={1} textAlign={'right'} />
+										<Text size='xs' className={clsx(item.enquityType)} text={toShortCostString(item.equity)} flex={2} textAlign={'right'} />
+										<Text size='xs' className={clsx(item.profitType)} text={toShortCostString(item.profit)} flex={2} textAlign={'right'} />
 										{/* <IconButton icon={<IconRefresh />} onClick={() => onClickRefresh(item?.code)} /> */}
 									</Flex>
 								);

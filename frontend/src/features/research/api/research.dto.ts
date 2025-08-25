@@ -11,7 +11,7 @@ export interface ResearchItemType {
 	cdate?: string;
 	scount?: string;
 	eps?: string;
-	roe?: string;
+	roe?: string | number;
 	debt?: string;
 	debtratio?: string;
 	profit?: string;
