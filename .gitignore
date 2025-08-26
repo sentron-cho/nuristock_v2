@@ -1,5 +1,4 @@
 frontend/yarn.lock
 /backend/dist
-backend/.cache/corpCode.zip
-backend/.cache/dart_corp_map.json
 frontend/tsconfig.ts*
+backend/.cache/*

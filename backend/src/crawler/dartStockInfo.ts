@@ -2,6 +2,7 @@ import axios from "axios";
 import { REST_API } from "../types/url.js";
 import { TIME_OUT } from "../types/constants.js";
 import { StockDartBasicType } from "../types/data.type.js";
+import { saveText } from "../lib/writefile.js";
 
 const URL_FS = REST_API.DART_FS;
 const URL_COMPANY = REST_API.DART_COMPANY;
@@ -90,9 +91,13 @@ export const fetchDartBasicSnapshot = async (
   };
 
   const res = await axios.get(URL_FS, { params: fsParams, timeout: TIME_OUT });
-
-  if (res?.data?.status === "020") {
+  
+  if (res?.data?.status === "020" || res?.data?.status === '013') {
     return { year, res: res?.data };
+  } else {
+    // console.log({ data: res?.data?.list?.[0] });
+    // console.log({ URL_FS, fsParams });
+    // saveText('data.json', JSON.stringify(res?.data));
   }
 
   const { data: fsData } = res;

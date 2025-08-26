@@ -68,6 +68,12 @@ export const startMystockTask = (fastify: FastifyInstance) => {
           return;
         }
 
+        if (value?.[0]?.res?.status === "013") {
+          console.error("[수집 실패]", { data: value?.[0]?.res });
+          await fastify.db.query(`UPDATE market SET mtime='${year}' where code='${code}';`);
+          return;
+        }
+
         if (!value?.length) {
           // 값이 없을 경우 패스
           await fastify.db.query(`UPDATE market SET mtime='${year}' where code='${code}';`);
@@ -94,6 +100,7 @@ export const startMystockTask = (fastify: FastifyInstance) => {
 
           // 없으면 등록
           if (!Number(count?.[0]?.count || 0)) {
+            console.log("[수집 성공]", { code: params?.code, name: params?.name, year: params?.cdate });
             await fastify.db.query(`INSERT INTO marketinfo ${makeInsertSet(params as FieldValues)};`);
           }
 
@@ -101,6 +108,7 @@ export const startMystockTask = (fastify: FastifyInstance) => {
           await fastify.db.query(`UPDATE market SET mtime='${year}' where code='${code}';`);
         }
       } catch (error) {
+        console.error("[수집 실패]", { code: code });
         await fastify.db.query(`UPDATE market SET mtime='0000' where code='${code}';`); // 오류시
         // await fastify.db.query(`UPDATE market SET mtime='${year}' where code='${code}';`);
       }
