@@ -50,7 +50,7 @@ export const startMystockTask = (fastify: FastifyInstance) => {
 
       // const stock = await fastify.db.query(`SELECT code, name FROM market WHERE code='${code}';`);
 
-      console.log("[2.SEARCH]", { data });
+      // console.log("[2.SEARCH]", { data });
 
       try {
         const res = await getMystockInfo({

@@ -90,11 +90,8 @@ export const fetchDartBasicSnapshot = async (
   };
 
   const res = await axios.get(URL_FS, { params: fsParams, timeout: TIME_OUT });
-  // console.log({URL_FS, fsParams});
-  // console.log(res);
 
   if (res?.data?.status === "020") {
-    // console.log("[사용한도 초과]", { data: { year, ...res?.data } });
     return { year, res: res?.data };
   }
 

@@ -12,6 +12,12 @@ export const getMystockInfo = async (opts: {
   const to = opts.to ?? from;
 
   try {
+    // 사용한도 초과 테스트
+    const test = await fetchDartBasicSnapshot("01505469", 2024);
+    if (test?.res?.status === "020") {
+      return { code: code6, corpCode: code6, value: [{ res: test?.res }] };
+    }
+
     const corpCode = await getCorpCodeByStock(code6);
     const years = Array.from({ length: to - from + 1 }, (_, i) => from + i);
 
@@ -31,7 +37,7 @@ export const getMystockInfo = async (opts: {
 
     return { code: code6, corpCode, value: rows };
   } catch (error) {
-    console.log("************ financial clawler error *********");
+    console.log("************ mystock info scraper error *********");
     console.log(error);
     console.log("**********************************************");
     return undefined;
