@@ -14,12 +14,16 @@ export const startAssetTask = (fastify: FastifyInstance) => {
 
     // 보유 금액 합계
     const data = await fastify.db.query("SELECT sum(scost * count) as price FROM keeps");
+    const deposit = await fastify.db.query("SELECT price FROM deposit ORDER BY sdate DESC LIMIT 1");
 
     // DB 저장
     if (data && data?.[0]) {
       const { price } = data?.[0];
+      const { price: depos } = deposit?.[0];
+
       const today = dayjs().tz("Asia/Seoul").format("YYYYMMDD");
-      const params = { price, sdate: today, utime: dayjs().tz("Asia/Seoul").format("YYYY-MM-DD HH:mm:ss") };
+      const params = { price: Number(price) + Number(depos), sdate: today, utime: dayjs().tz("Asia/Seoul").format("YYYY-MM-DD HH:mm:ss") };
+
       const value = await fastify.db.query(`SELECT rowid FROM asset WHERE sdate='${today}';`);
       if (value?.length > 0) {
         await fastify.db.query(`UPDATE asset SET ${makeUpdateSet(params)} WHERE sdate = '${today}';`);
@@ -47,12 +51,15 @@ export const startEvalutionPriceTask = (fastify: FastifyInstance) => {
 
     // 일별 시세 평가 금액 합계
     const data = await fastify.db.query("select sum(m.sise * k.count) as price FROM keeps k JOIN market m ON k.code = m.code;");
+    const deposit = await fastify.db.query("SELECT price FROM deposit ORDER BY sdate DESC LIMIT 1");
 
     // DB 저장
     if (data && data?.[0]) {
       const { price } = data?.[0];
+      const { price: depos } = deposit?.[0];
+
       const today = dayjs().tz("Asia/Seoul").format("YYYYMMDD");
-      const params = { price, sdate: today, utime: dayjs().tz("Asia/Seoul").format("YYYY-MM-DD HH:mm:ss") };
+      const params = { price: Number(price) + Number(depos), sdate: today, utime: dayjs().tz("Asia/Seoul").format("YYYY-MM-DD HH:mm:ss") };
       const value = await fastify.db.query(`SELECT rowid FROM evaluation WHERE sdate='${today}';`);
       if (value?.length > 0) {
         await fastify.db.query(`UPDATE evaluation SET ${makeUpdateSet(params)} WHERE sdate = '${today}';`);
