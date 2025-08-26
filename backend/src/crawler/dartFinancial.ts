@@ -2,7 +2,6 @@ import axios from "axios";
 import { getCorpCodeByStock } from "./dartCorpmap.js";
 import { REST_API } from "../types/url.js";
 import { TIME_OUT } from "../types/constants.js";
-import { saveText } from "../lib/writefile.js";
 
 const URL_EQUITY = REST_API.DART_EQUITY;
 const URL_ROE = REST_API.DART_ROE;
@@ -24,8 +23,6 @@ export const fetchEquity = async (corpCode8: string, year: number): Promise<numb
 
   const list = data?.list as any[] | undefined;
   if (!Array.isArray(list)) return;
-
-  // saveText("dart.json", JSON.stringify(list));
 
   const isBalanceSheet = (x: any) => x.sj_div === "BS" || x.sj_nm?.includes?.("재무상태표");
 
@@ -82,8 +79,6 @@ export const fetchNetIncome = async (corpCode8: string, year: number): Promise<n
   const list = data?.list as any[] | undefined;
   if (!Array.isArray(list)) return;
 
-  saveText("netincome.json", JSON.stringify(data));
-
   const target =
     list.find(
       (x) =>
@@ -99,9 +94,9 @@ export const fetchNetIncome = async (corpCode8: string, year: number): Promise<n
 
 /* ── 최신 기준(가장 최근 정기보고서) 발행주식총수 ───────────────── */
 const REPORTS = [
-  { code: "11014", name: "3분기보고서" },
-  { code: "11013", name: "1분기보고서" },
-  { code: "11012", name: "반기보고서" },
+  // { code: "11014", name: "3분기보고서" },
+  // { code: "11013", name: "1분기보고서" },
+  // { code: "11012", name: "반기보고서" },
   { code: "11011", name: "사업보고서" },
 ] as const;
 
@@ -115,45 +110,36 @@ export type LatestIssuedShares = {
 /** 종목코드(6자리) 기준 */
 export const fetchLatestIssuedSharesByStock = async (
   code6: string,
-  lookbackYears = 3
+  year = new Date().getFullYear()
 ): Promise<LatestIssuedShares | undefined> => {
   const corpCode = await getCorpCodeByStock(code6);
   if (!corpCode) throw new Error(`corp_code not found for stock ${code6}`);
-  return fetchLatestIssuedSharesByCorp(corpCode, lookbackYears);
-};
 
-/** corp_code(8자리) 기준 */
-export const fetchLatestIssuedSharesByCorp = async (
-  corpCode8: string,
-  lookbackYears = 3
-): Promise<LatestIssuedShares | undefined> => {
-  const thisYear = new Date().getFullYear();
+  const params = {
+    crtfc_key: process.env.DART_API_KEY,
+    corp_code: corpCode,
+    bsns_year: year,
+    reprt_code: "11011", // 사업보고서
+  };
 
-  for (let offset = 0; offset < lookbackYears; offset++) {
-    const year = thisYear - offset;
+  const { data } = await axios.get(URL_SHARES, { params, timeout: TIME_OUT });
+  console.log({ params, data });
 
-    for (const r of REPORTS) {
-      const params = {
-        crtfc_key: process.env.DART_API_KEY,
-        corp_code: corpCode8,
-        bsns_year: year,
-        reprt_code: r.code,
-      };
-
-      const { data } = await axios.get(URL_SHARES, { params, timeout: TIME_OUT });
-
-      const row = Array.isArray(data?.list) ? data.list[0] : undefined;
-      if (!row) continue;
-
-      const raw = row.istc_totqy ?? row.issuetotqy ?? row?.totqy;
-      const shares = Number(String(raw ?? "").replace(/,/g, ""));
-      if (Number.isFinite(shares)) {
-        return { year, reprtCode: r.code, reprtName: r.name, shares };
-      }
-    }
+  if (data?.status === "020") {
+    // console.log("[사용한도 초과]", { data: { year, ...res?.data } });
+    return { year, reprtCode: data?.status, reprtName: data?.message, shares: 0 };
   }
 
-  return { year: 0, reprtCode: "11011", reprtName: "", shares: 0 };
+  const row = Array.isArray(data?.list) ? data.list[0] : undefined;
+  if (!row) return { year: 0, reprtCode: "11011", reprtName: "사업보고서", shares: 0 };
+
+  const raw = row.istc_totqy ?? row.issuetotqy ?? row?.totqy;
+  const shares = Number(String(raw ?? "").replace(/,/g, ""));
+  if (Number.isFinite(shares)) {
+    return { year, reprtCode: "11011", reprtName: "사업보고서", shares };
+  }
+
+  return { year: 0, reprtCode: "11011", reprtName: "사업보고서", shares: 0 };
 };
 
 /** 종목코드(6자리) 기준 사업보고서 가져오기 */
@@ -169,7 +155,5 @@ export const getDartReportByStock = async (code6: string, year: number): Promise
   };
 
   const { data } = await axios.get(URL_SHARES, { params, timeout: TIME_OUT });
-  // saveText("report.json", JSON.stringify(data));
-
   return data?.list;
 };

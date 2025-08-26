@@ -27,7 +27,7 @@ export const getYearlyFacts = async (opts: {
     for (const y of years) {
       // const date = dayjs(`${y}-12-31`).format('YYYYMMDD');
       // const shares = await fetchListedSharesAtDate(code6, date).catch(() => undefined);
-      const shares = (await fetchLatestIssuedSharesByStock(code6).catch((err) =>
+      const shares = (await fetchLatestIssuedSharesByStock(code6, y).catch((err) =>
         console.error(err)
       )) as LatestIssuedShares;
 
@@ -64,8 +64,6 @@ export const getYearlyFacts = async (opts: {
 
       if (equity != null) prevEquity = equity;
     }
-
-    // console.log({ code: code6, corpCode, value: rows });
 
     return { code: code6, corpCode, value: rows };
   } catch (error) {

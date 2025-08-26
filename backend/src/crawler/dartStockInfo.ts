@@ -2,7 +2,6 @@ import axios from "axios";
 import { REST_API } from "../types/url.js";
 import { TIME_OUT } from "../types/constants.js";
 import { StockDartBasicType } from "../types/data.type.js";
-import { saveText } from "../lib/writefile.js";
 
 const URL_FS = REST_API.DART_FS;
 const URL_COMPANY = REST_API.DART_COMPANY;
@@ -28,7 +27,7 @@ const pickAccount = (
     sjDivPrefer = ["IS", "BS"], // 손익계산서, 재무상태표
     fsPrefer = ["CFS", "OFS"], // 연결 우선, 없으면 개별
     // 계정명 후보 (한국어/IFRS tag)
-    accountNames = ['ifrs-full_Equity'] as Array<string | RegExp>,
+    accountNames = ["ifrs-full_Equity"] as Array<string | RegExp>,
   }: {
     sjDivPrefer?: string[];
     fsPrefer?: string[];
@@ -91,14 +90,16 @@ export const fetchDartBasicSnapshot = async (
   };
 
   const res = await axios.get(URL_FS, { params: fsParams, timeout: TIME_OUT });
-  console.log({URL_FS, fsParams});
-  console.log(res);
+  // console.log({URL_FS, fsParams});
+  // console.log(res);
+
+  if (res?.data?.status === "020") {
+    // console.log("[사용한도 초과]", { data: { year, ...res?.data } });
+    return { year, res: res?.data };
+  }
 
   const { data: fsData } = res;
   const fsList = fsData?.list as any[] | undefined;
-
-  // 디버깅/검증용 저장 (선택)
-  // saveText?.("dart_fs.json", JSON.stringify(fsData));
 
   // 당기순이익
   const netIncomeRow =
@@ -119,7 +120,7 @@ export const fetchDartBasicSnapshot = async (
     sjDivPrefer: ["BS"],
     fsPrefer: ["CFS", "OFS"],
     accountNames: [
-      'ifrs-full_Equity', // ifrs-full_Equity
+      "ifrs-full_Equity", // ifrs-full_Equity
       "자본총계",
       "지배기업의 소유주에게 귀속되는 자본",
     ],
@@ -143,8 +144,6 @@ export const fetchDartBasicSnapshot = async (
     params: { crtfc_key, corp_code: corpCode8 },
     timeout: TIME_OUT,
   });
-
-  // saveText?.('dart_company.json', JSON.stringify(companyData));
 
   const params = {
     crtfc_key: process.env.DART_API_KEY,
@@ -177,7 +176,7 @@ export const fetchDartBasicSnapshot = async (
 
   // 3) 파생값 계산
   const EPS = netIncome && totalShares ? netIncome / totalShares : undefined;
-  const ROE = netIncome && equityTotal ? netIncome / equityTotal * 100 : undefined;
+  const ROE = netIncome && equityTotal ? (netIncome / equityTotal) * 100 : undefined;
   const debtRatio = liabilitiesTotal && equityTotal && equityTotal !== 0 ? liabilitiesTotal / equityTotal : undefined;
 
   return {
@@ -192,5 +191,6 @@ export const fetchDartBasicSnapshot = async (
     eps: Number(EPS?.toFixed(2)),
     roe: Number(ROE?.toFixed(2)),
     debtRatio: Number(debtRatio?.toFixed(2)),
+    res: { status: "success" },
   };
 };

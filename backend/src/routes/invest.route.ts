@@ -22,7 +22,7 @@ const investRoute = (fastify: FastifyInstance) => {
       const value = list?.[year?.toString()];
 
       let params = {
-        count: shares,
+        count: value?.shares,
         ctype: INVEST_CRALER_TYPE.FNGUIDE,
       } as Record<string, string | number>;
 
@@ -38,12 +38,15 @@ const investRoute = (fastify: FastifyInstance) => {
 
     const facts = await getYearlyFacts({ code6: code?.replace("A", ""), from: Number(dayjs().format("YYYY")) });
     const shares = facts?.value?.[0]?.shares;
-    const consensus = await getFnGuideConsensus(code?.replace("A", "")); // 현재 년도부터 3년전까지만 가져온다.
 
-    if (shares && consensus) {
+    const consensus = await getFnGuideConsensus(code?.replace("A", ""), shares); // 현재 년도부터 3년전까지만 가져온다.
+    // console.log({ consensus });
+
+    if (consensus) {
       if (targetYear) {
         // 해당 년도만 업데이트
-        return await updateData(consensus, targetYear?.toString());
+        await updateData(consensus, targetYear?.toString());
+        return true;
       } else {
         // 올해부터 -3년전까지 업데이트
         const years = Object.keys(consensus)?.map((a) => Number(a));
@@ -53,7 +56,10 @@ const investRoute = (fastify: FastifyInstance) => {
 
         return true;
       }
+    } else {
+      return false;
     }
+
   };
 
   // 가치투자 종목 목록 조회
@@ -151,12 +157,10 @@ const investRoute = (fastify: FastifyInstance) => {
         } as FieldValues)};`
       );
 
-      const sql = `INSERT INTO investment ${makeInsertSet({
-        ...(req.body || {}),
-        ctype: INVEST_CRALER_TYPE.MANUAL,
-      } as FieldValues)};`;
-
-      console.log({ sql });
+      // const sql = `INSERT INTO investment ${makeInsertSet({
+      //   ...(req.body || {}),
+      //   ctype: INVEST_CRALER_TYPE.MANUAL,
+      // } as FieldValues)};`;
 
       reply.status(200).send({ value: sdate });
     } catch (error) {
@@ -171,13 +175,11 @@ const investRoute = (fastify: FastifyInstance) => {
       const res = await updateInvestData(req?.body as InvestRefreshParams);
 
       if (!res)
-        return reply
-          .status(500)
-          .send(
-            withError({ code: ERROR.ER_NOT_UPDATED, sqlMessage: "is not updated!" } as SqlError, {
-              tag: URL.INVEST.ROOT,
-            })
-          );
+        return reply.status(500).send(
+          withError({ code: ERROR.ER_NOT_UPDATED, sqlMessage: "is not updated!" } as SqlError, {
+            tag: URL.INVEST.ROOT,
+          })
+        );
 
       reply.status(200).send({ value: code });
     } catch (error) {

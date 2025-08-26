@@ -41,6 +41,7 @@ export type FactsResult = {
 export type ConsensusResult = {
   equity?: number; // 지배주주지분 (또는 자기자본) 총계
   roe?: number; // ROE (%)
+  shares?: number;
 };
 
 export interface DiarySearchParams {
@@ -175,9 +176,9 @@ export interface BucketSearchParams {
 }
 
 export interface StockDartBasicType {
-  corpCode: string; // 8자리 코드
-  year: number; // 대상년도
-  reprtCode: string; // 리포트 코드
+  corpCode?: string; // 8자리 코드
+  year?: number; // 대상년도
+  reprtCode?: string; // 리포트 코드
   // 원천값
   netIncome?: number; // 당기순이익
   equity?: number; // 자본(지배주주)
@@ -188,6 +189,8 @@ export interface StockDartBasicType {
   eps?: number; // EPS
   roe?: number; // ROE
   debtRatio?: number; // 부채비율
+  
+  res?: FieldValues;
 }
 
 export interface ResearchSearchParams {
