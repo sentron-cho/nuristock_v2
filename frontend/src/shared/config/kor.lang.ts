@@ -228,7 +228,7 @@ const KOR = {
 
 	EMPTY_INVESTMENT: '년도 평가기준 설정',
 	ROE: '자본이익율(ROE)',
-	STOCKS_COUNT: '상장주식수',
+	STOCKS_COUNT: '발행주식',
 	BASE_YEAR: '기준년도',
 	EQUITY: '자본(지배주주)',
 	// BS: '자기자본(BS)',

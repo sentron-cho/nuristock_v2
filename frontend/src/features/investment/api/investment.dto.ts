@@ -19,6 +19,10 @@ export interface InvestmentItemType {
 	utime?: string;
 	ctime?: string;
 	sise?: string;
+	bookmark?: boolean;
+
+	shareValue?: number;
+	shareRate?: number;
 }
 
 export interface InvestmentResponse {
@@ -35,4 +39,9 @@ export interface InvestmentSearchParam {
 export interface InvestmentRefreshType {
 	code: string;
 	targetYear?: string;
+}
+
+export interface InvestmentBookmarkType {
+	rowid: number;
+	bookmark: boolean;
 }

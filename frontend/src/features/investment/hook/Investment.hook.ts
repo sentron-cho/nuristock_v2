@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { reverse, sortBy } from 'lodash';
 import { OptionType } from '@shared/config/common.type';
-import { calcValuePerShare } from '@shared/libs/investment.util';
+import { calcExcessProfit, calcValuePerShare } from '@shared/libs/investment.util';
 import { toNumeric, valueOfUpDown, withCommas } from '@shared/libs/utils.lib';
 import { FieldValues } from 'react-hook-form';
 
@@ -16,13 +16,24 @@ export const useInvestmentHook = (initialData?: InvestmentResponse) => {
 		if (!initialData) return undefined;
 
 		const sise = initialData?.sise;
-		const items = initialData?.value?.map((item) => ({
-			...item,
-			sise: sise?.find((a) => a?.code === item.code)?.sise,
-		})) as InvestmentItemType[];
+		const items = initialData?.value?.map((item) => {
+			const siseValue = sise?.find((a) => a?.code === item.code)?.sise;
+			const profit = calcExcessProfit({ ...item });
+			const shareValue = calcValuePerShare({ ...item, rateKey: 'rate2' }); // 0.8 기준
+			const shareRate = Number( (shareValue / Number(siseValue)).toFixed(2));
+
+			return {
+				...item,
+				profit: profit?.toFixed(0),
+				shareValue,
+				shareRate,
+				sise: siseValue,
+			};
+		}) as InvestmentItemType[];
 
 		return items;
 	}, [initialData]);
+
 	const dashboard = useMemo(() => initialData?.dashboard, [initialData]);
 
 	// 종목명별 데이터 추출
@@ -71,18 +82,20 @@ export const useInvestmentHook = (initialData?: InvestmentResponse) => {
 	const keeps = useMemo(() => {
 		if (!dashboard || !dataByToday) return undefined;
 
-		const filtered = dashboard?.filter(a => !!a?.kcount);
+		const filtered = dashboard?.filter((a) => !!a?.kcount);
 		const items = dataByToday?.filter((a) => !!filtered?.find((b) => a.code === b.code));
-		return items;
+
+		return reverse(sortBy(items, ['bookmark', 'shareRate']));
 	}, [dataByToday, dashboard]);
 
-		// 거래했던 종목
+	// 거래했던 종목
 	const trade = useMemo(() => {
 		if (!dashboard || !dataByToday) return undefined;
 
-		const filtered = dashboard?.filter(a => !a?.kcount);
+		const filtered = dashboard?.filter((a) => !a?.kcount);
 		const items = dataByToday?.filter((a) => !!filtered?.find((b) => a.code === b.code));
-		return items;
+
+		return reverse(sortBy(items, ['bookmark', 'shareRate']));
 	}, [dataByToday, dashboard]);
 
 	// 미보유 종목
@@ -90,7 +103,8 @@ export const useInvestmentHook = (initialData?: InvestmentResponse) => {
 		if (!dashboard || !dataByToday) return undefined;
 
 		const items = dataByToday?.filter((a) => !dashboard?.find((b) => a.code === b.code));
-		return items;
+
+		return reverse(sortBy(items, ['bookmark', 'shareRate']));
 	}, [dataByToday, dashboard]);
 
 	return { data, groupedByName, filteredByCode, dataByToday, sise, selected, naviOptions, keeps, nokeeps, trade };

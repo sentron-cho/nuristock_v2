@@ -9,7 +9,6 @@ import clsx from 'clsx';
 import { InvestmentItemType, InvestmentResponse } from '@features/investment/api/investment.dto';
 import { InvestmentCard } from '@features/investment/ui/InvestmentCard.ui';
 import { useInvestmentHook } from '@features/investment/hook/Investment.hook';
-import { InvestmentHeader } from '@features/investment/ui/InvestmentHeader.ui';
 import { CardListWrap } from '@entites/Card';
 import { URL } from '@shared/config/url.enum';
 import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
@@ -73,30 +72,32 @@ export const InvestmentPageMo = ({
 
 	return (
 		<StyledPage>
-			{/* 타이틀바 */}
-			<PageTitleBar
-				title={`${ST.INVEST}`}
-				buttonProps={{
-					eid: EID.ADD,
-					icon: <IconAdd />,
-					title: ST.ADD,
-					onClick: onClick,
-				}}
-			/>
-			{/* 컨텐츠 헤더(요약) */}
-			<InvestmentHeader />
+			<Flex direction={'column'}>
+				{/* 타이틀바 */}
+				<PageTitleBar
+					title={`${ST.INVEST}`}
+					buttonProps={{
+						eid: EID.ADD,
+						icon: <IconAdd />,
+						title: ST.ADD,
+						onClick: onClick,
+					}}
+				/>
+				{/* 컨텐츠 헤더(요약) */}
+				{/* <InvestmentHeader /> */}
 
-			{/* 네이게이션 */}
-			<TitleNavigation sticky stickyTop={144} options={naviOptions} value={viewType} onClick={onClick} />
+				{/* 네이게이션 */}
+				<TitleNavigation sticky stickyTop={44} options={naviOptions} value={viewType} onClick={onClick} />
 
-			{/* 컨텐츠 */}
-			<Flex className={clsx('contents-layer')} direction={'column'} {...handlerSwipe}>
-				<Flex className={clsx(swipeClass)} direction={'column'}>
-					<CardListWrap>
-						{list?.map((item) => {
-							return <InvestmentCard key={item.rowid} title={item.name} data={item} onClick={onClick} />
-						})}
-					</CardListWrap>
+				{/* 컨텐츠 */}
+				<Flex className={clsx('contents-layer')} direction={'column'} {...handlerSwipe}>
+					<Flex className={clsx(swipeClass)} direction={'column'}>
+						<CardListWrap>
+							{list?.map((item) => {
+								return <InvestmentCard key={item.rowid} title={item.name} data={item} onClick={onClick} />;
+							})}
+						</CardListWrap>
+					</Flex>
 				</Flex>
 			</Flex>
 		</StyledPage>

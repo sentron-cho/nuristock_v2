@@ -1,6 +1,6 @@
 import { Card } from '@entites/Card';
 import Flex from '@entites/Flex';
-import { SubTitle, Title } from '@entites/Title';
+import { Title } from '@entites/Title';
 import { InvestmentItemType } from '../api/investment.dto';
 import { toCost } from '@shared/libs/utils.lib';
 import { ST } from '@shared/config/kor.lang';
@@ -8,16 +8,20 @@ import { EID } from '@shared/config/default.config';
 import { useMemo } from 'react';
 import dayjs from 'dayjs';
 import { styled } from '@styles/stitches.config';
-import { IconDelete, IconEdit } from '@entites/Icons';
+import { IconDelete, IconEdit, IconStarFill, IconStarOutline } from '@entites/Icons';
 import { Text } from '@entites/Text';
 import { InvestmentChip, InvestmentInfoField, PerValueField } from './InvestmentCommon.ui';
-import { IconButton } from '@entites/IconButton';
+import { IconButton, IconButtonToggle } from '@entites/IconButton';
 
 const StyledCard = styled(Card, {
 	'.body': {
 		'.empty': {
 			color: '$gray600',
 		},
+	},
+
+	'.bookmark': {
+		fill: '$orange',
 	},
 
 	'.title-box': {
@@ -72,14 +76,27 @@ export const InvestmentCard = ({
 			<Flex className='box border' direction='column'>
 				{/* 헤드 */}
 				<Flex className='head' justify={'between'}>
-					<Flex fullWidth={false} gap={10} flex={1}>
-						<Flex className='title-box' fullWidth={false} gap={4}>
+					{/* 타이틀 */}
+					<Flex fullWidth={false} gap={16} flex={1} onClick={() => onClick?.(isEmpty ? EID.SELECT : 'fnguide', data)}>
+						<Flex className='title-box' fullWidth={false} gap={2}>
 							<InvestmentChip data={data} />
-							<SubTitle title={`${title}(${data?.code})`} onClick={() => onClick?.(EID.SELECT, data)} />
+							<Text size='md' text={`${title}`} />
+							<Text size='xs' text={`(${data?.code})`} />
 						</Flex>
-						<Text size='xs' text={toCost(data?.sise)} />
+						<Text size='xs' bold text={toCost(data?.sise)} />
 					</Flex>
+
+					{/* 버튼 */}
 					<Flex fullWidth={false} gap={10}>
+						{/* 북마크 */}
+						{
+							<IconButtonToggle
+								trueIcon={<IconStarFill className='bookmark' />}
+								falseIcon={<IconStarOutline />}
+								value={!!data?.bookmark}
+								onClick={() => onClick?.('bookmark', data)}
+							/>
+						}
 						{!isEmpty && <IconButton icon={<IconEdit />} onClick={() => onClick?.(EID.UPDATE, data)} />}
 						{<IconButton icon={<IconDelete />} onClick={() => onClick?.(EID.DELETE, data)} />}
 					</Flex>
@@ -95,10 +112,10 @@ export const InvestmentCard = ({
 
 					{!isEmpty && (
 						<Flex direction={'column'} onClick={() => onClick?.(EID.SELECT, data)} gap={10}>
-							{/* 상장 주식수 */}
+							{/* 발행주식 및 요약 */}
 							<InvestmentInfoField data={data} />
 
-							{/* 주당가치 */}
+							{/* 주당가치 상세 */}
 							<PerValueField data={data} />
 						</Flex>
 					)}

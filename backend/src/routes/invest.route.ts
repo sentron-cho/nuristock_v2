@@ -3,7 +3,13 @@ import { FastifyInstance } from "fastify";
 import dayjs from "dayjs";
 import URL from "../types/url.js";
 import { withError } from "../lib/error.js";
-import { InvestCreateType, InvestRefreshParams, ConsensusResult, FieldValues } from "../types/data.type.js";
+import {
+  InvestCreateType,
+  InvestRefreshParams,
+  ConsensusResult,
+  FieldValues,
+  InvestBookmarkParams,
+} from "../types/data.type.js";
 import { getYearlyFacts } from "../crawler/service/yearlyFacts.service.js";
 import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
 import { ERROR, INVEST_CRALER_TYPE } from "../types/enum.js";
@@ -59,7 +65,6 @@ const investRoute = (fastify: FastifyInstance) => {
     } else {
       return false;
     }
-
   };
 
   // 가치투자 종목 목록 조회
@@ -290,6 +295,30 @@ const investRoute = (fastify: FastifyInstance) => {
       reply.status(200).send({ value: value });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.INVEST.ROOT }));
+    }
+  });
+
+  // 가치투자 항목 북마크
+  fastify.put(URL.INVEST.BOOKMARK, async (req, reply) => {
+    try {
+      const { rowid, bookmark } = req.body as InvestBookmarkParams;
+
+      console.log({ bookmark });
+
+      const res = fastify.db.query(
+        `UPDATE investment set bookmark = ${Boolean(bookmark)} WHERE rowid = '${rowid}';`
+      );
+
+      if (!res)
+        return reply.status(500).send(
+          withError({ code: ERROR.ER_NOT_UPDATED, sqlMessage: "is not updated!" } as SqlError, {
+            tag: URL.INVEST.ROOT,
+          })
+        );
+
+      reply.status(200).send({ value: rowid });
+    } catch (error) {
+      reply.status(500).send(withError(error as SqlError, { tag: URL.INVEST.BOOKMARK }));
     }
   });
 };

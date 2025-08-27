@@ -53,24 +53,6 @@ export const MainboardCard = ({
 					);
 				})}
 
-			{/* 평가손실 상위 */}
-			{/* {viewType === 'sonicBottom' &&
-				sonicBottom?.map((item, index) => {
-					return (
-						<RowField
-							key={`sb-${index}`}
-							className={clsx('sonic-bottom', item.type)}
-							type={item.type}
-							title={`${item.name} [${item.sonicRate.toFixed(1)}%]`}
-							text={`${withCommas(item.sise)}`}
-							value={withCommas(item.siseSonic)}
-							onClick={() => onClick?.(viewType, item)}
-							valueProps={{ bold: true }}
-							suffix={{ text: ST.WON, value: ST.WON }}
-						/>
-					);
-				})} */}
-
 			{/* 최근매수 상위 */}
 			{viewType === 'latest' &&
 				latest?.map((item, index) => {
@@ -79,7 +61,7 @@ export const MainboardCard = ({
 							key={`lb-${index}`}
 							className={clsx('latest-buy', item.type)}
 							title={`${item.name} [${item.sonicRate.toFixed(1)}%]`}
-							text={`${dayjs(item.sdate).format(DATE_FORMAT)}`}
+							text={`${dayjs(sortType === 'asc' ? item.sdate : item.edate).format(DATE_FORMAT)}`}
 							value={withCommas(item.sonic)}
 							onClick={() => onClick?.(viewType, item)}
 							valueProps={{ bold: true }}
@@ -87,23 +69,6 @@ export const MainboardCard = ({
 						/>
 					);
 				})}
-
-			{/* 최근매도 상위 */}
-			{/* {viewType === 'latestSell' &&
-				latestSell?.map((item, index) => {
-					return (
-						<RowField
-							key={`ls-${index}`}
-							className={clsx('latest-sell', item.type)}
-							title={`${item.name} [${item.sonicRate.toFixed(1)}%]`}
-							text={`${dayjs(item.edate).format(DATE_FORMAT)}`}
-							value={withCommas(item.sonic)}
-							onClick={() => onClick?.(viewType, item)}
-							valueProps={{ bold: true }}
-							suffix={{ value: ST.WON }}
-						/>
-					);
-				})} */}
 
 			{/* 매수 손익율 상위 */}
 			{viewType === 'sonicBuy' &&
@@ -122,24 +87,6 @@ export const MainboardCard = ({
 						/>
 					);
 				})}
-
-			{/* 매수 손실율 상위 */}
-			{/* {viewType === 'sonicBuyBottom' &&
-				sonicBuyBottom?.map((item, index) => {
-					return (
-						<RowField
-							key={`ls-${index}`}
-							className={clsx('sonic-buy-bottom', item.type)}
-							title={`${item.name} [${item.sonicRate.toFixed(1)}%]`}
-							text={`${valueOfDateDiff(item.sdate, new Date())}`}
-							// text={`${dayjs(item.sdate).format(DATE_FORMAT)} ${valueOfDateDiff(item.sdate, new Date())}`}
-							value={withCommas(item.sonic)}
-							onClick={() => onClick?.(viewType, item)}
-							valueProps={{ bold: true }}
-							suffix={{ value: ST.WON }}
-						/>
-					);
-				})} */}
 		</StyledFlex>
 	);
 };

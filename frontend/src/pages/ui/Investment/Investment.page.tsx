@@ -4,6 +4,7 @@ import {
 	useClearInvestment,
 	useDeleteInvestment,
 	useSelectInvestment,
+	useUpdateInvestmentBookmark,
 } from '@features/investment/api/investment.api';
 import { PopupType } from '@entites/Dialog';
 import { useState } from 'react';
@@ -24,11 +25,15 @@ const InvestmentPage = ({ viewType }: { viewType?: 'keep' | 'nokeep' | 'trade' }
 	const { data, refetch } = useSelectInvestment();
 
 	const { mutateAsync: deleteData } = useDeleteInvestment();
+	const { mutateAsync: updateBookmark } = useUpdateInvestmentBookmark();
 	const { mutateAsync: clearData } = useClearInvestment();
 
-	const onClick = (eid?: string, item?: InvestmentItemType) => {
+	const onClick = async (eid?: string, item?: InvestmentItemType) => {
 		if (eid === EID.SELECT) {
 			navigate(`${URL.INVEST}/${item?.code}`);
+		} else if (eid === 'fnguide') {
+			item?.code && window.open(`${URL.REST.FNGUIDE(item.code)}`);
+			// navigate(`${URL.INVEST}/${item?.code}`);
 		} else if (eid === EID.CLEAR) {
 			showConfirm({
 				content: ST.WANT_TO_DELETE,
@@ -70,6 +75,11 @@ const InvestmentPage = ({ viewType }: { viewType?: 'keep' | 'nokeep' | 'trade' }
 					isOk && refetch();
 				},
 			});
+		} else if (eid === 'bookmark') {
+			if (item?.rowid) {
+				await updateBookmark({ rowid: item.rowid, bookmark: !item?.bookmark });
+				refetch();
+			}
 		}
 	};
 

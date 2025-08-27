@@ -51,6 +51,7 @@ export const API = {
 	MARKET_COUNT: `${API_ROOT}/market/vcount`,
 	INVEST: `${API_ROOT}/invest`,
 	INVEST_YEAR: `${API_ROOT}/invest/year`,
+	INVEST_BOOKMARK: `${API_ROOT}/invest/bookmark`,
 	INVEST_CLEAR: `${API_ROOT}/invest/clear`,
 	INVEST_REFRESH: `${API_ROOT}/invest/refresh`,
 	INVEST_REPORT: `${API_ROOT}/invest/report`,

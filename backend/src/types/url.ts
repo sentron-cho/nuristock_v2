@@ -49,6 +49,7 @@ export const URL = {
     YEAR: `${ROOT_URL}/invest/year`,
     REPORT: `${ROOT_URL}/invest/report`,
     REFRESH: `${ROOT_URL}/invest/refresh`,
+    BOOKMARK: `${ROOT_URL}/invest/bookmark`,
     UPDATE_BY_NAVER: `${ROOT_URL}/invest/naver`,
     CLEAR: `${ROOT_URL}/invest/clear`,
   },

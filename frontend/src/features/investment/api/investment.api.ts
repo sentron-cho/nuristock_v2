@@ -1,4 +1,4 @@
-import { InvestmentItemType, InvestmentRefreshType, InvestmentResponse, InvestmentSearchParam } from './investment.dto';
+import { InvestmentBookmarkType, InvestmentItemType, InvestmentRefreshType, InvestmentResponse, InvestmentSearchParam } from './investment.dto';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { API } from '@shared/config/url.enum';
 import api from '@shared/api/axios.config';
@@ -102,6 +102,16 @@ export const useCreateInvestmentYear = () => {
 		mutationKey: ['INVESTMENT-C02'],
 		mutationFn: async (data: InvestmentItemType) => {
 			return await api.post(API.INVEST_YEAR, data);
+		},
+	});
+};
+
+// 북마크 업데이트
+export const useUpdateInvestmentBookmark = () => {
+	return useMutation({
+		mutationKey: ['INVESTMENT-U05'],
+		mutationFn: async (data: InvestmentBookmarkType) => {
+			return await api.put(API.INVEST_BOOKMARK, data);
 		},
 	});
 };

@@ -37,10 +37,12 @@ const StyledFlex = styled(Flex, {
 
 export const InvestmentInfoField = ({ data }: { data?: InvestmentItemType }) => {
 	const parsed = useMemo(() => {
+		const shareValue = toShortCost(calcShareholderValue({ ...data }));
+
 		return {
 			equity: toShortCost(data?.equity),
 			profit: toShortCost(calcExcessProfit({ ...data })),
-			shareValue: toShortCost(calcShareholderValue({ ...data })),
+			shareValue: shareValue,
 		};
 	}, [data]);
 
@@ -48,38 +50,66 @@ export const InvestmentInfoField = ({ data }: { data?: InvestmentItemType }) => 
 		<StyledFlex className={clsx('info-field')} direction={'column'} gap={8}>
 			{/* 상장 주식수 */}
 			<Flex className='title' justify={'between'} align={'center'} height={24}>
-				<Flex fullWidth={false} gap={4}>
-					<Text size='sm' text={`${ST.STOCKS_COUNT}:`} />
-					<Text bold size='sm' text={`${withCommas(data?.count)}${ST.JU}`} />
+				<Flex fullWidth={false} gap={4} flex={3}>
+					<Text size='xs' text={`${ST.STOCKS_COUNT}:`} />
+					<Text bold size='xs' text={`${withCommas(data?.count)}`} />
 				</Flex>
-				<Flex fullWidth={false} gap={4}>
-					<Text size='sm' text={`${ST.ROE}:`} />
-					<Text bold size='sm' className={valueOfPlusMinus(Number(data?.roe))} text={` ${data?.roe}%`} />
+				<Flex fullWidth={false} flex={1} justify={'center'}>
+					<Text bold size='xs' className={valueOfPlusMinus(Number(data?.shareRate), 1)} text={`W${data?.shareRate}`} />
+				</Flex>
+				<Flex fullWidth={false} gap={4} flex={2} justify={'end'}>
+					<Text size='xs' text={`ROE:`} />
+					<Text bold size='xs' className={valueOfPlusMinus(Number(data?.roe))} text={` ${data?.roe}%`} />
 				</Flex>
 			</Flex>
 
 			<Flex className='list-box' direction={'column'} gap={4}>
 				<Flex className='list-th' height={20}>
-					<Text size='sm' text={ST.SHARE_VALUE} flex={1} align='center' />
-					<Text size='sm' text={ST.CAPITAL} flex={1} align='center' />
-					<Text size='sm' text={'ROE'} flex={1} align='center' />
-					<Text size='sm' text={ST.BASE_RATE} flex={1} align='center' />
-					<Text size='sm' text={ST.EXCESS_PROFIT} flex={1} align='center' />
+					<Text size='xs' text={'ROE'} flex={1} align='center' />
+					<Text size='xs' text={ST.EXCESS_PROFIT} flex={1} align='center' />
+					<Text size='xs' text={ST.SHARE_VALUE} flex={1} align='center' />
+					<Text size='xs' text={ST.CAPITAL} flex={1} align='center' />
+					<Text size='xs' text={ST.BASE_RATE} flex={1} align='center' />
 				</Flex>
 
 				<Flex className='list-row'>
-					<Text bold size='sm' text={parsed?.shareValue?.value} flex={1} align='center' />
-					<Text bold size='sm' text={parsed?.equity?.value} flex={1} align='center' />
-					<Text bold size='sm' text={data?.roe} flex={1} align='center' />
-					<Text bold size='sm' text={withCommas(data?.brate)} flex={1} align='center' />
+					{/* ROE */}
 					<Text
 						bold
-						size='sm'
-						className={clsx(valueOfPlusMinus(Number(parsed?.profit?.value)))}
-						text={parsed?.profit?.value}
+						size='xs'
+						className={clsx(valueOfPlusMinus(Number(data?.roe)))}
+						text={data?.roe}
 						flex={1}
 						align='center'
 					/>
+					{/* 초과이익 */}
+					<Text
+						bold
+						size='xs'
+						className={clsx(valueOfPlusMinus(Number(parsed?.profit?.value)))}
+						text={`${parsed?.profit.value}${parsed?.profit?.unit.replace(ST.WON, '')}`}
+						flex={1}
+						align='center'
+					/>
+					{/* 주주가치 */}
+					<Text
+						bold
+						size='xs'
+						className={clsx(valueOfPlusMinus(Number(parsed?.shareValue?.value)))}
+						text={`${parsed?.shareValue.value}${parsed?.shareValue?.unit.replace(ST.WON, '')}`}
+						flex={1}
+						align='center'
+					/>
+					{/* 자본 */}
+					<Text
+						bold
+						size='xs'
+						text={`${parsed?.equity.value}${parsed?.equity?.unit.replace(ST.WON, '')}`}
+						flex={1}
+						align='center'
+					/>
+					{/* 기준평가율 */}
+					<Text bold size='xs' text={withCommas(data?.brate)} flex={1} align='center' />
 				</Flex>
 			</Flex>
 		</StyledFlex>

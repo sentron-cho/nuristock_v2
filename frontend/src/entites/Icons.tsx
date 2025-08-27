@@ -62,6 +62,9 @@ import IconMoreSettings from '@mui/icons-material/SettingsEthernet';
 
 import IconZoomIn from '@mui/icons-material/ZoomInMap';
 import IconZoomOut from '@mui/icons-material/ZoomOutMap';
+import IconStarFill from '@mui/icons-material/Star';
+import IconStarOutline from '@mui/icons-material/StarBorder';
+
 
 const StyledUp = styled(IconPlayArrow, {
 	color: '$plus',
@@ -135,5 +138,7 @@ export {
 	IconZoomIn,
 	IconZoomOut,
 	IconBucket,
-	IconResearch
+	IconResearch,
+	IconStarOutline,
+	IconStarFill
 };

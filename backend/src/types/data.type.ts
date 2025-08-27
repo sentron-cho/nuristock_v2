@@ -96,6 +96,11 @@ export interface InvestRefreshParams {
   targetYear: string | number;
 }
 
+export interface InvestBookmarkParams {
+  rowid: string;
+  bookmark: boolean;
+}
+
 export interface MyStockKeepCreateType {
   rowid?: number;
   code: string;
