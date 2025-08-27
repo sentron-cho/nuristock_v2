@@ -32,7 +32,8 @@ const InvestmentPage = ({ viewType }: { viewType?: 'keep' | 'nokeep' | 'trade' }
 		if (eid === EID.SELECT) {
 			navigate(`${URL.INVEST}/${item?.code}`);
 		} else if (eid === 'fnguide') {
-			item?.code && window.open(`${URL.REST.FNGUIDE(item.code)}`);
+			if (!item?.code) return;
+			isMobile ? window.open(`${URL.REST.DAUM}${item?.code}`) : window.open(`${URL.REST.FNGUIDE(item.code)}`);
 			// navigate(`${URL.INVEST}/${item?.code}`);
 		} else if (eid === EID.CLEAR) {
 			showConfirm({
