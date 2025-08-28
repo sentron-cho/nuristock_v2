@@ -39,6 +39,10 @@ const StyledPage = styled(PageContainer, {
 
 	'.list-head': {
 		padding: '0 10px',
+		background: '$gray400',
+		position: 'sticky',
+		top: '80px',
+		zIndex: 1,
 	},
 
 	'.contents-layer': {

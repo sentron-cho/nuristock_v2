@@ -133,7 +133,7 @@ export const startStockSiseService = (fastify: FastifyInstance) => {
     const now = dayjs().tz("Asia/Seoul");
     const hour = now.hour();
 
-    console.log({hour, a: hour >= ALL_START_TIME, b: hour >= ALL_START_TIME || hour < ALL_END_TIME})
+    // console.log({hour, a: hour >= ALL_START_TIME, b: hour >= ALL_START_TIME || hour < ALL_END_TIME})
 
     // 오후 18시 ~ 새벽 06시 사이에만 실행
     if (hour >= ALL_START_TIME || hour < ALL_END_TIME) {
