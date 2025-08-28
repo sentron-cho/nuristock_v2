@@ -293,6 +293,10 @@ const KOR = {
 		ROE: 'ROE',
 		PROFIT: '당기순이익',
 		ASSET: '자본',
+		STIME: '시세일시',
+		SHARE_RATE: '가치',
+		SISE: '시세',
+		SHARE: '목표값',
 	}
 };
 

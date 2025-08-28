@@ -58,16 +58,17 @@ export const calcValuePerShare = ({
 	brate, // 기준평가율(성장율추정치)
 	count, // 상장주식수
 	rateKey = 'rate1',
+	targetRate,
 	// profit, // 초과이익
 	...rest
-}: InvestmentItemType & { rateKey?: 'rate1' | 'rate2' | 'rate3' | 'rate4' }) => {
+}: InvestmentItemType & { rateKey?: 'rate1' | 'rate2' | 'rate3' | 'rate4', targetRate?: string }) => {
 	if (!equity || !roe || !brate || !count) return 0;
 
 	const nCount = Number(withCommas(count, true));
 	const nEquity = Number(withCommas(equity, true));
 	const nRate = percentToDecimal(brate); // 8.0% -> 0.08 치환
 	const nProfit = calcExcessProfit({ equity, roe, brate } as InvestmentItemType);
-	const nTargetRate = toNumeric((rest as FieldValues)?.[rateKey]); // 8.0
+	const nTargetRate = targetRate ? Number(targetRate) : toNumeric((rest as FieldValues)?.[rateKey]); // 8.0
 
 	const value = nEquity + nProfit * (nTargetRate / (1 + nRate - nTargetRate));
 

@@ -5,6 +5,7 @@ import { getMystockInfo } from "../crawler/service/mystockInfoScraper.service.js
 import { FieldValues, StockDartBasicType } from "../types/data.type.js";
 
 const INTERVAL_TIME = 1 * 60 * 1000; // 1분마다
+// const INTERVAL_TIME = 1000; // 1분마다
 
 // 주식 현재가 시세 크롤링
 export const startMystockTask = (fastify: FastifyInstance) => {
@@ -25,8 +26,6 @@ export const startMystockTask = (fastify: FastifyInstance) => {
     const data = await fastify.db.query(sql);
     // console.log({sql})
 
-    console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}: 종목정보수집] ==> `, data?.[0]);
-
     // DB 저장
     if (data && data?.[0] && data?.[0]?.code) {
       const { code } = data[0];
@@ -40,7 +39,7 @@ export const startMystockTask = (fastify: FastifyInstance) => {
 
       if (Number(isExist?.[0]?.count || 0) > 0) {
         await fastify.db.query(`UPDATE market SET mtime='${year}' where code='${code}';`);
-        console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}: 정보수집패스] ==> `, { ...data?.[0], mtime: year });
+        console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}: 정보수집패스] ==> `, { code: code, name: data?.[0]?.name, mtime: year });
         return;
       }
       // else {
@@ -51,6 +50,8 @@ export const startMystockTask = (fastify: FastifyInstance) => {
       // const stock = await fastify.db.query(`SELECT code, name FROM market WHERE code='${code}';`);
 
       // console.log("[2.SEARCH]", { data });
+
+      console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}: 종목정보수집] ==> `, data?.[0]);
 
       try {
         const res = await getMystockInfo({
@@ -69,8 +70,8 @@ export const startMystockTask = (fastify: FastifyInstance) => {
         }
 
         if (value?.[0]?.res?.status === "013") {
-          console.error("[수집 실패]", { data: value?.[0]?.res });
-          await fastify.db.query(`UPDATE market SET mtime='${year}' where code='${code}';`);
+          console.error("[수집 실패]", { data: value?.[0]?.res }); // 조회된 데이터 없음
+          await fastify.db.query(`UPDATE market SET mtime='${9000}' where code='${code}';`);
           return;
         }
 

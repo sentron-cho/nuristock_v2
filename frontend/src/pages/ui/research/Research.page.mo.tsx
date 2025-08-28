@@ -12,11 +12,12 @@ import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 import { URL } from '@shared/config/url.enum';
 import clsx from 'clsx';
 import { Text } from '@entites/Text';
-import { toSemiCost, toShortCostString, withCommas } from '@shared/libs/utils.lib';
+import { toCost, toSemiCost, toShortCostString, withCommas } from '@shared/libs/utils.lib';
 import { SearchFieldForm } from '@entites/SearchFieldForm';
 import { useForm } from 'react-hook-form';
 import { ResearchItemType, ResearchResponse } from '@features/research/api/research.dto';
 import { useResearchHook } from '@features/research/hook/Research.hook';
+import dayjs from 'dayjs';
 
 const StyledPage = styled(PageContainer, {
 	background: '$white',
@@ -36,6 +37,10 @@ const StyledPage = styled(PageContainer, {
 		},
 	},
 
+	'.list-head': {
+		padding: '0 10px',
+	},
+
 	'.contents-layer': {
 		padding: '0',
 
@@ -44,7 +49,10 @@ const StyledPage = styled(PageContainer, {
 			padding: '0px 10px',
 			borderRadius: 4,
 
-			'.row': {},
+			'.row': {
+				marginBottom: '4px',
+				borderBottom: '1px solid $gray600',
+			},
 		},
 
 		'.minus': {
@@ -143,12 +151,23 @@ export const ResearchPageMo = ({
 						</Flex>
 					</Flex>
 
-					<Flex className='th' height={28}>
-						<Text text={ST.RESEARCH_TABLE.NAME} flex={2} textAlign={'center'} />
-						<Text text={ST.RESEARCH_TABLE.COUNT} flex={2} textAlign={'center'} />
-						<Text text={ST.RESEARCH_TABLE.ROE} flex={1} textAlign={'center'} />
-						<Text text={ST.RESEARCH_TABLE.ASSET} flex={2} textAlign={'center'} />
-						<Text text={ST.RESEARCH_TABLE.PROFIT} flex={2} textAlign={'center'} />
+					<Flex className='list-head' direction={'column'} gap={8}>
+						<Flex className='th' height={24} align={'end'}>
+							<Text text={ST.RESEARCH_TABLE.NAME} flex={2} textAlign={'start'} />
+							<Text text={ST.RESEARCH_TABLE.STIME} flex={2} textAlign={'right'} />
+
+							<Text text={ST.RESEARCH_TABLE.SHARE_RATE} flex={1} textAlign={'right'} />
+							<Text text={ST.RESEARCH_TABLE.SISE} flex={2} textAlign={'right'} />
+							<Text text={ST.RESEARCH_TABLE.SHARE} flex={2} textAlign={'right'} />
+						</Flex>
+						<Flex className='th' height={24} align={'start'}>
+							<Text text={''} flex={2} textAlign={'center'} />
+							<Text text={ST.RESEARCH_TABLE.COUNT} flex={2} textAlign={'right'} />
+
+							<Text text={ST.RESEARCH_TABLE.ROE} flex={1} textAlign={'right'} />
+							<Text text={ST.RESEARCH_TABLE.ASSET} flex={2} textAlign={'right'} />
+							<Text text={ST.RESEARCH_TABLE.PROFIT} flex={2} textAlign={'right'} />
+						</Flex>
 					</Flex>
 
 					<Flex className={clsx('contents-layer')} direction={'column'} {...handlerSwipe}>
@@ -156,14 +175,66 @@ export const ResearchPageMo = ({
 						<Flex className={clsx('box', swipeClass)} direction={'column'}>
 							{list?.map((item) => {
 								return (
-									<Flex key={item?.code} className='row' height={28} onClick={() => onClick?.(EID.SELECT, item)}>
-										{/* <Text size='xs' text={`${item.name}(${item.code})`} flex={3} textAlign={'left'} /> */}
-										<Text size='xs' text={`${item.name}`} flex={2} textAlign={'left'} />
-										<Text size='xs' className={clsx(item.countType)} text={toSemiCost(item.scount).replace(ST.WON, ST.JU)} flex={2} textAlign={'right'} />
-										<Text size='xs' className={clsx(item.roeType)} text={item.roe} flex={1} textAlign={'right'} />
-										<Text size='xs' className={clsx(item.enquityType)} text={toShortCostString(item.equity)} flex={2} textAlign={'right'} />
-										<Text size='xs' className={clsx(item.profitType)} text={toShortCostString(item.profit)} flex={2} textAlign={'right'} />
-										{/* <IconButton icon={<IconRefresh />} onClick={() => onClickRefresh(item?.code)} /> */}
+									<Flex
+										key={item?.code}
+										className='row'
+										direction={'column'}
+										height={40}
+										onClick={() => onClick?.(EID.SELECT, item)}
+									>
+										<Flex height={20}>
+											<Text size='xs' text={`${item.name}`} flex={2} textAlign={'left'} />
+											<Text size='xs' text={`${dayjs(item.stime).format('MM/DD HH:mm')}`} flex={2} textAlign={'right'} />
+
+											<Text
+												size='xs'
+												className={clsx(item.shareRateType)}
+												text={item.sise ? item.shareRate : '-'}
+												flex={1}
+												textAlign={'right'}
+											/>
+											<Text
+												size='xs'
+												className={clsx(item.siseType)}
+												text={item.sise ? toCost(item.sise).replace(' ', '') : '-'}
+												flex={2}
+												textAlign={'right'}
+											/>
+											<Text
+												size='xs'
+												className={clsx(item.shareValueType)}
+												text={item.sise ? toCost(item.shareValue).replace(' ', '') : '-'}
+												flex={2}
+												textAlign={'right'}
+											/>
+										</Flex>
+										<Flex height={20}>
+											<Text size='xs' text={''} flex={2} textAlign={'left'} />
+
+											<Text
+												size='xs'
+												className={clsx(item.countType)}
+												text={toSemiCost(item.scount).replace(ST.WON, '')}
+												flex={2}
+												textAlign={'right'}
+											/>
+
+											<Text size='xs' className={clsx(item.roeType)} text={item.roe} flex={1} textAlign={'right'} />
+											<Text
+												size='xs'
+												className={clsx(item.enquityType)}
+												text={toShortCostString(item.equity).replace(ST.WON, '')}
+												flex={2}
+												textAlign={'right'}
+											/>
+											<Text
+												size='xs'
+												className={clsx(item.profitType)}
+												text={toShortCostString(item.profit).replace(ST.WON, '')}
+												flex={2}
+												textAlign={'right'}
+											/>
+										</Flex>
 									</Flex>
 								);
 							})}

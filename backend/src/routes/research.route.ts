@@ -10,7 +10,7 @@ const researchRoute = (fastify: FastifyInstance) => {
     try {
       const { year } = req.query as ResearchSearchParams;
       let query =
-        `select m.code, m.name, m.type, m.sise, m.erate, m.ecost, m.state, m.stime, m.mtime, ` +
+        `select m.code, m.name, m.type, m.sise, m.erate, m.ecost, m.state, m.stime, m.mtime,  m.updown, ` +
         `k.cdate, k.scount, k.eps, k.roe, k.debt, k.debtratio, k.profit, k.equity, k.per, ` +
         `k.dividend, k.cprice, k.fprice, k.tprice from market m JOIN marketinfo k ` +
         `where m.code = k.code and k.cdate = '${year}';`;

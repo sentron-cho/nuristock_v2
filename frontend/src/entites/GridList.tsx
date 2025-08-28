@@ -80,7 +80,7 @@ export const GridList = ({ header, data, headHeight, rowHeight, onClick }: GridL
 						<Flex
 							className='grid-head'
 							fullWidth={false}
-							flex={head?.width ? '' : 1}
+							flex={head?.width ? '' : head?.flex || 1}
 							width={head?.width}
 							height={'100%'}
 						>
@@ -106,7 +106,7 @@ export const GridList = ({ header, data, headHeight, rowHeight, onClick }: GridL
 									{header?.map((head) => {
 										const value = item?.[head?.key];
 										const formatedValue = head?.formatter?.(value, item);
-										if (formatedValue) {
+										if (formatedValue !== undefined) {
 											if (typeof formatedValue !== 'string') {
 												return <GridRow head={head}>{formatedValue}</GridRow>;
 											} else {

@@ -3,6 +3,8 @@ import { ResearchResponse } from '../api/research.dto';
 import { EID } from '@shared/config/default.config';
 import { reverse, sortBy } from 'lodash';
 import { valueOfPlusMinus } from '@shared/libs/utils.lib';
+import dayjs from 'dayjs';
+import { calcValuePerShare } from '@shared/libs/investment.util';
 
 export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi' | 'kosdaq' = 'kospi') => {
 	const [isShowClose, setShowClose] = useState(false);
@@ -14,29 +16,77 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		setMax(perItem);
 	}, [viewType]);
 
+	// 초기 데이터
 	const data = useMemo(() => initialData?.value, [initialData]);
 
+	// 계산된 데이터
 	const list = useMemo(() => {
 		if (!data?.length) return undefined;
 
+		// 코스피/코스닥 타입 필터링
 		const filtered = data?.filter((a) => a?.type?.toUpperCase() === viewType.toUpperCase());
 		let items = filtered;
 
+		// 상폐종목 표시 여부
 		if (!isShowClose) {
 			items = filtered?.filter((a) => a.state === 'open');
 		}
 
-		items = items?.map((a) => ({ ...a, roe: !isNaN(Number(a.roe)) ? Number(a.roe) : 0 }));
+		// roe 숫자로 변환
+		items = items?.map((a) => {
+			const scount = !isNaN(Number(a.scount)) ? Number(a.scount) : 0;
+			const roe = !isNaN(Number(a.roe)) ? Number(a.roe) : 0;
+			const equity = !isNaN(Number(a.equity)) ? Number(a.equity) : 0;
+			const profit = !isNaN(Number(a.profit)) ? Number(a.profit) : 0;
+			const isToday = dayjs(a?.stime).format('YYYYMMDD') === dayjs().format('YYYYMMDD');
+			const sise = isToday ? Number(a?.sise) : 0;
+
+			if (scount && roe && equity && profit && sise) {
+				const shareValue = calcValuePerShare({
+					count: scount.toString(),
+					roe: roe.toString(),
+					equity: equity.toString(),
+					profit: profit.toString(),
+					brate: '8.0',
+					targetRate: '0.9',
+				}); // 0.8 기준
+				const shareRate = sise ? Number((shareValue / Number(sise)).toFixed(2)) : 0;
+
+				return {
+					...a,
+					scount,
+					roe,
+					equity,
+					profit,
+					shareValue: sise ? shareValue : 0,
+					shareRate,
+				};
+			} else {
+				return {
+					...a,
+					scount,
+					roe,
+					equity,
+					profit,
+					sise: 0,
+					shareValue: 0,
+					shareRate: 0,
+				};
+			}
+		});
 
 		// 우선주
 		const preferred = items?.filter((a) => Number(a.roe) > 0 && Number(a.equity) > 0 && Number(a.profit) > 0);
+
 		// 나머지
 		const rest = items?.filter((a) => Number(a.roe) <= 0 || Number(a.equity) <= 0 || Number(a.profit) <= 0);
 
 		// console.log({ count: items?.length, preferred: preferred?.length, rest: rest?.length });
 
 		// 정렬
-		items = [...reverse(sortBy(preferred, ['roe'])), ...rest];
+		items = [...reverse(sortBy(preferred, ['shareRate', 'roe'])), ...rest];
+
+		// console.log({ items });
 
 		if (search) {
 			items = items?.filter((a) => a.code?.includes(search) || a.name?.includes(search));
@@ -56,12 +106,21 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 			const nProfit = Number(a.profit);
 			const profitType = valueOfPlusMinus(nProfit);
 
+			const nShareValue = Number(a.shareValue);
+			const shareValueType = valueOfPlusMinus(nShareValue, a.sise);
+
+			const nShareRate = Number(a.shareRate);
+			const shareRateType = valueOfPlusMinus(nShareRate, 1);
+
 			return {
 				...a,
 				roeType,
 				countType,
 				profitType,
 				enquityType,
+				shareValueType,
+				shareRateType,
+				siseType: a?.updown === 'up' ? 'plus' : a?.updown === 'down' ? 'minus' : '',
 			};
 		});
 	}, [data, isShowClose, viewType, search]);

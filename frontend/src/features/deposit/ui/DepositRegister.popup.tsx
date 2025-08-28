@@ -28,13 +28,13 @@ export const DepositRegisterPopup = ({ item, onClose }: { item?: DataType; onClo
 					sdate: dayjs(item?.sdate).toDate(),
 					price: withCommas(item?.tax ? item?.price + item?.tax : item?.price), // 세전
 					priceAfterTax: withCommas(item?.price), // 세후
-					priceTax: withCommas(item?.tax), // 세금
+					priceTax: withCommas(item?.tax) || '0', // 세금
 				}
 			: {
 					sdate: new Date(),
 					price: '',
 					priceAfterTax: '',
-					priceTax: '',
+					priceTax: '0',
 				},
 		resolver: zodResolver(
 			z.object({

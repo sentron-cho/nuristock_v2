@@ -9,18 +9,22 @@ export interface ResearchItemType {
 	stime?: string;
 	mtime?: string;
 	cdate?: string;
-	scount?: string;
-	eps?: string;
+	scount?: string | number;
+	eps?: string | number;
 	roe?: string | number;
-	debt?: string;
-	debtratio?: string;
-	profit?: string;
-	equity?: string;
-	per?: string;
-	dividend?: string;
-	cprice?: string;
-	fprice?: string;
-	tprice?: string;
+	debt?: string | number;
+	debtratio?: string | number;
+	profit?: string | number;
+	equity?: string | number;
+	per?: string | number;
+	dividend?: string | number;
+	cprice?: string | number;
+	fprice?: string | number;
+	tprice?: string | number;
+	updown?: string;
+
+	shareValue?: string | number; // 가치 산정 값
+	shareRate?: string | number; // 가치 산정 비율
 }
 
 export interface ResearchResponse {
