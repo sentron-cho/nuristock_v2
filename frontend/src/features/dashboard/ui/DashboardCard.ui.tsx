@@ -24,7 +24,7 @@ export const DashboardCard = ({
 	onClick,
 	isFullDisplay = true,
 }: {
-	viewType?: 'keep' | 'trade';
+	viewType?: 'keep' | 'trade' | 'nokeep';
 	data: DataType;
 	siseData?: SiseType[];
 	sortType?: string;

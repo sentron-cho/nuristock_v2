@@ -57,7 +57,12 @@ export const useDashboardHook = (initialData?: DashboardResponse) => {
 			: '';
 		const sonic = sell && captal && sell - captal;
 
-		const values: string[] = [captal?.toString() || '', sell?.toString() || '', sonic?.toString() || '', deposit?.price?.toString() || ''];
+		const values: string[] = [
+			captal?.toString() || '',
+			sell?.toString() || '',
+			sonic?.toString() || '',
+			deposit?.price?.toString() || '',
+		];
 		return SummaryData(values);
 	}, [list, data]);
 
@@ -111,6 +116,20 @@ export const useDashboardHook = (initialData?: DashboardResponse) => {
 		return sorted;
 	}, [list, sort]);
 
+	// 미보유(관심) 종목 리스트
+	const sortedNokeeps = useMemo(() => {
+		const sorted = makeCardList(
+			sort,
+			list?.filter((a) => !a.kcount && !a.ecount)
+		);
+
+		// 스토리지에 저장(마이스톡 화면에서 네비게이션용으로 사용)
+		const options = sorted?.map((a) => ({ value: a.code, label: a.name }));
+		options && options?.length > 0 && setLocalStorage(StorageDataKey.DASHBOARD_SORTED_NOKEEP, options);
+
+		return sorted;
+	}, [list, sort]);
+
 	const onChangeSort = (value: string) => {
 		setSort(value);
 		createConfig({ skey: 'sort', svalue: value });
@@ -123,6 +142,7 @@ export const useDashboardHook = (initialData?: DashboardResponse) => {
 		summaryData,
 		sortedKeeps,
 		sortedTrades,
+		sortedNokeeps,
 		titleOptions,
 		sort,
 		onChangeSort,

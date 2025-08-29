@@ -13,8 +13,10 @@ import { PopupType } from '@entites/Dialog';
 import { StockRegisterPopup } from '@features/dashboard/ui/StockRegister.popup';
 import { StockUpdaterPopup } from '@features/dashboard/ui/StockUpdater.popup';
 import { StockSiseUpdaterPopup } from '@features/dashboard/ui/StockSiseUpdater.popup';
+import { MyStockBuyPopup } from '@features/mystock/ui/MyStockBuy.popup';
+import { MyStockTreadType } from '@features/mystock/api/mystock.dto';
 
-const DashboardPage = ({ viewType = 'trade' }: { viewType?: 'trade' | 'keep' }) => {
+const DashboardPage = ({ viewType = 'trade' }: { viewType?: 'trade' | 'keep' | 'nokeep' }) => {
 	const { isMobile } = useCommonHook();
 	const { showToast, showConfirm, navigate } = useCommonHook();
 
@@ -25,7 +27,18 @@ const DashboardPage = ({ viewType = 'trade' }: { viewType?: 'trade' | 'keep' }) 
 
 	const onClick = (eid?: string, item?: DataType) => {
 		if (eid === EID.SELECT) {
-			navigate(`${URL.MYSTOCK}/${viewType}/${item?.code}`);
+			if (viewType === 'nokeep') {
+				setPopup({
+					type: 'buy',
+					item: data?.sise?.find((b) => b.code === item?.code),
+					onClose: (isOk: boolean) => {
+						setPopup(undefined);
+						isOk && refetch();
+					},
+				});
+			} else {
+				navigate(`${URL.MYSTOCK}/${viewType}/${item?.code}`);
+			}
 		} else if (eid === EID.DELETE) {
 			showConfirm({
 				content: ST.WANT_TO_DELETE,
@@ -66,6 +79,9 @@ const DashboardPage = ({ viewType = 'trade' }: { viewType?: 'trade' | 'keep' }) 
 
 			{/* 보유종목 수정 팝업 */}
 			{popup?.type === EID.EDIT && <StockUpdaterPopup item={popup?.item as DataType} onClose={popup?.onClose} />}
+
+			{/* 매수 팝업 */}
+			{popup?.type === 'buy' && <MyStockBuyPopup item={popup?.item as MyStockTreadType} onClose={popup.onClose} />}
 
 			{/* 시세 수정 팝업 */}
 			{popup?.type === EID.SISE && (

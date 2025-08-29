@@ -38,8 +38,8 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 			const roe = !isNaN(Number(a.roe)) ? Number(a.roe) : 0;
 			const equity = !isNaN(Number(a.equity)) ? Number(a.equity) : 0;
 			const profit = !isNaN(Number(a.profit)) ? Number(a.profit) : 0;
-			const isToday = dayjs(a?.stime).format('YYYYMMDD') === dayjs().format('YYYYMMDD');
-			const sise = isToday ? Number(a?.sise) : 0;
+			const isWeek = dayjs(a?.stime).format('YYYYMMDD') >= dayjs().add(-7, 'day').format('YYYYMMDD'); // 일주일
+			const sise = isWeek ? Number(a?.sise) : 0;
 
 			if (scount && roe && equity && profit && sise) {
 				const shareValue = calcValuePerShare({

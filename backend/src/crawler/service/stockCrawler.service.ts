@@ -61,7 +61,7 @@ const INVEST_START_TIME = 8; // 오전 8시
 const INVEST_END_TIME = 18; // 오후 6시
 const INVEST_INTERVAL_TIME = 60 * 60 * 1000; // 60분마다
 
-const ALL_START_TIME = 18; // 오후 6시
+const ALL_START_TIME = 16; // 오후 4시
 const ALL_END_TIME = 6; // 오전 6시
 const ALL_INTERVAL_TIME = 30 * 1000; // 30초마다
 
@@ -142,7 +142,7 @@ export const startStockSiseService = (fastify: FastifyInstance) => {
       // 대시보드 DB에 있는 종목들 가져오기
       const year = now.add(-1, "year").format("YYYY");
       let data = await fastify.db.query(
-        `SELECT code FROM market WHERE mtime = '' or mtime = '${year}' ORDER BY type DESC, stime ASC LIMIT 3;`
+        `SELECT code FROM market WHERE mtime = '' or mtime = '${year}' ORDER BY stime ASC LIMIT 3;`
       );
       let codes = data?.map((a) => a?.code?.replace("A", ""));
 

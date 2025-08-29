@@ -45,6 +45,7 @@ const router = createBrowserRouter([
 					{ index: true, element: <DashboardPage viewType={'keep'} /> },
 					{ path: 'keep', element: <DashboardPage viewType={'keep'} /> },
 					{ path: 'trade', element: <DashboardPage viewType={'trade'} /> },
+					{ path: 'nokeep', element: <DashboardPage viewType={'nokeep'} /> },
 				],
 			},
 			{
