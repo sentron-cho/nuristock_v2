@@ -255,6 +255,7 @@ const KOR = {
 
 	MAINBOARD: {
 		KEEP: '보유 상위',
+		TARGET_LIST: '목표가 도래',
 		SONIC_TOP: '평가손익(상위)',
 		SONIC_BOTTOM: '평가손실(상위)',
 		SONIC_BUY_TOP: '매수 손익율(상위)',
