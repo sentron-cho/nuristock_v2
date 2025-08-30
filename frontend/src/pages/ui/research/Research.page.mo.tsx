@@ -1,6 +1,6 @@
 import { styled } from '@styles/stitches.config';
 import { PageContainer } from '../../../features/common/ui/PageContainer.ui';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { IconAdd } from '@entites/Icons';
@@ -18,6 +18,7 @@ import { useForm } from 'react-hook-form';
 import { ResearchItemType, ResearchResponse } from '@features/research/api/research.dto';
 import { useResearchHook } from '@features/research/hook/Research.hook';
 import dayjs from 'dayjs';
+import { useNaviByOptions } from '@shared/hooks/useOptionNavi.hook';
 
 const StyledPage = styled(PageContainer, {
 	background: '$white',
@@ -73,37 +74,35 @@ export const ResearchPageMo = ({
 	data,
 	onClick,
 }: {
-	viewType: 'kospi' | 'kosdaq';
+	viewType: 'kospi' | 'kosdaq' | 'none';
 	data?: ResearchResponse;
 	onClick?: (eid?: string, item?: ResearchItemType) => void;
 }) => {
 	const { navigate } = useCommonHook();
-	const { list, totalCount, moreMax, setSearch } = useResearchHook(data, viewType);
+	const { naviOptions, list, totalCount, moreMax, setSearch } = useResearchHook(data, viewType);
+	const { prev, next } = useNaviByOptions({ options: naviOptions, value: viewType });
 
 	const formMethod = useForm();
 
 	const search = formMethod?.watch('searchtext');
+
 	useEffect(() => {
 		setSearch(search);
 	}, [search]);
 
-	const { handlerSwipe, swipeClass } = useSwipePage({
-		onNextPage: () => {
-			return `${URL.RESEARCH}/${viewType === 'kospi' ? 'kosdaq' : 'kospi'}`;
+	const { handlerSwipe } = useSwipePage({
+		onNextPage: (dir?: 'next' | 'prev') => {
+			if (dir === 'prev') {
+				return `${URL.RESEARCH}/${prev?.value}`;
+			} else {
+				return `${URL.RESEARCH}/${next?.value}`;
+			}
 		},
 	});
 
 	const onClickNavi = (eid?: string) => {
 		eid && navigate(`${URL.RESEARCH}/${eid}`);
 	};
-
-	const naviOptions = useMemo(
-		() => [
-			{ label: ST.KOSPI, value: 'kospi' },
-			{ label: ST.KOSDAQ, value: 'kosdaq' },
-		],
-		[]
-	);
 
 	useEffect(() => {
 		const scrollEl = document.querySelector('.scroll-view');
@@ -129,7 +128,7 @@ export const ResearchPageMo = ({
 	return (
 		<>
 			<StyledPage>
-				<Flex direction={'column'}>
+				<Flex direction={'column'} flex={1} gap={0}>
 					<PageTitleBar
 						title={ST.MARKET}
 						buttonProps={{
@@ -176,7 +175,7 @@ export const ResearchPageMo = ({
 
 					<Flex className={clsx('contents-layer')} direction={'column'} {...handlerSwipe}>
 						{/* 데이터 */}
-						<Flex className={clsx('box', swipeClass)} direction={'column'}>
+						<Flex className={clsx('box')} direction={'column'}>
 							{list?.map((item) => {
 								return (
 									<Flex
@@ -187,8 +186,13 @@ export const ResearchPageMo = ({
 										onClick={() => onClick?.(EID.SELECT, item)}
 									>
 										<Flex height={20}>
-											<Text size='xs' text={`${item.name}`} flex={2} textAlign={'left'} />
-											<Text size='xs' text={`${dayjs(item.stime).format('MM/DD HH:mm')}`} flex={2} textAlign={'right'} />
+											<Text size='xs' text={`${item.name}`} flex={2} textAlign={'left'} onClick={() => onClick?.(EID.FIND, item)} />
+											<Text
+												size='xs'
+												text={`${dayjs(item.stime).format('MM/DD HH:mm')}`}
+												flex={2}
+												textAlign={'right'}
+											/>
 
 											<Text
 												size='xs'
@@ -212,8 +216,9 @@ export const ResearchPageMo = ({
 												textAlign={'right'}
 											/>
 										</Flex>
+
 										<Flex height={20}>
-											<Text size='xs' text={''} flex={2} textAlign={'left'} />
+											<Text size='xs' text={''} flex={2} textAlign={'left'} onClick={() => onClick?.(EID.FIND, item)} />
 
 											<Text
 												size='xs'

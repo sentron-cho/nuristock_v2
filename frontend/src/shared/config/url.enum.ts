@@ -14,18 +14,12 @@ export const URL = {
 	DIVIDEND: '/dividend',
 	INVEST: '/invest',
 	BUCKET: '/bucket',
+	STATISTIC: '/statistic',
 	SELL: '/sell',
 	BUY: '/buy',
 	STOCKS: '/stocks',
 	MEMUS: '/menus',
-
-	// PROFIT_YEAR: '/profit/year',
-	// PROFIT_CODE: '/profit/code',
-
-	// WEB: '/api',
-	// BANKING: '/banking',
-	// CORPINFO: '/corpinfo',
-
+	
 	REST: {
 		NAVER: 'https://finance.naver.com/item/main.nhn',
 		DAUM: 'https://finance.daum.net/quotes/',
@@ -66,4 +60,5 @@ export const API = {
 	APP: `${API_ROOT}/app`,
 	APP_CONFIG: `${API_ROOT}/app/config`,
 	RESEARCH: `${API_ROOT}/research`,
+	STATISTIC: `${API_ROOT}/statistic`,
 };

@@ -19,6 +19,7 @@ import MainboardPage from '@page/ui/mainboard/Mainboard.page';
 import BucketlistPage from '@page/ui/bucketlist/Bucketlist.page';
 import ProfitPerDayPage from '@page/ui/profit/ProfitPerDay.page';
 import ResearchPage from '@page/ui/research/Research.page';
+import StatisticPage from '@page/ui/statistic/Statistic.page';
 
 const router = createBrowserRouter([
 	{
@@ -80,7 +81,7 @@ const router = createBrowserRouter([
 				children: [
 					{ index: true, element: <MarketPage viewType='kospi' /> },
 					{ path: 'kospi', element: <MarketPage viewType='kospi' /> },
-					{ path: 'kosdaq', element: <MarketPage viewType='kosdaq' /> }
+					{ path: 'kosdaq', element: <MarketPage viewType='kosdaq' /> },
 				],
 			},
 			{
@@ -133,8 +134,14 @@ const router = createBrowserRouter([
 				children: [
 					{ index: true, element: <ResearchPage viewType='kospi' /> },
 					{ path: 'kospi', element: <ResearchPage viewType='kospi' /> },
-					{ path: 'kosdaq', element: <ResearchPage viewType='kosdaq' /> }
+					{ path: 'kosdaq', element: <ResearchPage viewType='kosdaq' /> },
+					{ path: 'none', element: <ResearchPage viewType='none' /> },
 				],
+			},
+			{
+				path: 'statistic',
+				element: <PageLayout />,
+				children: [{ index: true, element: <StatisticPage /> }],
 			},
 			{ path: '*', element: <NotFoundPage /> },
 		],

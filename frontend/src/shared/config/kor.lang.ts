@@ -117,6 +117,7 @@ const KOR = {
 	ECOST: '등락',
 	KOSPI: '코스피',
 	KOSDAQ: '코스닥',
+	ERROR_SEARCH: '검색실패',
 	SUM: '합계',
 	TAX: '제세금',
 	MORE_IN: '요약보기',
@@ -208,6 +209,7 @@ const KOR = {
 
 		BANKING: '잔고',
 		BUCKET: '버킷',
+		STATISTIC: '통계',
 	},
 
 	STOCK_TITLE: '주식(종목)명',

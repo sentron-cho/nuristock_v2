@@ -216,3 +216,9 @@ export interface ResearchDataType extends StockDartBasicType {
   ecost: number;
   mtime: string;
 }
+
+export interface StatisticDataType {
+  count?: number;
+  name?: string;
+  code?: string;
+}

@@ -59,7 +59,7 @@ const INTERVAL_TIME = 5 * 60 * 1000; // 5분마다
 
 const INVEST_START_TIME = 8; // 오전 8시
 const INVEST_END_TIME = 18; // 오후 6시
-const INVEST_INTERVAL_TIME = 60 * 60 * 1000; // 60분마다
+const INVEST_INTERVAL_TIME = 10 * 60 * 1000; // 10분마다
 
 const ALL_START_TIME = 16; // 오후 4시
 const ALL_END_TIME = 6; // 오전 6시
@@ -108,8 +108,12 @@ export const startStockSiseService = (fastify: FastifyInstance) => {
       console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}] 가치투자 시세 수집 시작, 크롤링`);
 
       // 가치투자 DB에 있는 종목들 가져오기
-      let data = await fastify.db.query("SELECT code FROM investment GROUP BY code");
+      let data = await fastify.db.query("SELECT m.code, k.name, k.stime FROM investment m join market k where m.code = k.code GROUP BY code order by stime asc limit 5;");
       let codes = data?.map((a) => a?.code?.replace("A", ""));
+
+      let text = ''
+      data?.forEach((a) => text += `${a.name}(${a.code}), `);
+      console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}] 가치투자 시세 수집 시작, 크롤링: `, text.substring(0, text.length - 2));
 
       // 실시간 주가 가져오기
       let results = await Promise.all(codes.map(getNaverStockSise));
@@ -137,13 +141,16 @@ export const startStockSiseService = (fastify: FastifyInstance) => {
 
     // 오후 18시 ~ 새벽 06시 사이에만 실행
     if (hour >= ALL_START_TIME || hour < ALL_END_TIME) {
-      console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}] 전체종목 시세 수집 시작, 크롤링`);
-
       // 대시보드 DB에 있는 종목들 가져오기
       const year = now.add(-1, "year").format("YYYY");
       let data = await fastify.db.query(
-        `SELECT code FROM market WHERE mtime = '' or mtime = '${year}' ORDER BY stime ASC LIMIT 3;`
+        `SELECT code, name FROM market WHERE mtime = '' or mtime = '${year}' ORDER BY stime ASC LIMIT 3;`
       );
+
+      let text = ''
+      data?.forEach((a) => text += `${a.name}(${a.code}), `);
+      console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}] 종목 시세 수집 시작, 크롤링 : `, text.substring(0, text.length - 2));
+
       let codes = data?.map((a) => a?.code?.replace("A", ""));
 
       // 실시간 주가 가져오기

@@ -46,7 +46,6 @@ export const InvestmentPageMo = ({
 
 	const { handlerSwipe, swipeClass } = useSwipePage({
 		onNextPage: (dir?: 'next' | 'prev') => {
-			// return `${URL.INVEST}/${viewType === 'keep' ? 'nokeep' : 'keep'}`;
 			if (dir === 'prev') {
 				return `${URL.INVEST}/${prev?.value}`;
 			} else {

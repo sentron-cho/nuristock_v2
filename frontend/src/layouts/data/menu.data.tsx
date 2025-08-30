@@ -10,6 +10,7 @@ import {
 	IconInvest,
 	IconResearch,
 	IconSonic,
+	IconStatistic,
 	IconStockSearch,
 } from '@entites/Icons';
 
@@ -26,6 +27,7 @@ export const Menus = () => {
 		{ value: URL.RESEARCH, label: ST.MENU.RESEARCH, icon: <IconResearch fontSize='small' /> }, // 투자조사
 		{ value: URL.MARKET, label: ST.MENU.MARKET, icon: <IconStockSearch fontSize='small' /> }, // 종목검색
 		{ value: URL.BUCKET, label: ST.MENU.BUCKET, icon: <IconBucket fontSize='small' /> }, // 버킷리스트
+		{ value: URL.STATISTIC, label: ST.MENU.STATISTIC, icon: <IconStatistic fontSize='small' /> }, // 버킷리스트
 	];
 
 	return items;

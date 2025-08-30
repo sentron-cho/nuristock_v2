@@ -5,8 +5,9 @@ import { reverse, sortBy } from 'lodash';
 import { valueOfPlusMinus } from '@shared/libs/utils.lib';
 import dayjs from 'dayjs';
 import { calcValuePerShare } from '@shared/libs/investment.util';
+import { ST } from '@shared/config/kor.lang';
 
-export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi' | 'kosdaq' = 'kospi') => {
+export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi' | 'kosdaq' | 'none' = 'kospi') => {
 	const [isShowClose, setShowClose] = useState(false);
 	const [perItem] = useState(100);
 	const [max, setMax] = useState(perItem);
@@ -16,6 +17,15 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		setMax(perItem);
 	}, [viewType]);
 
+	const naviOptions = useMemo(
+		() => [
+			{ label: ST.KOSPI, value: 'kospi' },
+			{ label: ST.KOSDAQ, value: 'kosdaq' },
+			{ label: ST.ERROR_SEARCH, value: 'none' },
+		],
+		[]
+	);
+
 	// 초기 데이터
 	const data = useMemo(() => initialData?.value, [initialData]);
 
@@ -23,17 +33,12 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 	const list = useMemo(() => {
 		if (!data?.length) return undefined;
 
-		// 코스피/코스닥 타입 필터링
-		const filtered = data?.filter((a) => a?.type?.toUpperCase() === viewType.toUpperCase());
-		let items = filtered;
+		const a = data?.find((a) => a?.name === '한일네트웍스');
+		console.log({ a });
 
-		// 상폐종목 표시 여부
-		if (!isShowClose) {
-			items = filtered?.filter((a) => a.state === 'open');
-		}
-
+		
 		// roe 숫자로 변환
-		items = items?.map((a) => {
+		const parsed = data?.map((a) => {
 			const scount = !isNaN(Number(a.scount)) ? Number(a.scount) : 0;
 			const roe = !isNaN(Number(a.roe)) ? Number(a.roe) : 0;
 			const equity = !isNaN(Number(a.equity)) ? Number(a.equity) : 0;
@@ -75,6 +80,23 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 			}
 		});
 
+		// 코스피/코스닥 타입 필터링
+		const filtered = parsed?.filter((a) => {
+			if (viewType === 'kospi') return a?.type?.toUpperCase() === 'KOSPI';
+			else if (viewType === 'kosdaq') return a?.type?.toUpperCase() === 'KOSDAQ';
+			else {
+				const isNone = !(a?.type?.toUpperCase() === 'KOSPI' || a?.type?.toUpperCase() === 'KOSDAQ');
+				if (isNone || !a.roe || !a.sise || !a.equity) return true;
+			}
+		});
+		let items = filtered;
+
+		// 상폐종목 표시 여부
+		if (!isShowClose) {
+			items = filtered?.filter((a) => a.state === 'open');
+		}
+
+
 		// 우선주
 		const preferred = items?.filter((a) => Number(a.roe) > 0 && Number(a.equity) > 0 && Number(a.profit) > 0);
 
@@ -84,7 +106,8 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		// console.log({ count: items?.length, preferred: preferred?.length, rest: rest?.length });
 
 		// 정렬
-		items = [...reverse(sortBy(preferred, ['shareRate', 'roe'])), ...rest];
+		if(viewType === 'none') items = sortBy(items, ['name']);
+		else items = [...reverse(sortBy(preferred, ['shareRate', 'roe'])), ...rest];
 
 		// console.log({ items });
 
@@ -132,6 +155,7 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 	};
 
 	return {
+		naviOptions,
 		data,
 		list: list?.slice(0, max),
 		totalCount,

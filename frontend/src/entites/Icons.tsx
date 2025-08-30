@@ -4,14 +4,17 @@ import { SvgIconProps } from '@mui/material';
 import IconHome from '@mui/icons-material/Home'; // 홈
 import IconDashboard from '@mui/icons-material/Dashboard'; // 대시보드
 import IconDiary from '@mui/icons-material/EventNote'; // 다이어리
-import IconSonic from '@mui/icons-material/Assessment'; // 투자손익
+// import IconSonic from '@mui/icons-material/Addchart';  // 투자손익
+import IconSonic from '@mui/icons-material/EmojiTransportation';
 import IconStockSearch from '@mui/icons-material/QueryStats';
 import IconDividend from '@mui/icons-material/CreditScore'; // 배당
 import IconInvest from '@mui/icons-material/Balance'; // 가치투자
 import IconAsset from '@mui/icons-material/AssuredWorkload'; // 투자금
 import IconDeposit from '@mui/icons-material/CurrencyExchange'; // 예수금
 import IconBucket from '@mui/icons-material/AdsClick'; // 버킷
-import IconResearch from '@mui/icons-material/Troubleshoot'; // 버킷
+import IconResearch from '@mui/icons-material/Troubleshoot'; // 투자조사
+// import IconStatistic from '@mui/icons-material/Assessment'; // 통계
+import IconStatistic from '@mui/icons-material/Addchart'; // 통계
 
 import IconDelete from '@mui/icons-material/Delete';
 import IconEdit from '@mui/icons-material/DriveFileRenameOutline';
@@ -140,5 +143,6 @@ export {
 	IconBucket,
 	IconResearch,
 	IconStarOutline,
-	IconStarFill
+	IconStarFill,
+	IconStatistic,
 };

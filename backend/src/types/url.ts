@@ -22,6 +22,9 @@ export const URL = {
   RESEARCH: {
     ROOT: `${ROOT_URL}/research`,
   },
+  STATISTIC: {
+    ROOT: `${ROOT_URL}/statistic`,
+  },
   PROFIT: {
     ROOT: `${ROOT_URL}/profit`,
     YEARS: `${ROOT_URL}/profit/years`,

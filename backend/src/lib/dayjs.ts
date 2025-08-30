@@ -7,3 +7,5 @@ dayjs.extend(timezone);
 dayjs.tz.setDefault("Asia/Seoul");
 
 export default dayjs;
+
+// export const Dayjs = dayjs.tz('Asia/Seoul');
