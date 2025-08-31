@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import { DATE_FORMAT } from '@shared/config/common.constant';
 import { RowField } from '@entites/LineRowField';
 import { FieldValues } from 'react-hook-form';
+import { NoData } from '@entites/NoData';
 
 const StyledFlex = styled(Flex, {
 	'&.layout': {
@@ -31,26 +32,28 @@ export const MainboardCard = ({
 }) => {
 	const { target, sonic, latest, sonicBuy } = useMainboardCardHook(data, isMore, sortType);
 
-	console.log('target', target);
-
 	return (
 		<StyledFlex className={clsx('layout')} gap={8} direction={'column'}>
 			{/* 평가손익 상위 */}
 			{viewType === 'target' &&
-				target?.map((item, index) => {
-					return (
-						<RowField
-							key={`tr-${index}`}
-							className={clsx('target', item.type)}
-							title={`${item.name} [${item.sonicRate?.toFixed(1)}%]`}
-							text={`${(item as FieldValues).diffDate}`}
-							value={withCommas(item.sonic)}
-							onClick={() => onClick?.(viewType, item)}
-							valueProps={{ bold: true }}
-							suffix={{ value: ST.WON }}
-						/>
-					);
-				})}
+				(target?.length > 0 ? (
+					target?.map((item, index) => {
+						return (
+							<RowField
+								key={`tr-${index}`}
+								className={clsx('target', item.type)}
+								title={`${item.name} [${item.sonicRate?.toFixed(1)}%]`}
+								text={`${(item as FieldValues).diffDate}`}
+								value={withCommas(item.sonic)}
+								onClick={() => onClick?.(viewType, item)}
+								valueProps={{ bold: true }}
+								suffix={{ value: ST.WON }}
+							/>
+						);
+					})
+				) : (
+					<NoData />
+				))}
 
 			{/* 평가손익 상위 */}
 			{viewType === 'sonic' &&

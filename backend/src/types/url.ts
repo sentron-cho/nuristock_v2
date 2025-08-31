@@ -68,6 +68,7 @@ const DART_BASE = "https://opendart.fss.or.kr/api";
 const FNGUIDE_ROOT = "https://comp.fnguide.com";
 const DAUM_ROOT = "https://finance.daum.net";
 const NAVER_ROOT = `https://finance.naver.com`;
+const KIND_ROOT = `https://kind.krx.co.kr`;
 
 export const REST_API = {
   NAVER_ROOT: `${NAVER_ROOT}`,
@@ -86,4 +87,7 @@ export const REST_API = {
 
   DAUM_ROOT: `${DAUM_ROOT}`,
   DAUM_QUOTES: `${DAUM_ROOT}/quotes`,
+
+  KIND_MARKET_NEW: `${KIND_ROOT}/listinvstg/listingcompany.do?method=searchListingTypeMain`,
+  KIND_MARKET_DEL: `${KIND_ROOT}/investwarn/delcompany.do?method=searchDelCompanyMain`,
 };

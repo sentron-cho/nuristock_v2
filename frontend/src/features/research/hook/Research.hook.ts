@@ -32,11 +32,7 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 	// 계산된 데이터
 	const list = useMemo(() => {
 		if (!data?.length) return undefined;
-
-		const a = data?.find((a) => a?.name === '한일네트웍스');
-		console.log({ a });
-
-		
+	
 		// roe 숫자로 변환
 		const parsed = data?.map((a) => {
 			const scount = !isNaN(Number(a.scount)) ? Number(a.scount) : 0;
@@ -103,17 +99,12 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		// 나머지
 		const rest = items?.filter((a) => Number(a.roe) <= 0 || Number(a.equity) <= 0 || Number(a.profit) <= 0);
 
-		// console.log({ count: items?.length, preferred: preferred?.length, rest: rest?.length });
-
 		// 정렬
 		if(viewType === 'none') items = sortBy(items, ['name']);
 		else items = [...reverse(sortBy(preferred, ['shareRate', 'roe'])), ...rest];
 
-		// console.log({ items });
-
 		if (search) {
 			items = items?.filter((a) => a.code?.includes(search) || a.name?.includes(search));
-			// console.log({ search, items });
 		}
 
 		return items?.map((a) => {
