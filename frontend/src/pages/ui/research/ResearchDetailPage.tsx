@@ -1,9 +1,5 @@
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
-import {
-	useDeleteResearch,
-	useRefreshResearch,
-	useSelectResearchDetail,
-} from '@features/research/api/research.api';
+import { useRefreshResearch, useSelectResearch, useSelectResearchDetail } from '@features/research/api/research.api';
 import { PopupType } from '@entites/Dialog';
 import { useState } from 'react';
 import { EID } from '@shared/config/default.config';
@@ -12,33 +8,27 @@ import { ResearchItemType } from '@features/research/api/research.dto';
 import { ResearchDetailPageMo } from './ResearchDetail.page.mo';
 import { ResearchUpdaterPopup } from '@features/research/ui/ResearchUpdater.popup';
 import dayjs from 'dayjs';
+import { useResearchHook } from '@features/research/hook/Research.hook';
 
-const ResearchDetailPage = () => {
+const ResearchDetailPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosdaq' | 'none' }) => {
 	const { isMobile } = useCommonHook();
 
 	const { showToast, showAlert, showConfirm, param } = useCommonHook();
 
 	const [popup, setPopup] = useState<PopupType>();
 
+	const { data: list } = useSelectResearch();
 	const { data, refetch } = useSelectResearchDetail(param?.id as string);
 
-	const { mutateAsync: deleteData } = useDeleteResearch();
+	const { list: allList } = useResearchHook(list, viewType);
+
 	const { mutateAsync: refreshData } = useRefreshResearch();
 
 	const onClick = (eid?: string, item?: ResearchItemType) => {
 		if (eid === EID.SELECT) {
 			// navigate(`${URL.MYSTOCK}/${viewType}/${item?.code}`);
 		} else if (eid === EID.DELETE) {
-			showConfirm({
-				content: ST.WANT_TO_DELETE,
-				onClose: async (isOk) => {
-					if (isOk && item?.rowid) {
-						await deleteData({ rowid: item.rowid });
-						refetch();
-						showToast('info', ST.DELETEED);
-					}
-				},
-			});
+			refetch();
 		} else if (eid === EID.ADD) {
 			if (item?.sdate === dayjs().format('YYYY')) {
 				showAlert({ content: `[${item.sdate}] ${ST.EXIST_DATA_INVEST}` });
@@ -77,8 +67,8 @@ const ResearchDetailPage = () => {
 
 	return (
 		<>
-			{isMobile && <ResearchDetailPageMo data={data} onClick={onClick} />}
-			{!isMobile && <ResearchDetailPageMo data={data} onClick={onClick} />}
+			{isMobile && <ResearchDetailPageMo data={data} allList={allList} viewType={viewType} onClick={onClick} />}
+			{!isMobile && <ResearchDetailPageMo data={data} allList={allList} viewType={viewType} onClick={onClick} />}
 
 			{/* 수정 업데이트 팝업 */}
 			{popup?.type === EID.EDIT && (

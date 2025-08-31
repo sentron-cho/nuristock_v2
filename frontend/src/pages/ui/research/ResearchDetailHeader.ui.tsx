@@ -8,7 +8,6 @@ import { ResearchItemType } from '@features/research/api/research.dto';
 import { useResearchPerValueHook } from '@features/research/hook/Research.hook';
 import { ST } from '@shared/config/kor.lang';
 import { Text } from '@entites/Text';
-import { MarketSiseDataType } from '@features/market/api/market.dto';
 import { toCost } from '@shared/libs/utils.lib';
 import { URL } from '@shared/config/url.enum';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
@@ -43,7 +42,7 @@ export const ResearchDetailHeader = ({
 	value?: string;
 	options?: OptionType[];
 	data?: ResearchItemType;
-	sise?: MarketSiseDataType;
+	sise?: string;
 	onClickNavi?: (value?: string) => void;
 }) => {
 	const { isMobile } = useCommonHook();
@@ -76,7 +75,7 @@ export const ResearchDetailHeader = ({
 				<Flex className='contents' flex={1} gap={8} justify={'between'}>
 					<Flex direction={'column'} gap={4}>
 						<Text className={'rate'} text={`[${ST.SISE}]`} />
-						<Text bold className={clsx('value')} text={`${toCost(sise?.sise)}`} />
+						<Text bold className={clsx('value')} text={`${toCost(sise)}`} />
 					</Flex>
 
 					{list?.map((item, index) => (

@@ -1,5 +1,6 @@
 import { Button, ButtonProps } from '@entites/Button';
 import Flex from '@entites/Flex';
+import { IconButton } from '@entites/IconButton';
 import { SelectForm, SelectFormProps } from '@entites/SelectForm';
 import { Title } from '@entites/Title';
 import { styled } from '@styles/stitches.config';
@@ -31,6 +32,10 @@ const StyledFlex = styled(Flex, {
 			right: 4,
 		},
 
+		'.icon-button': {
+			padding: 8,
+		},
+
 		'.plus': {
 			color: '$plus',
 		},
@@ -49,6 +54,7 @@ interface PageTitleBarProps {
 	selectProps?: SelectFormProps;
 	buttonProps?: ButtonProps;
 	children?: ReactNode;
+	onClick?: () => void
 }
 
 export const PageTitleBar: React.FC<PageTitleBarProps> = ({
@@ -57,11 +63,12 @@ export const PageTitleBar: React.FC<PageTitleBarProps> = ({
 	selectProps,
 	titleProps,
 	children,
+	onClick
 }) => {
 	return (
 		<StyledFlex className='page-titl-bar'>
 			<Flex className='box' justify={'center'}>
-				{title && <Title title={title} className={titleProps?.className || ''} />}
+				{title && <Title title={title} className={titleProps?.className || ''} onClick={onClick} />}
 				{children && (
 					<Flex width={'140px'} className='title'>
 						{children}
@@ -70,7 +77,15 @@ export const PageTitleBar: React.FC<PageTitleBarProps> = ({
 				{selectProps && (
 					<SelectForm {...selectProps} className={'left'} size='medium' width={selectProps?.width || 140} />
 				)}
-				{buttonProps && <Button {...buttonProps} className={'right'} size='medium' />}
+				{buttonProps && buttonProps?.title && <Button {...buttonProps} className={'right'} size='medium' />}
+				{buttonProps && !buttonProps?.title && (
+					<IconButton
+						eid={buttonProps?.eid}
+						icon={buttonProps?.icon}
+						onClick={buttonProps?.onClick}
+						className={'right icon-button'}
+					/>
+				)}
 			</Flex>
 		</StyledFlex>
 	);

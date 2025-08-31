@@ -22,6 +22,28 @@ const researchRoute = (fastify: FastifyInstance) => {
     }
   });
 
+  // 투자조사 종목 항목 삭제
+  fastify.delete(URL.RESEARCH.ROOT, async (req, reply) => {
+    try {
+      const { rowid, code } = req.query as ResearchDataType;
+
+      console.log("[DELETE:RESEARCH]", rowid, code);
+
+      if (code) {
+        // update market set type='CLOSE', state='close', mtime='9999', sise=null, updown=null, erate=0, ecost=0, stime=null WHERE code = 'A023460';
+        // delete from marketinfo WHERE code = 'A023460';
+        await fastify.db.query(`DELETE FROM marketinfo WHERE code='${code}';`);
+        await fastify.db.query(`update market set type='CLOSE', state='close', mtime='9999', sise=null, updown=null, erate=0, ecost=0, stime=null WHERE code = '${code}';`);
+      } else if (rowid) {
+        await fastify.db.query(`DELETE FROM marketinfo WHERE rowid=${rowid};`);
+      }
+
+      reply.status(200).send({ value: code || rowid });
+    } catch (error) {
+      reply.status(500).send(withError(error as SqlError, { tag: URL.INVEST.ROOT }));
+    }
+  });
+
   // 가치투자 종목 목록 조회
   fastify.get(URL.RESEARCH.DETAIL, async (req, reply) => {
     try {

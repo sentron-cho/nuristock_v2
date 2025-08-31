@@ -138,7 +138,9 @@ const router = createBrowserRouter([
 					{ path: 'kosdaq', element: <ResearchPage viewType='kosdaq' /> },
 					{ path: 'none', element: <ResearchPage viewType='none' /> },
 
-					{ path: ':id', element: <ResearchDetailPage /> },
+					{ path: 'kospi/:id', element: <ResearchDetailPage viewType='kospi' /> },
+					{ path: 'kosdaq/:id', element: <ResearchDetailPage viewType='kosdaq' /> },
+					{ path: 'none/:id', element: <ResearchDetailPage viewType='none' /> },
 				],
 			},
 			{

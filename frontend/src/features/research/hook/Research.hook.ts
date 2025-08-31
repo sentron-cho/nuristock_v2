@@ -7,6 +7,8 @@ import dayjs from 'dayjs';
 import { calcValuePerShare } from '@shared/libs/investment.util';
 import { ST } from '@shared/config/kor.lang';
 import { FieldValues } from 'react-hook-form';
+import { useCommonHook } from '@shared/hooks/useCommon.hook';
+import { OptionType } from '@shared/config/common.type';
 
 export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi' | 'kosdaq' | 'none' = 'kospi') => {
 	const [isShowClose, setShowClose] = useState(false);
@@ -159,16 +161,21 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 	};
 };
 
-export const useResearchDetailHook = (initialData?: ResearchResponse) => {
+export const useResearchDetailHook = (
+	initialData?: ResearchResponse,
+	allData?: ResearchItemType[],
+) => {
+	const { param } = useCommonHook();
 
 	// 초기 데이터
 	const data = useMemo(() => initialData?.value, [initialData]);
+	// const allData = useMemo(() => allList?.value, [allList]);
 
 	// 계산된 데이터
 	const list = useMemo(() => {
 		if (!data?.length) return undefined;
 
-		const items = data?.map(a => ({...a, brate: '8.0', rate1: '0.7', rate2: '0.8', rate3: '0.9', rate4: '1.0'}));
+		const items = data?.map((a) => ({ ...a, brate: '8.0', rate1: '0.7', rate2: '0.8', rate3: '0.9', rate4: '1.0' }));
 
 		// roe 숫자로 변환
 		const parsed = items?.map((a) => {
@@ -187,7 +194,7 @@ export const useResearchDetailHook = (initialData?: ResearchResponse) => {
 					equity: equity.toString(),
 					profit: profit.toString(),
 					brate: a?.brate,
-					rateKey: 'rate3',					
+					rateKey: 'rate3',
 				}); // 0.8 기준
 
 				const shareRate = sise ? Number((shareValue / Number(sise)).toFixed(2)) : 0;
@@ -249,7 +256,16 @@ export const useResearchDetailHook = (initialData?: ResearchResponse) => {
 
 	const totalCount = useMemo(() => list?.length, [list]);
 
+	// 네비게이션 옵션
+	const naviOptions = useMemo(() => {
+		return allData?.map((a) => ({ value: a.code, label: a.name })) as OptionType[];
+	}, [allData]);
+
+	const selected = useMemo(() => allData?.find((a) => a.code === param?.id)?.code, [allData, param]);
+
 	return {
+		naviOptions,
+		selected,
 		data,
 		list,
 		totalCount,

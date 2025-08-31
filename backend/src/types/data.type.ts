@@ -205,6 +205,7 @@ export interface ResearchSearchParams {
 }
 
 export interface ResearchDataType extends StockDartBasicType {
+  rowid?: number;
   code: string;
   name: string;
   type: string;

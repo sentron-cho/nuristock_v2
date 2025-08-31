@@ -172,6 +172,7 @@ const KOR = {
 	PER_DIVIDEND: '배당내역',
 	PER_DAYS: '일별',
 	INVEST: '가치투자',
+	RESEARCH: '투자조사',
 
 	PER_OPEN: '상장종목',
 	PER_CLOSE: '상폐종목',

@@ -13,7 +13,7 @@ const ResearchPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosdaq' | 
 		if (eid === EID.FIND) {
 			item?.code && window.open(`${URL.REST.NAVER}?code=${item.code.replace('A', '')}`);
 		} else if (eid === EID.SELECT) {
-			navigate(`${URL.RESEARCH}/${item?.code}`);
+			navigate(`${URL.RESEARCH}/${viewType}/${item?.code}`);
 		}
 	}
 
