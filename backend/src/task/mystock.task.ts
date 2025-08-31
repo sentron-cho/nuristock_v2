@@ -4,12 +4,11 @@ import dayjs from "dayjs";
 import { getMystockInfo } from "../crawler/service/mystockInfoScraper.service.js";
 import { FieldValues, StockDartBasicType } from "../types/data.type.js";
 
-const INTERVAL_TIME = 5 * 60 * 1000; // 5분마다
+const INTERVAL_TIME = 1 * 60 * 1000; // 5분마다
 // const INTERVAL_TIME = 1000; // 1분마다
 
-// 주식 현재가 시세 크롤링
+// 재무정보 크롤링
 export const startMystockTask = (fastify: FastifyInstance) => {
-  // 대시보드 DB의 주식 종목에 대한 시세 크롤링
   const start = async () => {
     const now = dayjs().tz("Asia/Seoul");
 

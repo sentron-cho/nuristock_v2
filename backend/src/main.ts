@@ -59,19 +59,19 @@ await fastify.register(statisticRoute); // 통계
 
 // 크롤링 작업 시작
 fastify.ready().then(() => {
-  // startStockSiseService(fastify);
+  startStockSiseService(fastify);
 });
 
 // 태스크 작업 시작
 fastify.ready().then(() => {
-  // startAssetTask(fastify); // 일별 투자금액 수집
-  // startEvalutionPriceTask(fastify); // 일별 평가금액 수집(시세반영)
-  // startMystockTask(fastify); // 주식 종목 투자 정보 수집
+  startAssetTask(fastify); // 일별 투자금액 수집
+  startEvalutionPriceTask(fastify); // 일별 평가금액 수집(시세반영)
+  startMystockTask(fastify); // 주식 종목 투자 정보 수집
 });
 
 // 태스크 작업 시작
 fastify.ready().then(() => {
-  startMarketCheck(fastify); // 상폐종목 점검
+  // startMarketCheck(fastify); // 상폐종목 점검
 });
 
 fastify.get("/", async (req, reply) => {

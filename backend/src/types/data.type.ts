@@ -218,7 +218,8 @@ export interface ResearchDataType extends StockDartBasicType {
 }
 
 export interface StatisticDataType {
-  count?: number;
-  name?: string;
-  code?: string;
+  cagetory: string;
+  code: string;
+  count: number;
+  title?: string;
 }

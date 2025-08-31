@@ -3,19 +3,19 @@ import { Box, Stack } from '@mui/material';
 import { styled } from '@styles/stitches.config';
 import clsx from 'clsx';
 import { ChartLegendProps } from './Chart.type';
-import { SubTitle } from './Title';
 import Flex from './Flex';
 import { Text } from './Text';
 
 const StyledBox = styled(Box, {
 	'&.chart-legend': {
 		'.title': {
-			fontSize: '14px',
+			maxWidth: '64px',
+			// fontSize: '14px',
 		},
 
 		'.label, .text': {
 			// maxWidth: '100px',
-			fontSize: '12px',
+			// fontSize: '12px',
 			fontStretch: '80%',
 		},
 
@@ -24,7 +24,7 @@ const StyledBox = styled(Box, {
 		},
 
 		'.text': {
-			fontSize: '10px',
+			// fontSize: '10px',
 			fontStretch: '80%',
 			color: '$gray700',
 		},
@@ -48,7 +48,7 @@ export const ChartLegend: FC<ChartLegendProps> = ({
 						sx={{ cursor: onClick ? 'pointer' : 'default' }}
 						onClick={() => onClick?.(s)}
 					>
-						<Flex fullWidth={false} className='left' gap={10} flex={1}>
+						<Flex fullWidth={false} className='left' gap={10} flex={1} height={18}>
 							{/* 범례 색상 */}
 							<Box
 								sx={{
@@ -62,13 +62,13 @@ export const ChartLegend: FC<ChartLegendProps> = ({
 
 							{/* 타이틀 */}
 							<Flex gap={4} flex={1}>
-								<SubTitle className={clsx('title', 'ellipsis')} title={s.name} />
-								{s?.value && <Text className={clsx('text', 'ellipsis')} text={`[${valueFormatter(s.value)}]`} />}
+								<Text size='xxs' bold className={clsx('title', 'ellipsis')} text={s.name} />
+								{s?.value && <Text size='xxs' className={clsx('text', 'ellipsis')} text={`[${valueFormatter(s.value)}]`} />}
 							</Flex>
 
 							{s?.label && (
 								<Flex flex={1} justify={'end'}>
-									<SubTitle className={clsx('label', 'ellipsis')} title={s.label} />
+									<Text bold className={clsx('label', 'ellipsis')} text={s.label} />
 								</Flex>
 							)}
 						</Flex>

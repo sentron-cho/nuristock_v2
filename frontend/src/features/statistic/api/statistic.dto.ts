@@ -1,9 +1,9 @@
 export interface StatisticItemType {
+	cagetory: string;
+	code: string;
+	count: number;
 	title?: string;
-	value?: string;
 	date?: string;
-	code?: string;
-	count?: number;
 }
 
 export interface StatisticResponse {
