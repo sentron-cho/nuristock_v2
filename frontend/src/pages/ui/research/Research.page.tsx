@@ -6,14 +6,14 @@ import { EID } from '@shared/config/default.config';
 import { URL } from '@shared/config/url.enum';
 
 const ResearchPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosdaq' | 'none' }) => {
-	const { isMobile } = useCommonHook();
+	const { isMobile, navigate } = useCommonHook();
 	const { data } = useSelectResearch();
 
 	const onClick = (eid?: string, item?: ResearchItemType) => {
 		if (eid === EID.FIND) {
 			item?.code && window.open(`${URL.REST.NAVER}?code=${item.code.replace('A', '')}`);
 		} else if (eid === EID.SELECT) {
-			console.log({ eid, item });
+			navigate(`${URL.RESEARCH}/${item?.code}`);
 		}
 	}
 

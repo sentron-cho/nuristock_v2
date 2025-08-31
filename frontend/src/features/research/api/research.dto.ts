@@ -1,8 +1,7 @@
-export interface ResearchItemType {
-	code?: string;
-	name?: string;
+import { InvestmentItemType } from "@features/investment/api/investment.dto";
+
+export interface ResearchItemType extends InvestmentItemType {
 	type?: string;
-	sise?: number;
 	erate?: number;
 	ecost?: number;
 	state?: string;
@@ -11,11 +10,8 @@ export interface ResearchItemType {
 	cdate?: string;
 	scount?: string | number;
 	eps?: string | number;
-	roe?: string | number;
 	debt?: string | number;
 	debtratio?: string | number;
-	profit?: string | number;
-	equity?: string | number;
 	per?: string | number;
 	dividend?: string | number;
 	cprice?: string | number;
@@ -23,10 +19,14 @@ export interface ResearchItemType {
 	tprice?: string | number;
 	updown?: string;
 
-	shareValue?: string | number; // 가치 산정 값
-	shareRate?: string | number; // 가치 산정 비율
+	rateKey?: string; // 가치 산정 비율 Key (rate1, rate2, rate3, rate4)
 }
 
 export interface ResearchResponse {
 	value?: ResearchItemType[];
+}
+
+export interface ResearchRefreshType {
+	code?: string;
+	targetYear?: string;
 }

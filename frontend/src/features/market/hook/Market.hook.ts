@@ -23,7 +23,6 @@ export const useMarketHook = (initialData?: MarketSearchResponse, viewType: 'kos
 
 		if (search) {
 			items = items?.filter(a => a.code.includes(search) || a.name.includes(search));
-			console.log({ search, items });
 		}
 
 		return items;

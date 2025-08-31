@@ -21,6 +21,23 @@ const researchRoute = (fastify: FastifyInstance) => {
       reply.status(500).send(withError(error as SqlError, { tag: URL.RESEARCH.ROOT }));
     }
   });
+
+  // 가치투자 종목 목록 조회
+  fastify.get(URL.RESEARCH.DETAIL, async (req, reply) => {
+    try {
+      const { code } = req.query as ResearchSearchParams;
+      let query =
+        `select m.code, m.name, m.type, m.sise, m.erate, m.ecost, m.state, m.stime, m.mtime,  m.updown, ` +
+        `k.rowid, k.cdate, k.scount, k.eps, k.roe, k.debt, k.debtratio, k.profit, k.equity, k.per, ` +
+        `k.dividend, k.cprice, k.fprice, k.tprice from market m JOIN marketinfo k ` +
+        `where m.code = k.code and k.code = '${code}';`;
+
+      const list = await fastify.db.query(query);
+      return { value: list as ResearchDataType[] };
+    } catch (error) {
+      reply.status(500).send(withError(error as SqlError, { tag: URL.RESEARCH.DETAIL }));
+    }
+  });
 };
 
 export default researchRoute;

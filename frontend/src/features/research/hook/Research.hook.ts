@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ResearchResponse } from '../api/research.dto';
+import { ResearchItemType, ResearchResponse } from '../api/research.dto';
 import { EID } from '@shared/config/default.config';
 import { reverse, sortBy } from 'lodash';
-import { valueOfPlusMinus } from '@shared/libs/utils.lib';
+import { toNumeric, valueOfPlusMinus, valueOfUpDown, withCommas } from '@shared/libs/utils.lib';
 import dayjs from 'dayjs';
 import { calcValuePerShare } from '@shared/libs/investment.util';
 import { ST } from '@shared/config/kor.lang';
+import { FieldValues } from 'react-hook-form';
 
 export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi' | 'kosdaq' | 'none' = 'kospi') => {
 	const [isShowClose, setShowClose] = useState(false);
@@ -32,7 +33,7 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 	// 계산된 데이터
 	const list = useMemo(() => {
 		if (!data?.length) return undefined;
-	
+
 		// roe 숫자로 변환
 		const parsed = data?.map((a) => {
 			const scount = !isNaN(Number(a.scount)) ? Number(a.scount) : 0;
@@ -55,24 +56,24 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 
 				return {
 					...a,
-					scount,
-					roe,
-					equity,
-					profit,
+					count: scount.toString(),
+					roe: roe.toString(),
+					equity: equity.toString(),
+					profit: profit.toString(),
 					shareValue: sise ? shareValue : 0,
 					shareRate,
-				};
+				} as ResearchItemType;
 			} else {
 				return {
 					...a,
-					scount,
-					roe,
-					equity,
-					profit,
-					sise: 0,
+					count: scount.toString(),
+					roe: roe.toString(),
+					equity: equity.toString(),
+					profit: profit.toString(),
+					sise: '0',
 					shareValue: 0,
 					shareRate: 0,
-				};
+				} as ResearchItemType;
 			}
 		});
 
@@ -92,7 +93,6 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 			items = filtered?.filter((a) => a.state === 'open');
 		}
 
-
 		// 우선주
 		const preferred = items?.filter((a) => Number(a.roe) > 0 && Number(a.equity) > 0 && Number(a.profit) > 0);
 
@@ -100,7 +100,7 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		const rest = items?.filter((a) => Number(a.roe) <= 0 || Number(a.equity) <= 0 || Number(a.profit) <= 0);
 
 		// 정렬
-		if(viewType === 'none') items = sortBy(items, ['name']);
+		if (viewType === 'none') items = sortBy(items, ['name']);
 		else items = [...reverse(sortBy(preferred, ['shareRate', 'roe'])), ...rest];
 
 		if (search) {
@@ -121,7 +121,7 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 			const profitType = valueOfPlusMinus(nProfit);
 
 			const nShareValue = Number(a.shareValue);
-			const shareValueType = valueOfPlusMinus(nShareValue, a.sise);
+			const shareValueType = valueOfPlusMinus(nShareValue, Number(a.sise));
 
 			const nShareRate = Number(a.shareRate);
 			const shareRateType = valueOfPlusMinus(nShareRate, 1);
@@ -157,4 +157,124 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		setShowClose,
 		setSearch,
 	};
+};
+
+export const useResearchDetailHook = (initialData?: ResearchResponse) => {
+
+	// 초기 데이터
+	const data = useMemo(() => initialData?.value, [initialData]);
+
+	// 계산된 데이터
+	const list = useMemo(() => {
+		if (!data?.length) return undefined;
+
+		const items = data?.map(a => ({...a, brate: '8.0', rate1: '0.7', rate2: '0.8', rate3: '0.9', rate4: '1.0'}));
+
+		// roe 숫자로 변환
+		const parsed = items?.map((a) => {
+			const scount = !isNaN(Number(a.scount)) ? Number(a.scount) : 0;
+			const roe = !isNaN(Number(a.roe)) ? Number(a.roe) : 0;
+			const equity = !isNaN(Number(a.equity)) ? Number(a.equity) : 0;
+			const profit = !isNaN(Number(a.profit)) ? Number(a.profit) : 0;
+			const isWeek = dayjs(a?.stime).format('YYYYMMDD') >= dayjs().add(-7, 'day').format('YYYYMMDD'); // 일주일
+			const sise = isWeek ? Number(a?.sise) : 0;
+
+			if (scount && roe && equity && profit && sise) {
+				const shareValue = calcValuePerShare({
+					...a,
+					count: scount.toString(),
+					roe: roe.toString(),
+					equity: equity.toString(),
+					profit: profit.toString(),
+					brate: a?.brate,
+					rateKey: 'rate3',					
+				}); // 0.8 기준
+
+				const shareRate = sise ? Number((shareValue / Number(sise)).toFixed(2)) : 0;
+
+				return {
+					...a,
+					count: scount.toString(),
+					roe: roe.toString(),
+					equity: equity.toString(),
+					profit: profit.toString(),
+					shareValue: sise ? shareValue : 0,
+					shareRate,
+				} as ResearchItemType;
+			} else {
+				return {
+					...a,
+					count: scount.toString(),
+					roe: roe.toString(),
+					equity: equity.toString(),
+					profit: profit.toString(),
+					sise: '0',
+					shareValue: 0,
+					shareRate: 0,
+				} as ResearchItemType;
+			}
+		});
+
+		return reverse(sortBy(parsed, 'cdate'))?.map((a) => {
+			const nRoe = Number(a.roe);
+			const roeType = nRoe >= 10 ? EID.PLUS : nRoe < 0 ? EID.MINUS : EID.NONE;
+
+			const nCount = Number(a.scount);
+			const countType = nCount >= 10000000 ? EID.MINUS : nCount < 10000000 ? EID.PLUS : EID.NONE;
+
+			const nEnquity = Number(a.equity);
+			const enquityType = valueOfPlusMinus(nEnquity);
+
+			const nProfit = Number(a.profit);
+			const profitType = valueOfPlusMinus(nProfit);
+
+			const nShareValue = Number(a.shareValue);
+			const shareValueType = valueOfPlusMinus(nShareValue, Number(a.sise));
+
+			const nShareRate = Number(a.shareRate);
+			const shareRateType = valueOfPlusMinus(nShareRate, 1);
+
+			return {
+				...a,
+				roeType,
+				countType,
+				profitType,
+				enquityType,
+				shareValueType,
+				shareRateType,
+				siseType: a?.updown === 'up' ? 'plus' : a?.updown === 'down' ? 'minus' : '',
+			};
+		});
+	}, [data]);
+
+	const totalCount = useMemo(() => list?.length, [list]);
+
+	return {
+		data,
+		list,
+		totalCount,
+	};
+};
+
+type TargetList = 'rate1' | 'rate2' | 'rate3' | 'rate4';
+
+export const useResearchPerValueHook = (
+	data?: ResearchItemType,
+	targetList: TargetList[] = ['rate1', 'rate2', 'rate3', 'rate4']
+) => {
+	const list = useMemo(() => {
+		return targetList?.map((target) => {
+			let value = calcValuePerShare({ ...data, rateKey: target });
+			const nTargetRate = toNumeric((data as FieldValues)?.[target]).toFixed(1);
+
+			return {
+				target: target,
+				value: withCommas(value),
+				rate: nTargetRate,
+				updown: valueOfUpDown(Number(value), Number(data?.sise)),
+			};
+		});
+	}, [data]);
+
+	return { list };
 };

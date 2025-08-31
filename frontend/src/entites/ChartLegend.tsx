@@ -62,7 +62,7 @@ export const ChartLegend: FC<ChartLegendProps> = ({
 
 							{/* 타이틀 */}
 							<Flex gap={4} flex={1}>
-								<Text size='xxs' bold className={clsx('title', 'ellipsis')} text={s.name} />
+								<Text size='xs' bold className={clsx('title', 'ellipsis')} text={s.name} />
 								{s?.value && <Text size='xxs' className={clsx('text', 'ellipsis')} text={`[${valueFormatter(s.value)}]`} />}
 							</Flex>
 
