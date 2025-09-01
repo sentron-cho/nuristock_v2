@@ -1,9 +1,11 @@
 import * as cheerio from "cheerio";
 import { REST_API } from "../../types/url.js";
-import { ConsensusResult } from "../../types/data.type.js";
+import { ConsensusResult, ResearchInfoResult, ResearchInfoValues } from "../../types/data.type.js";
 import { parseNumber } from "../../lib/parser.util.js";
-import { chromium } from "playwright";
+import { chromium, Page } from "playwright";
 import { TIME_OUT, TIME_OUT_30 } from "../../types/constants.js";
+import dayjs from "dayjs";
+import { parseFnGuideByYear } from "./fnguideScraper.service.js";
 
 export const parseNaverConsensus = (tableHtml: string): ConsensusResult => {
   const $ = cheerio.load(tableHtml);
@@ -52,13 +54,221 @@ export const getNaverConsensus = async (code: string): Promise<ConsensusResult |
     const page = await browser.newPage({ userAgent: "Mozilla/5.0", locale: "ko-KR" });
 
     const url = `${REST_API.NAVER_MAIN}?code=${code?.replace("A", "")}`;
-    console.log("[URL]", { url });
+    // console.log("[URL]", { url });
     await page.goto(url, { waitUntil: "networkidle", timeout: TIME_OUT_30 }); // 30초
 
     await page.waitForSelector(".cop_analysis", { timeout: TIME_OUT });
     const tableHtml = await page.$eval(".cop_analysis", (el) => (el as HTMLElement).outerHTML);
 
     return parseNaverConsensus(tableHtml);
+  } catch (e) {
+    console.error("[NAVER_CONSENSUS_ERROR]", e);
+    return undefined;
+  }
+};
+
+export const parseNaverReport = (tableHtml: string, fnguideHtml?: string): ResearchInfoResult[] => {
+  const $ = cheerio.load(tableHtml);
+
+  const getRowData = (name: string, index: number = 0) => {
+    const row = $("tbody tr")
+      .filter((_, tr) => {
+        const label = $(tr).find("th strong, th").first().text().replace(/\s+/g, "");
+        // name을 정규식으로 만들어서 테스트
+        return new RegExp(name).test(label);
+      })
+      .first();
+
+    const cell = row.find("td").eq(index);
+    return parseNumber(cell.attr("title") ?? cell.text());
+  };
+
+  const year = dayjs().tz("Asia/Seoul").add(-3, "year").year(); // 3년전까지만
+  let arrays: ResearchInfoResult[] = [];
+
+  for (let i = 0; i < 4; i++) {
+    // 2022, 2023, 2024, 2025는 예상치
+    const roe = getRowData("ROE", i); // ROE
+    const profit = getRowData("당기순이익", i); // 당기순이익
+    // const equity = getRowData("당기순이익", i); // 자본
+    const pbr = getRowData("PBR", i); // PBR
+    const eps = getRowData("EPS", i); // EPS
+    // const debt = getRowData("부채총계", i); // 부채총계
+    const debtratio = getRowData("부채비율", i); // 부채비율
+    const dividend = getRowData("배당금", i); // 배당금
+
+    let debt = 0;
+    let equity = 0;
+
+    if (fnguideHtml) {
+      try {
+        const res = parseFnGuideByYear(fnguideHtml, year + i);
+        equity = res?.equity || 0;
+        debt = res?.debt || 0;
+      } catch (error) {
+        const $ = cheerio.load(fnguideHtml);
+        const index = year - dayjs().add(-3, "year").year();
+
+        if (index) {
+          const niRow = $("tbody tr")
+            .filter((_, tr) => {
+              const label = $(tr).find("th div, th").first().text().replace(/\s+/g, "");
+              return /자본총계/.test(label);
+            })
+            .first();
+
+          const niCell = niRow.find("td.r").eq(index);
+          const niVal = parseNumber(niCell.attr("title") ?? niCell.text());
+
+          const EUK = 100000000;
+          equity = Number((Number(niVal) * EUK).toFixed(0));
+
+          const debtRow = $("tbody tr")
+            .filter((_, tr) => {
+              const label = $(tr).find("th div, th").first().text().replace(/\s+/g, "");
+              return /부채총계/.test(label);
+            })
+            .first();
+
+          const debtCell = debtRow.find("td.r").eq(index);
+          const debtVal = parseNumber(niCell.attr("title") ?? niCell.text());
+
+          debt = Number((Number(debtVal) * EUK).toFixed(0));
+        }
+      }
+    }
+
+    arrays.push({ year: year + i, roe, profit, equity, pbr, eps, debt, debtratio, dividend });
+  }
+
+  return arrays;
+};
+
+const getNaverSiseByKrx = async (page: Page) => {
+  // 2) 시세 정보(KRX)
+  await page.waitForSelector("#rate_info_krx", { timeout: TIME_OUT });
+  const html = await page.$eval("#rate_info_krx", (el) => (el as HTMLElement).outerHTML);
+
+  let $ = cheerio.load(html);
+  const siseText = $(".no_today").first().text();
+  const sise = parseNumber(siseText.replace(/,/g, "")) || 0;
+
+  // 전일비 정보
+  const exdayElement = $(".no_exday em").first();
+  const updown = exdayElement.attr("class")?.replace("no_", "") || ""; // up, down, steady
+  const exdayTexts = $(".no_exday em")
+    .first()
+    .toArray()
+    .map((el) => $(el).text());
+
+  const ecost = parseNumber(exdayTexts?.[0]?.replace(/,/g, "")) || 0;
+
+  return { sise, ecost, updown };
+};
+
+const getNaverSiseByNxt = async (page: Page) => {
+  // 2) 시세 정보(NXT)
+  await page.waitForSelector("#rate_info_nxt", { timeout: TIME_OUT });
+  const html = await page.$eval("#rate_info_nxt", (el) => (el as HTMLElement).outerHTML);
+
+  let $ = cheerio.load(html);
+  const siseText = $(".no_today .blind").first().text();
+  const sise = parseNumber(siseText.replace(/,/g, "")) || 0;
+
+  // 전일비 정보
+  const exdayElement = $(".no_exday em").first();
+  const updown = exdayElement.attr("class")?.replace("no_", "") || ""; // up, down, steady
+  const exdayTexts = $(".no_exday .blind")
+    .toArray()
+    .map((el) => $(el).text());
+  const ecost = Number(exdayTexts?.[0]?.replace(/,/g, "") || 0);
+
+  return { sise, ecost, updown };
+};
+
+/**
+ * 네이버 금융 종목 컨센서스 페이지에서 지배주주순이익 및 ROE 추출
+ * @param code6 종목코드 (6자리)
+ */
+export const getNaverReport = async (code: string): Promise<ResearchInfoValues | undefined> => {
+  if (!code) return;
+
+  try {
+    const browser = await chromium.launch();
+    const page = await browser.newPage({ userAgent: "Mozilla/5.0", locale: "ko-KR" });
+
+    const url = `${REST_API.NAVER_MAIN}?code=${code?.replace("A", "")}`;
+    await page.goto(url, { waitUntil: "networkidle", timeout: TIME_OUT_30 }); // 30초
+    // console.log("[URL]", { url });
+
+    // 1) 컨센서스 정보
+    await page.waitForSelector(".cop_analysis", { timeout: TIME_OUT });
+    let html = await page.$eval(".cop_analysis", (el) => (el as HTMLElement).outerHTML);
+
+    let fnguideHtml = undefined;
+
+    const fnurl = `${REST_API.FNGUIDE_MAIN}?pGB=1&gicode=A${code?.replace(
+      "A",
+      ""
+    )}&cID=&MenuYn=Y&ReportGB=&NewMenuID=101&stkGb=701`;
+    const fnpage = await browser.newPage({ userAgent: "Mozilla/5.0", locale: "ko-KR" });
+    await fnpage.goto(fnurl, { waitUntil: "networkidle", timeout: TIME_OUT });
+    console.log("[FNGUIDE:fnurl]", fnurl);
+
+    // 자본 가져오기
+    try {
+      await fnpage.waitForSelector("#highlight_D_A .us_table_ty1.h_fix", { timeout: TIME_OUT });
+      fnguideHtml = await fnpage.$eval("#highlight_D_A .us_table_ty1.h_fix", (el) => (el as HTMLElement).outerHTML);
+    } catch (error) {
+      console.log("[FNGUIDE:ERROR-1]", error);
+    }
+
+    if (!fnguideHtml) {
+      try {
+        await fnpage.waitForSelector("#highlight_B_A .us_table_ty1.h_fix", { timeout: TIME_OUT });
+        fnguideHtml = await fnpage.$eval("#highlight_B_A .us_table_ty1.h_fix", (el) => (el as HTMLElement).outerHTML);
+      } catch (error) {
+        console.log("[FNGUIDE:ERROR-2]", error);
+      }
+    }
+
+    const report = parseNaverReport(html, fnguideHtml);
+
+    // 2) 시세 정보(KRX)
+    let siseRes: { sise: number; ecost: number; updown: string } = { sise: 0, ecost: 0, updown: "" };
+    const hour = dayjs().tz("Asia/Seoul").hour();
+    try {
+      siseRes = hour > 9 && hour < 16 ? await getNaverSiseByKrx(page) : await getNaverSiseByNxt(page);
+    } catch (error) {
+      siseRes = await getNaverSiseByKrx(page); //hour > 9 && hour < 16 ? await getNaverSiseByNxt(page) : await getNaverSiseByKrx(page);;
+    }
+
+    const { updown, ecost, sise } = siseRes;
+
+    // 3) 상장 주식수
+    await page.waitForSelector("#tab_con1", { timeout: TIME_OUT });
+    html = await page.$eval("#tab_con1", (el) => (el as HTMLElement).outerHTML);
+
+    let $$ = cheerio.load(html);
+    let row = $$("tbody tr")
+      .filter((_, tr) => {
+        const label = $$(tr).find("th strong, th").first().text().replace(/\s+/g, "");
+        // name을 정규식으로 만들어서 테스트
+        return new RegExp("상장주식수").test(label);
+      })
+      .first();
+
+    let cell = row.find("td").first();
+    const shares = parseNumber(cell.attr("title") ?? cell.text());
+
+    await page.waitForSelector(".h_company .description", { timeout: TIME_OUT });
+    html = await page.$eval(".h_company .description", (el) => (el as HTMLElement).outerHTML);
+
+    $$ = cheerio.load(html);
+    const type = $$("img").first().attr("class") === "kospi" ? "kospi" : "kosdaq";
+    console.log("[NAVER_REPORT]", { code, sise, updown, ecost, shares, report });
+
+    return { code, type, sise, updown, ecost, shares, report };
   } catch (e) {
     console.error("[NAVER_CONSENSUS_ERROR]", e);
     return undefined;

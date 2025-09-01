@@ -63,5 +63,8 @@ export const API = {
 	RESEARCH_DETAIL: `${API_ROOT}/research/detail`,
 	RESEARCH_YEAR: `${API_ROOT}/research/year`,
 	RESEARCH_UPDATE_BY_NAVER: `${API_ROOT}/research/naver`,
+	RESEARCH_SISE: `${API_ROOT}/research/sise`,
+	RESEARCH_NAVER: `${API_ROOT}/research/naver`,
+	RESEARCH_REFRESH: `${API_ROOT}/research/refresh`,
 	STATISTIC: `${API_ROOT}/statistic`,
 };

@@ -151,6 +151,7 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		naviOptions,
 		data,
 		list: list?.slice(0, max),
+		allList: list,
 		totalCount,
 		max,
 		setMax,

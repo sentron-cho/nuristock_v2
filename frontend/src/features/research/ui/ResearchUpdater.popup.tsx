@@ -1,7 +1,7 @@
-import { NumberInputForm } from '@entites/TextInputForm';
+import { NumberInputForm, TextInputForm } from '@entites/TextInputForm';
 import { Dialog } from '@entites/Dialog';
 import { useForm } from 'react-hook-form';
-import { ResearchItemType as DataType } from '../api/research.dto';
+import { ResearchItemType as DataType, ResearchInfoReportData } from '../api/research.dto';
 import { ST } from '@shared/config/kor.lang';
 import Flex from '@entites/Flex';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,8 +12,7 @@ import { useUpdateResearch as useUpdate, useCreateResearchYear as useCreate } fr
 import { SubTitle } from '@entites/Title';
 import { Text } from '@entites/Text';
 import { useMemo } from 'react';
-import { CRALER_TYPE } from '@shared/config/common.enum';
-import { isEqual } from 'lodash';
+// import { isEqual } from 'lodash';
 
 const StyledForm = styled(Flex, {
 	'.equity': {
@@ -31,35 +30,51 @@ const StyledForm = styled(Flex, {
 export const ResearchUpdaterPopup = ({
 	type = 'edit',
 	item,
+	naverData,
 	onClose,
 }: {
 	type?: 'edit' | 'add';
 	item?: DataType;
+	naverData?: ResearchInfoReportData;
 	onClose: (isOk: boolean) => void;
 }) => {
+	const values = useMemo(() => {
+		if (!naverData || !item) return undefined;
+
+		const year = item.cdate;
+		const report = naverData?.report?.find((a) => a.year?.toString() === year?.toString());
+		const { sise, shares } = naverData;
+
+		if (!isNaN(Number(item?.roe)) || !isNaN(Number(item?.equity))) {
+			return { sise, stype: naverData?.type, scount: shares, ...report, };
+		} else {
+			return { ...item, stype: naverData?.type };
+		}
+	}, [item, naverData]);
+
 	const forms = useForm({
 		defaultValues: {
-			count: withCommas(item?.count),
-			roe: withCommas(item?.roe),
-			equity: withCommas(item?.equity),
-			// profit: withCommas(item?.profit),
-			brate: withCommas(item?.brate),
-			rate1: withCommas(item?.rate1),
-			rate2: withCommas(item?.rate2),
-			rate3: withCommas(item?.rate3),
-			rate4: withCommas(item?.rate4),
+			stype: values?.stype,
+			sise: !isNaN(Number(values?.sise)) ? withCommas(values?.sise) : '',
+			scount: !isNaN(Number(values?.scount)) ? withCommas(values?.scount) : '',
+			roe: !isNaN(Number(values?.roe)) ? withCommas(values?.roe) : '',
+			equity: !isNaN(Number(values?.equity)) ? withCommas(values?.equity) : '',
+			eps: !isNaN(Number(values?.eps)) ? withCommas(values?.eps) : '',
+			profit: !isNaN(Number(values?.profit)) ? withCommas(values?.profit) : '',
+			debt: !isNaN(Number(values?.debt)) ? withCommas(values?.debt) : '',
+			debtratio: !isNaN(Number(values?.debtratio)) ? withCommas(values?.debtratio) : '',
 		},
 		resolver: zodResolver(
 			z.object({
-				count: z.string().optional(),
+				stype: z.string().optional(),
+				sise: z.string().optional(),
+				scount: z.string().optional(),
 				roe: z.string().optional(),
 				equity: z.string().optional(),
-				// profit: z.string().optional(),
-				brate: z.string().optional(),
-				rate1: z.string().optional(),
-				rate2: z.string().optional(),
-				rate3: z.string().optional(),
-				rate4: z.string().optional(),
+				eps: z.string().optional(),
+				profit: z.string().optional(),
+				debt: z.string().optional(),
+				debtratio: z.string().optional(),
 			})
 		),
 		shouldFocusError: true,
@@ -80,29 +95,35 @@ export const ResearchUpdaterPopup = ({
 		if (isOk) {
 			forms?.handleSubmit(
 				async (fields) => {
-					const isDirty = !isEqual(
-						{ count: toNumber(item?.count), equity: toNumber(item?.equity), roe: Number(item?.roe) },
-						{
-							count: toNumber(fields?.count),
-							equity: toNumber(fields?.equity),
-							roe: Number(fields?.roe),
-						}
-					);
-					const ctype = isDirty ? CRALER_TYPE.MANUAL : CRALER_TYPE.FNGUIDE;
+					// const isDirty = !isEqual(
+					// 	{
+					// 		profit: toNumber(item?.profit),
+					// 		scount: toNumber(item?.scount as string),
+					// 		equity: toNumber(item?.equity),
+					// 		roe: Number(item?.roe),
+					// 	},
+					// 	{
+					// 		profit: toNumber(fields?.profit),
+					// 		scount: toNumber(fields?.scount),
+					// 		equity: toNumber(fields?.equity),
+					// 		roe: Number(fields?.roe),
+					// 	}
+					// );
 
 					const params = {
 						...fields,
-						// profit: toNumber(fields?.profit),
+						sise: toNumber(fields?.sise),
+						profit: toNumber(fields?.profit),
 						equity: toNumber(fields?.equity),
-						count: toNumber(fields?.count),
-						ctype: ctype,
+						scount: toNumber(fields?.scount),
 					} as DataType;
 
 					if (type === 'edit') {
-						await updateData({ ...params, rowid: item?.rowid });
+						await updateData({ ...params, rowid: item?.rowid, code: item?.code, cdate: item?.cdate });
 					} else {
-						await createData({ ...params, code: item?.code, sdate: item?.sdate });
+						await createData({ ...params, code: item?.code, cdate: item?.cdate });
 					}
+					
 					onClose?.(isOk);
 				},
 				(error) => {
@@ -115,20 +136,25 @@ export const ResearchUpdaterPopup = ({
 	};
 
 	return (
-		<Dialog title={`${item?.sdate}${ST.EMPTY_INVESTMENT}`} onClose={onClickClose}>
+		<Dialog title={`${item?.cdate}${ST.EMPTY_INVESTMENT}`} onClose={onClickClose}>
 			<StyledForm direction={'column'} gap={24}>
 				<Flex justify={'center'}>
 					<SubTitle title={`${item?.name}(${item?.code})`} />
 				</Flex>
-				<NumberInputForm id='count' label={ST.STOCKS_COUNT} formMethod={forms} focused />
+				<TextInputForm id='stype' label={ST.MARKET} formMethod={forms} focused />
+				<NumberInputForm id='sise' label={ST.SISE} formMethod={forms} focused />
+				<NumberInputForm id='scount' label={ST.STOCKS_COUNT} formMethod={forms} focused />
 				<NumberInputForm id='roe' label={ST.ROE} formMethod={forms} focused />
 				{/* 자본 */}
 				<Flex className='equity'>
 					<NumberInputForm id='equity' label={ST.EQUITY} formMethod={forms} focused />
 					{guide && <Text size='xs' className='equity-guide' text={guide} />}
 				</Flex>
-				{/* <NumberInputForm id='profit' label={ST.EXCESS_PROFIT} formMethod={forms} focused /> */}
-				<NumberInputForm id='brate' label={ST.BASE_RATE} formMethod={forms} focused />
+				<NumberInputForm id='profit' label={ST.EXCESS_PROFIT} formMethod={forms} focused />
+				<NumberInputForm id='eps' label={ST.BASE_RATE} formMethod={forms} focused />
+				<NumberInputForm id='debt' label={ST.DEBT} formMethod={forms} focused />
+				<NumberInputForm id='debtratio' label={ST.DEBT_RATIO} formMethod={forms} focused />
+				{/* <NumberInputForm id='profit' label={ST.PROFIT} formMethod={forms} focused /> */}
 			</StyledForm>
 		</Dialog>
 	);

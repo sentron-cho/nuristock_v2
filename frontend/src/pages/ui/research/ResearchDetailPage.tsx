@@ -1,14 +1,22 @@
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
-import { useRefreshResearch, useSelectResearch, useSelectResearchDetail } from '@features/research/api/research.api';
+import {
+	useRefreshResearch,
+	useSelectResearch,
+	useSelectResearchByNaver,
+	useSelectResearchDetail,
+} from '@features/research/api/research.api';
 import { PopupType } from '@entites/Dialog';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { EID } from '@shared/config/default.config';
 import { ST } from '@shared/config/kor.lang';
-import { ResearchItemType } from '@features/research/api/research.dto';
+import { ResearchInfoReportData, ResearchItemType } from '@features/research/api/research.dto';
 import { ResearchDetailPageMo } from './ResearchDetail.page.mo';
 import { ResearchUpdaterPopup } from '@features/research/ui/ResearchUpdater.popup';
 import dayjs from 'dayjs';
 import { useResearchHook } from '@features/research/hook/Research.hook';
+import { StockSiseUpdaterPopup } from '@features/dashboard/ui/StockSiseUpdater.popup';
+import { MarketSiseDataType } from '@features/market/api/market.dto';
+import { Loading } from '@entites/Loading';
 
 const ResearchDetailPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosdaq' | 'none' }) => {
 	const { isMobile } = useCommonHook();
@@ -16,18 +24,37 @@ const ResearchDetailPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosd
 	const { showToast, showAlert, showConfirm, param } = useCommonHook();
 
 	const [popup, setPopup] = useState<PopupType>();
+	const [loading, setLoading] = useState<boolean>(false);
+	const [naverData, setNaverData] = useState<ResearchInfoReportData>();
 
 	const { data: list } = useSelectResearch();
 	const { data, refetch } = useSelectResearchDetail(param?.id as string);
 
-	const { list: allList } = useResearchHook(list, viewType);
+	const { allList } = useResearchHook(list, viewType);
 
 	const { mutateAsync: refreshData } = useRefreshResearch();
+	const { mutateAsync: selectNaver } = useSelectResearchByNaver();
 
-	const onClick = (eid?: string, item?: ResearchItemType) => {
+	useEffect(() => {
+		param?.id && param?.id !== naverData?.code && setNaverData(undefined);
+	}, [param]);
+
+	const getNaverInfo = async (code?: string) => {
+		if (naverData) return naverData;
+
+		setLoading(true);
+		const values = code ? (await selectNaver(code))?.value : undefined;
+		setNaverData(values || {});
+		setLoading(false);
+
+		return values;
+	};
+
+	const onClick = async (eid?: string, item?: ResearchItemType) => {
 		if (eid === EID.SELECT) {
 			// navigate(`${URL.MYSTOCK}/${viewType}/${item?.code}`);
 		} else if (eid === EID.DELETE) {
+			// 전체삭제
 			refetch();
 		} else if (eid === EID.ADD) {
 			if (item?.sdate === dayjs().format('YYYY')) {
@@ -42,7 +69,22 @@ const ResearchDetailPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosd
 					},
 				});
 			}
+		} else if (eid === 'sise') {
+			const naverInfo = await getNaverInfo(item?.code);
+			const updown = naverInfo?.updown || ''; // up, down, steady
+			const ecost = naverInfo?.ecost || 0;
+
+			setPopup({
+				type: eid,
+				item: { ...item, sise: naverInfo?.sise || 0, ecost: updown === 'down' ? ecost * -1 : ecost },
+				onClose: (isOk: boolean) => {
+					setPopup(undefined);
+					isOk && refetch();
+				},
+			});
 		} else if (eid === EID.EDIT) {
+			await getNaverInfo(item?.code);
+
 			setPopup({
 				type: eid,
 				item: item,
@@ -72,13 +114,25 @@ const ResearchDetailPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosd
 
 			{/* 수정 업데이트 팝업 */}
 			{popup?.type === EID.EDIT && (
-				<ResearchUpdaterPopup type={'edit'} item={popup?.item as ResearchItemType} onClose={popup?.onClose} />
+				<ResearchUpdaterPopup
+					type={'edit'}
+					item={popup?.item as ResearchItemType}
+					naverData={naverData}
+					onClose={popup?.onClose}
+				/>
 			)}
 
 			{/* 추가 업데이트 팝업 */}
 			{popup?.type === EID.ADD && (
 				<ResearchUpdaterPopup type={'add'} item={popup?.item as ResearchItemType} onClose={popup?.onClose} />
 			)}
+
+			{/* 시세 업데이트 팝업 */}
+			{popup?.type === 'sise' && (
+				<StockSiseUpdaterPopup item={popup?.item as MarketSiseDataType} onClose={popup?.onClose} />
+			)}
+
+			{loading && <Loading />}
 		</>
 	);
 };

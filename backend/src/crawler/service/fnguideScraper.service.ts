@@ -86,9 +86,24 @@ export const parseFnGuideByYear = (tableHtml: string, year: number): ConsensusRe
   const roeCell = roeRow.find("td.r").eq(index);
   const roeVal = parseNumber(roeCell.attr("title") ?? roeCell.text());
 
+  // 3) 지배주주지분 행 찾기
+  //   - <th><div>지배주주지분</div></th> 형태 (앞에 공백 &nbsp; 있을 수 있음)
+  const debtRow = $("tbody tr")
+    .filter((_, tr) => {
+      const label = $(tr).find("th div, th").first().text().replace(/\s+/g, "");
+      return /부채/.test(label);
+    })
+    .first();
+
+  // 해당 행의 파란 셀(td.r.tdbg_b)
+  const debtCell = debtRow.find("td.r").eq(index);
+  // title이 소수까지, text는 반올림일 수 있어 title 우선
+  const debtVal = parseNumber(debtCell.attr("title") ?? debtCell.text());
+
   return {
     equity: Number((Number(niVal) * EUK).toFixed(0)), // 예: 111953.39 -> 111953.39 (title 기준)
     roe: roeVal, // 예: 9.94
+    debt: Number((Number(debtVal) * EUK).toFixed(0)),
   };
 };
 

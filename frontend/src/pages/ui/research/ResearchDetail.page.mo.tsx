@@ -72,7 +72,25 @@ export const ResearchDetailPageMo = ({
 
 	const onClickTitle = () => {
 		navigate(`${URL.RESEARCH}/${viewType}`);
-	}
+	};
+
+	const onClickItem = (eid?: string, item?: ResearchItemType) => {
+		if (eid === EID.DELETE) {
+			// 개별삭제
+			showConfirm({
+				content: ST.WANT_TO_DELETE,
+				onClose: async (isOk) => {
+					if (isOk && item?.rowid) {
+						await deleteData({ rowid: item?.rowid });
+						showToast('info', ST.DELETEED);
+						onClick?.(eid, item);
+					}
+				},
+			});
+		} else {
+			onClick?.(eid, item);
+		}
+	};
 
 	return (
 		<StyledPage>
@@ -85,7 +103,7 @@ export const ResearchDetailPageMo = ({
 						icon: <IconDelete />,
 						onClick: () => onClickDelete(),
 					}}
-					onClick={() => onClickTitle() }
+					onClick={() => onClickTitle()}
 				/>
 
 				{/* 컨텐츠 헤더(요약) */}
@@ -95,13 +113,14 @@ export const ResearchDetailPageMo = ({
 					data={list?.[0]}
 					sise={list?.[0]?.sise}
 					onClickNavi={onClickNavi}
+					onClickSise={() => onClick?.('sise', list?.[0])}
 				/>
 
 				{/* 컨텐츠 */}
 				<Flex className={clsx(swipeClass, 'contents-layer')} direction={'column'} {...handlerSwipe}>
 					<CardListWrap>
 						{list?.map((item) => {
-							return <ResearchDetailCard key={`in-${item?.rowid}`} data={item} onClick={onClick} />;
+							return <ResearchDetailCard key={`in-${item?.rowid}`} data={item} onClick={onClickItem} />;
 						})}
 					</CardListWrap>
 				</Flex>

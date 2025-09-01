@@ -244,6 +244,9 @@ const KOR = {
 	BASE_08: '평가율(W0.8)',
 	BASE_09: '평가율(W0.9)',
 	BASE_10: '평가율(W1.0)',
+	PROFIT: '자본',
+	DEBT: '부채',
+	DEBT_RATIO: '부채율',
 
 	HEND_WRITING: '수기',
 	

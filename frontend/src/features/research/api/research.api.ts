@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { API } from '@shared/config/url.enum';
 import api from '@shared/api/axios.config';
-import { ResearchItemType, ResearchRefreshType, ResearchResponse } from './research.dto';
+import { ResearchInfoResponse, ResearchItemType, ResearchRefreshType, ResearchResponse } from './research.dto';
 import dayjs from 'dayjs';
 import { MarketItemType } from '@features/market/api/market.dto';
 
@@ -14,7 +14,6 @@ export const useSelectResearch = (year: string = dayjs().add(-1, 'year').format(
 		},
 	});
 };
-
 
 // 추가
 export const useCreateInvestment = () => {
@@ -72,11 +71,31 @@ export const useRefreshResearch = () => {
 	return useMutation({
 		mutationKey: ['RESEARCH-U02'],
 		mutationFn: async (data: ResearchRefreshType) => {
-			return await api.put(API.INVEST_REFRESH, data);
+			return await api.put(API.RESEARCH_REFRESH, data);
 		},
 	});
 };
 
+// 시세 데이터 가져오기
+export const useSelectResearchByNaver = () => {
+	return useMutation({
+		mutationKey: ['RESEARCH-R03'],
+		mutationFn: async (code?: string): Promise<ResearchInfoResponse> => {
+			const res = await api.get(API.RESEARCH_NAVER, { params: { code } });
+			return res?.data;
+		},
+	});
+};
+
+// // 시세 데이터 가져오기
+// export const useSelectResearchSise = () => {
+// 	return useMutation({
+// 		mutationKey: ['RESEARCH-R03'],
+// 		mutationFn: async (code?: string) => {
+// 			return await api.get(API.RESEARCH_SISE, { params: { code } });
+// 		},
+// 	});
+// };
 
 // 평가 데이터 네이버로 갱신
 export const useUpdateResearchByNaver = () => {

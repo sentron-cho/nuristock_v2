@@ -38,12 +38,14 @@ export const ResearchDetailHeader = ({
 	data,
 	sise,
 	onClickNavi,
+	onClickSise,
 }: {
 	value?: string;
 	options?: OptionType[];
 	data?: ResearchItemType;
 	sise?: string;
 	onClickNavi?: (value?: string) => void;
+	onClickSise?: () => void;
 }) => {
 	const { isMobile } = useCommonHook();
 	const { list } = useResearchPerValueHook(data, ['rate4', 'rate3', 'rate2']);
@@ -73,7 +75,7 @@ export const ResearchDetailHeader = ({
 			{/* 주당가치 */}
 			<StyledContents className={clsx('investment-header')} flex={1} direction={'column'}>
 				<Flex className='contents' flex={1} gap={8} justify={'between'}>
-					<Flex direction={'column'} gap={4}>
+					<Flex direction={'column'} gap={4} onClick={onClickSise}>
 						<Text className={'rate'} text={`[${ST.SISE}]`} />
 						<Text bold className={clsx('value')} text={`${toCost(sise)}`} />
 					</Flex>
