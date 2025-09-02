@@ -109,7 +109,7 @@ const researchRoute = (fastify: FastifyInstance) => {
     }
   });
 
-  // 종목 전체 목록 조회
+  // 가치투자 종목 재무정보 조회(크롤링)
   fastify.get(URL.RESEARCH.NAVER, async (req, reply) => {
     try {
       const { code } = req.query as ResearchSearchParams;

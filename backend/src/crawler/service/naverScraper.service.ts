@@ -3,7 +3,7 @@ import { REST_API } from "../../types/url.js";
 import { ConsensusResult, ResearchInfoResult, ResearchInfoValues } from "../../types/data.type.js";
 import { parseNumber } from "../../lib/parser.util.js";
 import { chromium, Page } from "playwright";
-import { TIME_OUT, TIME_OUT_30 } from "../../types/constants.js";
+import { TIME_OUT, TIME_OUT_30, TIME_OUT_5 } from "../../types/constants.js";
 import dayjs from "dayjs";
 import { parseFnGuideByYear } from "./fnguideScraper.service.js";
 
@@ -198,11 +198,11 @@ export const getNaverReport = async (code: string): Promise<ResearchInfoValues |
     const page = await browser.newPage({ userAgent: "Mozilla/5.0", locale: "ko-KR" });
 
     const url = `${REST_API.NAVER_MAIN}?code=${code?.replace("A", "")}`;
-    await page.goto(url, { waitUntil: "networkidle", timeout: TIME_OUT_30 }); // 30초
+    await page.goto(url, { waitUntil: "networkidle", timeout: TIME_OUT_5 });
     // console.log("[URL]", { url });
 
     // 1) 컨센서스 정보
-    await page.waitForSelector(".cop_analysis", { timeout: TIME_OUT });
+    await page.waitForSelector(".cop_analysis", { timeout: TIME_OUT_5 });
     let html = await page.$eval(".cop_analysis", (el) => (el as HTMLElement).outerHTML);
 
     let fnguideHtml = undefined;
@@ -212,12 +212,12 @@ export const getNaverReport = async (code: string): Promise<ResearchInfoValues |
       ""
     )}&cID=&MenuYn=Y&ReportGB=&NewMenuID=101&stkGb=701`;
     const fnpage = await browser.newPage({ userAgent: "Mozilla/5.0", locale: "ko-KR" });
-    await fnpage.goto(fnurl, { waitUntil: "networkidle", timeout: TIME_OUT });
+    await fnpage.goto(fnurl, { waitUntil: "networkidle", timeout: TIME_OUT_5 });
     console.log("[FNGUIDE:fnurl]", fnurl);
 
     // 자본 가져오기
     try {
-      await fnpage.waitForSelector("#highlight_D_A .us_table_ty1.h_fix", { timeout: TIME_OUT });
+      await fnpage.waitForSelector("#highlight_D_A .us_table_ty1.h_fix", { timeout: TIME_OUT_5 });
       fnguideHtml = await fnpage.$eval("#highlight_D_A .us_table_ty1.h_fix", (el) => (el as HTMLElement).outerHTML);
     } catch (error) {
       console.log("[FNGUIDE:ERROR-1]", error);
@@ -225,7 +225,7 @@ export const getNaverReport = async (code: string): Promise<ResearchInfoValues |
 
     if (!fnguideHtml) {
       try {
-        await fnpage.waitForSelector("#highlight_B_A .us_table_ty1.h_fix", { timeout: TIME_OUT });
+        await fnpage.waitForSelector("#highlight_B_A .us_table_ty1.h_fix", { timeout: TIME_OUT_5 });
         fnguideHtml = await fnpage.$eval("#highlight_B_A .us_table_ty1.h_fix", (el) => (el as HTMLElement).outerHTML);
       } catch (error) {
         console.log("[FNGUIDE:ERROR-2]", error);
@@ -246,7 +246,7 @@ export const getNaverReport = async (code: string): Promise<ResearchInfoValues |
     const { updown, ecost, sise } = siseRes;
 
     // 3) 상장 주식수
-    await page.waitForSelector("#tab_con1", { timeout: TIME_OUT });
+    await page.waitForSelector("#tab_con1", { timeout: TIME_OUT_5 });
     html = await page.$eval("#tab_con1", (el) => (el as HTMLElement).outerHTML);
 
     let $$ = cheerio.load(html);
@@ -261,7 +261,7 @@ export const getNaverReport = async (code: string): Promise<ResearchInfoValues |
     let cell = row.find("td").first();
     const shares = parseNumber(cell.attr("title") ?? cell.text());
 
-    await page.waitForSelector(".h_company .description", { timeout: TIME_OUT });
+    await page.waitForSelector(".h_company .description", { timeout: TIME_OUT_5 });
     html = await page.$eval(".h_company .description", (el) => (el as HTMLElement).outerHTML);
 
     $$ = cheerio.load(html);

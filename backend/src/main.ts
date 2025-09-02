@@ -20,7 +20,7 @@ import statisticRoute from "./routes/statistic.route.js";
 import { startStockSiseService } from "./crawler/service/stockCrawler.service.js";
 import { startAssetTask, startEvalutionPriceTask } from "./task/asset.task.js";
 import { startMystockTask } from "./task/mystock.task.js";
-import { startMarketCheck } from "./task/checklist.task.js";
+import { startMarketCheck, startMarketUpdate } from "./task/checklist.task.js";
 // dotenv.config({ path: '.env' });
 
 const fastify = Fastify({
@@ -72,6 +72,7 @@ fastify.ready().then(() => {
 // 태스크 작업 시작
 fastify.ready().then(() => {
   // startMarketCheck(fastify); // 상폐종목 점검
+   startMarketUpdate(fastify); // 크롤링 실패 종목 업데이트
 });
 
 fastify.get("/", async (req, reply) => {
