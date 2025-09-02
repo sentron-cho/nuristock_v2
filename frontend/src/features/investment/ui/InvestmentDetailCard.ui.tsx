@@ -2,7 +2,7 @@ import { Card } from '@entites/Card';
 import Flex from '@entites/Flex';
 import { SubTitle } from '@entites/Title';
 import { InvestmentItemType } from '../api/investment.dto';
-import { IconEdit, IconRefresh } from '@entites/Icons';
+import { IconRefresh } from '@entites/Icons';
 import dayjs from 'dayjs';
 import { Text } from '@entites/Text';
 import { InvestmentChip, InvestmentInfoField, PerValueField } from './InvestmentCommon.ui';
@@ -31,11 +31,11 @@ export const InvestmentDetailCard = ({
 					</Flex>
 					<Flex fullWidth={false}>
 						<IconButton icon={<IconRefresh />} onClick={() => onClick?.('refresh', data)} />
-						<IconButton icon={<IconEdit />} onClick={() => onClick?.(EID.EDIT, data)} />
+						{/* <IconButton icon={<IconEdit />} onClick={() => onClick?.(EID.EDIT, data)} /> */}
 						{/* <IconDocument onClick={() => onClickReport?.(data?.sdate?.toString(), data)} /> */}
 					</Flex>
 				</Flex>
-				<Flex className='body' direction={'column'} gap={4}>
+				<Flex className='body' direction={'column'} gap={4} onClick={() => onClick?.(EID.EDIT, data)}>
 					<Flex flex={1} justify={'between'}>
 						<Flex direction={'column'} gap={10} justify={'between'}>
 							{/* 상장 주식수 */}

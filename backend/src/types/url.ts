@@ -7,6 +7,7 @@ export const URL = {
   DASHBOARD: {
     ROOT: `${ROOT_URL}/dashboard`,
     SISE: `${ROOT_URL}/dashboard/sise`,
+    POSITION: `${ROOT_URL}/dashboard/position`,
   },
   MYSTOCK: {
     ROOT: `${ROOT_URL}/mystock`,

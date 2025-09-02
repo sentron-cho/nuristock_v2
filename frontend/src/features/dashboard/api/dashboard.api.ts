@@ -18,7 +18,6 @@ export const useSelectDashboard = () => {
 	});
 };
 
-
 export const useCreateDashboard = () => {
 	return useMutation({
 		mutationKey: ['DASHBOARD-C01'],
@@ -42,6 +41,15 @@ export const useUpdateDashboard = () => {
 		mutationKey: ['DASHBOARD-U01'],
 		mutationFn: async (data: MyStockUpdateType) => {
 			return await api.put(API.DASHBOARD, data);
+		},
+	});
+};
+
+export const useUpdateDashboardPosition = () => {
+	return useMutation({
+		mutationKey: ['DASHBOARD-U02'],
+		mutationFn: async ({ code, position }: { code: string; position: string }) => {
+			return await api.put(API.DASHBOARD_POSITION, { code, position });
 		},
 	});
 };

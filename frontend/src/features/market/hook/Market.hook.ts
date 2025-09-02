@@ -22,7 +22,9 @@ export const useMarketHook = (initialData?: MarketSearchResponse, viewType: 'kos
 		}
 
 		if (search) {
-			items = items?.filter(a => a.code.includes(search) || a.name.includes(search));
+			items = items?.filter(
+				(a) => a.code?.toLocaleLowerCase().includes(search) || a.name.toLocaleLowerCase().includes(search)
+			);
 		}
 
 		return items;

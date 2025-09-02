@@ -10,11 +10,13 @@ export interface DashboardItemType {
 	ecount: number;
 	eprice: number;
 	sprice: number;
-
+	
 	sonic?: number;
 	sonicRate?: number;
 	sise?: number;
 	siseSonic?: number;
+
+	position?: string;
 }
 
 export interface DashboardResponse {

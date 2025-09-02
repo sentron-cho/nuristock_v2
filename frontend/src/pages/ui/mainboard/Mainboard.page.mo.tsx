@@ -78,29 +78,9 @@ export const MainboardPageMo = ({
 					<Flex direction={'column'}>
 						{/* 매도 추천 종목 */}
 						<ListTitle stickyTop={stickTop} title={ST.MAINBOARD.TARGET_LIST} />
-						<MainboardCard
-							viewType='target'
-							data={data}
-							onClick={onClick}
-						/>
+						<MainboardCard viewType='target' data={data} onClick={onClick} />
 
-						{/* 평가 손익 상위 */}
-						<ListTitle
-							stickyTop={stickTop}
-							title={sortList?.[0] === 'asc' ? ST.MAINBOARD.SONIC_TOP : ST.MAINBOARD.SONIC_BOTTOM}
-							isMore={isMoreList?.[0]}
-							onClickTitle={() => onClickSort?.(0, sortList?.[0] === 'asc' ? 'desc' : 'asc')}
-							onClickMore={() => onClickMore?.(0, !isMoreList?.[0])}
-						/>
-						<MainboardCard
-							viewType='sonic'
-							isMore={isMoreList?.[0]}
-							data={data}
-							onClick={onClick}
-							sortType={sortList?.[0]}
-						/>
-
-						{/* 최근 매수 상위 */}
+						{/* 최근 매수/매도 상위 */}
 						<ListTitle
 							stickyTop={stickTop}
 							title={sortList?.[1] === 'asc' ? ST.MAINBOARD.BUY : ST.MAINBOARD.SELL}
@@ -116,7 +96,23 @@ export const MainboardPageMo = ({
 							sortType={sortList?.[1]}
 						/>
 
-						{/* 매수 손익 상위 */}
+						{/* 평가 손익/손실 상위 */}
+						<ListTitle
+							stickyTop={stickTop}
+							title={sortList?.[0] === 'asc' ? ST.MAINBOARD.SONIC_TOP : ST.MAINBOARD.SONIC_BOTTOM}
+							isMore={isMoreList?.[0]}
+							onClickTitle={() => onClickSort?.(0, sortList?.[0] === 'asc' ? 'desc' : 'asc')}
+							onClickMore={() => onClickMore?.(0, !isMoreList?.[0])}
+						/>
+						<MainboardCard
+							viewType='sonic'
+							isMore={isMoreList?.[0]}
+							data={data}
+							onClick={onClick}
+							sortType={sortList?.[0]}
+						/>
+
+						{/* 매수 손익/손실 상위 */}
 						<ListTitle
 							stickyTop={stickTop}
 							title={sortList?.[2] === 'asc' ? ST.MAINBOARD.SONIC_BUY_TOP : ST.MAINBOARD.SONIC_BUY_BOTTOM}

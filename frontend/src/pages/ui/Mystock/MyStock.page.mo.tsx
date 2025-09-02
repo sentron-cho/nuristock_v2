@@ -118,6 +118,15 @@ export const MyStockPageMo = ({
 		navigate(`${URL.MYSTOCK}/${viewType === KEEP ? TRADE : KEEP}/${param?.id}`);
 	};
 
+	const onClickTitle = () => {
+		window.open(`${URL.REST.NAVER}?code=${param?.id?.replace('A', '')}`);
+	};
+
+	const onClickLink = () => {
+		// navigate(`${URL.INVEST}/${param?.id}`);
+		navigate(`${URL.PROFIT}/code/${param?.id}`);
+	};
+
 	return (
 		<>
 			<StyledPage summaryData={summaryData}>
@@ -132,6 +141,7 @@ export const MyStockPageMo = ({
 							color: 'primary',
 							onClick: onClickHead,
 						}}
+						onClick={onClickTitle}
 					/>
 
 					{/* 컨텐츠 헤더(요약) */}
@@ -144,6 +154,7 @@ export const MyStockPageMo = ({
 						sise={sise}
 						onClickNavi={onClick}
 						onClickAdd={() => onClickKeep?.('buy')}
+						onClickTitle={onClickLink}
 					/>
 
 					{/* 컨텐츠 */}

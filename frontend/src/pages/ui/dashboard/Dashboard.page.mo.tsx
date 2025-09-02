@@ -22,6 +22,15 @@ const StyledPage = styled(PageContainer, {
 			cursor: 'pointer',
 
 			'.box': {
+				'&.favorit': {
+					borderColor: '$orangehover',
+					borderWidth: '2px',
+				},
+
+				'.position': {
+					fill: '$orange',
+				},
+
 				'.body': {
 					'.trade-info, .keep-info': {
 						padding: '8px',

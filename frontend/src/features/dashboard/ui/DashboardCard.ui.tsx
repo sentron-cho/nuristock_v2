@@ -4,8 +4,14 @@ import { valueOfPlusMinus, withCommas } from '@shared/libs/utils.lib';
 import clsx from 'clsx';
 import Flex from '@entites/Flex';
 import Typography from '@mui/material/Typography';
-import { IconButton, IconType } from '@entites/IconButton';
-import { IconUp, IconDown, IconLaunch } from '@entites/Icons';
+import { IconButton, IconButtonToggle, IconType } from '@entites/IconButton';
+import {
+	IconUp,
+	IconDown,
+	IconLaunch,
+	IconFavoriteFill,
+	IconFavoriteOutline,
+} from '@entites/Icons';
 import { Button } from '@entites/Button';
 import { useMemo } from 'react';
 import { EID } from '@shared/config/default.config';
@@ -105,7 +111,11 @@ export const DashboardCard = ({
 
 	return (
 		<Card className={clsx('card', { active }, type, { sm: !history })}>
-			<Flex className='box border' direction='column' onClick={() => handleClick(EID.SELECT)}>
+			<Flex
+				className={clsx('box border', { favorit: data?.position === 'long' })}
+				direction='column'
+				onClick={() => handleClick(EID.SELECT)}
+			>
 				{/* head */}
 				<Flex className='head' justify='between'>
 					<Flex gap={4} className='left' flex={1}>
@@ -117,6 +127,15 @@ export const DashboardCard = ({
 						</Typography>
 					</Flex>
 					<Flex gap={4} className='right' width='fit-contents'>
+						{/* 북마크 */}
+						{
+							<IconButtonToggle
+								trueIcon={<IconFavoriteFill className='position' />}
+								falseIcon={<IconFavoriteOutline className='position-outline' />}
+								value={data?.position === 'long'}
+								onClick={() => onClick?.('position', data)}
+							/>
+						}
 						<IconButton eid='delete' type={IconType.DELETE} onClick={handleClick} />
 						<IconButton eid='edit' type={IconType.EDIT} onClick={handleClick} />
 					</Flex>

@@ -7,7 +7,11 @@ import {
 import { EID } from '@shared/config/default.config';
 import { URL } from '@shared/config/url.enum';
 import { ST } from '@shared/config/kor.lang';
-import { useDeleteDashboard, useSelectDashboard } from '@features/dashboard/api/dashboard.api';
+import {
+	useDeleteDashboard,
+	useSelectDashboard,
+	useUpdateDashboardPosition,
+} from '@features/dashboard/api/dashboard.api';
 import { useState } from 'react';
 import { PopupType } from '@entites/Dialog';
 import { StockRegisterPopup } from '@features/dashboard/ui/StockRegister.popup';
@@ -24,8 +28,9 @@ const DashboardPage = ({ viewType = 'trade' }: { viewType?: 'trade' | 'keep' | '
 
 	const { data, refetch } = useSelectDashboard();
 	const { mutateAsync: deleteData } = useDeleteDashboard();
+	const { mutateAsync: updatePosition } = useUpdateDashboardPosition();
 
-	const onClick = (eid?: string, item?: DataType) => {
+	const onClick = async (eid?: string, item?: DataType) => {
 		if (eid === EID.SELECT) {
 			if (viewType === 'nokeep') {
 				setPopup({
@@ -56,6 +61,11 @@ const DashboardPage = ({ viewType = 'trade' }: { viewType?: 'trade' | 'keep' | '
 			window.open(`${URL.REST.DAUM}${item?.code}`);
 		} else if (eid === 'fnguide') {
 			item?.code && window.open(`${URL.REST.FNGUIDE(item.code)}`);
+		} else if (eid === 'position') {
+			if (item?.code) {
+				await updatePosition({ code: item.code, position: item.position === 'long' ? 'short' : 'long' });
+				refetch();
+			}
 		} else if (eid) {
 			// eid === EID.ADD || eid === EID.EDIT || eid === EID.SISE
 			setPopup({

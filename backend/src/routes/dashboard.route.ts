@@ -102,6 +102,18 @@ const dashboardRoute = (fastify: FastifyInstance) => {
       reply.status(500).send(withError(error as SqlError, { tag: URL.DASHBOARD.ROOT }));
     }
   });
+
+  // 보유종목 포지션 수정(long or short)
+  fastify.put(URL.DASHBOARD.POSITION, async (req, reply) => {
+    try {
+      const { code, position = 'short' } = req.body as DashboardCreateType;
+
+      await fastify.db.query(`UPDATE dashboard SET position = '${position}' WHERE code = '${code}';`);
+      reply.status(200).send({ value: code });
+    } catch (error) {
+      reply.status(500).send(withError(error as SqlError, { tag: URL.DASHBOARD.POSITION }));
+    }
+  });
 };
 
 export default dashboardRoute;

@@ -42,6 +42,7 @@ export const MystockHeader = ({
 	sise,
 	onClickNavi,
 	onClickAdd,
+	onClickTitle,
 }: {
 	value?: string;
 	viewType?: 'keep' | 'trade';
@@ -51,6 +52,7 @@ export const MystockHeader = ({
 	sise?: MyStockSiseItemType;
 	onClickNavi?: (value?: string) => void;
 	onClickAdd?: () => void;
+	onClickTitle?: () => void;
 }) => {
 	const onClick = (value?: string) => {
 		onClickNavi?.(value);
@@ -59,7 +61,14 @@ export const MystockHeader = ({
 	return (
 		<ContentsHeader stickyTop={44}>
 			{/* 타이틀 및 네비게이션 */}
-			<TitleNavigation withTitleValue height={28} options={options} value={value} onClick={onClick} />
+			<TitleNavigation
+				withTitleValue
+				height={28}
+				options={options}
+				value={value}
+				onClickTitle={onClickTitle}
+				onClick={onClick}
+			/>
 
 			{/* 현재가 및 상승율 */}
 			<StyledContents className={clsx(viewType, 'bar')} flex={1}>

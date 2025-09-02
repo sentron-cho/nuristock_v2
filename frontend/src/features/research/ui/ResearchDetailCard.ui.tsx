@@ -30,10 +30,8 @@ export const ResearchDetailCard = ({
 						<Text size='xs' text={`(${dayjs(data?.utime).format('YYYY-MM-DD HH:mm')})`} />
 					</Flex>
 					<Flex fullWidth={false} gap={10}>
-						{/* <IconButton icon={<IconRefresh />} onClick={() => onClick?.('refresh', data)} /> */}
 						{/* <IconButton icon={<IconEdit />} onClick={() => onClick?.(EID.EDIT, data)} /> */}
 						<IconButton icon={<IconDelete />} onClick={() => onClick?.(EID.DELETE, data)} />
-						{/* <IconDocument onClick={() => onClickReport?.(data?.sdate?.toString(), data)} /> */}
 					</Flex>
 				</Flex>
 				<Flex className='body' direction={'column'} gap={4} onClick={() => onClick?.(EID.EDIT, data)}>

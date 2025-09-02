@@ -12,6 +12,7 @@ export interface DashboardCreateType {
   sise: number;
   updown: string;
   name?: string;
+  position?: string;
 }
 
 export interface DashboardSearchParams {
