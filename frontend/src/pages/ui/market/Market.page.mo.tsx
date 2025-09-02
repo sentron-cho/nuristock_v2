@@ -3,7 +3,7 @@ import { PageContainer } from '../../../features/common/ui/PageContainer.ui';
 import { useEffect, useMemo } from 'react';
 import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
-import { IconAdd } from '@entites/Icons';
+import { IconAdd, IconDelete } from '@entites/Icons';
 import { ST } from '@shared/config/kor.lang';
 import { EID } from '@shared/config/default.config';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
@@ -11,13 +11,14 @@ import { TitleNavigation } from '@entites/TitleNavigation';
 import { useSwipePage } from '@shared/hooks/useSwipePage.hook';
 import { URL } from '@shared/config/url.enum';
 import clsx from 'clsx';
-import { MarketItemType, MarketSearchResponse } from '@features/market/api/market.dto';
+import { MarketSearchDataType, MarketSearchResponse } from '@features/market/api/market.dto';
 import { useMarketHook } from '@features/market/hook/Market.hook';
 import { Text } from '@entites/Text';
 import { withCommas } from '@shared/libs/utils.lib';
 import { Chip } from '@entites/Chip';
 import { SearchFieldForm } from '@entites/SearchFieldForm';
 import { useForm } from 'react-hook-form';
+import { IconButton } from '@entites/IconButton';
 
 const StyledPage = styled(PageContainer, {
 	background: '$white',
@@ -57,10 +58,10 @@ export const MarketPageMo = ({
 }: {
 	viewType: 'kospi' | 'kosdaq';
 	data?: MarketSearchResponse;
-	onClick?: (eid?: string, item?: MarketItemType) => void;
+	onClick?: (eid?: string, item?: MarketSearchDataType) => void;
 }) => {
 	const { navigate } = useCommonHook();
-	const { list, totalCount, moreMax, setSearch } = useMarketHook(data, viewType);
+	const { list, totalCount, isErrorList, moreMax, setSearch, onErrorList } = useMarketHook(data, viewType);
 
 	const formMethod = useForm();
 
@@ -69,7 +70,7 @@ export const MarketPageMo = ({
 		setSearch(search);
 	}, [search]);
 
-	const { handlerSwipe, swipeClass } = useSwipePage({
+	const { handlerSwipe } = useSwipePage({
 		onNextPage: () => {
 			return `${URL.MARKET}/${viewType === 'kospi' ? 'kosdaq' : 'kospi'}`;
 		},
@@ -108,6 +109,10 @@ export const MarketPageMo = ({
 		scrollEl.scrollTo({ top: 0, behavior: 'smooth' });
 	}, [viewType]);
 
+	const onClickError = () => {
+		onErrorList();
+	};
+
 	return (
 		<>
 			<StyledPage>
@@ -128,25 +133,43 @@ export const MarketPageMo = ({
 					{/* 검색 */}
 					<Flex className='head' direction={'column'}>
 						<Flex className='search-box'>
-							{/* <Text text={ST.CLOSE_STOCK}/> */}
 							<SearchFieldForm id='searchtext' placeholder={ST.INPUT_SEARCH} formMethod={formMethod} />
 						</Flex>
-						<Flex className='total' justify={'start'}>
-							{/* <Text size='xs' text={'TOTAL : '} /> */}
+						<Flex className='total' justify={'between'}>
 							{totalCount && <Text size='xs' text={`${withCommas(list?.length || 0)} / ${withCommas(totalCount)}`} />}
+							<Chip
+								size='xsmall'
+								variant={isErrorList ? 'filled' : 'outlined'}
+								label={'ERROR'}
+								color='error'
+								onClick={onClickError}
+							/>
 						</Flex>
 					</Flex>
 
 					<Flex className={clsx('contents-layer')} direction={'column'} {...handlerSwipe}>
 						{/* 데이터 */}
-						<Flex className={clsx('box', swipeClass)} direction={'column'}>
+						<Flex className={clsx('box')} direction={'column'}>
 							{list?.map((item) => {
 								return (
-									<Flex key={item?.code} className='row' height={28}>
+									<Flex
+										key={item?.code}
+										className='row'
+										height={40}
+										onClick={() => onClick?.(EID.SELECT, item)}
+										gap={8}
+									>
 										<Text text={item.name} flex={1} textAlign={'left'} />
-										{item.mtime && <Chip size='xsmall' label={item.mtime} color='primary' />}
+										{item.mtime && (
+											<Chip
+												variant={Number(item?.mtime) >= 9000 || Number(item?.mtime) === 0 ? 'filled' : 'outlined'}
+												size='xsmall'
+												label={item.mtime}
+												color={Number(item?.mtime) >= 9000 ? 'error' : 'primary'}
+											/>
+										)}
 										<Text text={item.code} flex={1} textAlign={'right'} />
-										{/* <IconButton icon={<IconRefresh />} onClick={() => onClickRefresh(item?.code)} /> */}
+										<IconButton icon={<IconDelete />} onClick={() => onClick?.(EID.DELETE, item)} />
 									</Flex>
 								);
 							})}

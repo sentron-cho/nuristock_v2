@@ -55,6 +55,11 @@ const statisticRoute = (fastify: FastifyInstance) => {
       array.push(...value);
 
       // 종목 정보 수집 오류
+      query = `select count(1) as count, 'marketinfo_9001' as code, 'marketinfo' as cagetory from market where mtime = '9001';`;
+      value = await fastify.db.query(query);
+      array.push(...value);
+
+      // 종목 정보 수집 오류
       query = `select count(1) as count, 'marketinfo_error' as code, 'marketinfo' as cagetory from market where mtime = '0000';`;
       value = await fastify.db.query(query);
       array.push(...value);

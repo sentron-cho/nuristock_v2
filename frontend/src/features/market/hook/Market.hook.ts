@@ -6,6 +6,7 @@ export const useMarketHook = (initialData?: MarketSearchResponse, viewType: 'kos
 	const [perItem] = useState(100);
 	const [max, setMax] = useState(perItem);
 	const [search, setSearch] = useState<string>();
+	const [isErrorList, setErrorList] = useState<boolean>(false);
 
 	useEffect(() => {
 		setMax(perItem);
@@ -36,15 +37,21 @@ export const useMarketHook = (initialData?: MarketSearchResponse, viewType: 'kos
 		setMax((prev) => prev + perItem);
 	};
 
+	const onErrorList = () => {
+		setErrorList(prev => !prev);
+	}
+
 	return {
 		data,
-		list: list?.slice(0, max),
+		list: isErrorList ? list?.filter(a => Number(a?.mtime) >= 9000) : list?.slice(0, max),
 		totalCount,
+		isErrorList,
 		max,
 		setMax,
 		moreMax,
 		isShowClose,
 		setShowClose,
 		setSearch,
+		onErrorList,
 	};
 };

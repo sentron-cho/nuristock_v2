@@ -76,7 +76,7 @@ export const startMarketCheck = (fastify: FastifyInstance) => {
   setInterval(start, INTERVAL_TIME);
 };
 
-const INTERVAL_TIME_UPDATE = 1 * 60 * 1000; // 1분마다
+const INTERVAL_TIME_UPDATE = 3 * 60 * 1000; // 1분마다
 
 // 크롤링 실패 종목 업데이트
 export const startMarketUpdate = (fastify: FastifyInstance) => {

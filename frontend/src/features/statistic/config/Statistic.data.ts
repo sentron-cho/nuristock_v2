@@ -13,6 +13,7 @@ export const StatisticTitle = {
   marketinfo_success: '수집 성공(2024)',
   marketinfo_failure: '수집 실패(9999)',
   marketinfo_warning: '수집 오류(9000)',
+  marketinfo_9001: '수집 오류(9001)',
   marketinfo_error: '수집 오류(0000)',
   marketinfo_rest: '기타(수집전)',
   
