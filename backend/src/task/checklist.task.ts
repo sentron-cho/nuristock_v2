@@ -125,10 +125,10 @@ export const startMarketUpdate = (fastify: FastifyInstance) => {
 
               // 없으면 등록
               if (!Number(count?.[0]?.count || 0)) {
-                console.log("[재무정보 추가]", `${item.name}(${item.code}`);
+                console.log("[재무정보 추가]", `[${year}] ${item.name}(${item.code})`);
                 await fastify.db.query(`INSERT INTO marketinfo ${makeInsertSet({ ...params, code } as FieldValues)};`);
               } else {
-                console.log("[재무정보 수정]", `${item.name}(${item.code}`);
+                console.log("[재무정보 수정]", `[${year}] ${item.name}(${item.code})`);
                 await fastify.db.query(
                   `UPDATE marketinfo SET ${makeUpdateSet({
                     ...(params || {}),

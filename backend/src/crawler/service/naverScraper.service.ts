@@ -213,7 +213,6 @@ export const getNaverReport = async (code: string): Promise<ResearchInfoValues |
     )}&cID=&MenuYn=Y&ReportGB=&NewMenuID=101&stkGb=701`;
     const fnpage = await browser.newPage({ userAgent: "Mozilla/5.0", locale: "ko-KR" });
     await fnpage.goto(fnurl, { waitUntil: "networkidle", timeout: TIME_OUT_5 });
-    console.log("[FNGUIDE:fnurl]", fnurl);
 
     // 자본 가져오기
     try {
@@ -266,7 +265,7 @@ export const getNaverReport = async (code: string): Promise<ResearchInfoValues |
 
     $$ = cheerio.load(html);
     const type = $$("img").first().attr("class") === "kospi" ? "kospi" : "kosdaq";
-    console.log("[NAVER_REPORT]", { code, sise, updown, ecost, shares, report });
+    // console.log("[NAVER_REPORT]", { code, sise, updown, ecost, shares, report });
 
     return { code, type, sise, updown, ecost, shares, report };
   } catch (e) {

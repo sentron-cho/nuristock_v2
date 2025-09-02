@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { getMystockInfo } from "../crawler/service/mystockInfoScraper.service.js";
 import { FieldValues, StockDartBasicType } from "../types/data.type.js";
 
-const INTERVAL_TIME = 1 * 60 * 1000; // 5분마다
+const INTERVAL_TIME = 5 * 60 * 1000; // 5분마다
 // const INTERVAL_TIME = 1000; // 1분마다
 
 // 재무정보 크롤링
