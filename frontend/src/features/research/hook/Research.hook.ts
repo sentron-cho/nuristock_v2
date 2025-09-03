@@ -1,3 +1,4 @@
+import { StorageDataKey, useStorageHook } from '@shared/hooks/useStorage.hook';
 import { useEffect, useMemo, useState } from 'react';
 import { ResearchItemType, ResearchResponse } from '../api/research.dto';
 import { EID } from '@shared/config/default.config';
@@ -11,10 +12,13 @@ import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { OptionType } from '@shared/config/common.type';
 
 export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi' | 'kosdaq' | 'none' = 'kospi') => {
+	const { setSessionStorage, getSessionStorage } = useStorageHook();
+
 	const [isShowClose, setShowClose] = useState(false);
-	const [perItem] = useState(100);
+	const [perItem] = useState(Number(getSessionStorage(StorageDataKey.RESEARCH_MAX) || 100));
 	const [max, setMax] = useState(perItem);
 	const [search, setSearch] = useState<string>();
+	const [sort, setSort] = useState<string>(getSessionStorage(StorageDataKey.RESEARCH_SORT) || 'roe');
 
 	useEffect(() => {
 		setMax(perItem);
@@ -102,8 +106,15 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		const rest = items?.filter((a) => Number(a.roe) <= 0 || Number(a.equity) <= 0 || Number(a.profit) <= 0);
 
 		// 정렬
-		if (viewType === 'none') items = sortBy(items, ['name']);
-		else items = [...reverse(sortBy(preferred, ['shareRate', 'roe'])), ...rest];
+		if (viewType === 'none') {
+			items = sortBy(items, ['name']);
+		} else {
+			if (sort === 'roe') {
+				items = [...reverse(sortBy(preferred, ['shareRate', 'roe'])), ...rest];
+			} else {
+				items = sortBy(items, [sort === 'name' ? 'name' : 'sise']);
+			}
+		}
 
 		if (search) {
 			items = items?.filter((a) => a.code?.includes(search) || a.name?.includes(search));
@@ -139,12 +150,18 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 				siseType: a?.updown === 'up' ? 'plus' : a?.updown === 'down' ? 'minus' : '',
 			};
 		});
-	}, [data, isShowClose, viewType, search]);
+	}, [data, isShowClose, viewType, search, sort]);
 
 	const totalCount = useMemo(() => list?.length, [list]);
 
 	const moreMax = () => {
 		setMax((prev) => prev + perItem);
+		setSessionStorage(StorageDataKey.RESEARCH_MAX, max + perItem);
+	};
+
+	const onSort = (value: string) => {
+		setSort(value);
+		setSessionStorage(StorageDataKey.RESEARCH_SORT, value);
 	};
 
 	return {
@@ -154,18 +171,17 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		allList: list,
 		totalCount,
 		max,
+		sort,
 		setMax,
 		moreMax,
 		isShowClose,
 		setShowClose,
 		setSearch,
+		setSort: onSort,
 	};
 };
 
-export const useResearchDetailHook = (
-	initialData?: ResearchResponse,
-	allData?: ResearchItemType[],
-) => {
+export const useResearchDetailHook = (initialData?: ResearchResponse, allData?: ResearchItemType[]) => {
 	const { param } = useCommonHook();
 
 	// 초기 데이터

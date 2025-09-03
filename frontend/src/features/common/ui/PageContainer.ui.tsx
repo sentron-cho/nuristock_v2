@@ -124,7 +124,7 @@ export const PageContainer = ({
 		const scrollEl = document.querySelector('.scroll-view');
 		const savedY = sessionStorage.getItem(`scroll-position:${key}`);
 		if (navigationType === 'POP' && scrollEl && savedY) {
-			scrollEl.scrollTo({ top: parseInt(savedY, 10), behavior: 'auto' });
+			scrollEl.scrollTo({ top: parseInt(savedY, 10), behavior: 'smooth' });
 		}
 	}, [location, navigationType]);
 

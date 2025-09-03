@@ -7,6 +7,8 @@ export const StorageDataKey = {
 	MAINBOARD_CONFIG_MORE: 'mainboard-config-more',
 	MAINBOARD_CONFIG_SORT: 'mainboard-config-sort',
 	BUCKET_PARAMS: 'bucket-params',
+	RESEARCH_SORT: 'research-sort',
+	RESEARCH_MAX: 'research-max',
 }
 
 export const useStorageHook = () => {

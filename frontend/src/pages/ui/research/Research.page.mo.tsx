@@ -44,6 +44,14 @@ const StyledPage = styled(PageContainer, {
 		position: 'sticky',
 		top: '80px',
 		zIndex: 1,
+
+		'.underline': {
+			textDecoration: 'underline',
+		},
+
+		'.active': {
+			color: '$primaryhover',
+		}
 	},
 
 	'.contents-layer': {
@@ -78,8 +86,8 @@ export const ResearchPageMo = ({
 	data?: ResearchResponse;
 	onClick?: (eid?: string, item?: ResearchItemType) => void;
 }) => {
-	const { navigate } = useCommonHook();
-	const { naviOptions, list, totalCount, moreMax, setSearch } = useResearchHook(data, viewType);
+	const { navigate, location } = useCommonHook();
+	const { naviOptions, list, totalCount, sort, moreMax, setSearch, setSort } = useResearchHook(data, viewType);
 	const { prev, next } = useNaviByOptions({ options: naviOptions, value: viewType });
 
 	const formMethod = useForm();
@@ -119,11 +127,19 @@ export const ResearchPageMo = ({
 		return () => scrollEl.removeEventListener('scroll', onScroll);
 	}, []);
 
-	useEffect(() => {
+	// useEffect(() => {
+	// 	const scrollEl = document.querySelector('.scroll-view');
+	// 	if (!scrollEl) return;
+	// 	scrollEl.scrollTo({ top: 0, behavior: 'smooth' });
+	// }, [viewType]);
+
+	const onSelect = (item?: ResearchItemType) => {
+		onClick?.(EID.SELECT, item);
+
+		const key = location.pathname;
 		const scrollEl = document.querySelector('.scroll-view');
-		if (!scrollEl) return;
-		scrollEl.scrollTo({ top: 0, behavior: 'smooth' });
-	}, [viewType]);
+		scrollEl && sessionStorage.setItem(`scroll-position:${key}`, scrollEl.scrollTop.toString());
+	}
 
 	return (
 		<>
@@ -156,11 +172,11 @@ export const ResearchPageMo = ({
 
 					<Flex className='list-head' direction={'column'} gap={8}>
 						<Flex className='th' height={24} align={'end'}>
-							<Text text={ST.RESEARCH_TABLE.NAME} flex={2} textAlign={'start'} />
+							<Text bold className={clsx('underline', {active: sort === 'name'})} text={ST.RESEARCH_TABLE.NAME} flex={2} textAlign={'start'} onClick={() => setSort('name')} />
 							<Text text={ST.RESEARCH_TABLE.STIME} flex={2} textAlign={'right'} />
 
-							<Text text={ST.RESEARCH_TABLE.SHARE_RATE} flex={1} textAlign={'right'} />
-							<Text text={ST.RESEARCH_TABLE.SISE} flex={2} textAlign={'right'} />
+							<Text bold className={clsx('underline', {active: sort === 'roe'})} text={ST.RESEARCH_TABLE.SHARE_RATE} flex={1} textAlign={'right'} onClick={() => setSort('roe')} />
+							<Text bold className={clsx('underline', {active: sort === 'sise'})} text={ST.RESEARCH_TABLE.SISE} flex={2} textAlign={'right'} onClick={() => setSort('sise')} />
 							<Text text={ST.RESEARCH_TABLE.SHARE} flex={2} textAlign={'right'} />
 						</Flex>
 						<Flex className='th' height={24} align={'start'}>
@@ -183,10 +199,16 @@ export const ResearchPageMo = ({
 										className='row'
 										direction={'column'}
 										height={40}
-										onClick={() => onClick?.(EID.SELECT, item)}
+										onClick={() => onSelect(item)}
 									>
 										<Flex height={20}>
-											<Text size='xs' text={`${item.name}`} flex={2} textAlign={'left'} onClick={() => onClick?.(EID.FIND, item)} />
+											<Text
+												size='xs'
+												text={`${item.name}`}
+												flex={2}
+												textAlign={'left'}
+												onClick={() => onClick?.(EID.FIND, item)}
+											/>
 											<Text
 												size='xs'
 												text={`${dayjs(item.stime).format('MM/DD HH:mm')}`}
