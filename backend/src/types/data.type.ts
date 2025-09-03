@@ -61,8 +61,8 @@ export type ResearchInfoResult = {
 };
 
 export type ResearchInfoValues = {
-  type?: string;
-  code?: string;
+  type?: string; // 거래소 타입
+  code?: string; // 종목 코드
   sise?: number; // 현재가
   shares?: number; // 발행주식수
   updown?: string; // 전일비 등락

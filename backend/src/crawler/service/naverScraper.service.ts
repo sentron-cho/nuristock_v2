@@ -3,9 +3,10 @@ import { REST_API } from "../../types/url.js";
 import { ConsensusResult, ResearchInfoResult, ResearchInfoValues } from "../../types/data.type.js";
 import { parseNumber } from "../../lib/parser.util.js";
 import { chromium, Page } from "playwright";
-import { TIME_OUT, TIME_OUT_30, TIME_OUT_5 } from "../../types/constants.js";
+import { TIME_OUT, TIME_OUT_10, TIME_OUT_30, TIME_OUT_5 } from "../../types/constants.js";
 import dayjs from "dayjs";
 import { parseFnGuideByYear } from "./fnguideScraper.service.js";
+import { saveText } from "../../lib/writefile.js";
 
 export const parseNaverConsensus = (tableHtml: string): ConsensusResult => {
   const $ = cheerio.load(tableHtml);
@@ -186,6 +187,39 @@ const getNaverSiseByNxt = async (page: Page) => {
   return { sise, ecost, updown };
 };
 
+const parseStockShares = async (page: Page) => {
+  await page.waitForSelector("#tab_con1", { timeout: TIME_OUT_5 });
+  const html = await page.$eval("#tab_con1", (el) => (el as HTMLElement).outerHTML);
+
+  const $ = cheerio.load(html);
+  const row = $("tbody tr")
+    .filter((_, tr) => {
+      const label = $(tr).find("th strong, th").first().text().replace(/\s+/g, "");
+      // name을 정규식으로 만들어서 테스트
+      return new RegExp("상장주식수").test(label);
+    })
+    .first();
+
+  let cell = row.find("td").first();
+  return parseNumber(cell.attr("title") ?? cell.text());
+};
+
+const parseStockType = async (page: Page) => {
+  await page.waitForSelector(".h_company .description", { timeout: TIME_OUT_5 });
+  const html = await page.$eval(".h_company .description", (el) => (el as HTMLElement).outerHTML);
+
+  const $ = cheerio.load(html);
+  const type = $("img").first().attr("class") === "kospi" ? "kospi" : "kosdaq";
+
+  if ($("img").first().attr("alt") === "코넥스") {
+    // console.log("===========> konex");
+    return "konex";
+  } else {
+    // console.log(`===========> ${type}`);
+    return type;
+  }
+};
+
 /**
  * 네이버 금융 종목 컨센서스 페이지에서 지배주주순이익 및 ROE 추출
  * @param code6 종목코드 (6자리)
@@ -199,11 +233,18 @@ export const getNaverReport = async (code: string): Promise<ResearchInfoValues |
 
     const url = `${REST_API.NAVER_MAIN}?code=${code?.replace("A", "")}`;
     await page.goto(url, { waitUntil: "networkidle", timeout: TIME_OUT_5 });
-    // console.log("[URL]", { url });
+    console.log("[URL]", { url });
+
+    const type = await parseStockType(page); // 상장 거래소
+    if (!type || type === "konex") return { code, type };
+
+    const shares = await parseStockShares(page); // 발생 주식수
+    if (!shares) return { code, type, shares };
 
     // 1) 컨센서스 정보
-    await page.waitForSelector(".cop_analysis", { timeout: TIME_OUT_5 });
+    const h = await page.waitForSelector(".cop_analysis", { timeout: TIME_OUT_5 });
     let html = await page.$eval(".cop_analysis", (el) => (el as HTMLElement).outerHTML);
+    // saveText('aa.html', (h as HTMLElement).outerHTML)
 
     let fnguideHtml = undefined;
 
@@ -244,27 +285,6 @@ export const getNaverReport = async (code: string): Promise<ResearchInfoValues |
 
     const { updown, ecost, sise } = siseRes;
 
-    // 3) 상장 주식수
-    await page.waitForSelector("#tab_con1", { timeout: TIME_OUT_5 });
-    html = await page.$eval("#tab_con1", (el) => (el as HTMLElement).outerHTML);
-
-    let $$ = cheerio.load(html);
-    let row = $$("tbody tr")
-      .filter((_, tr) => {
-        const label = $$(tr).find("th strong, th").first().text().replace(/\s+/g, "");
-        // name을 정규식으로 만들어서 테스트
-        return new RegExp("상장주식수").test(label);
-      })
-      .first();
-
-    let cell = row.find("td").first();
-    const shares = parseNumber(cell.attr("title") ?? cell.text());
-
-    await page.waitForSelector(".h_company .description", { timeout: TIME_OUT_5 });
-    html = await page.$eval(".h_company .description", (el) => (el as HTMLElement).outerHTML);
-
-    $$ = cheerio.load(html);
-    const type = $$("img").first().attr("class") === "kospi" ? "kospi" : "kosdaq";
     // console.log("[NAVER_REPORT]", { code, sise, updown, ecost, shares, report });
 
     return { code, type, sise, updown, ecost, shares, report };

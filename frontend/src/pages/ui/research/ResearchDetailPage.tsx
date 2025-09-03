@@ -1,5 +1,6 @@
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import {
+	useDeleteResearch,
 	useRefreshResearch,
 	useSelectResearch,
 	useSelectResearchByNaver,
@@ -17,9 +18,10 @@ import { useResearchHook } from '@features/research/hook/Research.hook';
 import { StockSiseUpdaterPopup } from '@features/dashboard/ui/StockSiseUpdater.popup';
 import { MarketSiseDataType } from '@features/market/api/market.dto';
 import { Loading } from '@entites/Loading';
+import { URL } from '@shared/config/url.enum';
 
 const ResearchDetailPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosdaq' | 'none' }) => {
-	const { isMobile } = useCommonHook();
+	const { isMobile, navigate } = useCommonHook();
 
 	const { showToast, showAlert, showConfirm, param } = useCommonHook();
 
@@ -34,6 +36,7 @@ const ResearchDetailPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosd
 
 	const { mutateAsync: refreshData } = useRefreshResearch();
 	const { mutateAsync: selectNaver } = useSelectResearchByNaver();
+	const { mutateAsync: deleteData } = useDeleteResearch();
 
 	useEffect(() => {
 		param?.id && param?.id !== naverData?.code && setNaverData(undefined);
@@ -83,7 +86,7 @@ const ResearchDetailPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosd
 				},
 			});
 		} else if (eid === EID.EDIT) {
-			await getNaverInfo(item?.code);
+			const values = await getNaverInfo(item?.code);
 
 			setPopup({
 				type: eid,
@@ -93,6 +96,25 @@ const ResearchDetailPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosd
 					isOk && refetch();
 				},
 			});
+
+			if (values?.type === 'konex') {
+				showConfirm({
+					content: ST.WANT_TO_DELETE,
+					onClose: async (isOk) => {
+						if (isOk && item?.code) {
+							await deleteData({ code: item?.code });
+							showToast('info', ST.DELETEED);
+
+							const nextIndex = allList?.findIndex((a) => a.code === item?.code) || 0;
+							const next = allList?.[nextIndex + 1];
+							next && navigate(`${URL.RESEARCH}/${viewType}/${next?.code}`);
+							
+							setPopup(undefined);
+							refetch();
+						}
+					},
+				});
+			}
 		} else if (eid === 'refresh') {
 			showConfirm({
 				content: ST.WANT_TO_REFRESH,

@@ -15,7 +15,7 @@ export const startMystockTask = (fastify: FastifyInstance) => {
     // console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}] 주식 종목 투자 정보 수집!`);
 
     // 상장폐지(type=close)인 종목은 일단 9999로 업데이트
-    await fastify.db.query(`UPDATE market SET mtime='9999' where type='CLOSE' or type='close';`);
+    await fastify.db.query(`UPDATE market SET mtime='9999' where type='CLOSE' or state='close';`);
 
     // 오류 또는
 

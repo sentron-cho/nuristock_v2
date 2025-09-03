@@ -39,11 +39,18 @@ const researchRoute = (fastify: FastifyInstance) => {
           );
 
       const res = await fastify.db.query(`SELECT mtime FROM market WHERE code='${code}';`);
-      const mtime = res?.[0].mtime;
-      if (Number(mtime) === 0 || Number(mtime) >= 9000 || Number(mtime) < (Number(cdate) || 0)) {
-        await fastify.db.query(
-          `UPDATE market SET mtime='${cdate}', type='${stype?.toUpperCase()}', sise='${sise}', state='open' WHERE code ='${code}';`
-        );
+      const mtime = Number(res?.[0].mtime) || 0;
+
+      if (res?.[0]) {
+        if (mtime < (Number(cdate) || 0)) {
+          await fastify.db.query(
+            `UPDATE market SET mtime='${cdate}', type='${stype?.toUpperCase()}', sise='${sise}', state='open' WHERE code ='${code}';`
+          );
+        } else {
+          await fastify.db.query(
+            `UPDATE market SET type='${stype?.toUpperCase()}', sise='${sise}', state='open' WHERE code ='${code}';`
+          );
+        }
       }
 
       const params = {
