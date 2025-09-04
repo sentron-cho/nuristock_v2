@@ -26,6 +26,8 @@ const marketRoute = (fastify: FastifyInstance) => {
   fastify.put(URL.MARKET.SISE, async (req, reply) => {
     try {
       const { code } = req.body as MarketSiseUpdateDataType;
+      console.log({ query: `UPDATE market SET ${makeUpdateSet(req.body as FieldValues)} WHERE code = '${code}';` });
+      
       await fastify.db.query(`UPDATE market SET ${makeUpdateSet(req.body as FieldValues)} WHERE code = '${code}';`);
       reply.status(200).send({ value: code });
     } catch (error) {
@@ -85,7 +87,7 @@ const marketRoute = (fastify: FastifyInstance) => {
 
       reply.status(200).send({ value: code });
     } catch (error) {
-      reply.status(500).send(withError(error as SqlError, { tag: URL.MARKET.SISE }));
+      reply.status(500).send(withError(error as SqlError, { tag: URL.MARKET.SEARCH }));
     }
   });
 };

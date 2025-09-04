@@ -28,6 +28,7 @@ export interface ResearchResponse {
 
 export interface ResearchRefreshType {
 	code?: string;
+	name?: string;
 	targetYear?: string;
 }
 

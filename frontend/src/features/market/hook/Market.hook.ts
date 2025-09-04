@@ -14,6 +14,16 @@ export const useMarketHook = (initialData?: MarketSearchResponse, viewType: 'kos
 
 	const data = useMemo(() => initialData?.value, [initialData]);
 
+	const count = useMemo(() => {
+		return {
+			'2024': data?.filter((a) => a.mtime?.toString() === '2024')?.length,
+			'9000': data?.filter((a) => a.mtime?.toString() === '9000')?.length,
+			'9001': data?.filter((a) => a.mtime?.toString() === '9001')?.length,
+			'9999': data?.filter((a) => a.mtime?.toString() === '9999')?.length,
+			'0000': data?.filter((a) => a.mtime?.toString() === '0000')?.length,
+		};
+	}, [data]);
+
 	const list = useMemo(() => {
 		const filtered = data?.filter((a) => a?.type?.toUpperCase() === viewType.toUpperCase());
 		let items = filtered;
@@ -38,12 +48,13 @@ export const useMarketHook = (initialData?: MarketSearchResponse, viewType: 'kos
 	};
 
 	const onErrorList = () => {
-		setErrorList(prev => !prev);
-	}
+		setErrorList((prev) => !prev);
+	};
 
 	return {
 		data,
-		list: isErrorList ? list?.filter(a => Number(a?.mtime) >= 9000) : list?.slice(0, max),
+		count,
+		list: isErrorList ? list?.filter((a) => Number(a?.mtime) >= 9000) : list?.slice(0, max),
 		totalCount,
 		isErrorList,
 		max,

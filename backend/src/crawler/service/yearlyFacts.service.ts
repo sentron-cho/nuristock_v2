@@ -8,7 +8,7 @@ import {
   LatestIssuedShares,
 } from "../dartFinancial.js";
 
-export const getYearlyFacts = async (opts: {
+export const getYearlyStockInfoFromDart = async (opts: {
   code6: string;
   from: number;
   to?: number;

@@ -1,11 +1,80 @@
+import { ResearchInfoValues } from "./../types/data.type";
 import { SqlError } from "mariadb/*";
 import { withError } from "../lib/error.js";
 import URL from "../types/url.js";
 import { FastifyInstance } from "fastify";
 import { FieldValues, ResearchDataType, ResearchSearchParams } from "../types/data.type.js";
 import { ERROR } from "../types/enum.js";
-import { makeUpdateSet } from "../lib/db.util.js";
+import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
 import { getNaverReport } from "../crawler/service/naverScraper.service.js";
+import { FAILURE, SUCCESS } from "../types/constants.js";
+import dayjs from "dayjs";
+
+export const insertMystockinfoData = async (fastify: FastifyInstance, value?: ResearchInfoValues) => {
+  if (fastify && value?.type && value?.report) {
+    if (value.type === "konex") {
+      await fastify.db.query(
+        `UPDATE market SET mtime='0000', state = 'close', type = 'CLOSE' where code='${value?.code}';`
+      ); // 1차 실패
+      return;
+    }
+
+    const { type, sise, updown, ecost, shares } = value;
+
+    for (const row of value?.report) {
+      const { year, roe, profit, equity, debt, debtratio, eps, dividend } = row;
+      if (year === dayjs().year()) continue;
+
+      const params = {
+        roe,
+        profit,
+        equity,
+        debt,
+        debtratio,
+        eps,
+        dividend: dividend || "",
+        scount: shares,
+        name: value?.name,
+        cdate: year,
+      };
+      const count = await fastify.db.query(
+        `SELECT count(1) as count FROM marketinfo WHERE code='${value?.code}' AND cdate='${year}';`
+      );
+
+      // 없으면 등록
+      if (!Number(count?.[0]?.count || 0)) {
+        console.log("[재무정보 추가]", `[${year}] ${value?.name}(${value.code})`);
+        await fastify.db.query(
+          `INSERT INTO marketinfo ${makeInsertSet({ ...params, code: value?.code } as FieldValues)};`
+        );
+      } else {
+        console.log("[재무정보 수정]", `[${year}] ${value?.name}(${value.code})`);
+        await fastify.db.query(
+          `UPDATE marketinfo SET ${makeUpdateSet({
+            ...(params || {}),
+          } as FieldValues)} WHERE code ='${value?.code}' and cdate='${year}';`
+        );
+      }
+
+      const erate = ecost && sise && (ecost / sise).toFixed(2);
+      await fastify.db.query(
+        `UPDATE market SET mtime='${year}', type='${type?.toUpperCase()}', ` +
+          `sise='${sise}', updown='${updown}', ecost='${ecost}', erate = '${erate}' where code='${value?.code}';`
+      );
+    }
+  } else {
+    await fastify.db.query(`UPDATE market SET mtime='${9001}' where code='${value?.code}';`); // 1차 실패
+  }
+};
+
+const removeMarketData = async (fastify: FastifyInstance, code?: string) => {
+  if (!code) return;
+
+  await fastify.db.query(`DELETE FROM marketinfo WHERE code='${code}';`);
+  await fastify.db.query(
+    `update market set type='CLOSE', state='close', mtime='9999', sise=null, updown=null, erate=0, ecost=0, stime=null WHERE code = '${code}';`
+  );
+};
 
 const researchRoute = (fastify: FastifyInstance) => {
   // 종목 전체 목록 조회
@@ -80,11 +149,7 @@ const researchRoute = (fastify: FastifyInstance) => {
     try {
       const { rowid, code } = req.query as ResearchDataType;
 
-      // console.log("[DELETE:RESEARCH]", rowid, code);
-
       if (code) {
-        // update market set type='CLOSE', state='close', mtime='9999', sise=null, updown=null, erate=0, ecost=0, stime=null WHERE code = 'A023460';
-        // delete from marketinfo WHERE code = 'A023460';
         await fastify.db.query(`DELETE FROM marketinfo WHERE code='${code}';`);
         await fastify.db.query(
           `update market set type='CLOSE', state='close', mtime='9999', sise=null, updown=null, erate=0, ecost=0, stime=null WHERE code = '${code}';`
@@ -126,6 +191,34 @@ const researchRoute = (fastify: FastifyInstance) => {
       return { value: value };
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.RESEARCH.ROOT }));
+    }
+  });
+
+  // 가치투자 종목 재무정보 조회(크롤링) 및 추가
+  fastify.put(URL.RESEARCH.REFRESH, async (req, reply) => {
+    try {
+      const { code, name } = req.body as ResearchSearchParams;
+
+      console.log("[PUT:RESEARCH.REFRESH]", { code, name });
+      const value = await getNaverReport(code || "");
+
+      console.log("[PUT:RESEARCH.NAVER]", { value });
+
+      // 코넥스면 삭제
+      if (value?.type === "konex") {
+        await removeMarketData(fastify, code);
+        return { value: SUCCESS };
+      }
+
+      if (value && value?.type && value?.report) {
+        const row = await fastify.db.query(`select code, name FROM market WHERE code = '${code}';`);
+        await insertMystockinfoData(fastify, { ...value, name: row?.[0]?.name });
+        return { value: SUCCESS };
+      } else {
+        return { value: FAILURE };
+      }
+    } catch (error) {
+      reply.status(500).send(withError(error as SqlError, { tag: URL.RESEARCH.REFRESH }));
     }
   });
 };

@@ -16,10 +16,14 @@ export enum COST {
 // }
 
 export const valueOfPlusMinus = (a: number = 0, b: number = 0) => {
+	if (isNaN(a) || isNaN(b)) return EID.NONE;
+
 	return a === b ? EID.NONE : a < b ? EID.MINUS : EID.PLUS;
 };
 
 export const valueOfUpDown = (a: number = 0, b: number = 0) => {
+	if (isNaN(a) || isNaN(b)) return '';
+
 	return a === b ? '' : a < b ? EID.DOWN : EID.UP;
 };
 

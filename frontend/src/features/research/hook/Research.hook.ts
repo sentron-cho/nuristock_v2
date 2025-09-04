@@ -117,7 +117,7 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		}
 
 		if (search) {
-			items = items?.filter((a) => a.code?.includes(search) || a.name?.includes(search));
+			items = items?.filter((a) => a.code?.toLocaleLowerCase()?.includes(search) || a.name?.toLocaleLowerCase()?.includes(search));
 		}
 
 		return items?.map((a) => {
@@ -229,10 +229,10 @@ export const useResearchDetailHook = (initialData?: ResearchResponse, allData?: 
 				return {
 					...a,
 					count: scount.toString(),
-					roe: roe.toString(),
+					roe: 'N/A',
 					equity: equity.toString(),
 					profit: profit.toString(),
-					sise: '0',
+					sise: sise.toString(),
 					shareValue: 0,
 					shareRate: 0,
 				} as ResearchItemType;
@@ -241,7 +241,7 @@ export const useResearchDetailHook = (initialData?: ResearchResponse, allData?: 
 
 		return reverse(sortBy(parsed, 'cdate'))?.map((a) => {
 			const nRoe = Number(a.roe);
-			const roeType = nRoe >= 10 ? EID.PLUS : nRoe < 0 ? EID.MINUS : EID.NONE;
+			const roeType = !isNaN(Number(a.roe)) ? nRoe >= 10 ? EID.PLUS : nRoe < 0 ? EID.MINUS : EID.NONE : '';
 
 			const nCount = Number(a.scount);
 			const countType = nCount >= 10000000 ? EID.MINUS : nCount < 10000000 ? EID.PLUS : EID.NONE;
@@ -304,7 +304,7 @@ export const useResearchPerValueHook = (
 				target: target,
 				value: withCommas(value),
 				rate: nTargetRate,
-				updown: valueOfUpDown(Number(value), Number(data?.sise)),
+				updown: !isNaN(Number(value)) ? valueOfUpDown(Number(value), Number(data?.sise)) : '',
 			};
 		});
 	}, [data]);

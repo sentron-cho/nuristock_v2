@@ -146,6 +146,8 @@ export const parseNaverReport = (tableHtml: string, fnguideHtml?: string): Resea
 };
 
 const getNaverSiseByKrx = async (page: Page) => {
+  console.log('[getNaverSiseByKrx]');
+
   // 2) 시세 정보(KRX)
   await page.waitForSelector("#rate_info_krx", { timeout: TIME_OUT });
   const html = await page.$eval("#rate_info_krx", (el) => (el as HTMLElement).outerHTML);
@@ -168,6 +170,8 @@ const getNaverSiseByKrx = async (page: Page) => {
 };
 
 const getNaverSiseByNxt = async (page: Page) => {
+  console.log('[getNaverSiseByNxt]');
+
   // 2) 시세 정보(NXT)
   await page.waitForSelector("#rate_info_nxt", { timeout: TIME_OUT });
   const html = await page.$eval("#rate_info_nxt", (el) => (el as HTMLElement).outerHTML);
@@ -227,46 +231,66 @@ const parseStockType = async (page: Page) => {
 export const getNaverReport = async (code: string): Promise<ResearchInfoValues | undefined> => {
   if (!code) return;
 
+  const browser = await chromium.launch();
+
   try {
-    const browser = await chromium.launch();
     const page = await browser.newPage({ userAgent: "Mozilla/5.0", locale: "ko-KR" });
 
     const url = `${REST_API.NAVER_MAIN}?code=${code?.replace("A", "")}`;
+
+    // TODO: 메인 페이지 이동
     await page.goto(url, { waitUntil: "networkidle", timeout: TIME_OUT_5 });
     console.log("[URL]", { url });
 
-    const type = await parseStockType(page); // 상장 거래소
-    if (!type || type === "konex") return { code, type };
+    const type = await parseStockType(page); // 1. 상장 거래소
+    if (!type || type === "konex") {
+      browser?.close();
+      return { code, type };
+    }
 
-    const shares = await parseStockShares(page); // 발생 주식수
-    if (!shares) return { code, type, shares };
+    const shares = await parseStockShares(page); // 2. 발행 주식수
+    if (!shares) {
+      browser?.close();
+      return { code, type, shares };
+    }
+    
+    // 3. 시세 정보(KRX)
+    let siseRes: { sise: number; ecost: number; updown: string } = { sise: 0, ecost: 0, updown: "" };
+    const hour = dayjs().tz("Asia/Seoul").hour();
 
-    // 1) 컨센서스 정보
-    const h = await page.waitForSelector(".cop_analysis", { timeout: TIME_OUT_5 });
-    let html = await page.$eval(".cop_analysis", (el) => (el as HTMLElement).outerHTML);
-    // saveText('aa.html', (h as HTMLElement).outerHTML)
+    try {
+      siseRes = (hour > 9 && hour < 16) ? await getNaverSiseByKrx(page) : await getNaverSiseByNxt(page);
+    } catch (error) {
+      siseRes = await getNaverSiseByKrx(page);
+    }
+
+    const { updown, ecost, sise } = siseRes;
+    
+    // 4. 컨센서스 정보
+    await page.waitForSelector(".cop_analysis", { timeout: TIME_OUT_5 });
+    const html = await page.$eval(".cop_analysis", (el) => (el as HTMLElement).outerHTML);
 
     let fnguideHtml = undefined;
-
     const fnurl = `${REST_API.FNGUIDE_MAIN}?pGB=1&gicode=A${code?.replace(
       "A",
       ""
     )}&cID=&MenuYn=Y&ReportGB=&NewMenuID=101&stkGb=701`;
-    const fnpage = await browser.newPage({ userAgent: "Mozilla/5.0", locale: "ko-KR" });
-    await fnpage.goto(fnurl, { waitUntil: "networkidle", timeout: TIME_OUT_5 });
 
-    // 자본 가져오기
+    // TODO: 재무수집 페이지 이동
+    await page.goto(fnurl, { waitUntil: "networkidle", timeout: TIME_OUT_5 });
+
+    // 5. 자본 가져오기
     try {
-      await fnpage.waitForSelector("#highlight_D_A .us_table_ty1.h_fix", { timeout: TIME_OUT_5 });
-      fnguideHtml = await fnpage.$eval("#highlight_D_A .us_table_ty1.h_fix", (el) => (el as HTMLElement).outerHTML);
+      await page.waitForSelector("#highlight_D_A .us_table_ty1.h_fix", { timeout: TIME_OUT_5 });
+      fnguideHtml = await page.$eval("#highlight_D_A .us_table_ty1.h_fix", (el) => (el as HTMLElement).outerHTML);
     } catch (error) {
       console.log("[FNGUIDE:ERROR-1]", error);
     }
 
     if (!fnguideHtml) {
       try {
-        await fnpage.waitForSelector("#highlight_B_A .us_table_ty1.h_fix", { timeout: TIME_OUT_5 });
-        fnguideHtml = await fnpage.$eval("#highlight_B_A .us_table_ty1.h_fix", (el) => (el as HTMLElement).outerHTML);
+        await page.waitForSelector("#highlight_B_A .us_table_ty1.h_fix", { timeout: TIME_OUT_5 });
+        fnguideHtml = await page.$eval("#highlight_B_A .us_table_ty1.h_fix", (el) => (el as HTMLElement).outerHTML);
       } catch (error) {
         console.log("[FNGUIDE:ERROR-2]", error);
       }
@@ -274,22 +298,14 @@ export const getNaverReport = async (code: string): Promise<ResearchInfoValues |
 
     const report = parseNaverReport(html, fnguideHtml);
 
-    // 2) 시세 정보(KRX)
-    let siseRes: { sise: number; ecost: number; updown: string } = { sise: 0, ecost: 0, updown: "" };
-    const hour = dayjs().tz("Asia/Seoul").hour();
-    try {
-      siseRes = hour > 9 && hour < 16 ? await getNaverSiseByKrx(page) : await getNaverSiseByNxt(page);
-    } catch (error) {
-      siseRes = await getNaverSiseByKrx(page); //hour > 9 && hour < 16 ? await getNaverSiseByNxt(page) : await getNaverSiseByKrx(page);;
-    }
+    console.log("[NAVER_REPORT]", { code, sise, updown, ecost, shares, report });
 
-    const { updown, ecost, sise } = siseRes;
-
-    // console.log("[NAVER_REPORT]", { code, sise, updown, ecost, shares, report });
-
+    browser?.close();
     return { code, type, sise, updown, ecost, shares, report };
   } catch (e) {
     console.error("[NAVER_CONSENSUS_ERROR]", e);
     return undefined;
+  } finally {
+    browser?.close();
   }
 };

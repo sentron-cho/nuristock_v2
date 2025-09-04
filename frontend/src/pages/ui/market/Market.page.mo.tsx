@@ -61,7 +61,7 @@ export const MarketPageMo = ({
 	onClick?: (eid?: string, item?: MarketSearchDataType) => void;
 }) => {
 	const { navigate } = useCommonHook();
-	const { list, totalCount, isErrorList, moreMax, setSearch, onErrorList } = useMarketHook(data, viewType);
+	const { list, totalCount, isErrorList, moreMax, setSearch, onErrorList, count } = useMarketHook(data, viewType);
 
 	const formMethod = useForm();
 
@@ -136,14 +136,21 @@ export const MarketPageMo = ({
 							<SearchFieldForm id='searchtext' placeholder={ST.INPUT_SEARCH} formMethod={formMethod} />
 						</Flex>
 						<Flex className='total' justify={'between'}>
-							{totalCount && <Text size='xs' text={`${withCommas(list?.length || 0)} / ${withCommas(totalCount)}`} />}
-							<Chip
-								size='xsmall'
-								variant={isErrorList ? 'filled' : 'outlined'}
-								label={'ERROR'}
-								color='error'
-								onClick={onClickError}
-							/>
+							<Flex fullWidth={false} flex={1}>
+								{totalCount && <Text size='xs' text={`${withCommas(list?.length || 0)} / ${withCommas(totalCount)}`} />}
+							</Flex>
+							<Flex fullWidth={false} flex={1} gap={8} justify={'end'}>
+								<Chip size='xsmall' variant={'outlined'} label={`2024(${count?.['2024']})`} color='primary' />
+								<Chip size='xsmall' variant={'outlined'} label={`9999(${count?.['9999']})`} color='error' />
+								<Chip size='xsmall' variant={'outlined'} label={`0000(${count?.['0000']})`} color='default' />
+								<Chip
+									size='xsmall'
+									variant={isErrorList ? 'filled' : 'outlined'}
+									label={'ERROR'}
+									color='error'
+									onClick={onClickError}
+								/>
+							</Flex>
 						</Flex>
 					</Flex>
 
@@ -152,20 +159,15 @@ export const MarketPageMo = ({
 						<Flex className={clsx('box')} direction={'column'}>
 							{list?.map((item) => {
 								return (
-									<Flex
-										key={item?.code}
-										className='row'
-										height={40}
-										onClick={() => onClick?.(EID.SELECT, item)}
-										gap={8}
-									>
-										<Text text={item.name} flex={1} textAlign={'left'} />
+									<Flex key={item?.code} className='row' height={40} gap={8}>
+										<Text text={item.name} flex={1} textAlign={'left'} onClick={() => onClick?.(EID.SELECT, item)} />
 										{item.mtime && (
 											<Chip
 												variant={Number(item?.mtime) >= 9000 || Number(item?.mtime) === 0 ? 'filled' : 'outlined'}
 												size='xsmall'
 												label={item.mtime}
 												color={Number(item?.mtime) >= 9000 ? 'error' : 'primary'}
+												onClick={() => onClick?.(EID.UPDATE, item)}
 											/>
 										)}
 										<Text text={item.code} flex={1} textAlign={'right'} />

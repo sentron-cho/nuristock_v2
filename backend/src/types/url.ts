@@ -25,6 +25,7 @@ export const URL = {
     DETAIL: `${ROOT_URL}/research/detail`,
     SISE: `${ROOT_URL}/research/sise`,
     NAVER: `${ROOT_URL}/research/naver`,
+    REFRESH: `${ROOT_URL}/research/refresh`,
   },
   STATISTIC: {
     ROOT: `${ROOT_URL}/statistic`,

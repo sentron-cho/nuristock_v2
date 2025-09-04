@@ -87,16 +87,6 @@ export const useSelectResearchByNaver = () => {
 	});
 };
 
-// // 시세 데이터 가져오기
-// export const useSelectResearchSise = () => {
-// 	return useMutation({
-// 		mutationKey: ['RESEARCH-R03'],
-// 		mutationFn: async (code?: string) => {
-// 			return await api.get(API.RESEARCH_SISE, { params: { code } });
-// 		},
-// 	});
-// };
-
 // 평가 데이터 네이버로 갱신
 export const useUpdateResearchByNaver = () => {
 	return useMutation({

@@ -73,6 +73,14 @@ const dashboardRoute = (fastify: FastifyInstance) => {
       await fastify.db.query(`INSERT INTO dashboard (code, name) VALUES ('${code}', '${name}');`);
       await updateDashboardKeep(code);
 
+      // 이름이 있고 이름이 market에 저장된 이름과 다르면 업데이트
+      if (name) {
+        const market = await fastify.db.query(`SELECT name, code FROM marketinfo WHERE code = '${code}'`);
+        if (market && market?.[0]?.name !== name) {
+          await fastify.db.query(`UPDATE market SET name = '${name}' WHERE code = '${code}';`);
+        }
+      }
+
       reply.status(200).send({ value: code });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.DASHBOARD.ROOT }));
@@ -106,7 +114,7 @@ const dashboardRoute = (fastify: FastifyInstance) => {
   // 보유종목 포지션 수정(long or short)
   fastify.put(URL.DASHBOARD.POSITION, async (req, reply) => {
     try {
-      const { code, position = 'short' } = req.body as DashboardCreateType;
+      const { code, position = "short" } = req.body as DashboardCreateType;
 
       await fastify.db.query(`UPDATE dashboard SET position = '${position}' WHERE code = '${code}';`);
       reply.status(200).send({ value: code });

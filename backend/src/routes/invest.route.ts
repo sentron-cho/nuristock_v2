@@ -10,7 +10,7 @@ import {
   FieldValues,
   InvestBookmarkParams,
 } from "../types/data.type.js";
-import { getYearlyFacts } from "../crawler/service/yearlyFacts.service.js";
+import { getYearlyStockInfoFromDart } from "../crawler/service/yearlyFacts.service.js";
 import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
 import { ERROR, INVEST_CRALER_TYPE } from "../types/enum.js";
 import { getDartReportByStock } from "../crawler/dartFinancial.js";
@@ -19,30 +19,33 @@ import { getNaverConsensus } from "../crawler/service/naverScraper.service.js";
 import { getNaverStockSise, updateStockSise } from "./../crawler/service/stockCrawler.service.js";
 
 const investRoute = (fastify: FastifyInstance) => {
-  const updateInvestData = async (data?: InvestRefreshParams) => {
+  const updateInvestData = async (code: string, list: Record<string, ConsensusResult>, year: string) => {
+    const value = list?.[year?.toString()];
+
+    let params = {
+      count: value?.shares,
+      ctype: INVEST_CRALER_TYPE.FNGUIDE,
+    } as Record<string, string | number>;
+
+    value?.roe && (params["roe"] = value.roe?.toFixed(2));
+    value?.equity && (params["equity"] = value.equity?.toFixed(0));
+
+    if (params?.roe && params?.equity) {
+      const sql = `UPDATE investment SET ${makeUpdateSet(params)} WHERE code = '${code}' and sdate = '${year}'`;
+      await fastify.db.query(sql);
+      return true;
+    } else return false;
+  };
+
+  const updateInvestDataByDart = async (data?: InvestRefreshParams) => {
     if (!data) return;
 
     const { code, targetYear } = data;
 
-    const updateData = async (list: Record<string, ConsensusResult>, year: string) => {
-      const value = list?.[year?.toString()];
-
-      let params = {
-        count: value?.shares,
-        ctype: INVEST_CRALER_TYPE.FNGUIDE,
-      } as Record<string, string | number>;
-
-      value?.roe && (params["roe"] = value.roe?.toFixed(2));
-      value?.equity && (params["equity"] = value.equity?.toFixed(0));
-
-      if (params?.roe && params?.equity) {
-        const sql = `UPDATE investment set ${makeUpdateSet(params)} WHERE code = '${code}' and sdate = '${year}'`;
-        await fastify.db.query(sql);
-        return true;
-      } else return false;
-    };
-
-    const facts = await getYearlyFacts({ code6: code?.replace("A", ""), from: Number(dayjs().format("YYYY")) });
+    const facts = await getYearlyStockInfoFromDart({
+      code6: code?.replace("A", ""),
+      from: Number(dayjs().format("YYYY")),
+    });
     const shares = facts?.value?.[0]?.shares;
 
     const consensus = await getFnGuideConsensus(code?.replace("A", ""), shares); // 현재 년도부터 3년전까지만 가져온다.
@@ -51,13 +54,13 @@ const investRoute = (fastify: FastifyInstance) => {
     if (consensus) {
       if (targetYear) {
         // 해당 년도만 업데이트
-        await updateData(consensus, targetYear?.toString());
+        await updateInvestData(code, consensus, targetYear?.toString());
         return true;
       } else {
         // 올해부터 -3년전까지 업데이트
         const years = Object.keys(consensus)?.map((a) => Number(a));
         for (let year = years?.[0]; year <= years?.[years?.length - 1]; year++) {
-          await updateData(consensus, year?.toString());
+          await updateInvestData(code, consensus, year?.toString());
         }
 
         return true;
@@ -88,7 +91,7 @@ const investRoute = (fastify: FastifyInstance) => {
   // 가치투자 종목 항목 추가
   fastify.post(URL.INVEST.ROOT, async (req, reply) => {
     try {
-      const { code } = req.body as InvestCreateType;
+      const { code, name } = req.body as InvestCreateType;
 
       if (!code)
         return reply
@@ -114,7 +117,37 @@ const investRoute = (fastify: FastifyInstance) => {
         await fastify.db.query(`INSERT INTO investment (code, sdate, ctype) VALUES ('${code}', '${year}', '${type}');`);
       }
 
-      await updateInvestData({ code } as InvestRefreshParams);
+      const marketinfo = await fastify.db.query(
+        `SELECT roe, scount, debt, equity, cdate FROM marketinfo WHERE code = '${code}' and cdate >= '${start}' `
+      );
+
+      // 이름이 있고 이름이 market에 저장된 이름과 다르면 업데이트
+      if (name) {
+        const market = await fastify.db.query(`SELECT name, code FROM marketinfo WHERE code = '${code}'`);
+        if (market && market?.[0]?.name !== name) {
+          await fastify.db.query(`UPDATE market SET name = '${name}' WHERE code = '${code}';`);
+        }
+      }
+
+      if (marketinfo && marketinfo?.length > 1) {
+        for (const data of marketinfo ?? []) {
+          const params = {
+            code: code,
+            sdate: data?.cdate,
+            roe: data?.roe,
+            count: data?.scount,
+            equity: data?.equity,
+            ctype: INVEST_CRALER_TYPE.FNGUIDE,
+          };
+
+          await fastify.db.query(
+            `UPDATE investment SET ${makeUpdateSet(params)} WHERE code = '${code}' and sdate = '${data?.cdate}';`
+          );
+        }
+      } else {
+        // dart api를 통해 데이터 수신 및 저장
+        await updateInvestDataByDart({ code } as InvestRefreshParams);
+      }
 
       // 시세 데이터 업데이트
       const sise = await getNaverStockSise(code?.replace("A", ""));
@@ -177,7 +210,7 @@ const investRoute = (fastify: FastifyInstance) => {
   fastify.put(URL.INVEST.REFRESH, async (req, reply) => {
     try {
       const { code } = req.body as InvestRefreshParams;
-      const res = await updateInvestData(req?.body as InvestRefreshParams);
+      const res = await updateInvestDataByDart(req?.body as InvestRefreshParams);
 
       if (!res)
         return reply.status(500).send(
@@ -305,9 +338,7 @@ const investRoute = (fastify: FastifyInstance) => {
 
       console.log({ bookmark });
 
-      const res = fastify.db.query(
-        `UPDATE investment set bookmark = ${Boolean(bookmark)} WHERE rowid = '${rowid}';`
-      );
+      const res = fastify.db.query(`UPDATE investment SET bookmark = ${Boolean(bookmark)} WHERE rowid = '${rowid}';`);
 
       if (!res)
         return reply.status(500).send(

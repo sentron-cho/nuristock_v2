@@ -8,6 +8,7 @@ import { useResearchPerValueHook } from '../hook/Research.hook';
 import { toShortCost, valueOfPlusMinus, withCommas } from '@shared/libs/utils.lib';
 import { useMemo } from 'react';
 import { calcExcessProfit, calcShareholderValue } from '@shared/libs/investment.util';
+import { EID } from '@shared/config/default.config';
 
 const StyledFlex = styled(Flex, {
 	'&.info-field': {
@@ -59,7 +60,7 @@ export const ResearchInfoField = ({ data }: { data?: ResearchItemType }) => {
 				</Flex>
 				<Flex fullWidth={false} gap={4} flex={2} justify={'end'}>
 					<Text size='xs' text={`ROE:`} />
-					<Text bold size='xs' className={valueOfPlusMinus(Number(data?.roe))} text={` ${data?.roe}%`} />
+					<Text bold size='xs' className={data?.roe === 'N/A' ? EID.PLUS :valueOfPlusMinus(Number(data?.roe))} text={` ${data?.roe}%`} />
 				</Flex>
 			</Flex>
 
