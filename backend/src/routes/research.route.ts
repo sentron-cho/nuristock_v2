@@ -63,6 +63,7 @@ export const insertMystockinfoData = async (fastify: FastifyInstance, value?: Re
       );
     }
   } else {
+    console.log("[재무정보 실패]", `[${value?.name}(${value?.code})`);
     await fastify.db.query(`UPDATE market SET mtime='${9001}' where code='${value?.code}';`); // 1차 실패
   }
 };

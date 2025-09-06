@@ -56,8 +56,13 @@ export const startMarketUpdate = (fastify: FastifyInstance) => {
   const start = async () => {
     const now = dayjs().tz("Asia/Seoul");
     const hour = now.hour();
+    const day = now.day();
 
-    if (hour >= START_TIME || hour < END_TIME) {
+    // ⛔️ 토/일요일 제외
+    const isWeekend = day === 0 || day === 6;
+    const isTime = hour >= START_TIME || hour < END_TIME;
+
+    if (isWeekend || isTime) {
       console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}] 크롤링 실패 종목 업데이트!`);
 
       // 리스트 목록을 순회하며 DB에 존재하면 상장폐지 종목으로 업데이트
@@ -76,61 +81,7 @@ export const startMarketUpdate = (fastify: FastifyInstance) => {
             const value = await getNaverReport(code || "");
             console.log(`[SUCCESS]상장종목: ${item.name}(${item.code})`);
 
-            await insertMystockinfoData(fastify, { ...value, name: item.name });
-
-            // if (value?.type && value?.report) {
-
-            //   if (value.type === 'konex') {
-            //     await fastify.db.query(`UPDATE market SET mtime='0000', state = 'close', type = 'CLOSE' where code='${code}';`); // 1차 실패
-            //     return;
-            //   }
-
-            //   const { type, sise, updown, ecost, shares } = value;
-
-            //   for (const row of value?.report) {
-            //     const { year, roe, profit, equity, debt, debtratio, eps, dividend } = row;
-            //     if (year === dayjs().year()) continue;
-
-            //     const params = {
-            //       roe,
-            //       profit,
-            //       equity,
-            //       debt,
-            //       debtratio,
-            //       eps,
-            //       dividend: dividend || "",
-            //       scount: shares,
-            //       name: item.name,
-            //       cdate: year,
-            //     };
-            //     const count = await fastify.db.query(
-            //       `SELECT count(1) as count FROM marketinfo WHERE code='${code}' AND cdate='${year}';`
-            //     );
-
-            //     // 없으면 등록
-            //     if (!Number(count?.[0]?.count || 0)) {
-            //       console.log("[재무정보 추가]", `[${year}] ${item.name}(${item.code})`);
-            //       await fastify.db.query(
-            //         `INSERT INTO marketinfo ${makeInsertSet({ ...params, code } as FieldValues)};`
-            //       );
-            //     } else {
-            //       console.log("[재무정보 수정]", `[${year}] ${item.name}(${item.code})`);
-            //       await fastify.db.query(
-            //         `UPDATE marketinfo SET ${makeUpdateSet({
-            //           ...(params || {}),
-            //         } as FieldValues)} WHERE rowid ='${code}' and cdate='${year}';`
-            //       );
-            //     }
-
-            //     const erate = ecost && sise && (ecost / sise).toFixed(2);
-            //     await fastify.db.query(
-            //       `UPDATE market SET mtime='${year}', type='${type?.toUpperCase()}', ` +
-            //         `sise='${sise}', updown='${updown}', ecost='${ecost}', erate = '${erate}' where code='${code}';`
-            //     );
-            //   }
-            // } else {
-            //   await fastify.db.query(`UPDATE market SET mtime='${9001}' where code='${code}';`); // 1차 실패
-            // }
+            await insertMystockinfoData(fastify, { ...value, name: item.name, code: item.code });
           }
         }
       } catch (error) {
