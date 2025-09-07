@@ -2,57 +2,74 @@ import { FormControl } from '@mui/material';
 import { styled } from '@styles/stitches.config';
 
 export const StyledSelectForm = styled(FormControl, {
-  '&.select-form': {
-    '&.error': {
-      '.MuiOutlinedInput-notchedOutline': {
-        borderColor: '$red !important',
-        borderWidth: '1px !important',
-      },
-    },
+	'&.select-form': {
+		'&.error': {
+			'.MuiOutlinedInput-notchedOutline': {
+				borderColor: '$red !important',
+				borderWidth: '1px !important',
+			},
+		},
 
-    borderRadius: '$xs',
-    boxSizing: 'border-box',
+		borderRadius: '$xs',
+		boxSizing: 'border-box',
 
-    '&.border': {
-      border: '1px solid $gray800',
-    },
+		'&.disabled': {
+			borderColor: '$gray400 !important',
+		},
 
-    '&.small': {
-      lineHeight: '$formSmall',
-      height: '$formSmall',
-    },
+		'&.readonly': {
+			borderColor: '$gray400 !important',
+			'.MuiSelect-select.Mui-disabled': {
+        color: '$gray900 !important',
+        opacity: 1,
+        '-webkit-text-fill-color': 'unset',
+			},
+		},
 
-    '&.medium': {
-      lineHeight: '$formMedium',
-      height: '$formMedium',
-    },
+		'&.radius': {
+			borderRadius: '$sm',
+		},
 
-    '&.large': {
-      lineHeight: '$formLarge',
-      height: '$formLarge',
-    },
+		'&.border': {
+			border: '1px solid $gray800',
+		},
 
-    '.MuiOutlinedInput-notchedOutline': {
-      borderColor: 'transparent !important',
-      borderWidth: '1px !important',
-    },
+		'&.small': {
+			lineHeight: '$formSmall',
+			height: '$formSmall',
+		},
 
-    '.MuiSelect-root > .MuiSelect-select': {
-      padding: '0 $10',
-      lineHeight: '$formMedium',
-      height: '$formMedium',
-    },
+		'&.medium': {
+			lineHeight: '$formMedium',
+			height: '$formMedium',
+		},
 
-    '.MuiInputBase-sizeSmall > .MuiSelect-select': {
-      padding: '0 $10',
-      lineHeight: '$formSmall',
-      height: '$formSmall',
-    },
+		'&.large': {
+			lineHeight: '$formLarge',
+			height: '$formLarge',
+		},
 
-    '.MuiInputBase-sizeLarge > .MuiSelect-select': {
-      padding: '0 $10',
-      lineHeight: '$formLarge',
-      height: '$formLarge',
-    },
-  },
+		'.MuiOutlinedInput-notchedOutline': {
+			borderColor: 'transparent !important',
+			borderWidth: '1px !important',
+		},
+
+		'.MuiSelect-root > .MuiSelect-select': {
+			padding: '0 $10',
+			lineHeight: '$formMedium',
+			height: '$formMedium',
+		},
+
+		'.MuiInputBase-sizeSmall > .MuiSelect-select': {
+			padding: '0 $10',
+			lineHeight: '$formSmall',
+			height: '$formSmall',
+		},
+
+		'.MuiInputBase-sizeLarge > .MuiSelect-select': {
+			padding: '0 $10',
+			lineHeight: '$formLarge',
+			height: '$formLarge',
+		},
+	},
 });

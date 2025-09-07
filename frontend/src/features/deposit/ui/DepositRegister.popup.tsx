@@ -11,33 +11,34 @@ import { DatePickerForm } from '@entites/DatePickerForm';
 import dayjs from 'dayjs';
 import { toNumber, toNumeric, withCommas } from '@shared/libs/utils.lib';
 import { Schema } from '@shared/hooks/useCommon.hook';
-import { useCreateDeposit as useCreate, useUpdateDeposit as useUpdate } from '../api/deposit.api';
+import { useCreateDeposit as useCreate } from '../api/deposit.api';
 import { DATE_TIME_DB_FORMAT } from '@shared/config/common.constant';
 import { useMemo } from 'react';
 import { Deposit } from '@shared/config/common.enum';
+import { SelectForm } from '@entites/SelectForm';
 
 const StyledForm = styled(Flex, {});
 
 export const DepositRegisterPopup = ({ item, onClose }: { item?: DataType; onClose: (isOk: boolean) => void }) => {
-	const isEditMode = useMemo(() => !!item?.rowid, [item]);
+	const typeOptions = useMemo(() => {
+		return [
+			{ label: ST.BANK_INPUT, value: Deposit.DEPOSIT },
+			{ label: ST.BANK_OUTPUT, value: Deposit.WITHDRAW },
+			{ label: ST.HEND_WRITING, value: Deposit.MANUAL },
+		];
+	}, []);
 
 	const forms = useForm({
-		defaultValues: isEditMode
-			? {
-					// stype: '', // manual
-					sdate: dayjs(item?.sdate).toDate(),
-					price: withCommas(item?.tax ? item?.price + item?.tax : item?.price), // 세전
-					priceAfterTax: withCommas(item?.price), // 세후
-					priceTax: withCommas(item?.tax) || '0', // 세금
-				}
-			: {
-					sdate: new Date(),
-					price: '',
-					priceAfterTax: '',
-					priceTax: '0',
-				},
+		defaultValues: {
+			stype: Deposit.DEPOSIT,
+			sdate: new Date(),
+			price: '',
+			priceTax: '0',
+			priceAfterTax: '0',
+		},
 		resolver: zodResolver(
 			z.object({
+				stype: z.refine((v) => !!v, { message: ST.PLEASE_SELECT }),
 				sdate: Schema.DefaultDate,
 				price: Schema.DefaultNumber,
 				priceAfterTax: Schema.DefaultNumber,
@@ -48,30 +49,23 @@ export const DepositRegisterPopup = ({ item, onClose }: { item?: DataType; onClo
 	});
 
 	const { mutateAsync: createData } = useCreate();
-	const { mutateAsync: updateData } = useUpdate();
 
 	const onClickClose = (isOk: boolean) => {
 		if (isOk) {
 			forms?.handleSubmit(
 				async (fields) => {
-					if (isEditMode) {
-						const params = {
-							rowid: item?.rowid,
-							sdate: dayjs(fields?.sdate).format(DATE_TIME_DB_FORMAT),
-							price: Number(toNumber(fields.priceAfterTax)), // 세후
-							tax: Number(toNumber(fields.priceTax)), // 세금
-						};
+					const price = Number(toNumber(fields.price));
+					const stype = fields?.stype as string;
 
-						await updateData(params);
-					} else {
-						// 추가일때만
-						const params = {
-							rowid: item?.rowid,
-							sdate: dayjs(fields?.sdate).format(DATE_TIME_DB_FORMAT),
-							price: Number(toNumber(fields.price)),
-						};
-						await createData({ ...params, stype: Deposit.MANUAL });
-					}
+					const params = {
+						rowid: item?.rowid,
+						stype: stype,
+						sdate: dayjs(fields?.sdate).format(DATE_TIME_DB_FORMAT),
+						price: stype === Deposit.WITHDRAW && price > 0 ? price * -1 : price,
+					};
+
+					await createData(params);
+
 					onClose?.(isOk);
 				},
 				(error) => {
@@ -93,11 +87,18 @@ export const DepositRegisterPopup = ({ item, onClose }: { item?: DataType; onClo
 	};
 
 	return (
-		<Dialog title={`${ST.DEPOSIT}(${isEditMode ? ST.UPDATE : ST.ADD})`} onClose={onClickClose}>
+		<Dialog title={`${ST.DEPOSIT}(${ST.ADD})`} onClose={onClickClose}>
 			<StyledForm direction={'column'} gap={20}>
+				<SelectForm
+					popperProps={{ className: 'dialog' }}
+					className='radius'
+					size='medium'
+					id='stype'
+					options={typeOptions}
+					formMethod={forms}
+				/>
 				<DatePickerForm
 					id='sdate'
-					readOnly={isEditMode}
 					label={ST.DATE}
 					placeholder={ST.IN_DATE}
 					formMethod={forms}
@@ -111,16 +112,6 @@ export const DepositRegisterPopup = ({ item, onClose }: { item?: DataType; onClo
 					focused
 					onChange={onChange}
 				/>
-				<NumberInputForm
-					id='priceAfterTax'
-					label={ST.PRICE_AFTER_TAX}
-					formMethod={forms}
-					maxLength={12}
-					focused
-					autoFocus
-					onChange={onChange}
-				/>
-				<NumberInputForm id='priceTax' label={ST.PRICE_TAX} readOnly formMethod={forms} maxLength={12} focused />
 			</StyledForm>
 		</Dialog>
 	);

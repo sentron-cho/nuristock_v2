@@ -6,7 +6,7 @@ import { FieldValues } from "../types/data.type.js";
 import { DepositCreateType } from "../types/data.type.js";
 import URL from "../types/url.js";
 import dayjs from "dayjs";
-import { ERROR } from "../types/enum.js";
+import { DEPOSIT_TYPE, ERROR } from "../types/enum.js";
 
 export const selectLatestDeposit = async (fastify: FastifyInstance): Promise<DepositCreateType | undefined> => {
   const value = await fastify.db.query("SELECT rowid, sdate, price FROM deposit ORDER BY rowid DESC limit 1;");
@@ -162,8 +162,29 @@ const depositRoute = (fastify: FastifyInstance) => {
   // 예수금 항목 추가
   fastify.post(URL.DEPOSIT.ROOT, async (req, reply) => {
     try {
-      const { rowid } = req.body as DepositCreateType;
-      await fastify.db.query(`INSERT INTO deposit ${makeInsertSet(req.body as FieldValues)}`);
+      const { rowid, stype, price } = req.body as DepositCreateType;
+
+      // 입금 or 출금
+      if (stype === DEPOSIT_TYPE.DEPOSIT || stype === DEPOSIT_TYPE.WITHDRAW) {
+        const value = await fastify.db.query(`SELECT * FROM deposit ORDER BY rowid DESC limit 1;`);
+        if (value?.[0]?.price) {
+          const calcPrice = Number(value?.[0]?.price) + Number(price);
+          await fastify.db.query(
+            `INSERT INTO deposit ${makeInsertSet({ ...(req.body || {}), price: calcPrice, tax: price } as FieldValues)}`
+          );
+        } else {
+          reply
+            .status(500)
+            .send(
+              withError({ code: ERROR.ER_NOT_UPDATED, sqlMessage: "is not value!" } as SqlError, {
+                tag: URL.DEPOSIT.ROOT,
+              })
+            );
+        }
+      } else {
+        await fastify.db.query(`INSERT INTO deposit ${makeInsertSet(req.body as FieldValues)}`);
+      }
+
       reply.status(200).send({ value: rowid });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.DEPOSIT.ROOT }));
@@ -185,16 +206,42 @@ const depositRoute = (fastify: FastifyInstance) => {
   // 예수금 항목 수정
   fastify.put(URL.DEPOSIT.ROOT, async (req, reply) => {
     try {
-      const { rowid } = req.body as DepositCreateType;
+      const { rowid, stype, price } = req.body as DepositCreateType;
 
       if (!rowid)
         return reply
           .status(500)
           .send(
             withError({ code: ERROR.ER_NOT_ROWID, sqlMessage: "is not rowid!" } as SqlError, { tag: URL.DEPOSIT.ROOT })
-          );
+        );
+      
+      console.log(req.body);
 
-      await fastify.db.query(`UPDATE deposit SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`);
+      // 입금 or 출금
+      if (stype === DEPOSIT_TYPE.DEPOSIT || stype === DEPOSIT_TYPE.WITHDRAW) {
+        // const value = await fastify.db.query(`SELECT * FROM deposit ORDER BY rowid DESC limit 1;`);
+        // if (value?.[0]?.price) {
+        //   const calcPrice = Number(value?.[0]?.price) + Number(price);
+        //   await fastify.db.query(
+        //     `INSERT INTO deposit ${makeInsertSet({ ...(req.body || {}), price: calcPrice, tax: price } as FieldValues)}`
+        //   );
+        // } else {
+        //   reply
+        //     .status(500)
+        //     .send(
+        //       withError({ code: ERROR.ER_NOT_UPDATED, sqlMessage: "is not value!" } as SqlError, {
+        //         tag: URL.DEPOSIT.ROOT,
+        //       })
+        //     );
+        // }
+        // await fastify.db.query(
+        //     `INSERT INTO deposit ${makeInsertSet({ ...(req.body || {}), price: calcPrice, tax: price } as FieldValues)}`
+        //   );
+        await fastify.db.query(`UPDATE deposit SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`);
+      } else {
+        await fastify.db.query(`UPDATE deposit SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`);
+      }
+
       reply.status(200).send({ value: rowid });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.DEPOSIT.ROOT }));

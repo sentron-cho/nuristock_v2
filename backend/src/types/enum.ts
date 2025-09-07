@@ -11,7 +11,9 @@ export enum DEPOSIT_TYPE {
 	MANUAL = 'manual',
 	SELL = 'sell',
 	BUY = 'buy',
-	DIVIDEND = 'dividend',
+	DIVIDEND = 'dividend', // 배당
+	DEPOSIT = 'deposit', // 입금
+	WITHDRAW = 'withdraw', // 출금
 }
 
 export const ERROR = {

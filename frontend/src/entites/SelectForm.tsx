@@ -16,18 +16,18 @@ export type SelectOptionType = OptionType;
 
 export type SelectFormProps<T extends FieldValues = FieldValues> = SelectProps & {
 	name?: keyof T;
-	formMethod?: UseFormReturn<FieldValues>;
+	formMethod?: UseFormReturn<T>;
 };
 
 export const SelectForm = <T extends FieldValues = FieldValues>(props: SelectFormProps<T>) => {
 	const isHookFormMode = 'formMethod' in props;
-	const id = useMemo(() => (props?.name || props.id) as string, [props?.name, props.id]);
+	const id = useMemo(() => (props?.name || props.id) as Path<T>, [props?.name, props.id]);
 
 	// react-hook-form 방식
 	if (isHookFormMode) {
 		return (
 			<Controller
-				name={id as Path<T>}
+				name={id}
 				control={props?.formMethod?.control}
 				// defaultValue={defaultValue}
 				render={({ field, fieldState }) => (
@@ -64,9 +64,13 @@ export interface SelectProps {
 	defaultValue?: string;
 	fullWidth?: boolean;
 	disabled?: boolean;
+	readonly?: boolean;
 	size?: MuiSelectProps['size'];
 	className?: string;
 	border?: boolean;
+	popperProps?: {
+		className?: string;
+	}
 
 	onClearError?: (id: string) => void;
 }
@@ -81,6 +85,7 @@ export const Select: React.FC<SelectProps> = ({
 	placeholder,
 	fullWidth = true,
 	disabled = false,
+	readonly = false,
 	size = 'small',
 	error,
 	message,
@@ -88,6 +93,7 @@ export const Select: React.FC<SelectProps> = ({
 	width,
 	className,
 	border = true,
+	popperProps,
 }) => {
 	const handleChange = (e: SelectChangeEvent<string | number>) => {
 		onChange?.(e?.target?.value?.toString());
@@ -96,10 +102,10 @@ export const Select: React.FC<SelectProps> = ({
 
 	return (
 		<StyledSelectForm
-			className={clsx('select-form', size, { error, border }, className)}
+			className={clsx('select-form', size, { error, border, disabled, readonly }, className)}
 			fullWidth={width ? false : fullWidth}
 			size={size}
-			disabled={disabled}
+			disabled={disabled || readonly}
 			error={error}
 			style={{ width }}
 		>
@@ -116,6 +122,9 @@ export const Select: React.FC<SelectProps> = ({
 						value={value || defaultValue || ''}
 						onChange={handleChange}
 						displayEmpty={!!placeholder}
+						MenuProps={{
+							className: clsx('select-popper', popperProps?.className),
+						}}
 						// defaultValue={defaultValue}
 						// style={{ width }}
 					>

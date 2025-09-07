@@ -11,10 +11,12 @@ import { FieldValues } from 'react-hook-form';
 
 export const GridHeader = ({ onClick }: { onClick?: (eid: string, item?: DepositItemType) => void }) => {
 	const type = {
-		manual: { title: ST.HEND_WRITING, color: 'primary' },
-		dividend: { title: ST.DIVIDEND, color: 'success' },
-		sell: { title: ST.SELL, color: 'warning' },
-		buy: { title: ST.BUY, color: 'error' },
+		dividend: { title: ST.DIVIDEND, color: 'success', variant: 'outlined' },
+		buy: { title: ST.BUY, color: 'primary', variant: 'outlined' }, // 매수
+		sell: { title: ST.SELL, color: 'error', variant: 'outlined' }, // 매도
+		manual: { title: ST.HEND_WRITING, color: 'default', variant: 'filled' },
+		deposit: { title: ST.BANK_INPUT, color: 'error', variant: 'filled' }, // 입금
+		withdraw: { title: ST.BANK_OUTPUT, color: 'primary', variant: 'filled' }, // 출금
 	} as FieldValues;
 
 	return [
@@ -27,7 +29,7 @@ export const GridHeader = ({ onClick }: { onClick?: (eid: string, item?: Deposit
 				const data = type?.[v];
 				return (
 					<Flex justify={'center'}>
-						<Chip size='xsmall' label={data?.title} color={data?.color} />
+						<Chip size='xsmall' label={data?.title} color={data?.color} variant={data?.variant} />
 					</Flex>
 				);
 			},

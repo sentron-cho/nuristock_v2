@@ -10,6 +10,7 @@ import { IconAdd } from '@entites/Icons';
 import { useMemo, useState } from 'react';
 import { PopupType } from '@entites/Dialog';
 import { DepositRegisterPopup as RegisterPopup } from '@features/deposit/ui/DepositRegister.popup';
+import { DepositUpdaterPopup as UpdaterPopup } from '@features/deposit/ui/DepositUpdater.popup';
 import { DepositItemType } from '@features/deposit/api/deposit.dto';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { GridList } from '@entites/GridList';
@@ -92,7 +93,7 @@ const DepositPage = () => {
 
 			{popup?.type === EID.ADD && <RegisterPopup item={popup?.item as DepositItemType} onClose={popup.onClose} />}
 
-			{popup?.type === EID.EDIT && <RegisterPopup item={popup?.item as DepositItemType} onClose={popup.onClose} />}
+			{popup?.type === EID.EDIT && <UpdaterPopup item={popup?.item as DepositItemType} onClose={popup.onClose} />}
 		</>
 	);
 };

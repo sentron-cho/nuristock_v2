@@ -70,6 +70,16 @@ export const globalStyles = globalCss({
 		},
 	},
 
+	'.MuiPopover-root': {
+		zIndex: '$popper !important'
+	},
+
+	'.dialog.select-popper': {
+		'.MuiPaper-root.MuiMenu-paper': {
+			marginLeft: '-5px',
+		}
+	},
+
 	'.ellipsis': {
 		whiteSpace: 'nowrap' /* 줄바꿈 방지 */,
 		overflow: 'hidden' /* 넘치는 내용 숨김 */,

@@ -128,6 +128,10 @@ const KOR = {
 	ACC_ASSET: '누적투자',
 	INVESTMENT_STATUS: '투자 현황',
 	ASSETVSEVALUATION: '투자금 VS 평가금액',
+	BANK_INPUT: '입금',
+	BANK_OUTPUT: '출금',
+	BANK_BEFORE: '잔액(이전)',
+	BANK_AFTER: '잔액(이후)',
 
 	NO_SERVICE: '서비스 준비중',
 
@@ -252,8 +256,8 @@ const KOR = {
 
 	HEND_WRITING: '수기',
 	
-	PRICE_BEFORE_TAX: '금액(세전)',
-	PRICE_AFTER_TAX: '금액(세후)',
+	PRICE_BEFORE_TAX: '잔액(세전)',
+	PRICE_AFTER_TAX: '잔액(세후)',
 	PRICE_TAX: '세금',
 
 	EXIST_DATA_INVEST: '년도 데이터는 등록 되어 있습니다.',

@@ -5,10 +5,12 @@ export enum UseYn {
 
 export enum Deposit {
 	NONE = 'none',
-	MANUAL = 'manual',
-	SELL = 'sell',
-	BUY = 'buy',
-	DIVIDEND = 'dividend',
+	MANUAL = 'manual', // 기타
+	SELL = 'sell', // 매수
+	BUY = 'buy', // 매도
+	DIVIDEND = 'dividend', // 배장
+	DEPOSIT = 'deposit', // 입금
+	WITHDRAW = 'withdraw', // 출금
 }
 
 export enum CRALER_TYPE {
