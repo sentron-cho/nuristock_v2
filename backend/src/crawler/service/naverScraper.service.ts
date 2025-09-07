@@ -147,7 +147,7 @@ export const parseNaverReport = (tableHtml: string, fnguideHtml?: string): Resea
 };
 
 const getNaverSiseByKrx = async (page: Page) => {
-  console.log("[getNaverSiseByKrx]");
+  // console.log("[getNaverSiseByKrx]");
 
   // 2) 시세 정보(KRX)
   await page.waitForSelector("#rate_info_krx", { timeout: TIME_OUT });
@@ -171,7 +171,7 @@ const getNaverSiseByKrx = async (page: Page) => {
 };
 
 const getNaverSiseByNxt = async (page: Page) => {
-  console.log("[getNaverSiseByNxt]");
+  // console.log("[getNaverSiseByNxt]");
 
   // 2) 시세 정보(NXT)
   await page.waitForSelector("#rate_info_nxt", { timeout: TIME_OUT });
@@ -299,7 +299,7 @@ export const getNaverReport = async (code: string): Promise<ResearchInfoValues |
 
     const report = parseNaverReport(html, fnguideHtml);
 
-    console.log("[NAVER_REPORT]", { code, sise, updown, ecost, shares, report });
+    // console.log("[NAVER_REPORT]", { code, sise, updown, ecost, shares, report });
 
     browser?.close();
     return { code, type, sise, updown, ecost, shares, report };

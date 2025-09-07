@@ -173,13 +173,11 @@ const depositRoute = (fastify: FastifyInstance) => {
             `INSERT INTO deposit ${makeInsertSet({ ...(req.body || {}), price: calcPrice, tax: price } as FieldValues)}`
           );
         } else {
-          reply
-            .status(500)
-            .send(
-              withError({ code: ERROR.ER_NOT_UPDATED, sqlMessage: "is not value!" } as SqlError, {
-                tag: URL.DEPOSIT.ROOT,
-              })
-            );
+          reply.status(500).send(
+            withError({ code: ERROR.ER_NOT_UPDATED, sqlMessage: "is not value!" } as SqlError, {
+              tag: URL.DEPOSIT.ROOT,
+            })
+          );
         }
       } else {
         await fastify.db.query(`INSERT INTO deposit ${makeInsertSet(req.body as FieldValues)}`);
@@ -213,35 +211,10 @@ const depositRoute = (fastify: FastifyInstance) => {
           .status(500)
           .send(
             withError({ code: ERROR.ER_NOT_ROWID, sqlMessage: "is not rowid!" } as SqlError, { tag: URL.DEPOSIT.ROOT })
-        );
+          );
+
+      await fastify.db.query(`UPDATE deposit SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`);
       
-      console.log(req.body);
-
-      // 입금 or 출금
-      if (stype === DEPOSIT_TYPE.DEPOSIT || stype === DEPOSIT_TYPE.WITHDRAW) {
-        // const value = await fastify.db.query(`SELECT * FROM deposit ORDER BY rowid DESC limit 1;`);
-        // if (value?.[0]?.price) {
-        //   const calcPrice = Number(value?.[0]?.price) + Number(price);
-        //   await fastify.db.query(
-        //     `INSERT INTO deposit ${makeInsertSet({ ...(req.body || {}), price: calcPrice, tax: price } as FieldValues)}`
-        //   );
-        // } else {
-        //   reply
-        //     .status(500)
-        //     .send(
-        //       withError({ code: ERROR.ER_NOT_UPDATED, sqlMessage: "is not value!" } as SqlError, {
-        //         tag: URL.DEPOSIT.ROOT,
-        //       })
-        //     );
-        // }
-        // await fastify.db.query(
-        //     `INSERT INTO deposit ${makeInsertSet({ ...(req.body || {}), price: calcPrice, tax: price } as FieldValues)}`
-        //   );
-        await fastify.db.query(`UPDATE deposit SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`);
-      } else {
-        await fastify.db.query(`UPDATE deposit SET ${makeUpdateSet(req.body as FieldValues)} WHERE rowid ='${rowid}';`);
-      }
-
       reply.status(200).send({ value: rowid });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.DEPOSIT.ROOT }));

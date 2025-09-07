@@ -1,14 +1,16 @@
-import { ResearchInfoValues } from "./../types/data.type";
+import { ResearchInfoResult, ResearchInfoValues } from "./../types/data.type";
 import { SqlError } from "mariadb/*";
 import { withError } from "../lib/error.js";
-import URL from "../types/url.js";
+import URL, { REST_API } from "../types/url.js";
 import { FastifyInstance } from "fastify";
 import { FieldValues, ResearchDataType, ResearchSearchParams } from "../types/data.type.js";
 import { ERROR } from "../types/enum.js";
 import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
 import { getNaverReport } from "../crawler/service/naverScraper.service.js";
-import { FAILURE, SUCCESS } from "../types/constants.js";
+import { FAILURE, SUCCESS, TIME_OUT_5 } from "../types/constants.js";
 import dayjs from "dayjs";
+import { parseFnGuideByYear } from "../crawler/service/fnguideScraper.service.js";
+import { chromium } from "playwright";
 
 export const insertMystockinfoData = async (fastify: FastifyInstance, value?: ResearchInfoValues) => {
   if (fastify && value?.type && value?.report) {
@@ -188,6 +190,34 @@ const researchRoute = (fastify: FastifyInstance) => {
       const { code } = req.query as ResearchSearchParams;
 
       const value = await getNaverReport(code || "");
+
+      const now = dayjs().tz("Asia/Seoul").add(-1, "year").year();
+      const index = value?.report?.findIndex((a) => a?.year?.toString() === now.toString());
+      const lastItem = index && (value?.report as ResearchInfoResult[])?.[index];
+
+      if (lastItem && (!lastItem?.roe || !Number(lastItem?.roe))) {
+        console.log("[ROE ERROR]", { code });
+        try {
+          const browser = await chromium.launch();
+          const page = await browser.newPage({ userAgent: "Mozilla/5.0", locale: "ko-KR" });
+
+          const rCode = code?.replace("A", "");
+          const url = `${REST_API.FNGUIDE_MAIN}?pGB=1&gicode=A${rCode}&cID=&MenuYn=Y&ReportGB=&NewMenuID=101&stkGb=701`;
+          await page.goto(url, { waitUntil: "networkidle", timeout: TIME_OUT_5 }); // 5초
+
+          // Annual 하이라이트 테이블 대기 후 outerHTML 추출
+          await page.waitForSelector("#highlight_D_A .us_table_ty1.h_fix", { timeout: TIME_OUT_5 });
+          const tableHtml = await page.$eval(
+            "#highlight_D_A .us_table_ty1.h_fix",
+            (el) => (el as HTMLElement).outerHTML
+          );
+
+          const data = parseFnGuideByYear(tableHtml, now);
+          (value?.report as ResearchInfoResult[])[index]["roe"] = data?.roe;
+        } catch (error) {
+          console.error(error);
+        }
+      }
       // console.log("[GET:RESEARCH.SISE]", { code, value });
       return { value: value };
     } catch (error) {
