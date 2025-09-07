@@ -49,7 +49,7 @@ export const startMarketCheck = (fastify: FastifyInstance) => {
 
 const START_TIME = 21; // 오후 9시
 const END_TIME = 7; // 오전 7시
-const INTERVAL_TIME_UPDATE = 3 * 60 * 1000; // 5분마다
+const INTERVAL_TIME_UPDATE = 2 * 60 * 1000; // 5분마다
 
 // 크롤링 실패 종목 업데이트
 export const startMarketUpdate = (fastify: FastifyInstance) => {

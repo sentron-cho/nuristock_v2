@@ -11,46 +11,22 @@ const StyledContents = styled(Flex, {
 	'&.bucket-header': {
 		'.contents': {
 			padding: '0px 10px',
-
 		},
 	},
 });
 
-export const BucketlistHeader = ({
-	params,
-	// value,
-	// options,
-	// data,
-	// onClickNavi,
-}: {
-	params?: BucklistParamType;
-	// value?: string;
-	// options?: OptionType[];
-	// data?: BucklistDataType[];
-	// onClickNavi?: (value?: string) => void;
-}) => {
-	// const onClick = (value?: string) => {
-	// 	onClickNavi?.(value);
-	// };
-
+export const BucketlistHeader = ({ params, onClick }: { params?: BucklistParamType; onClick?: () => void }) => {
 	return (
 		<ContentsHeader stickyTop={44}>
-			{/* 타이틀 및 네비게이션 */}
-			{/* <TitleNavigation withTitleValue height={28} options={options} value={value} onClick={onClick} /> */}
-
 			{/* 입력 정보 */}
-			<StyledContents className={clsx('bucket-header')} flex={1} direction={'column'}>
+			<StyledContents className={clsx('bucket-header')} flex={1} direction={'column'} onClick={onClick}>
 				<Flex className='contents' flex={1} gap={8} justify={'between'}>
 					{params && (
 						<Flex className='bucket-guide' direction={'column'} gap={4} align={'start'}>
 							{/* <Title title='입력' /> */}
 							<Flex justify={'between'}>
-								<Text text={ST.BUCKETLIST.YEARS} />
-								<Text text={`${params.years}년`} />
-							</Flex>
-							<Flex justify={'between'}>
-								<Text text={ST.BUCKETLIST.RATE} />
-								<Text text={`${Math.round(params.rate * 100)}%`} />
+								<Text text={`${ST.BUCKETLIST.START_YEARS}/${ST.BUCKETLIST.YEARS}/${ST.BUCKETLIST.RATE}`} />
+								<Text text={`${params.startYear}년/${params.years}년/${Math.round((params?.rate || 0) * 100)}%`} />
 							</Flex>
 							<Flex justify={'between'}>
 								<Text text={ST.BUCKETLIST.PRINCIPAL} />

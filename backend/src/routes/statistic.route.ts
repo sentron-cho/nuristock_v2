@@ -11,6 +11,8 @@ const statisticRoute = (fastify: FastifyInstance) => {
     try {
       // const { type } = req.query as ResearchSearchParams;
 
+      const year = dayjs().tz("Asia/Seoul").add(-1, "year").year();
+
       const array = [] as StatisticDataType[];
 
       // TODO : 거래소 통계
@@ -40,7 +42,7 @@ const statisticRoute = (fastify: FastifyInstance) => {
       array.push({ cagetory: "marketinfo", title: "marketinfo", code: "marketinfo", count: 0 });
 
       // 종목 정보 수집 성공
-      query = `select count(1) as count, 'marketinfo_success' as code, 'marketinfo' as cagetory from market where mtime = '2024';`;
+      query = `select count(1) as count, 'marketinfo_success' as code, 'marketinfo' as cagetory from market where mtime = '${year}';`;
       value = await fastify.db.query(query);
       array.push(...value);
 
@@ -69,7 +71,25 @@ const statisticRoute = (fastify: FastifyInstance) => {
       value = await fastify.db.query(query);
       array.push(...value);
 
-      // TODO : 종목 정보 데이터 통계
+      // TODO : 종목 재무 데이터 통계(연도별)
+      array.push({ cagetory: "marketdata_by_year", title: "marketdata_by_year", code: "marketdata_by_year", count: 0 });
+
+      // 종목 정보 데이터 전체 수
+      query = `select count(1) as count, 'marketdata_total_by_year' as code, 'marketdata_by_year' as cagetory from marketinfo WHERE cdate='${year}';`;
+      value = await fastify.db.query(query);
+      array.push(...value);
+
+      // 종목 정보 중 수집 성공 건수
+      query = `select count(1) as count, 'marketdata_success_by_year' as code, 'marketdata_by_year' as cagetory from marketinfo WHERE roe REGEXP '^[0-9.-]+$' AND CAST(roe AS DECIMAL(20,6)) IS NOT NULL and cdate='${year}';`;
+      value = await fastify.db.query(query);
+      array.push(...value);
+
+      // 종목 정보 중 수집 오류 건수
+      query = `select count(1) as count, 'marketdata_failure_by_year' as code, 'marketdata_by_year' as cagetory from marketinfo WHERE roe REGEXP '[^0-9.-]' and cdate='${year}';`;
+      value = await fastify.db.query(query);
+      array.push(...value);
+
+      // TODO : 종목 재무 데이터 통계(개별)
       array.push({ cagetory: "marketdata", title: "marketdata", code: "marketdata", count: 0 });
 
       // 종목 정보 데이터 전체 수

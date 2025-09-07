@@ -15,10 +15,10 @@ import { useMemo } from 'react';
 // import { isEqual } from 'lodash';
 
 const StyledForm = styled(Flex, {
-	'.equity': {
+	'.equity, .profit': {
 		position: 'relative',
 
-		'.equity-guide': {
+		'.cost-guide': {
 			position: 'absolute',
 			right: 4,
 			top: -16,
@@ -46,7 +46,7 @@ export const ResearchUpdaterPopup = ({
 		const { sise, shares } = naverData;
 
 		if (!isNaN(Number(item?.roe)) || !isNaN(Number(item?.equity))) {
-			return { sise, stype: naverData?.type, scount: shares, ...report, };
+			return { sise, stype: naverData?.type, scount: shares, ...report };
 		} else {
 			return { ...item, stype: naverData?.type };
 		}
@@ -84,12 +84,20 @@ export const ResearchUpdaterPopup = ({
 	const { mutateAsync: createData } = useCreate();
 
 	const selectedEquity = forms?.watch('equity');
-	const guide = useMemo(() => {
+	const equityGuide = useMemo(() => {
 		if (!selectedEquity) return undefined;
 
 		const item = toShortCost(toNumber(selectedEquity));
 		return `${Number(toNumber(item.value as string)).toFixed(0)} ${item.unit}`;
 	}, [selectedEquity]);
+
+	const selectedProfit = forms?.watch('profit');
+	const profitGuide = useMemo(() => {
+		if (!selectedProfit) return undefined;
+
+		const item = toShortCost(toNumber(selectedProfit));
+		return `${Number(toNumber(item.value as string)).toFixed(0)} ${item.unit}`;
+	}, [selectedProfit]);
 
 	const onClickClose = (isOk: boolean) => {
 		if (isOk) {
@@ -123,7 +131,7 @@ export const ResearchUpdaterPopup = ({
 					} else {
 						await createData({ ...params, code: item?.code, cdate: item?.cdate });
 					}
-					
+
 					onClose?.(isOk);
 				},
 				(error) => {
@@ -148,13 +156,16 @@ export const ResearchUpdaterPopup = ({
 				{/* 자본 */}
 				<Flex className='equity'>
 					<NumberInputForm id='equity' label={ST.EQUITY} formMethod={forms} focused />
-					{guide && <Text size='xs' className='equity-guide' text={guide} />}
+					{equityGuide && <Text size='xs' className='cost-guide' text={equityGuide} />}
 				</Flex>
-				<NumberInputForm id='profit' label={ST.EXCESS_PROFIT} formMethod={forms} focused />
-				<NumberInputForm id='eps' label={ST.BASE_RATE} formMethod={forms} focused />
+				{/* 당기순이익 */}
+				<Flex className='profit'>
+					<NumberInputForm id='profit' label={ST.PROFIT} formMethod={forms} focused />
+					{profitGuide && <Text size='xs' className='cost-guide' text={profitGuide} />}
+				</Flex>
+				<NumberInputForm id='eps' label={ST.EPS} formMethod={forms} focused />
 				<NumberInputForm id='debt' label={ST.DEBT} formMethod={forms} focused />
 				<NumberInputForm id='debtratio' label={ST.DEBT_RATIO} formMethod={forms} focused />
-				{/* <NumberInputForm id='profit' label={ST.PROFIT} formMethod={forms} focused /> */}
 			</StyledForm>
 		</Dialog>
 	);

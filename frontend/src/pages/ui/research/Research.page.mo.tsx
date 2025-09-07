@@ -19,6 +19,7 @@ import { ResearchItemType, ResearchResponse } from '@features/research/api/resea
 import { useResearchHook } from '@features/research/hook/Research.hook';
 import dayjs from 'dayjs';
 import { useNaviByOptions } from '@shared/hooks/useOptionNavi.hook';
+import { Chip } from '@entites/Chip';
 
 const StyledPage = styled(PageContainer, {
 	background: '$white',
@@ -51,7 +52,7 @@ const StyledPage = styled(PageContainer, {
 
 		'.active': {
 			color: '$primaryhover',
-		}
+		},
 	},
 
 	'.contents-layer': {
@@ -87,7 +88,7 @@ export const ResearchPageMo = ({
 	onClick?: (eid?: string, item?: ResearchItemType) => void;
 }) => {
 	const { navigate, location } = useCommonHook();
-	const { naviOptions, list, totalCount, sort, moreMax, setSearch, setSort } = useResearchHook(data, viewType);
+	const { naviOptions, list, totalCount, sort, isErrorList, moreMax, setSearch, setSort, onErrorList } = useResearchHook(data, viewType);
 	const { prev, next } = useNaviByOptions({ options: naviOptions, value: viewType });
 
 	const formMethod = useForm();
@@ -139,7 +140,11 @@ export const ResearchPageMo = ({
 		const key = location.pathname;
 		const scrollEl = document.querySelector('.scroll-view');
 		scrollEl && sessionStorage.setItem(`scroll-position:${key}`, scrollEl.scrollTop.toString());
-	}
+	};
+
+		const onClickError = () => {
+		onErrorList();
+	};
 
 	return (
 		<>
@@ -164,19 +169,51 @@ export const ResearchPageMo = ({
 							{/* <Text text={ST.CLOSE_STOCK}/> */}
 							<SearchFieldForm id='searchtext' placeholder={ST.INPUT_SEARCH} formMethod={formMethod} />
 						</Flex>
-						<Flex className='total' justify={'start'}>
-							{/* <Text size='xs' text={'TOTAL : '} /> */}
-							{totalCount && <Text size='xs' text={`${withCommas(list?.length || 0)} / ${withCommas(totalCount)}`} />}
+						<Flex className='total' justify={'between'}>
+							<Flex fullWidth={false} flex={1}>
+								{totalCount && <Text size='xs' text={`${withCommas(list?.length || 0)} / ${withCommas(totalCount)}`} />}
+							</Flex>
+
+							<Flex fullWidth={false} flex={1} gap={8} justify={'end'}>
+								<Chip
+									size='xsmall'
+									variant={isErrorList ? 'filled' : 'outlined'}
+									label={'ERROR'}
+									color='error'
+									onClick={onClickError}
+								/>
+							</Flex>
 						</Flex>
 					</Flex>
 
 					<Flex className='list-head' direction={'column'} gap={8}>
 						<Flex className='th' height={24} align={'end'}>
-							<Text bold className={clsx('underline', {active: sort === 'name'})} text={ST.RESEARCH_TABLE.NAME} flex={2} textAlign={'start'} onClick={() => setSort('name')} />
+							<Text
+								bold
+								className={clsx('underline', { active: sort === 'name' })}
+								text={ST.RESEARCH_TABLE.NAME}
+								flex={2}
+								textAlign={'start'}
+								onClick={() => setSort('name')}
+							/>
 							<Text text={ST.RESEARCH_TABLE.STIME} flex={2} textAlign={'right'} />
 
-							<Text bold className={clsx('underline', {active: sort === 'roe'})} text={ST.RESEARCH_TABLE.SHARE_RATE} flex={1} textAlign={'right'} onClick={() => setSort('roe')} />
-							<Text bold className={clsx('underline', {active: sort === 'sise'})} text={ST.RESEARCH_TABLE.SISE} flex={2} textAlign={'right'} onClick={() => setSort('sise')} />
+							<Text
+								bold
+								className={clsx('underline', { active: sort === 'roe' })}
+								text={ST.RESEARCH_TABLE.SHARE_RATE}
+								flex={1}
+								textAlign={'right'}
+								onClick={() => setSort('roe')}
+							/>
+							<Text
+								bold
+								className={clsx('underline', { active: sort === 'sise' })}
+								text={ST.RESEARCH_TABLE.SISE}
+								flex={2}
+								textAlign={'right'}
+								onClick={() => setSort('sise')}
+							/>
 							<Text text={ST.RESEARCH_TABLE.SHARE} flex={2} textAlign={'right'} />
 						</Flex>
 						<Flex className='th' height={24} align={'start'}>

@@ -87,10 +87,12 @@ export const parseNaverReport = (tableHtml: string, fnguideHtml?: string): Resea
   const year = dayjs().tz("Asia/Seoul").add(-3, "year").year(); // 3년전까지만
   let arrays: ResearchInfoResult[] = [];
 
+  const EUK = 100000000;
+
   for (let i = 0; i < 4; i++) {
     // 2022, 2023, 2024, 2025는 예상치
     const roe = getRowData("ROE", i); // ROE
-    const profit = getRowData("당기순이익", i); // 당기순이익
+    const profit = Number((Number(getRowData("당기순이익", i)) * EUK).toFixed(0)); // 당기순이익
     // const equity = getRowData("당기순이익", i); // 자본
     const pbr = getRowData("PBR", i); // PBR
     const eps = getRowData("EPS", i); // EPS
@@ -121,7 +123,6 @@ export const parseNaverReport = (tableHtml: string, fnguideHtml?: string): Resea
           const niCell = niRow.find("td.r").eq(index);
           const niVal = parseNumber(niCell.attr("title") ?? niCell.text());
 
-          const EUK = 100000000;
           equity = Number((Number(niVal) * EUK).toFixed(0));
 
           const debtRow = $("tbody tr")
@@ -146,7 +147,7 @@ export const parseNaverReport = (tableHtml: string, fnguideHtml?: string): Resea
 };
 
 const getNaverSiseByKrx = async (page: Page) => {
-  console.log('[getNaverSiseByKrx]');
+  console.log("[getNaverSiseByKrx]");
 
   // 2) 시세 정보(KRX)
   await page.waitForSelector("#rate_info_krx", { timeout: TIME_OUT });
@@ -170,7 +171,7 @@ const getNaverSiseByKrx = async (page: Page) => {
 };
 
 const getNaverSiseByNxt = async (page: Page) => {
-  console.log('[getNaverSiseByNxt]');
+  console.log("[getNaverSiseByNxt]");
 
   // 2) 시세 정보(NXT)
   await page.waitForSelector("#rate_info_nxt", { timeout: TIME_OUT });
@@ -253,19 +254,19 @@ export const getNaverReport = async (code: string): Promise<ResearchInfoValues |
       browser?.close();
       return { code, type, shares };
     }
-    
+
     // 3. 시세 정보(KRX)
     let siseRes: { sise: number; ecost: number; updown: string } = { sise: 0, ecost: 0, updown: "" };
     const hour = dayjs().tz("Asia/Seoul").hour();
 
     try {
-      siseRes = (hour > 9 && hour < 16) ? await getNaverSiseByKrx(page) : await getNaverSiseByNxt(page);
+      siseRes = hour > 9 && hour < 16 ? await getNaverSiseByKrx(page) : await getNaverSiseByNxt(page);
     } catch (error) {
       siseRes = await getNaverSiseByKrx(page);
     }
 
     const { updown, ecost, sise } = siseRes;
-    
+
     // 4. 컨센서스 정보
     await page.waitForSelector(".cop_analysis", { timeout: TIME_OUT_5 });
     const html = await page.$eval(".cop_analysis", (el) => (el as HTMLElement).outerHTML);

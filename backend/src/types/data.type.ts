@@ -259,3 +259,14 @@ export interface StatisticDataType {
   count: number;
   title?: string;
 }
+
+export interface BucketCreateType {
+  rowid?: number; // 고유번호
+  page?: number; // 페이지
+  start?: number; // 시작년도
+  years?: number; // 투자기간
+  rate?: number; // 연이율
+  price?: number; // 투자원금
+  perPrice?: number; // 추가투자액
+}
+

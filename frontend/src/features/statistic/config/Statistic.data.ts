@@ -17,10 +17,15 @@ export const StatisticTitle = {
   marketinfo_error: '수집 오류(0000)',
   marketinfo_rest: '기타(수집전)',
   
-  marketdata: '재무 데이터',
+  marketdata_by_year: '재무 데이터(연도별)',
+  marketdata_total_by_year: '총계',
+  marketdata_success_by_year: '수집 성공(ROE:SUCCESS)',
+  marketdata_failure_by_year: '수집 오류(ROE:FAIL)',
+
+  marketdata: '재무 데이터(개별)',
   marketdata_total: '총계',
-  marketdata_success: '수집 성공(2020~)',
-  marketdata_failure: '수집 오류',
+  marketdata_success: '수집 성공(ROE:SUCCESS)',
+  marketdata_failure: '수집 오류(ROE:FAIL)',
 
   // 시세 수집
   sise: '실시간 시세',

@@ -10,7 +10,8 @@ import { toNumber, withCommas } from '@shared/libs/utils.lib';
 import { Schema } from '@shared/hooks/useCommon.hook';
 import { useMemo } from 'react';
 import { BucklistParamType } from '../api/bucketlist.dto';
-import { StorageDataKey, useStorageHook } from '@shared/hooks/useStorage.hook';
+import { useCreateBucket, useUpdateBucket } from '../api/bucketlist.api';
+import dayjs from 'dayjs';
 
 const StyledForm = styled(Flex, {});
 
@@ -21,8 +22,11 @@ export const BucketlistRegister = ({
 	item?: BucklistParamType;
 	onClose: (isOk: boolean) => void;
 }) => {
-	const isEditMode = useMemo(() => !!item?.years, [item]);
-	const { setLocalStorage } = useStorageHook();
+	const isEditMode = useMemo(() => !!item?.rowid, [item]);
+	// const { setLocalStorage } = useStorageHook();
+
+	const { mutateAsync: createData } = useCreateBucket();
+	const { mutateAsync: updateData } = useUpdateBucket();
 
 	const forms = useForm({
 		defaultValues: isEditMode
@@ -35,9 +39,9 @@ export const BucketlistRegister = ({
 					annual: withCommas(item?.annual), // 매년 추가 투자액 (연말)
 				}
 			: {
-					page: 1,
-					startYear: 2025,
-					years: 10,
+					page: item?.page,
+					startYear: dayjs().year(),
+					years: 5,
 					rate: 15,
 					principal: '',
 					annual: '',
@@ -68,7 +72,14 @@ export const BucketlistRegister = ({
 						annual: Number(toNumber(fields.annual)),
 					};
 
-					setLocalStorage(`${StorageDataKey.BUCKET_PARAMS}-${params?.page}`, params);
+					// setLocalStorage(`${StorageDataKey.BUCKET_PARAMS}-${params?.page}`, params);
+
+					if (isEditMode) {
+						await updateData({ ...params, rowid: item?.rowid });
+					} else {
+						await createData(params);
+					}
+
 					onClose?.(isOk);
 				},
 				(error) => {
@@ -81,10 +92,17 @@ export const BucketlistRegister = ({
 	};
 
 	return (
-		<Dialog title={`${ST.DIVIDEND}(${isEditMode ? ST.UPDATE : ST.ADD})`} onClose={onClickClose}>
+		<Dialog title={`${ST.BUCKETLIST.TITLE}(${isEditMode ? ST.UPDATE : ST.ADD})`} onClose={onClickClose}>
 			<StyledForm direction={'column'} gap={20}>
 				<NumberInputForm id='page' label={ST.BUCKETLIST.PAGE} formMethod={forms} readOnly />
-				<NumberInputForm id='startYear' withComma={false} label={ST.BUCKETLIST.START_YEARS} formMethod={forms} maxLength={4} focused />
+				<NumberInputForm
+					id='startYear'
+					withComma={false}
+					label={ST.BUCKETLIST.START_YEARS}
+					formMethod={forms}
+					maxLength={4}
+					focused
+				/>
 				<NumberInputForm id='years' label={ST.BUCKETLIST.YEARS} formMethod={forms} maxLength={3} focused />
 				<NumberInputForm id='rate' label={ST.BUCKETLIST.RATE} formMethod={forms} maxLength={4} focused />
 				<NumberInputForm id='principal' label={ST.BUCKETLIST.PRINCIPAL} formMethod={forms} maxLength={12} autoFocus />

@@ -183,14 +183,15 @@ const KOR = {
 	INVESTMENT_IN: '누적 투자금',
 
 	BUCKETLIST: {
+		TITLE: '버킷리스트',
 		PRINCIPAL: '원금',
-		RATE: '연이율(%)',
+		RATE: '연이율',
 		START_YEARS: '시작년도',
-		YEARS: '투자기간(년)',
+		YEARS: '투자기간',
 		ANNUAL: '추가투자액',
 		CHART: '자산성장곡선(추가투자 포함 vs 미포함)',
 		TABLE: '연도별 상세',
-		PAGE: '고유번호',
+		PAGE: '버킷리스트 번호',
 		TARGET_TABLE: '연도별 상세(목표달성)',
 	},
 
@@ -232,6 +233,7 @@ const KOR = {
 
 	EMPTY_INVESTMENT: '년도 평가기준 설정',
 	ROE: '자본이익율(ROE)',
+	EPS: '주당순이익(EPS)',
 	STOCKS_COUNT: '발행주식',
 	BASE_YEAR: '기준년도',
 	EQUITY: '자본(지배주주)',
@@ -244,7 +246,7 @@ const KOR = {
 	BASE_08: '평가율(W0.8)',
 	BASE_09: '평가율(W0.9)',
 	BASE_10: '평가율(W1.0)',
-	PROFIT: '자본',
+	PROFIT: '당기순이익',
 	DEBT: '부채',
 	DEBT_RATIO: '부채율',
 

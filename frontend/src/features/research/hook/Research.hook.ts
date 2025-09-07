@@ -19,6 +19,7 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 	const [max, setMax] = useState(perItem);
 	const [search, setSearch] = useState<string>();
 	const [sort, setSort] = useState<string>(getSessionStorage(StorageDataKey.RESEARCH_SORT) || 'roe');
+	const [isErrorList, setErrorList] = useState<boolean>(false);
 
 	useEffect(() => {
 		setMax(perItem);
@@ -109,7 +110,9 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		if (viewType === 'none') {
 			items = sortBy(items, ['name']);
 		} else {
-			if (sort === 'roe') {
+			if (isErrorList) {
+				items = sortBy(items, ['sise']);
+			} else if (sort === 'roe') {
 				items = [...reverse(sortBy(preferred, ['shareRate', 'roe'])), ...rest];
 			} else {
 				items = sortBy(items, [sort === 'name' ? 'name' : 'sise']);
@@ -117,7 +120,9 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		}
 
 		if (search) {
-			items = items?.filter((a) => a.code?.toLocaleLowerCase()?.includes(search) || a.name?.toLocaleLowerCase()?.includes(search));
+			items = items?.filter(
+				(a) => a.code?.toLocaleLowerCase()?.includes(search) || a.name?.toLocaleLowerCase()?.includes(search)
+			);
 		}
 
 		return items?.map((a) => {
@@ -164,10 +169,14 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		setSessionStorage(StorageDataKey.RESEARCH_SORT, value);
 	};
 
+	const onErrorList = () => {
+		setErrorList((prev) => !prev);
+	};
+
 	return {
 		naviOptions,
 		data,
-		list: list?.slice(0, max),
+		list: isErrorList ? list?.filter((a) => Number(a?.sise) <= 0) : list?.slice(0, max),
 		allList: list,
 		totalCount,
 		max,
@@ -178,6 +187,8 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		setShowClose,
 		setSearch,
 		setSort: onSort,
+		isErrorList,
+		onErrorList,
 	};
 };
 
@@ -241,7 +252,7 @@ export const useResearchDetailHook = (initialData?: ResearchResponse, allData?: 
 
 		return reverse(sortBy(parsed, 'cdate'))?.map((a) => {
 			const nRoe = Number(a.roe);
-			const roeType = !isNaN(Number(a.roe)) ? nRoe >= 10 ? EID.PLUS : nRoe < 0 ? EID.MINUS : EID.NONE : '';
+			const roeType = !isNaN(Number(a.roe)) ? (nRoe >= 10 ? EID.PLUS : nRoe < 0 ? EID.MINUS : EID.NONE) : '';
 
 			const nCount = Number(a.scount);
 			const countType = nCount >= 10000000 ? EID.MINUS : nCount < 10000000 ? EID.PLUS : EID.NONE;

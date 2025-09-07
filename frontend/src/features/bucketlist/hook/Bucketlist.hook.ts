@@ -1,37 +1,33 @@
 import { useMemo } from 'react';
 import { Headers, BucketlistSummaryData as SummaryData, TargetHeaders } from '../config/Bucketlist.data';
-import { BucklistDataType, BucklistParamType, BucklistResponse } from '../api/bucketlist.dto';
+import { BucklistCreateType, BucklistDataType, BucklistResponse } from '../api/bucketlist.dto';
 import { ChartLineDataType } from '@entites/ChartLine';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
-import { StorageDataKey, useStorageHook } from '@shared/hooks/useStorage.hook';
 import dayjs from 'dayjs';
 import { valueOfPlusMinus } from '@shared/libs/utils.lib';
 
 export const useBucketlistHook = (initialData?: BucklistResponse, refresh?: number) => {
-	const initialParams: BucklistParamType = {
-		startYear: 2025,
-		page: 1,
-		principal: 40_000_000,
-		rate: 0.15,
-		years: 10,
-		annual: 5_000_000,
-	};
-
 	const data = useMemo(() => initialData as BucklistResponse, [initialData]);
-
-	const { getLocalStorage } = useStorageHook();
 	const { isMobile, param } = useCommonHook();
 
+	const bucketlist = useMemo(() => {
+		return data?.value?.map((a) => ({ ...JSON.parse(a.svalue), rowid: a?.rowid })) as BucklistCreateType[];
+	}, [data]);
+
 	const params = useMemo(() => {
-		const id = param?.id || 1;
-		const item = (getLocalStorage(`${StorageDataKey.BUCKET_PARAMS}-${id}`) || initialParams) as BucklistParamType;
+		const id = Number(param?.id) || 1;
+
+		const item = bucketlist?.find((a) => Number(a.page) === id);
+
 		return { ...item, page: Number(id) };
-	}, [refresh, param]);
+	}, [refresh, param, bucketlist]);
 
 	const list = useMemo(() => {
 		if (!params) return undefined;
 
 		const { principal, rate, years, annual, startYear } = params;
+
+		if (!years || !annual || !principal || !rate) return undefined;
 
 		const rows: BucklistDataType[] = [];
 		let bal = principal;
@@ -84,7 +80,7 @@ export const useBucketlistHook = (initialData?: BucklistResponse, refresh?: numb
 		if (!list || !params) return undefined;
 
 		const final = list[list.length - 1];
-		const totalInvested = params.principal + params.annual * list.length;
+		const totalInvested = (params?.principal || 0) + (params?.annual || 0) * list.length;
 		// const gain = final.end - totalInvested;
 
 		const values: string[] = [
@@ -103,16 +99,24 @@ export const useBucketlistHook = (initialData?: BucklistResponse, refresh?: numb
 		return TargetHeaders({ isMobile });
 	}, [isMobile]);
 
+	const naviOptions = useMemo(
+		() => bucketlist?.map((a) => ({ value: a?.page?.toString() || '', label: a?.startYear?.toString() || '' })),
+		[data]
+	);
+
 	return {
+		page: Number(param?.id) || 1,
 		summaryData,
 		chartData,
 		list,
 		headers,
-		params,
+		selected: bucketlist?.find((a) => Number(a.page) === Number(param?.id)),
+		params: { ...params, rowid: bucketlist?.find((a) => Number(a.page) === Number(param?.id))?.rowid },
 		data,
 		asset: data?.asset,
 		deposit: data?.deposit,
 		targetHeaders,
 		targetList,
+		naviOptions,
 	};
 };
