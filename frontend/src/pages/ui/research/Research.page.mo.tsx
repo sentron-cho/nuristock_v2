@@ -3,7 +3,7 @@ import { PageContainer } from '../../../features/common/ui/PageContainer.ui';
 import { useEffect } from 'react';
 import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
-import { IconAdd } from '@entites/Icons';
+import { IconAddPlaylist } from '@entites/Icons';
 import { ST } from '@shared/config/kor.lang';
 import { EID } from '@shared/config/default.config';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
@@ -88,7 +88,8 @@ export const ResearchPageMo = ({
 	onClick?: (eid?: string, item?: ResearchItemType) => void;
 }) => {
 	const { navigate, location } = useCommonHook();
-	const { naviOptions, list, totalCount, sort, isErrorList, moreMax, setSearch, setSort, onErrorList } = useResearchHook(data, viewType);
+	const { naviOptions, list, totalCount, sort, isErrorList, moreMax, setSearch, setSort, onErrorList } =
+		useResearchHook(data, viewType);
 	const { prev, next } = useNaviByOptions({ options: naviOptions, value: viewType });
 
 	const formMethod = useForm();
@@ -142,7 +143,7 @@ export const ResearchPageMo = ({
 		scrollEl && sessionStorage.setItem(`scroll-position:${key}`, scrollEl.scrollTop.toString());
 	};
 
-		const onClickError = () => {
+	const onClickError = () => {
 		onErrorList();
 	};
 
@@ -153,9 +154,9 @@ export const ResearchPageMo = ({
 					<PageTitleBar
 						title={ST.MARKET}
 						buttonProps={{
+							buttonType: 'icon',
 							eid: EID.ADD,
-							icon: <IconAdd />,
-							title: ST.ADD,
+							icon: <IconAddPlaylist />,
 							onClick: onClick,
 						}}
 					/>

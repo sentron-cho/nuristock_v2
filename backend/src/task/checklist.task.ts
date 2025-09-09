@@ -49,20 +49,20 @@ export const startMarketCheck = (fastify: FastifyInstance) => {
 
 const START_TIME = 21; // 오후 9시
 const END_TIME = 7; // 오전 7시
-const INTERVAL_TIME_UPDATE = 10 * 60 * 1000; // 10분마다
+const INTERVAL_TIME_UPDATE = 30 * 60 * 1000; // 10분마다
 
 // 크롤링 실패 종목 업데이트
 export const startMarketUpdate = (fastify: FastifyInstance) => {
   const start = async () => {
     const now = dayjs().tz("Asia/Seoul");
     const hour = now.hour();
-    const day = now.day();
 
     // ⛔️ 토/일요일 제외
-    const isWeekend = day === 0 || day === 6;
-    const isTime = hour >= START_TIME || hour < END_TIME;
+    // const day = now.day();
+    // const isWeekend = day === 0 || day === 6;
+    // const isTime = hour >= START_TIME || hour < END_TIME;
 
-    if (isWeekend || isTime) {
+    if (hour >= START_TIME || hour < END_TIME) {
       console.log(`[${now.format("YYYY-MM-DD HH:mm:ss")}] 크롤링 실패 종목 업데이트!`);
 
       // 리스트 목록을 순회하며 DB에 존재하면 상장폐지 종목으로 업데이트

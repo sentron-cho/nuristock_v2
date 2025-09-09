@@ -1,6 +1,6 @@
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { BucketlistPageMo } from './Bucketlist.page.mo';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PopupType } from '@entites/Dialog';
 import { EID } from '@shared/config/default.config';
 import { BucketlistRegister as RegisterPopup } from '@features/bucketlist/ui/BucketlistRegister.popup';
@@ -9,14 +9,25 @@ import { useDeleteBucket, useSelectBucket } from '@features/bucketlist/api/bucke
 import { reverse, sortBy } from 'lodash';
 import { ST } from '@shared/config/kor.lang';
 import { URL } from '@shared/config/url.enum';
+import dayjs from 'dayjs';
 
 const BucketlistPage = () => {
-	const { isMobile, showToast, showConfirm, navigate } = useCommonHook();
+	const { isMobile, showToast, showConfirm, navigate, param } = useCommonHook();
 	const [popup, setPopup] = useState<PopupType>();
 	const [refresh, setRefresh] = useState<number>();
 
 	const { data, refetch } = useSelectBucket();
 	const { mutateAsync: deleteData } = useDeleteBucket();
+
+	useEffect(() => {
+		if (!data) return;
+
+		if (!param?.id) {
+			const items = data?.value?.map((a) => JSON.parse(a.svalue)) as BucklistCreateType[];
+			const item = reverse(sortBy(items, ['startYear']))?.find(a => Number(a.startYear) <= dayjs().year());
+			navigate(`${URL.BUCKET}/${Number(item?.page)|| 1}`)
+		}
+	}, [data, param?.id])
 
 	const values = useMemo(() => {
 		const items = data?.value?.map((a) => JSON.parse(a.svalue)) as BucklistCreateType[];

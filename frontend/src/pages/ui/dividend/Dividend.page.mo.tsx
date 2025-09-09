@@ -3,7 +3,7 @@ import { PageContainer } from '../../../features/common/ui/PageContainer.ui';
 import { useMemo } from 'react';
 import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
-import { IconAdd } from '@entites/Icons';
+import { IconAddPlaylist } from '@entites/Icons';
 import { ST } from '@shared/config/kor.lang';
 import { EID } from '@shared/config/default.config';
 import { DividendItemType as DataType, DividendResponse } from '@features/dividend/api/dividend.dto';
@@ -94,9 +94,9 @@ export const DividendPageMo = ({
 					<PageTitleBar
 						title={ST.DIVIDEND_HISTORY}
 						buttonProps={{
+							buttonType: 'icon',
 							eid: EID.ADD,
-							icon: <IconAdd />,
-							title: ST.ADD,
+							icon: <IconAddPlaylist />,
 							onClick: onClick,
 						}}
 					/>

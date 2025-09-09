@@ -4,7 +4,7 @@ import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { EID } from '@shared/config/default.config';
 import { ST } from '@shared/config/kor.lang';
-import { IconAdd } from '@entites/Icons';
+import { IconAddPlaylist } from '@entites/Icons';
 import clsx from 'clsx';
 import { InvestmentItemType, InvestmentResponse } from '@features/investment/api/investment.dto';
 import { InvestmentCard } from '@features/investment/ui/InvestmentCard.ui';
@@ -76,9 +76,9 @@ export const InvestmentPageMo = ({
 				<PageTitleBar
 					title={`${ST.INVEST}`}
 					buttonProps={{
+						buttonType: 'icon',
 						eid: EID.ADD,
-						icon: <IconAdd />,
-						title: ST.ADD,
+						icon: <IconAddPlaylist />,
 						onClick: onClick,
 					}}
 				/>

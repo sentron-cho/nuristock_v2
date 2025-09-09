@@ -1,10 +1,8 @@
 import { styled } from '@styles/stitches.config';
 import { PageContainer } from '../../../features/common/ui/PageContainer.ui';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
-import { IconAdd } from '@entites/Icons';
 import { ST } from '@shared/config/kor.lang';
-import { EID } from '@shared/config/default.config';
-import { StatisticItemType, StatisticResponse } from '@features/statistic/api/statistic.dto';
+import { StatisticResponse } from '@features/statistic/api/statistic.dto';
 import { useMemo } from 'react';
 import Flex from '@entites/Flex';
 import { Title } from '@entites/Title';
@@ -41,28 +39,14 @@ const StyledPage = styled(PageContainer, {
 	},
 });
 
-export const StatisticPageMo = ({
-	data,
-	onClick,
-}: {
-	data?: StatisticResponse;
-	onClick?: (eid?: string, item?: StatisticItemType) => void;
-}) => {
+export const StatisticPageMo = ({ data }: { data?: StatisticResponse }) => {
 	const list = useMemo(() => data?.value || [], [data]);
 
 	return (
 		<>
 			<StyledPage>
 				<Flex direction={'column'}>
-					<PageTitleBar
-						title={ST.MENU.STATISTIC}
-						buttonProps={{
-							eid: EID.ADD,
-							icon: <IconAdd />,
-							title: ST.ADD,
-							onClick: onClick,
-						}}
-					/>
+					<PageTitleBar title={ST.MENU.STATISTIC} />
 					<Flex className='contents-layer' direction={'column'}>
 						{list?.map((item, index) => {
 							const { title } = item;

@@ -12,6 +12,7 @@ import { InvestmentItemType } from '@features/investment/api/investment.dto';
 import { InvestmentDetailPageMo } from './InvestmentDetail.page.mo';
 import { InvestmentUpdaterPopup } from '@features/investment/ui/InvestmentUpdater.popup';
 import dayjs from 'dayjs';
+import { Loading } from '@entites/Loading';
 
 const InvestmentDetailPage = () => {
 	const { isMobile } = useCommonHook();
@@ -19,6 +20,7 @@ const InvestmentDetailPage = () => {
 	const { showToast, showAlert, showConfirm, param } = useCommonHook();
 
 	const [popup, setPopup] = useState<PopupType>();
+	const [loading, setLoading] = useState<boolean>(false);
 
 	const { data, refetch } = useSelectInvestmentDetail(param?.id as string);
 
@@ -66,9 +68,15 @@ const InvestmentDetailPage = () => {
 				content: ST.WANT_TO_REFRESH,
 				onClose: async (isOk) => {
 					if (isOk && item?.code) {
-						await refreshData({ targetYear: item.sdate, code: item.code });
-						refetch();
-						showToast('info', ST.SUCCESS);
+						try {
+							setLoading(true);
+							await refreshData({ targetYear: item.sdate, code: item.code });
+							showToast('info', ST.SUCCESS);
+							refetch();
+							setLoading(false);
+						} catch (error) {
+							setLoading(false);
+						}
 					}
 				},
 			});
@@ -89,6 +97,8 @@ const InvestmentDetailPage = () => {
 			{popup?.type === EID.ADD && (
 				<InvestmentUpdaterPopup type={'add'} item={popup?.item as InvestmentItemType} onClose={popup?.onClose} />
 			)}
+
+			{loading && <Loading />}
 		</>
 	);
 };

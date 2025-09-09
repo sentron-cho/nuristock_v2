@@ -6,7 +6,7 @@ import { ST } from '@shared/config/kor.lang';
 import { useDeleteDeposit, useSelectDeposit } from '@features/deposit/api/deposit.api';
 import { useDepositHook } from '@features/deposit/hook/Deposit.hook';
 import { EID } from '@shared/config/default.config';
-import { IconAdd } from '@entites/Icons';
+import { IconAddPlaylist } from '@entites/Icons';
 import { useMemo, useState } from 'react';
 import { PopupType } from '@entites/Dialog';
 import { DepositRegisterPopup as RegisterPopup } from '@features/deposit/ui/DepositRegister.popup';
@@ -79,9 +79,9 @@ const DepositPage = () => {
 				<PageTitleBar
 					title={ST.ASSET}
 					buttonProps={{
+						buttonType: 'icon',
 						eid: EID.ADD,
-						icon: <IconAdd />,
-						title: ST.ADD,
+						icon: <IconAddPlaylist />,
 						onClick: onClick,
 					}}
 				/>

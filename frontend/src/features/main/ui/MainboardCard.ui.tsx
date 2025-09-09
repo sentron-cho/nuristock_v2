@@ -14,6 +14,10 @@ import { NoData } from '@entites/NoData';
 const StyledFlex = styled(Flex, {
 	'&.layout': {
 		padding: '$10',
+
+		'.latest-buy.asc .row-text': {
+			justifyContent: 'space-between',
+		},
 	},
 });
 
@@ -32,6 +36,8 @@ export const MainboardCard = ({
 }) => {
 	const { target, sonic, latest, sonicBuy } = useMainboardCardHook(data, isMore, sortType);
 
+	const shortTitle = (value: string) => (value?.length > 7 ? `${value?.substring(0, 7)}...` : value);
+
 	return (
 		<StyledFlex className={clsx('layout')} gap={8} direction={'column'}>
 			{/* 평가손익 상위 */}
@@ -42,11 +48,12 @@ export const MainboardCard = ({
 							<RowField
 								key={`tr-${index}`}
 								className={clsx('target', item.type)}
-								title={`${item.name} [${item.sonicRate?.toFixed(1)}%]`}
+								title={`${shortTitle(item.name)} [${item.sonicRate?.toFixed(1)}%]`}
 								text={`${(item as FieldValues).diffDate}`}
 								value={withCommas(item.sonic)}
 								onClick={() => onClick?.(viewType, item)}
 								valueProps={{ bold: true }}
+								titleProps={{ size: 'xs' }}
 								suffix={{ value: ST.WON }}
 							/>
 						);
@@ -62,11 +69,12 @@ export const MainboardCard = ({
 						<RowField
 							key={`st-${index}`}
 							className={clsx('sonic-top', item.type)}
-							title={`${item.name} [${item.sonicRate.toFixed(1)}%]`}
+							title={`${shortTitle(item.name)} [${item.sonicRate.toFixed(1)}%]`}
 							value={withCommas(item.siseSonic)}
 							text={`${withCommas(item.sise)}`}
 							onClick={() => onClick?.(viewType, item)}
 							valueProps={{ bold: true }}
+							titleProps={{ size: 'xs' }}
 							suffix={{ text: ST.WON, value: ST.WON }}
 						/>
 					);
@@ -75,16 +83,22 @@ export const MainboardCard = ({
 			{/* 최근매수 상위 */}
 			{viewType === 'latest' &&
 				latest?.map((item, index) => {
+					const text =
+						sortType === 'asc' ? `${dayjs(item.sdate).format('MM/DD')}` : `${dayjs(item.edate).format(DATE_FORMAT)}`;
+					const textSuffix = sortType === 'asc' ? `[${valueOfDateDiff(item.sdate, dayjs().toDate())}]` : '';
+
 					return (
 						<RowField
 							key={`lb-${index}`}
-							className={clsx('latest-buy', item.type)}
-							title={`${item.name} [${item.sonicRate.toFixed(1)}%]`}
-							text={`${dayjs(sortType === 'asc' ? item.sdate : item.edate).format(DATE_FORMAT)}`}
+							className={clsx('latest-buy', item.type, sortType)}
+							title={`${shortTitle(item.name)} [${item.sonicRate.toFixed(1)}%]`}
+							text={`${text}`}
 							value={withCommas(item.sonic)}
 							onClick={() => onClick?.(viewType, item)}
 							valueProps={{ bold: true }}
-							suffix={{ value: ST.WON }}
+							titleProps={{ size: 'xs' }}
+							// textProps={{ width: '100%', textAlign: 'right' }}
+							suffix={{ value: ST.WON, text: textSuffix }}
 						/>
 					);
 				})}
@@ -96,12 +110,13 @@ export const MainboardCard = ({
 						<RowField
 							key={`ls-${index}`}
 							className={clsx('sonic-buy-top', item.type)}
-							title={`${item.name} [${item.sonicRate.toFixed(1)}%]`}
+							title={`${shortTitle(item.name)} [${item.sonicRate.toFixed(1)}%]`}
 							text={`${valueOfDateDiff(item.sdate, new Date())}`}
 							// text={`${dayjs(item.sdate).format(DATE_FORMAT)} ${valueOfDateDiff(item.sdate, new Date())}`}
 							value={withCommas(item.sonic)}
 							onClick={() => onClick?.(viewType, item)}
 							valueProps={{ bold: true }}
+							titleProps={{ size: 'xs' }}
 							suffix={{ value: ST.WON }}
 						/>
 					);

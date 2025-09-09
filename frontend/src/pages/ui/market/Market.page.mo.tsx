@@ -3,7 +3,7 @@ import { PageContainer } from '../../../features/common/ui/PageContainer.ui';
 import { useEffect, useMemo } from 'react';
 import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
-import { IconAdd, IconDelete } from '@entites/Icons';
+import { IconAddPlaylist, IconDelete } from '@entites/Icons';
 import { ST } from '@shared/config/kor.lang';
 import { EID } from '@shared/config/default.config';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
@@ -120,9 +120,9 @@ export const MarketPageMo = ({
 					<PageTitleBar
 						title={ST.MARKET}
 						buttonProps={{
+							buttonType: 'icon',
 							eid: EID.ADD,
-							icon: <IconAdd />,
-							title: ST.ADD,
+							icon: <IconAddPlaylist />,
 							onClick: onClick,
 						}}
 					/>
@@ -139,7 +139,7 @@ export const MarketPageMo = ({
 							<Flex fullWidth={false} flex={1}>
 								{totalCount && <Text size='xs' text={`${withCommas(list?.length || 0)} / ${withCommas(totalCount)}`} />}
 							</Flex>
-							<Flex fullWidth={false} flex={1} gap={8} justify={'end'}>
+							{count && <Flex fullWidth={false} flex={1} gap={8} justify={'end'}>
 								<Chip size='xsmall' variant={'outlined'} label={`2024(${count?.['2024']})`} color='primary' />
 								<Chip size='xsmall' variant={'outlined'} label={`9999(${count?.['9999']})`} color='error' />
 								<Chip size='xsmall' variant={'outlined'} label={`0000(${count?.['0000']})`} color='default' />
@@ -150,7 +150,7 @@ export const MarketPageMo = ({
 									color='error'
 									onClick={onClickError}
 								/>
-							</Flex>
+							</Flex>}
 						</Flex>
 					</Flex>
 

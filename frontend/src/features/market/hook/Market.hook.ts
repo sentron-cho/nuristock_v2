@@ -15,6 +15,8 @@ export const useMarketHook = (initialData?: MarketSearchResponse, viewType: 'kos
 	const data = useMemo(() => initialData?.value, [initialData]);
 
 	const count = useMemo(() => {
+		if (!data) return undefined;
+		
 		return {
 			'2024': data?.filter((a) => a.mtime?.toString() === '2024')?.length,
 			'9000': data?.filter((a) => a.mtime?.toString() === '9000')?.length,

@@ -6,7 +6,7 @@ import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { EID } from '@shared/config/default.config';
 import { ST } from '@shared/config/kor.lang';
-import { IconAdd } from '@entites/Icons';
+import { IconAddPlaylist } from '@entites/Icons';
 import { useDashboardHook } from '@features/dashboard/hook/Dashboard.hook';
 import clsx from 'clsx';
 import { URL } from '@shared/config/url.enum';
@@ -139,9 +139,9 @@ export const DashboardPageMo = ({
 							width: 100,
 						}}
 						buttonProps={{
+							buttonType: 'icon',
 							eid: EID.ADD,
-							icon: <IconAdd />,
-							title: ST.ADD,
+							icon: <IconAddPlaylist />,
 							onClick: onClick,
 						}}
 					/>
