@@ -92,7 +92,7 @@ export const MainboardPageMo = ({
 							viewType='latest'
 							isMore={isMoreList?.[1]}
 							data={data}
-							onClick={onClick}
+							onClick={(eid, item) => onClick?.(sortList?.[1] === 'asc' ? eid : 'latestSell', item)}
 							sortType={sortList?.[1]}
 						/>
 
