@@ -19,6 +19,7 @@ import { StockSiseUpdaterPopup } from '@features/dashboard/ui/StockSiseUpdater.p
 import { MarketSiseDataType } from '@features/market/api/market.dto';
 import { Loading } from '@entites/Loading';
 import { URL } from '@shared/config/url.enum';
+import { useCreateInvestment } from '@features/investment/api/investment.api';
 
 const ResearchDetailPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosdaq' | 'none' }) => {
 	const { isMobile, navigate } = useCommonHook();
@@ -37,6 +38,7 @@ const ResearchDetailPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosd
 	const { mutateAsync: refreshData } = useRefreshResearch();
 	const { mutateAsync: selectNaver } = useSelectResearchByNaver();
 	const { mutateAsync: deleteData } = useDeleteResearch();
+	const { mutateAsync: createInvestment } = useCreateInvestment();
 
 	useEffect(() => {
 		param?.id && param?.id !== naverData?.code && setNaverData(undefined);
@@ -73,18 +75,35 @@ const ResearchDetailPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosd
 				});
 			}
 		} else if (eid === 'sise') {
-			const naverInfo = await getNaverInfo(item?.code);
-			const updown = naverInfo?.updown || ''; // up, down, steady
-			const ecost = naverInfo?.ecost || 0;
-
-			setPopup({
-				type: eid,
-				item: { ...item, sise: naverInfo?.sise || 0, ecost: updown === 'down' ? ecost * -1 : ecost },
-				onClose: (isOk: boolean) => {
-					setPopup(undefined);
-					isOk && refetch();
+			showConfirm({
+				content: ST.WANT_TO_INVEST,
+				onClose: async (isOk) => {
+					if (isOk && item?.code) {
+						setLoading(true);
+						createInvestment({ code: item.code })
+							?.then(() => {
+								navigate(`${URL.INVEST}/${item.code}`)
+								setLoading(false);
+							})
+							.catch(() => {
+								setLoading(false);
+							});
+					}
 				},
 			});
+
+			// const naverInfo = await getNaverInfo(item?.code);
+			// const updown = naverInfo?.updown || ''; // up, down, steady
+			// const ecost = naverInfo?.ecost || 0;
+
+			// setPopup({
+			// 	type: eid,
+			// 	item: { ...item, sise: naverInfo?.sise || 0, ecost: updown === 'down' ? ecost * -1 : ecost },
+			// 	onClose: (isOk: boolean) => {
+			// 		setPopup(undefined);
+			// 		isOk && refetch();
+			// 	},
+			// });
 		} else if (eid === EID.EDIT) {
 			const values = await getNaverInfo(item?.code);
 
@@ -108,7 +127,7 @@ const ResearchDetailPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosd
 							const nextIndex = allList?.findIndex((a) => a.code === item?.code) || 0;
 							const next = allList?.[nextIndex + 1];
 							next && navigate(`${URL.RESEARCH}/${viewType}/${next?.code}`);
-							
+
 							setPopup(undefined);
 							refetch();
 						}

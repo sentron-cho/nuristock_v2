@@ -64,6 +64,7 @@ export const MainboardPageMo = ({
 					isShow={isShow}
 					data={parsed}
 					value={totalPrice.toString()}
+					deposit={data?.deposit?.price?.toString()}
 					onClick={onClickChart}
 					onClickShow={onClickShow}
 				/>

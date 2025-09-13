@@ -4,10 +4,10 @@ import { ST } from '@shared/config/kor.lang';
 
 export const MainboardSummaryData = (values?: string[]): SummaryDataType[] => {
 	return [
-		{ id: 'deposit', label: ST.DEPOSIT, value: values?.[3] || '' },
 		{ id: 'capital', label: ST.CAPITAL, value: values?.[0] || '' },
 		{ id: 'valuation', label: ST.VALUATION, value: values?.[1] || '' },
 		{ id: 'sonic', label: ST.SONIC, value: values?.[2] || '' },
+		{ id: 'deposit', label: ST.DEPOSIT, value: values?.[3] || '' },
 	];
 };
 

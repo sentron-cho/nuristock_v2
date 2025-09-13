@@ -49,6 +49,7 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 			const profit = !isNaN(Number(a.profit)) ? Number(a.profit) : 0;
 			const isWeek = dayjs(a?.stime).format('YYYYMMDD') >= dayjs().add(-7, 'day').format('YYYYMMDD'); // 일주일
 			const sise = isWeek ? Number(a?.sise) : 0;
+			const psr = Number(profit / scount) / Number(a?.sise);
 
 			if (scount && roe && equity && profit && sise) {
 				const shareValue = calcValuePerShare({
@@ -69,6 +70,7 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 					profit: profit.toString(),
 					shareValue: sise ? shareValue : 0,
 					shareRate,
+					psr,
 				} as ResearchItemType;
 			} else {
 				return {
@@ -80,6 +82,7 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 					sise: '0',
 					shareValue: 0,
 					shareRate: 0,
+					psr,
 				} as ResearchItemType;
 			}
 		});
@@ -114,6 +117,8 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 				items = sortBy(items, ['sise']);
 			} else if (sort === 'roe') {
 				items = [...reverse(sortBy(preferred, ['shareRate', 'roe'])), ...rest];
+			} else if (sort === 'psr') {
+				items = reverse(sortBy(items, ['psr']));
 			} else {
 				items = sortBy(items, [sort === 'name' ? 'name' : 'sise']);
 			}
@@ -144,8 +149,15 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 			const nShareRate = Number(a.shareRate);
 			const shareRateType = valueOfPlusMinus(nShareRate, 1);
 
+			const nPsrValue = Number(nProfit / nCount);
+			const nPsr = Number(nProfit / nCount) / Number(a?.sise);
+			const psrType = nPsr >= 0.5 ? EID.PLUS : EID.MINUS;
+
 			return {
 				...a,
+				psr: nPsr.toFixed(1),
+				psrValue: nPsrValue.toFixed(0),
+				psrType,
 				roeType,
 				countType,
 				profitType,
@@ -156,6 +168,8 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 			};
 		});
 	}, [data, isShowClose, viewType, search, sort]);
+
+	console.log({ list });
 
 	const totalCount = useMemo(() => list?.length, [list]);
 

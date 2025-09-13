@@ -129,12 +129,6 @@ export const ResearchPageMo = ({
 		return () => scrollEl.removeEventListener('scroll', onScroll);
 	}, []);
 
-	// useEffect(() => {
-	// 	const scrollEl = document.querySelector('.scroll-view');
-	// 	if (!scrollEl) return;
-	// 	scrollEl.scrollTo({ top: 0, behavior: 'smooth' });
-	// }, [viewType]);
-
 	const onSelect = (item?: ResearchItemType) => {
 		onClick?.(EID.SELECT, item);
 
@@ -189,6 +183,7 @@ export const ResearchPageMo = ({
 
 					<Flex className='list-head' direction={'column'} gap={8}>
 						<Flex className='th' height={24} align={'end'}>
+							{/* 주식명 */}
 							<Text
 								bold
 								className={clsx('underline', { active: sort === 'name' })}
@@ -197,8 +192,16 @@ export const ResearchPageMo = ({
 								textAlign={'start'}
 								onClick={() => setSort('name')}
 							/>
-							<Text text={ST.RESEARCH_TABLE.STIME} flex={2} textAlign={'right'} />
-
+							{/* 주당순익율 */}
+							<Text
+								bold
+								className={clsx('underline', { active: sort === 'psr' })}
+								text={ST.RESEARCH_TABLE.PSR_RATE}
+								flex={2}
+								textAlign={'right'}
+								onClick={() => setSort('psr')}
+							/>
+							{/* 가치 */}
 							<Text
 								bold
 								className={clsx('underline', { active: sort === 'roe' })}
@@ -207,6 +210,7 @@ export const ResearchPageMo = ({
 								textAlign={'right'}
 								onClick={() => setSort('roe')}
 							/>
+							{/* 시세 */}
 							<Text
 								bold
 								className={clsx('underline', { active: sort === 'sise' })}
@@ -215,14 +219,19 @@ export const ResearchPageMo = ({
 								textAlign={'right'}
 								onClick={() => setSort('sise')}
 							/>
+							{/* 목표값 */}
 							<Text text={ST.RESEARCH_TABLE.SHARE} flex={2} textAlign={'right'} />
 						</Flex>
 						<Flex className='th' height={24} align={'start'}>
-							<Text text={''} flex={2} textAlign={'center'} />
+							{/* 시세일시 */}
+							<Text text={ST.RESEARCH_TABLE.STIME} flex={2} textAlign={'start'} />
+							{/* 발행주식수 */}
 							<Text text={ST.RESEARCH_TABLE.COUNT} flex={2} textAlign={'right'} />
-
+							{/* ROE */}
 							<Text text={ST.RESEARCH_TABLE.ROE} flex={1} textAlign={'right'} />
+							{/* 자본 */}
 							<Text text={ST.RESEARCH_TABLE.ASSET} flex={2} textAlign={'right'} />
+							{/* 당기순이익 */}
 							<Text text={ST.RESEARCH_TABLE.PROFIT} flex={2} textAlign={'right'} />
 						</Flex>
 					</Flex>
@@ -240,20 +249,24 @@ export const ResearchPageMo = ({
 										onClick={() => onSelect(item)}
 									>
 										<Flex height={20}>
+											{/* 주식명 */}
 											<Text
 												size='xs'
+												className='ellipsis'
 												text={`${item.name}`}
 												flex={2}
 												textAlign={'left'}
 												onClick={() => onClick?.(EID.FIND, item)}
 											/>
+											{/* 주당순익율 */}
 											<Text
 												size='xs'
-												text={`${dayjs(item.stime).format('MM/DD HH:mm')}`}
+												className={clsx(item.psrType)}
+												text={`${toCost(item.psrValue).replace(' ', '')}(${item.psr})`}
 												flex={2}
 												textAlign={'right'}
 											/>
-
+											{/* 가치 */}
 											<Text
 												size='xs'
 												className={clsx(item.shareRateType)}
@@ -261,6 +274,7 @@ export const ResearchPageMo = ({
 												flex={1}
 												textAlign={'right'}
 											/>
+											{/* 시세 */}
 											<Text
 												size='xs'
 												className={clsx(item.siseType)}
@@ -268,6 +282,7 @@ export const ResearchPageMo = ({
 												flex={2}
 												textAlign={'right'}
 											/>
+											{/* 목푝값 */}
 											<Text
 												size='xs'
 												className={clsx(item.shareValueType)}
@@ -278,8 +293,9 @@ export const ResearchPageMo = ({
 										</Flex>
 
 										<Flex height={20}>
-											<Text size='xs' text={''} flex={2} textAlign={'left'} onClick={() => onClick?.(EID.FIND, item)} />
-
+											{/* 시세일시 */}
+											<Text size='xs' text={`${dayjs(item.stime).format('MM/DD')}`} flex={2} textAlign={'left'} />
+											{/* 발행주식수 */}
 											<Text
 												size='xs'
 												className={clsx(item.countType)}
@@ -287,8 +303,9 @@ export const ResearchPageMo = ({
 												flex={2}
 												textAlign={'right'}
 											/>
-
+											{/* ROE */}
 											<Text size='xs' className={clsx(item.roeType)} text={item.roe} flex={1} textAlign={'right'} />
+											{/* 자본 */}
 											<Text
 												size='xs'
 												className={clsx(item.enquityType)}
@@ -296,6 +313,7 @@ export const ResearchPageMo = ({
 												flex={2}
 												textAlign={'right'}
 											/>
+											{/* 당기순이익 */}
 											<Text
 												size='xs'
 												className={clsx(item.profitType)}

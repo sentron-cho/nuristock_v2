@@ -1,8 +1,13 @@
-import { InvestmentBookmarkType, InvestmentItemType, InvestmentRefreshType, InvestmentResponse, InvestmentSearchParam } from './investment.dto';
+import {
+	InvestmentBookmarkType,
+	InvestmentItemType,
+	InvestmentRefreshType,
+	InvestmentResponse,
+	InvestmentSearchParam,
+} from './investment.dto';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { API } from '@shared/config/url.enum';
 import api from '@shared/api/axios.config';
-import { MarketItemType } from '@features/market/api/market.dto';
 
 // 목록 조회
 export const useSelectInvestment = () => {
@@ -19,8 +24,8 @@ export const useSelectInvestment = () => {
 export const useCreateInvestment = () => {
 	return useMutation({
 		mutationKey: ['INVESTMENT-C01'],
-		mutationFn: async (data: MarketItemType) => {
-			return await api.post(API.INVEST, data);
+		mutationFn: async ({ code, name }: { code: string; name?: string }) => {
+			return await api.post(API.INVEST, { code, name });
 		},
 	});
 };

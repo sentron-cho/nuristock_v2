@@ -75,13 +75,13 @@ export const ResearchDetailHeader = ({
 			{/* 주당가치 */}
 			<StyledContents className={clsx('investment-header')} flex={1} direction={'column'}>
 				<Flex className='contents' flex={1} gap={8} justify={'between'}>
-					<Flex direction={'column'} gap={4} onClick={onClickSise}>
+					<Flex direction={'column'} gap={4} onClick={onClickSise}  flex={2}>
 						<Text className={'rate'} text={`[${ST.SISE}]`} />
 						<Text bold className={clsx('value')} text={`${toCost(sise)}`} />
 					</Flex>
 
 					{list?.map((item, index) => (
-						<Flex key={`inhe-${index}`} direction={'column'} gap={4}>
+						<Flex key={`inhe-${index}`} direction={'column'} gap={4}  flex={2}>
 							<Text className={'rate'} text={`[W ${data?.[item?.target]}]`} />
 							<Text bold className={clsx('value', item?.updown)} text={`${item?.value}${ST.WON}`} />
 						</Flex>

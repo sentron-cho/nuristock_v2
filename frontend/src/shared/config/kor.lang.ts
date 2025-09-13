@@ -147,6 +147,7 @@ const KOR = {
 	FAILUER: '오류가 발생했습니다.',
 	DUP_ITEM: '이미 등록된 항목입니다.',
 	ONLY_NUMBER: '숫자(0-9)만 입력 가능합니다.',
+	WANT_TO_INVEST: '가치투자 종목에 추가하시겠습니까?',
 	WANT_TO_DELETE: '삭제하시겠습니까?',
 	WANT_TO_REFRESH: '갱신하시겠습니까?',
 	WANT_TO_UPDATE_NAVER: '네이버(추정) 데이터로 업데이트 하시겠습니까?',
@@ -309,6 +310,7 @@ const KOR = {
 		ASSET: '자본',
 		STIME: '시세일시',
 		SHARE_RATE: '가치',
+		PSR_RATE: '주당순익율',
 		SISE: '시세',
 		SHARE: '목표값',
 	}

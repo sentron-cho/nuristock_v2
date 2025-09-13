@@ -44,8 +44,8 @@ export const useMainboardHook = (initialData?: MainboardResponse) => {
 	const totalPrice = useMemo(() => {
 		if (!initialData) return '';
 
-		const { deposit, asset } = initialData;
-		const total = Number(deposit?.price) + Number(asset?.price);
+		const { asset } = initialData;
+		const total = Number(asset?.price);
 		return toSemiCost(total);
 	}, [initialData]);
 
@@ -65,12 +65,13 @@ export const useMainboardHook = (initialData?: MainboardResponse) => {
 					?.reduce((a, b) => a + b, 0) + Number(deposit?.price)
 			: '';
 		const sonic = sell && captal && sell - captal;
+		// const valuation = Number(captal) - Number(sonic) - Number(deposit?.price); // (자본 - 손익 - 예수금)
 
 		const values: string[] = [
-			captal?.toString() || '',
-			sell?.toString() || '',
-			sonic?.toString() || '',
-			deposit?.price?.toString() || '',
+			captal?.toString() || '', // 자본
+			sell?.toString() || '', // 평가금액
+			sonic?.toString() || '', // 손익
+			deposit?.price?.toString() || '', // 예수금
 		];
 		return SummaryData(values);
 	}, [list, data]);
@@ -248,27 +249,19 @@ export const useMainboardCardHook = (
 		const array: DataType[] = [];
 
 		// 매수일로부터 1개월이하 손익율 5% 이상
-		let filtered = items?.filter(
-			(a) => dayjs().add(-1, 'month').isBefore(dayjs(a.sdate)) && a?.sonicRate >= 5
-		);
+		let filtered = items?.filter((a) => dayjs().add(-1, 'month').isBefore(dayjs(a.sdate)) && a?.sonicRate >= 5);
 		filtered && array.push(...filtered);
 
 		// 매수일로부터 3개월이하 손익율 10% 이상
-		filtered = items?.filter(
-			(a) => dayjs().add(-3, 'month').isBefore(dayjs(a.sdate)) && a?.sonicRate >= 10
-		);
+		filtered = items?.filter((a) => dayjs().add(-3, 'month').isBefore(dayjs(a.sdate)) && a?.sonicRate >= 10);
 		filtered && array.push(...filtered);
 
 		// 매수일로부터 6개월이하 손익율 15% 이상
-		filtered = items?.filter(
-			(a) => dayjs().add(-6, 'month').isBefore(dayjs(a.sdate)) && a?.sonicRate >= 15
-		);
+		filtered = items?.filter((a) => dayjs().add(-6, 'month').isBefore(dayjs(a.sdate)) && a?.sonicRate >= 15);
 		filtered && array.push(...filtered);
 
 		// 매수일로부터 1년이하 손익율 20% 이상
-		filtered = items?.filter(
-			(a) => dayjs().add(-12, 'month').isBefore(dayjs(a.sdate)) && a?.sonicRate >= 20
-		);
+		filtered = items?.filter((a) => dayjs().add(-12, 'month').isBefore(dayjs(a.sdate)) && a?.sonicRate >= 20);
 		filtered && array.push(...filtered);
 
 		return array;
