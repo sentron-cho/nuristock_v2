@@ -5,13 +5,7 @@ import clsx from 'clsx';
 import Flex from '@entites/Flex';
 import Typography from '@mui/material/Typography';
 import { IconButton, IconButtonToggle, IconType } from '@entites/IconButton';
-import {
-	IconUp,
-	IconDown,
-	IconLaunch,
-	IconFavoriteFill,
-	IconFavoriteOutline,
-} from '@entites/Icons';
+import { IconUp, IconDown, IconLaunch, IconFavoriteFill, IconFavoriteOutline } from '@entites/Icons';
 import { Button } from '@entites/Button';
 import { useMemo } from 'react';
 import { EID } from '@shared/config/default.config';
@@ -111,14 +105,10 @@ export const DashboardCard = ({
 
 	return (
 		<Card className={clsx('card', { active }, type, { sm: !history })}>
-			<Flex
-				className={clsx('box border', { favorit: data?.position === 'long' })}
-				direction='column'
-				onClick={() => handleClick(EID.SELECT)}
-			>
+			<Flex className={clsx('box border', { favorit: data?.position === 'long' })} direction='column'>
 				{/* head */}
 				<Flex className='head' justify='between'>
-					<Flex gap={4} className='left' flex={1}>
+					<Flex gap={4} className='left' flex={1} onClick={() => handleClick('title')}>
 						<Typography fontWeight={'bold'} className='title'>
 							{data.name}
 						</Typography>
@@ -142,7 +132,13 @@ export const DashboardCard = ({
 				</Flex>
 
 				{/* body */}
-				<Flex gap={8} className={clsx('body', sortType)} direction='column' justify={history ? 'start' : 'center'}>
+				<Flex
+					gap={8}
+					className={clsx('body', sortType)}
+					direction='column'
+					justify={history ? 'start' : 'center'}
+					onClick={() => handleClick(EID.SELECT)}
+				>
 					{history ? (
 						<Flex direction={'column'}>
 							{/* 보유/예상/예상수익 */}

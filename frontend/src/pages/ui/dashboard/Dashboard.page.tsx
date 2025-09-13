@@ -55,6 +55,8 @@ const DashboardPage = ({ viewType = 'trade' }: { viewType?: 'trade' | 'keep' | '
 					}
 				},
 			});
+		} else if (eid === 'title') {
+			navigate(`${URL.INVEST}/${item?.code}`)
 		} else if (eid === 'naver') {
 			window.open(`${URL.REST.NAVER}?code=${item?.code.replace('A', '')}`);
 		} else if (eid === 'daum') {
