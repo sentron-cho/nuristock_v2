@@ -9,7 +9,7 @@ export interface ResearchItemType extends InvestmentItemType {
 	mtime?: string;
 	cdate?: string;
 	scount?: string | number;
-	eps?: string | number;
+	// eps?: string | number;
 	debt?: string | number;
 	debtratio?: string | number;
 	per?: string | number;

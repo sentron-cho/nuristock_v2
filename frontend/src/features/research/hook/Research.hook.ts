@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ResearchItemType, ResearchResponse } from '../api/research.dto';
 import { EID } from '@shared/config/default.config';
 import { reverse, sortBy } from 'lodash';
-import { toNumeric, valueOfPlusMinus, valueOfUpDown, withCommas } from '@shared/libs/utils.lib';
+import { toNumber, toNumeric, valueOfPlusMinus, valueOfUpDown, withCommas } from '@shared/libs/utils.lib';
 import dayjs from 'dayjs';
 import { calcValuePerShare } from '@shared/libs/investment.util';
 import { ST } from '@shared/config/kor.lang';
@@ -11,7 +11,7 @@ import { FieldValues } from 'react-hook-form';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { OptionType } from '@shared/config/common.type';
 
-export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi' | 'kosdaq' | 'none' = 'kospi') => {
+export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi' | 'kosdaq' = 'kospi') => {
 	const { setSessionStorage, getSessionStorage } = useStorageHook();
 
 	const [isShowClose, setShowClose] = useState(false);
@@ -30,7 +30,6 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		() => [
 			{ label: ST.KOSPI, value: 'kospi' },
 			{ label: ST.KOSDAQ, value: 'kosdaq' },
-			{ label: ST.ERROR_SEARCH, value: 'none' },
 		],
 		[]
 	);
@@ -101,7 +100,11 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 				const shareRate = sise ? Number((shareValue / Number(sise)).toFixed(2)) : 0;
 
 				const valuation =
-					getShareValue(shareValue) + getPsrVaue(psr) + getCount(scount) + getEquity(equity) + (Number(a?.prevProfit) < 0 ? -5 : 0);
+					getShareValue(shareValue) +
+					getPsrVaue(psr) +
+					getCount(scount) +
+					getEquity(equity) +
+					(Number(a?.prevProfit) < 0 ? -5 : 0);
 
 				return {
 					...a,
@@ -134,10 +137,6 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		const filtered = parsed?.filter((a) => {
 			if (viewType === 'kospi') return a?.type?.toUpperCase() === 'KOSPI';
 			else if (viewType === 'kosdaq') return a?.type?.toUpperCase() === 'KOSDAQ';
-			else {
-				const isNone = !(a?.type?.toUpperCase() === 'KOSPI' || a?.type?.toUpperCase() === 'KOSDAQ');
-				if (isNone || !a.roe || !a.sise || !a.equity) return true;
-			}
 		});
 		let items = filtered;
 
@@ -153,20 +152,17 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		const rest = items?.filter((a) => Number(a.roe) <= 0 || Number(a.equity) <= 0 || Number(a.profit) <= 0);
 
 		// 정렬
-		if (viewType === 'none') {
-			items = sortBy(items, ['name']);
+
+		if (isErrorList) {
+			items = sortBy(items, ['sise']);
+		} else if (sort === 'roe') {
+			items = [...reverse(sortBy(preferred, ['shareRate', 'roe'])), ...rest];
+		} else if (sort === 'psr') {
+			items = reverse(sortBy(items, ['psr']));
+		} else if (sort === 'valuation') {
+			items = reverse(sortBy(items, ['valuation']));
 		} else {
-			if (isErrorList) {
-				items = sortBy(items, ['sise']);
-			} else if (sort === 'roe') {
-				items = [...reverse(sortBy(preferred, ['shareRate', 'roe'])), ...rest];
-			} else if (sort === 'psr') {
-				items = reverse(sortBy(items, ['psr']));
-			} else if (sort === 'valuation') {
-				items = reverse(sortBy(items, ['valuation']));
-			} else {
-				items = sortBy(items, [sort === 'name' ? 'name' : 'sise']);
-			}
+			items = sortBy(items, [sort === 'name' ? 'name' : 'sise']);
 		}
 
 		if (search) {
@@ -353,6 +349,7 @@ export const useResearchDetailHook = (initialData?: ResearchResponse, allData?: 
 				shareValueType,
 				shareRateType,
 				siseType: a?.updown === 'up' ? 'plus' : a?.updown === 'down' ? 'minus' : '',
+				eps: toNumber(a?.eps),
 			};
 		});
 	}, [data]);

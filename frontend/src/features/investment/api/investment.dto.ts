@@ -1,3 +1,4 @@
+import { ResearchItemType } from '@features/research/api/research.dto';
 import { DashboardItemType } from './../../dashboard/api/dashboard.dto';
 import { MarketSiseDataType } from "@features/market/api/market.dto";
 
@@ -20,6 +21,7 @@ export interface InvestmentItemType {
 	ctime?: string;
 	sise?: string;
 	bookmark?: boolean;
+	eps?: string;
 
 	prevProfit?: string;
 	shareValue?: number; // 자본가치값
@@ -33,6 +35,7 @@ export interface InvestmentResponse {
 	value?: InvestmentItemType[];
 	sise?: MarketSiseDataType[];
 	dashboard?: DashboardItemType[];
+	marketinfo?: ResearchItemType[]
 }
 
 export interface InvestmentSearchParam {

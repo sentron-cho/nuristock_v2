@@ -21,7 +21,7 @@ import { Loading } from '@entites/Loading';
 import { URL } from '@shared/config/url.enum';
 import { useCreateInvestment } from '@features/investment/api/investment.api';
 
-const ResearchDetailPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosdaq' | 'none' }) => {
+const ResearchDetailPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosdaq' }) => {
 	const { isMobile, navigate } = useCommonHook();
 
 	const { showToast, showAlert, showConfirm, param } = useCommonHook();

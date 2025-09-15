@@ -83,7 +83,7 @@ export const ResearchPageMo = ({
 	data,
 	onClick,
 }: {
-	viewType: 'kospi' | 'kosdaq' | 'none';
+	viewType: 'kospi' | 'kosdaq';
 	data?: ResearchResponse;
 	onClick?: (eid?: string, item?: ResearchItemType) => void;
 }) => {

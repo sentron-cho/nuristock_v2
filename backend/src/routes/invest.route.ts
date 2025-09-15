@@ -73,16 +73,25 @@ const investRoute = (fastify: FastifyInstance) => {
   // 가치투자 종목 목록 조회
   fastify.get(URL.INVEST.ROOT, async (_req, reply) => {
     try {
-      const value = await fastify.db.query(
+      let value = await fastify.db.query(
         `SELECT k.*, m.name as name FROM investment k JOIN market m ON k.code = m.code;`
       );
 
+      
       const codes = value.map((a) => `'${a.code}'`).join(","); // ✅ 문자열로 변환
       const sise =
-        codes?.length > 0 ? await fastify.db.query(`SELECT * FROM market WHERE code in (${codes})`) : undefined;
+      codes?.length > 0 ? await fastify.db.query(`SELECT * FROM market WHERE code in (${codes})`) : undefined;
       const dashboard = await fastify.db.query("SELECT * FROM dashboard;");
 
-      return { value, sise, dashboard };
+      const marketinfo = codes?.length > 0 ? await fastify.db.query(`select * from marketinfo WHERE code in (${codes})`) : undefined
+      // if (marketinfo && marketinfo?.length > 0) {
+      //   value?.map(item => {
+      //     const v = marketinfo?.find(a => item.code === a.code && a.cdate === item.sdate);
+
+      //     return {...item, profit: v?.profit, eps: v?.EPS}
+      //   })
+      // }
+      return { value, sise, dashboard, marketinfo };
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.INVEST.ROOT }));
     }

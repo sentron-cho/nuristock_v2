@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { InvestmentItemType } from '../api/investment.dto';
 import { styled } from '@styles/stitches.config';
 import { useInvestmentPerValueHook } from '../hook/Investment.hook';
-import { toShortCost, valueOfPlusMinus, withCommas } from '@shared/libs/utils.lib';
+import { toCost, toShortCost, valueOfPlusMinus, withCommas } from '@shared/libs/utils.lib';
 import { useMemo } from 'react';
 import { calcExcessProfit, calcShareholderValue } from '@shared/libs/investment.util';
 
@@ -65,7 +65,7 @@ export const InvestmentInfoField = ({ data }: { data?: InvestmentItemType }) => 
 
 			<Flex className='list-box' direction={'column'} gap={4}>
 				<Flex className='list-th' height={20}>
-					{/* <Text size='xs' text={'ROE'} flex={1} align='center' /> */}
+					<Text size='xs' text={'EPS'} flex={1} align='center' />
 					<Text size='xs' text={ST.EXCESS_PROFIT} flex={1} align='center' />
 					<Text size='xs' text={ST.SHARE_VALUE} flex={1} align='center' />
 					<Text size='xs' text={ST.CAPITAL} flex={1} align='center' />
@@ -73,15 +73,15 @@ export const InvestmentInfoField = ({ data }: { data?: InvestmentItemType }) => 
 				</Flex>
 
 				<Flex className='list-row'>
-					{/* ROE */}
-					{/* <Text
+					{/* EPS */}
+					<Text
 						bold
 						size='xs'
-						className={clsx(valueOfPlusMinus(Number(data?.roe)))}
-						text={data?.roe}
+						className={clsx(valueOfPlusMinus(Number(data?.eps)))}
+						text={toCost(Number(data?.eps).toFixed(0))}
 						flex={1}
 						align='center'
-					/> */}
+					/>
 					{/* 초과이익 */}
 					<Text
 						bold

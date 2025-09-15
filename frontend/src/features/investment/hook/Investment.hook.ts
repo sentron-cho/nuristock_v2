@@ -16,11 +16,16 @@ export const useInvestmentHook = (initialData?: InvestmentResponse) => {
 		if (!initialData) return undefined;
 
 		const sise = initialData?.sise;
+		const marketinfo = initialData?.marketinfo;
+
 		const items = initialData?.value?.map((item) => {
 			const siseValue = sise?.find((a) => a?.code === item.code)?.sise;
 			const profit = calcExcessProfit({ ...item });
 			const shareValue = calcValuePerShare({ ...item, rateKey: 'rate2' }); // 0.8 기준
-			const shareRate = Number( (shareValue / Number(siseValue)).toFixed(2));
+			const shareRate = Number((shareValue / Number(siseValue)).toFixed(2));
+
+			const market = marketinfo?.find(a => a.code === item.code && a.cdate === item.sdate);
+			const eps = market?.profit ? (Number(market?.profit) / Number(item.count)).toFixed(0) : '';
 
 			return {
 				...item,
@@ -28,6 +33,7 @@ export const useInvestmentHook = (initialData?: InvestmentResponse) => {
 				shareValue,
 				shareRate,
 				sise: siseValue,
+				eps: eps,
 			};
 		}) as InvestmentItemType[];
 

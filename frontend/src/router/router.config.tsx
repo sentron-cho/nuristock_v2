@@ -136,11 +136,11 @@ const router = createBrowserRouter([
 					{ index: true, element: <ResearchPage viewType='kospi' /> },
 					{ path: 'kospi', element: <ResearchPage viewType='kospi' /> },
 					{ path: 'kosdaq', element: <ResearchPage viewType='kosdaq' /> },
-					{ path: 'none', element: <ResearchPage viewType='none' /> },
+					// { path: 'none', element: <ResearchPage viewType='none' /> },
 
 					{ path: 'kospi/:id', element: <ResearchDetailPage viewType='kospi' /> },
 					{ path: 'kosdaq/:id', element: <ResearchDetailPage viewType='kosdaq' /> },
-					{ path: 'none/:id', element: <ResearchDetailPage viewType='none' /> },
+					// { path: 'none/:id', element: <ResearchDetailPage viewType='none' /> },
 				],
 			},
 			{

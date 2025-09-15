@@ -95,7 +95,7 @@ const researchRoute = (fastify: FastifyInstance) => {
       const list = await fastify.db.query(query);
       const arrays = await fastify.db.query(`select code, profit from marketinfo where cdate = '${prevYear}'`);
 
-      return { value: list?.map(a => ({...a, prevProfit: arrays?.find(b => a.code === b.code)?.profit})) as ResearchDataType[], arrays };
+      return { value: list?.map(a => ({...a, prevProfit: arrays?.find(b => a.code === b.code)?.profit})) as ResearchDataType[] };
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.RESEARCH.ROOT }));
     }

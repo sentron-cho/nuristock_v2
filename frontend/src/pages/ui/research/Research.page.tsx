@@ -5,7 +5,7 @@ import { ResearchItemType } from '@features/research/api/research.dto';
 import { EID } from '@shared/config/default.config';
 import { URL } from '@shared/config/url.enum';
 
-const ResearchPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosdaq' | 'none' }) => {
+const ResearchPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosdaq' }) => {
 	const { isMobile, navigate } = useCommonHook();
 	const { data } = useSelectResearch();
 
