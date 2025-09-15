@@ -47,7 +47,7 @@ export const startMarketCheck = (fastify: FastifyInstance) => {
   setInterval(start, INTERVAL_TIME);
 };
 
-const START_TIME = 21; // 오후 9시
+const START_TIME = 20; // 오후 9시
 const END_TIME = 7; // 오전 7시
 const INTERVAL_TIME_UPDATE = 30 * 60 * 1000; // 10분마다
 

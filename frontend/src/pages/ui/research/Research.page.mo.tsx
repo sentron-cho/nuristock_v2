@@ -88,8 +88,19 @@ export const ResearchPageMo = ({
 	onClick?: (eid?: string, item?: ResearchItemType) => void;
 }) => {
 	const { navigate, location } = useCommonHook();
-	const { naviOptions, list, totalCount, sort, isErrorList, moreMax, setSearch, setSort, onErrorList } =
-		useResearchHook(data, viewType);
+	const {
+		naviOptions,
+		list,
+		totalCount,
+		sort,
+		isErrorList,
+		isWarningList,
+		moreMax,
+		setSearch,
+		setSort,
+		onErrorList,
+		onWarningList,
+	} = useResearchHook(data, viewType);
 	const { prev, next } = useNaviByOptions({ options: naviOptions, value: viewType });
 
 	const formMethod = useForm();
@@ -137,10 +148,6 @@ export const ResearchPageMo = ({
 		scrollEl && sessionStorage.setItem(`scroll-position:${key}`, scrollEl.scrollTop.toString());
 	};
 
-	const onClickError = () => {
-		onErrorList();
-	};
-
 	return (
 		<>
 			<StyledPage>
@@ -172,44 +179,45 @@ export const ResearchPageMo = ({
 							<Flex fullWidth={false} flex={1} gap={8} justify={'end'}>
 								<Chip
 									size='xsmall'
+									variant={isWarningList ? 'filled' : 'outlined'}
+									label={'WARNING'}
+									color='primary'
+									onClick={onWarningList}
+								/>
+								<Chip
+									size='xsmall'
 									variant={isErrorList ? 'filled' : 'outlined'}
 									label={'ERROR'}
 									color='error'
-									onClick={onClickError}
+									onClick={onErrorList}
 								/>
 							</Flex>
 						</Flex>
 					</Flex>
 
 					<Flex className='list-head' direction={'column'} gap={8}>
-						<Flex className='th' height={24} align={'end'}>
+						<Flex className='th' height={24} align={'end'} justify={'between'}>
 							{/* 주식명 */}
 							<Text
 								bold
 								className={clsx('underline', { active: sort === 'name' })}
 								text={ST.RESEARCH_TABLE.NAME}
-								flex={2}
+								flex={1}
 								textAlign={'start'}
 								onClick={() => setSort('name')}
 							/>
-							{/* 주당순익율 */}
+							{/* 가중치 */}
 							<Text
 								bold
-								className={clsx('underline', { active: sort === 'psr' })}
-								text={ST.RESEARCH_TABLE.PSR_RATE}
-								flex={2}
-								textAlign={'right'}
-								onClick={() => setSort('psr')}
-							/>
-							{/* 가치 */}
-							<Text
-								bold
-								className={clsx('underline', { active: sort === 'roe' })}
-								text={ST.RESEARCH_TABLE.SHARE_RATE}
+								className={clsx('underline', { active: sort === 'valuation' })}
+								text={ST.RESEARCH_TABLE.VALUATION}
 								flex={1}
-								textAlign={'right'}
-								onClick={() => setSort('roe')}
+								textAlign={'end'}
+								onClick={() => setSort('valuation')}
 							/>
+						</Flex>
+
+						<Flex className='th' height={18} align={'center'}>
 							{/* 시세 */}
 							<Text
 								bold
@@ -221,10 +229,31 @@ export const ResearchPageMo = ({
 							/>
 							{/* 목표값 */}
 							<Text text={ST.RESEARCH_TABLE.SHARE} flex={2} textAlign={'right'} />
+							{/* 가치 */}
+							<Text
+								bold
+								className={clsx('underline', { active: sort === 'roe' })}
+								text={ST.RESEARCH_TABLE.SHARE_RATE}
+								flex={1}
+								textAlign={'right'}
+								onClick={() => setSort('roe')}
+							/>
+							{/* 주당순익 */}
+							<Text text={ST.RESEARCH_TABLE.PSR} flex={2} textAlign={'right'} />
+							{/* 주당순익율 */}
+							<Text
+								bold
+								className={clsx('underline', { active: sort === 'psr' })}
+								text={ST.RESEARCH_TABLE.PSR_RATE}
+								flex={2}
+								textAlign={'right'}
+								onClick={() => setSort('psr')}
+							/>
 						</Flex>
+
 						<Flex className='th' height={24} align={'start'}>
 							{/* 시세일시 */}
-							<Text text={ST.RESEARCH_TABLE.STIME} flex={2} textAlign={'start'} />
+							<Text text={ST.RESEARCH_TABLE.STIME} flex={2} textAlign={'right'} />
 							{/* 발행주식수 */}
 							<Text text={ST.RESEARCH_TABLE.COUNT} flex={2} textAlign={'right'} />
 							{/* ROE */}
@@ -245,35 +274,37 @@ export const ResearchPageMo = ({
 										key={item?.code}
 										className='row'
 										direction={'column'}
-										height={40}
+										height={60}
 										onClick={() => onSelect(item)}
 									>
-										<Flex height={20}>
+										{/* 1 Line */}
+										<Flex height={20} justify={'between'}>
 											{/* 주식명 */}
 											<Text
-												size='xs'
-												className='ellipsis'
+												bold
 												text={`${item.name}`}
-												flex={2}
+												flex={1}
 												textAlign={'left'}
-												onClick={() => onClick?.(EID.FIND, item)}
+												onClick={(e) => {
+													e.stopPropagation();
+													onClick?.(EID.FIND, item);
+												}}
 											/>
-											{/* 주당순익율 */}
+											{/* 주식가중치 */}
 											<Text
-												size='xs'
-												className={clsx(item.psrType)}
-												text={`${toCost(item.psrValue).replace(' ', '')}(${item.psr})`}
-												flex={2}
-												textAlign={'right'}
-											/>
-											{/* 가치 */}
-											<Text
-												size='xs'
-												className={clsx(item.shareRateType)}
-												text={item.sise ? item.shareRate : '-'}
+												className={clsx(item.valuationType)}
+												text={`${item.valuation}`}
 												flex={1}
 												textAlign={'right'}
+												onClick={(e) => {
+													e.stopPropagation();
+													onClick?.(EID.FIND, item);
+												}}
 											/>
+										</Flex>
+
+										{/* 2 Line */}
+										<Flex height={20}>
 											{/* 시세 */}
 											<Text
 												size='xs'
@@ -290,11 +321,36 @@ export const ResearchPageMo = ({
 												flex={2}
 												textAlign={'right'}
 											/>
+											{/* 가치 */}
+											<Text
+												size='xs'
+												className={clsx(item.shareRateType)}
+												text={item.sise ? item.shareRate : '-'}
+												flex={1}
+												textAlign={'right'}
+											/>
+											{/* 주당순익율 */}
+											<Text
+												size='xs'
+												className={clsx(item.psrType)}
+												text={`${toCost(item.psrValue).replace(' ', '')}`}
+												flex={2}
+												textAlign={'right'}
+											/>
+											{/* 주당순익율 */}
+											<Text
+												size='xs'
+												className={clsx(item.psrType)}
+												text={`${item.psr}`}
+												flex={2}
+												textAlign={'right'}
+											/>
 										</Flex>
 
+										{/* 3 Line */}
 										<Flex height={20}>
 											{/* 시세일시 */}
-											<Text size='xs' text={`${dayjs(item.stime).format('MM/DD')}`} flex={2} textAlign={'left'} />
+											<Text size='xs' text={`${dayjs(item.stime).format('MM/DD')}`} flex={2} textAlign={'right'} />
 											{/* 발행주식수 */}
 											<Text
 												size='xs'

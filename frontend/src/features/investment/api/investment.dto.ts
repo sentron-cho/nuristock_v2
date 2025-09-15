@@ -21,8 +21,12 @@ export interface InvestmentItemType {
 	sise?: string;
 	bookmark?: boolean;
 
-	shareValue?: number;
-	shareRate?: number;
+	prevProfit?: string;
+	shareValue?: number; // 자본가치값
+	shareRate?: number; // 자본가치율
+	psr?: number; // 주당가치
+	psrRate?: number; // 주당가치율
+	valuation?: number; // 가중치
 }
 
 export interface InvestmentResponse {

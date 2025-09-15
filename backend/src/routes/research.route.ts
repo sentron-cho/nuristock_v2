@@ -84,14 +84,18 @@ const researchRoute = (fastify: FastifyInstance) => {
   fastify.get(URL.RESEARCH.ROOT, async (req, reply) => {
     try {
       const { year } = req.query as ResearchSearchParams;
+
       let query =
         `select m.code, m.name, m.type, m.sise, m.erate, m.ecost, m.state, m.stime, m.mtime,  m.updown, ` +
         `k.cdate, k.scount, k.eps, k.roe, k.debt, k.debtratio, k.profit, k.equity, k.per, ` +
-        `k.dividend, k.cprice, k.fprice, k.tprice from market m JOIN marketinfo k ` +
-        `where m.code = k.code and k.cdate = '${year}';`;
+        `k.dividend, k.cprice, k.fprice, k.tprice, 0 as prevProfit from market m JOIN marketinfo k ` +
+        `ON m.code = k.code and k.cdate = '${year}';`;
 
+      const prevYear = dayjs(year).add(-1).year();
       const list = await fastify.db.query(query);
-      return { value: list as ResearchDataType[] };
+      const arrays = await fastify.db.query(`select code, profit from marketinfo where cdate = '${prevYear}'`);
+
+      return { value: list?.map(a => ({...a, prevProfit: arrays?.find(b => a.code === b.code)?.profit})) as ResearchDataType[], arrays };
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.RESEARCH.ROOT }));
     }

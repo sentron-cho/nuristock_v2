@@ -82,7 +82,7 @@ const ResearchDetailPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosd
 						setLoading(true);
 						createInvestment({ code: item.code })
 							?.then(() => {
-								navigate(`${URL.INVEST}/${item.code}`)
+								navigate(`${URL.INVEST}/${item.code}`);
 								setLoading(false);
 							})
 							.catch(() => {
@@ -105,7 +105,30 @@ const ResearchDetailPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosd
 			// 	},
 			// });
 		} else if (eid === EID.EDIT) {
-			const values = await getNaverInfo(item?.code);
+			console.log({ item });
+
+			if (!item?.sise || !item?.roe || !item?.type) {
+				const values = await getNaverInfo(item?.code);
+
+				if (values?.type === 'konex') {
+					showConfirm({
+						content: ST.WANT_TO_DELETE,
+						onClose: async (isOk) => {
+							if (isOk && item?.code) {
+								await deleteData({ code: item?.code });
+								showToast('info', ST.DELETEED);
+
+								const nextIndex = allList?.findIndex((a) => a.code === item?.code) || 0;
+								const next = allList?.[nextIndex + 1];
+								next && navigate(`${URL.RESEARCH}/${viewType}/${next?.code}`);
+
+								setPopup(undefined);
+								refetch();
+							}
+						},
+					});
+				}
+			}
 
 			setPopup({
 				type: eid,
@@ -115,25 +138,6 @@ const ResearchDetailPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosd
 					isOk && refetch();
 				},
 			});
-
-			if (values?.type === 'konex') {
-				showConfirm({
-					content: ST.WANT_TO_DELETE,
-					onClose: async (isOk) => {
-						if (isOk && item?.code) {
-							await deleteData({ code: item?.code });
-							showToast('info', ST.DELETEED);
-
-							const nextIndex = allList?.findIndex((a) => a.code === item?.code) || 0;
-							const next = allList?.[nextIndex + 1];
-							next && navigate(`${URL.RESEARCH}/${viewType}/${next?.code}`);
-
-							setPopup(undefined);
-							refetch();
-						}
-					},
-				});
-			}
 		} else if (eid === 'refresh') {
 			showConfirm({
 				content: ST.WANT_TO_REFRESH,

@@ -39,16 +39,26 @@ export const ResearchUpdaterPopup = ({
 	onClose: (isOk: boolean) => void;
 }) => {
 	const values = useMemo(() => {
-		if (!naverData || !item) return undefined;
+		if (!item) return undefined;
 
-		const year = item.cdate;
-		const report = naverData?.report?.find((a) => a.year?.toString() === year?.toString());
-		const { sise, shares } = naverData;
+		if (naverData) {
+			const year = item.cdate;
+			const report = naverData?.report?.find((a) => a.year?.toString() === year?.toString());
+			const { sise, shares } = naverData;
 
-		if (!isNaN(Number(item?.roe)) || !isNaN(Number(item?.equity))) {
-			return { sise, stype: naverData?.type, scount: shares, ...report };
+			if (!isNaN(Number(item?.roe)) || !isNaN(Number(item?.equity))) {
+				return { sise, stype: naverData?.type, scount: shares, ...report };
+			} else {
+				return { ...item, stype: naverData?.type };
+			}
 		} else {
-			return { ...item, stype: naverData?.type };
+			return {
+				...item,
+				stype: item?.type,
+				debt: toNumber(item?.debt?.toString()),
+				eps: Number(toNumber(item?.eps?.toString()))?.toFixed(0),
+				debtratio: Number(item?.debtratio),
+			};
 		}
 	}, [item, naverData]);
 

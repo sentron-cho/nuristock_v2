@@ -304,12 +304,14 @@ const KOR = {
 
 	RESEARCH_TABLE: {
 		NAME: '주식명',
-		COUNT: '발행주식수',
+		VALUATION: '가중치',
+		COUNT: '주식수',
 		ROE: 'ROE',
 		PROFIT: '당기순이익',
 		ASSET: '자본',
 		STIME: '시세일시',
 		SHARE_RATE: '가치',
+		PSR: '주당순익',
 		PSR_RATE: '주당순익율',
 		SISE: '시세',
 		SHARE: '목표값',

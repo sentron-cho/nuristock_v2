@@ -20,6 +20,7 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 	const [search, setSearch] = useState<string>();
 	const [sort, setSort] = useState<string>(getSessionStorage(StorageDataKey.RESEARCH_SORT) || 'roe');
 	const [isErrorList, setErrorList] = useState<boolean>(false);
+	const [isWarningList, setWarningList] = useState<boolean>(false);
 
 	useEffect(() => {
 		setMax(perItem);
@@ -40,6 +41,43 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 	// 계산된 데이터
 	const list = useMemo(() => {
 		if (!data?.length) return undefined;
+
+		// 종합 가중치
+		// 1. 자본가치율
+		const getShareValue = (value: number) => {
+			if (value < 1) return 1;
+			else if (value >= 1 && value < 2) return 2;
+			else if (value >= 2 && value < 3) return 3;
+			else if (value >= 3 && value < 4) return 4;
+			else return 5; // value >= 5
+		};
+
+		//  2. 주당순익율
+		const getPsrVaue = (value: number) => {
+			if (value < 0.2) return 1;
+			else if (value >= 0.2 && value < 0.3) return 2;
+			else if (value >= 0.3 && value < 0.4) return 3;
+			else if (value >= 0.4 && value < 0.5) return 4;
+			else return 5; // value >= 0.5
+		};
+
+		// 3. 주식수가중치
+		const getCount = (value: number) => {
+			if (value >= 100_000_000) return 1;
+			else if (value >= 50_000_000 && value < 100_000_000) return 2;
+			else if (value >= 30_000_000 && value < 50_000_000) return 3;
+			else if (value >= 10_000_000 && value < 30_000_000) return 4;
+			else return 5; // value < 10_000_000
+		};
+
+		// 4. 자본가중치
+		const getEquity = (value: number) => {
+			if (value < 10_000_000_000) return 1;
+			else if (value >= 10_000_000_000 && value < 50_000_000_000) return 2;
+			else if (value >= 50_000_000_000 && value < 100_000_000_000) return 2;
+			else if (value >= 100_000_000_000 && value < 500_000_000_000) return 2;
+			else return 5; // value >= 0.5
+		};
 
 		// roe 숫자로 변환
 		const parsed = data?.map((a) => {
@@ -62,6 +100,9 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 				}); // 0.8 기준
 				const shareRate = sise ? Number((shareValue / Number(sise)).toFixed(2)) : 0;
 
+				const valuation =
+					getShareValue(shareValue) + getPsrVaue(psr) + getCount(scount) + getEquity(equity) + (Number(a?.prevProfit) < 0 ? -5 : 0);
+
 				return {
 					...a,
 					count: scount.toString(),
@@ -70,6 +111,7 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 					profit: profit.toString(),
 					shareValue: sise ? shareValue : 0,
 					shareRate,
+					valuation,
 					psr,
 				} as ResearchItemType;
 			} else {
@@ -82,6 +124,7 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 					sise: '0',
 					shareValue: 0,
 					shareRate: 0,
+					valuation: 0,
 					psr,
 				} as ResearchItemType;
 			}
@@ -119,6 +162,8 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 				items = [...reverse(sortBy(preferred, ['shareRate', 'roe'])), ...rest];
 			} else if (sort === 'psr') {
 				items = reverse(sortBy(items, ['psr']));
+			} else if (sort === 'valuation') {
+				items = reverse(sortBy(items, ['valuation']));
 			} else {
 				items = sortBy(items, [sort === 'name' ? 'name' : 'sise']);
 			}
@@ -149,14 +194,15 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 			const nShareRate = Number(a.shareRate);
 			const shareRateType = valueOfPlusMinus(nShareRate, 1);
 
+			// 주당순익율
 			const nPsrValue = Number(nProfit / nCount);
 			const nPsr = Number(nProfit / nCount) / Number(a?.sise);
 			const psrType = nPsr >= 0.5 ? EID.PLUS : EID.MINUS;
 
 			return {
 				...a,
-				psr: nPsr.toFixed(1),
-				psrValue: nPsrValue.toFixed(0),
+				psr: Number(nPsr.toFixed(2)),
+				psrValue: Number(nPsrValue.toFixed(0)),
 				psrType,
 				roeType,
 				countType,
@@ -165,11 +211,20 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 				shareValueType,
 				shareRateType,
 				siseType: a?.updown === 'up' ? 'plus' : a?.updown === 'down' ? 'minus' : '',
+				valuationType: valueOfPlusMinus(a?.valuation, 5),
 			};
 		});
 	}, [data, isShowClose, viewType, search, sort]);
 
-	console.log({ list });
+	const filteredList = useMemo(() => {
+		if (isErrorList) {
+			return list?.filter((a) => Number(a?.sise) <= 0);
+		} else if (isWarningList) {
+			return list?.filter((a) => (a?.profit?.toString() || '')?.length <= 5);
+		} else {
+			return list?.slice(0, max);
+		}
+	}, [list, isErrorList, isWarningList, max]);
 
 	const totalCount = useMemo(() => list?.length, [list]);
 
@@ -187,10 +242,14 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		setErrorList((prev) => !prev);
 	};
 
+	const onWarningList = () => {
+		setWarningList((prev) => !prev);
+	};
+
 	return {
 		naviOptions,
 		data,
-		list: isErrorList ? list?.filter((a) => Number(a?.sise) <= 0) : list?.slice(0, max),
+		list: filteredList,
 		allList: list,
 		totalCount,
 		max,
@@ -203,6 +262,8 @@ export const useResearchHook = (initialData?: ResearchResponse, viewType: 'kospi
 		setSort: onSort,
 		isErrorList,
 		onErrorList,
+		isWarningList,
+		onWarningList,
 	};
 };
 
