@@ -17,6 +17,7 @@ import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { CardListWrap } from '@entites/Card';
 import { Button } from '@entites/Button';
 import { useMemo } from 'react';
+import { InvestmentChart } from '@features/investment/ui/InvestmentChart.ui';
 
 const StyledPage = styled(PageContainer, {
 	'.contents-layer': {
@@ -77,6 +78,9 @@ export const InvestmentDetailPageMo = ({
 					sise={sise?.find((a) => a?.code === param.id)}
 					onClickNavi={onClickNavi}
 				/>
+
+				{/* 차트 */}
+				<InvestmentChart data={filteredByCode} />
 
 				{/* 컨텐츠 */}
 				<Flex className={clsx(swipeClass, 'contents-layer')} direction={'column'} {...handlerSwipe}>

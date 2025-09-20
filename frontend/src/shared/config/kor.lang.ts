@@ -166,7 +166,9 @@ const KOR = {
 	ACC_COST: '평균단가',
 	NO_HISTORY: '내역없음',
 
+	CAPITAL_VALUE: '내재가치',
 	CAPITAL: '자본',
+	CAPITAL_EXP: '자본(목표)',
 	VALUATION: '평가금액',
 	SONIC_COST: '손익금액',
 	SONIC_RATE: '손익율',

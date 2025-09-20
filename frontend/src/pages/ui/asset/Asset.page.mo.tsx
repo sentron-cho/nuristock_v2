@@ -75,6 +75,12 @@ export const AssetPageMo = ({ data }: { data?: AssetResponse }) => {
 		return sortBy(items, ['sdate']);
 	}, [asset, evaluation]);
 
+	const domain = useMemo(() => {
+		if (!chartData) return [];
+		const items = sortBy(chartData, ['cprice']);
+		return [Number(items?.[0]?.cprice) * 0.95, Number(items?.[chartData.length - 1]?.cprice) * 1.05];
+	}, [chartData]);
+
 	return (
 		<>
 			<StyledPage>
@@ -92,6 +98,7 @@ export const AssetPageMo = ({ data }: { data?: AssetResponse }) => {
 										tickFormatter={(v) => {
 											return `${Math.round(v / 10_000) <= 0 ? 0 : Math.round(v / 10_000) + ST.MAN}`;
 										}}
+										domain={domain}
 									/>
 									<Tooltip
 										formatter={(v: number) => toCost(v)}
