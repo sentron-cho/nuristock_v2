@@ -2,7 +2,7 @@ import { Card } from '@entites/Card';
 import Flex from '@entites/Flex';
 import { SubTitle } from '@entites/Title';
 import { InvestmentItemType } from '../api/investment.dto';
-import { IconRefresh } from '@entites/Icons';
+import { IconRefresh, IconRemove } from '@entites/Icons';
 import dayjs from 'dayjs';
 import { Text } from '@entites/Text';
 import { InvestmentChip, InvestmentInfoField, PerValueField } from './InvestmentCommon.ui';
@@ -31,7 +31,7 @@ export const InvestmentDetailCard = ({
 					</Flex>
 					<Flex fullWidth={false}>
 						<IconButton icon={<IconRefresh />} onClick={() => onClick?.('refresh', data)} />
-						{/* <IconButton icon={<IconEdit />} onClick={() => onClick?.(EID.EDIT, data)} /> */}
+						<IconButton icon={<IconRemove />} onClick={() => onClick?.(EID.DELETE, data)} />
 						{/* <IconDocument onClick={() => onClickReport?.(data?.sdate?.toString(), data)} /> */}
 					</Flex>
 				</Flex>

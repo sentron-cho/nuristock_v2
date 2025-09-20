@@ -4,7 +4,7 @@ import Flex from '@entites/Flex';
 import { PageTitleBar } from '@features/common/ui/PageTitleBar.ui';
 import { EID } from '@shared/config/default.config';
 import { ST } from '@shared/config/kor.lang';
-import { IconAdd } from '@entites/Icons';
+import { IconAddPlaylist } from '@entites/Icons';
 import clsx from 'clsx';
 import { InvestmentItemType, InvestmentResponse } from '@features/investment/api/investment.dto';
 import { useInvestmentHook } from '@features/investment/hook/Investment.hook';
@@ -15,6 +15,8 @@ import { URL } from '@shared/config/url.enum';
 import { useNaviByOptions } from '@shared/hooks/useOptionNavi.hook';
 import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import { CardListWrap } from '@entites/Card';
+import { Button } from '@entites/Button';
+import { useMemo } from 'react';
 
 const StyledPage = styled(PageContainer, {
 	'.contents-layer': {
@@ -34,6 +36,10 @@ export const InvestmentDetailPageMo = ({
 	const { navigate, param } = useCommonHook();
 	const { filteredByCode, naviOptions, selected, sise } = useInvestmentHook(data);
 	const { prev, next } = useNaviByOptions({ options: naviOptions, value: param?.id });
+
+	const lastItem = useMemo(() => {
+		return filteredByCode?.[filteredByCode?.length - 1];
+	}, [filteredByCode]);
 
 	const { handlerSwipe, swipeClass } = useSwipePage({
 		onNextPage: (dir?: 'next' | 'prev') => {
@@ -56,9 +62,9 @@ export const InvestmentDetailPageMo = ({
 				<PageTitleBar
 					title={ST.INVEST}
 					buttonProps={{
+						buttonType: 'icon',
 						eid: EID.ADD,
-						icon: <IconAdd />,
-						title: ST.ADD,
+						icon: <IconAddPlaylist />,
 						onClick: () => onClick?.(EID.ADD, filteredByCode?.[0]),
 					}}
 				/>
@@ -79,6 +85,14 @@ export const InvestmentDetailPageMo = ({
 							return <InvestmentDetailCard key={`in-${item?.rowid}`} data={item} onClick={onClick} />;
 						})}
 					</CardListWrap>
+
+					<Flex style={{ padding: '8px 4px' }}>
+						<Button
+							fullWidth
+							title={`${Number(lastItem?.sdate) - 1}${ST.YEAR} ${ST.ADD}`}
+							onClick={() => onClick?.(EID.INSERT, { ...lastItem, sdate: `${Number(lastItem?.sdate) - 1}` })}
+						/>
+					</Flex>
 				</Flex>
 			</Flex>
 		</StyledPage>

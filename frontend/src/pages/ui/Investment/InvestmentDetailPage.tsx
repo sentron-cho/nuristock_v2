@@ -80,6 +80,15 @@ const InvestmentDetailPage = () => {
 					}
 				},
 			});
+		} else if (eid === EID.INSERT) {
+			setPopup({
+				type: eid,
+				item: { ...item, equity: undefined },
+				onClose: (isOk) => {
+					setPopup(undefined);
+					isOk && refetch();
+				},
+			});
 		}
 	};
 
@@ -93,8 +102,13 @@ const InvestmentDetailPage = () => {
 				<InvestmentUpdaterPopup type={'edit'} item={popup?.item as InvestmentItemType} onClose={popup?.onClose} />
 			)}
 
-			{/* 추가 업데이트 팝업 */}
+			{/* 현재년도 추가 팝업 */}
 			{popup?.type === EID.ADD && (
+				<InvestmentUpdaterPopup type={'add'} item={popup?.item as InvestmentItemType} onClose={popup?.onClose} />
+			)}
+
+			{/* 과거년도 추가 팝업 */}
+			{popup?.type === EID.INSERT && (
 				<InvestmentUpdaterPopup type={'add'} item={popup?.item as InvestmentItemType} onClose={popup?.onClose} />
 			)}
 

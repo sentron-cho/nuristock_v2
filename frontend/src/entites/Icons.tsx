@@ -42,6 +42,7 @@ import IconAddCircle from '@mui/icons-material/AddCircle';
 
 import IconAddBox from '@mui/icons-material/AddBox';
 import IconRemoveBox from '@mui/icons-material/IndeterminateCheckBox';
+import IconRemove from '@mui/icons-material/DeleteOutline';
 
 import IconAddPlaylist from '@mui/icons-material/PlaylistAdd';
 import IconRemovePlaylist from '@mui/icons-material/PlaylistRemove';
@@ -149,5 +150,6 @@ export {
 	IconStarFill,
 	IconStatistic,
 	IconFavoriteFill,
-	IconFavoriteOutline
+	IconFavoriteOutline,
+	IconRemove
 };
