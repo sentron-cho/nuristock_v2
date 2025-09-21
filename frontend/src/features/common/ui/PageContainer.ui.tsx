@@ -35,7 +35,7 @@ const StyledContainer = styled('div', {
 		},
 	},
 
-	'@md': {
+	'@lg': {
 		'.scroll-view': {
 			padding: '0',
 			paddingBottom: '$10',

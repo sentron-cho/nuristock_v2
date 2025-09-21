@@ -30,6 +30,8 @@ const BucketlistPage = () => {
 	}, [data, param?.id])
 
 	const values = useMemo(() => {
+		if (!data) return;
+		
 		const items = data?.value?.map((a) => JSON.parse(a.svalue)) as BucklistCreateType[];
 		return sortBy(items, ['page']);
 	}, [data]);
