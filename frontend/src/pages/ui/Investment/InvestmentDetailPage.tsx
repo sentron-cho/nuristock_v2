@@ -2,6 +2,7 @@ import { useCommonHook } from '@shared/hooks/useCommon.hook';
 import {
 	useDeleteInvestment,
 	useRefreshInvestment,
+	useSelectInvestmentByDart,
 	useSelectInvestmentDetail,
 } from '@features/investment/api/investment.api';
 import { PopupType } from '@entites/Dialog';
@@ -13,6 +14,7 @@ import { InvestmentDetailPageMo } from './InvestmentDetail.page.mo';
 import { InvestmentUpdaterPopup } from '@features/investment/ui/InvestmentUpdater.popup';
 import dayjs from 'dayjs';
 import { Loading } from '@entites/Loading';
+import { FieldValues } from 'react-hook-form';
 
 const InvestmentDetailPage = () => {
 	const { isMobile } = useCommonHook();
@@ -26,8 +28,9 @@ const InvestmentDetailPage = () => {
 
 	const { mutateAsync: deleteData } = useDeleteInvestment();
 	const { mutateAsync: refreshData } = useRefreshInvestment();
+	const { mutateAsync: selectDartData } = useSelectInvestmentByDart();
 
-	const onClick = (eid?: string, item?: InvestmentItemType) => {
+	const onClick = async (eid?: string, item?: InvestmentItemType) => {
 		if (eid === EID.SELECT) {
 			// navigate(`${URL.MYSTOCK}/${viewType}/${item?.code}`);
 		} else if (eid === EID.DELETE) {
@@ -81,9 +84,19 @@ const InvestmentDetailPage = () => {
 				},
 			});
 		} else if (eid === EID.INSERT) {
+			if (!item?.code || !item?.sdate) return showAlert({ content: `${ST.SELECT_SEARCH}` });
+
+			let parsed = { ...item, equity: undefined };
+
+			const res = await selectDartData({ code: item.code, targetYear: item.sdate });
+			if (res.data?.value?.[0]) {
+				const row = res.data?.value[0] as FieldValues;
+				parsed = { ...item, equity: row?.equity, roe: row?.roe, profit: row?.netIncome };
+			}
+
 			setPopup({
 				type: eid,
-				item: { ...item, equity: undefined },
+				item: parsed,
 				onClose: (isOk) => {
 					setPopup(undefined);
 					isOk && refetch();

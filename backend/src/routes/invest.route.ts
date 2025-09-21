@@ -15,7 +15,6 @@ import { makeInsertSet, makeUpdateSet } from "../lib/db.util.js";
 import { ERROR, INVEST_CRALER_TYPE } from "../types/enum.js";
 import { getDartReportByStock } from "../crawler/dartFinancial.js";
 import { getFnGuideConsensus } from "../crawler/service/fnguideScraper.service.js";
-import { getNaverConsensus } from "../crawler/service/naverScraper.service.js";
 import { getNaverStockSise, updateStockSise } from "./../crawler/service/stockCrawler.service.js";
 
 const investRoute = (fastify: FastifyInstance) => {
@@ -77,13 +76,13 @@ const investRoute = (fastify: FastifyInstance) => {
         `SELECT k.*, m.name as name FROM investment k JOIN market m ON k.code = m.code;`
       );
 
-      
       const codes = value.map((a) => `'${a.code}'`).join(","); // ✅ 문자열로 변환
       const sise =
-      codes?.length > 0 ? await fastify.db.query(`SELECT * FROM market WHERE code in (${codes})`) : undefined;
+        codes?.length > 0 ? await fastify.db.query(`SELECT * FROM market WHERE code in (${codes})`) : undefined;
       const dashboard = await fastify.db.query("SELECT * FROM dashboard;");
 
-      const marketinfo = codes?.length > 0 ? await fastify.db.query(`select * from marketinfo WHERE code in (${codes})`) : undefined
+      const marketinfo =
+        codes?.length > 0 ? await fastify.db.query(`select * from marketinfo WHERE code in (${codes})`) : undefined;
       // if (marketinfo && marketinfo?.length > 0) {
       //   value?.map(item => {
       //     const v = marketinfo?.find(a => item.code === a.code && a.cdate === item.sdate);
@@ -234,55 +233,69 @@ const investRoute = (fastify: FastifyInstance) => {
     }
   });
 
-  // 가치투자 종목 항목 데이터 갱신(FNGUIDE or 네이버 추정치)
-  fastify.put(URL.INVEST.UPDATE_BY_NAVER, async (req, reply) => {
+  // 종목 재무제표 정보 가져오기(DART)
+  fastify.get(URL.INVEST.SEARCH_DART, async (req, reply) => {
     try {
-      const { code, targetYear } = req.body as InvestRefreshParams;
+      const { code, targetYear } = req.query as InvestRefreshParams;
 
-      // fnguid를 통해 가져오고..
-      let type = INVEST_CRALER_TYPE.FNGUIDE;
-      const list = await getFnGuideConsensus(code?.replace("A", ""));
-      const now = dayjs().format("YYYY");
-      let values: ConsensusResult | undefined = {};
-      if (list && list?.[now]) {
-        values = list[now];
-      }
+      const res = await getYearlyStockInfoFromDart({ code6: code?.replace("A", ""), from: Number(targetYear) });
+      console.log({ value: res?.value });
 
-      // 안되면 차선으로 네이버로...
-      if (!values || !values?.equity || !values?.roe) {
-        values = await getNaverConsensus(code?.replace("A", ""));
-        type = INVEST_CRALER_TYPE.NAVER;
-      }
-
-      if (!values || !values?.equity || !values?.roe)
-        reply
-          .status(500)
-          .send(
-            withError({ code: ERROR.ER_NOT_UNKNOW, sqlMessage: "is not rowid!" } as SqlError, { tag: URL.INVEST.ROOT })
-          );
-
-      // 네이버는 당기순이익만 가져오므로 직전년도 자기자본에서 당기순이익을 더하자
-      const prevYear = dayjs().add(-1, "year").format("YYYY");
-      const data = await fastify.db.query(
-        `SELECT equity FROM investment WHERE code = '${code}' AND sdate = '${prevYear}' `
-      );
-
-      const EUK = 100000000; // 억원
-      const { roe } = values as ConsensusResult;
-      const equity = Number(values?.equity) * EUK + (type === INVEST_CRALER_TYPE.NAVER ? Number(data?.[0]?.equity) : 0);
-
-      const params = { roe: roe, equity: equity, ctype: type };
-      await fastify.db.query(
-        `UPDATE investment SET ${makeUpdateSet(
-          params as FieldValues
-        )} WHERE code ='${code}' and sdate = '${targetYear}';`
-      );
-
-      reply.status(200).send({ value: code });
+      reply.status(200).send({ value: res?.value });
     } catch (error) {
       reply.status(500).send(withError(error as SqlError, { tag: URL.INVEST.ROOT }));
     }
   });
+
+  // 가치투자 종목 항목 데이터 갱신(FNGUIDE or 네이버 추정치)
+  // fastify.put(URL.INVEST.UPDATE_BY_NAVER, async (req, reply) => {
+  //   try {
+  //     const { code, targetYear } = req.body as InvestRefreshParams;
+
+  //     // fnguid를 통해 가져오고..
+  //     let type = INVEST_CRALER_TYPE.FNGUIDE;
+  //     const list = await getFnGuideConsensus(code?.replace("A", ""));
+  //     const now = dayjs().format("YYYY");
+  //     let values: ConsensusResult | undefined = {};
+  //     if (list && list?.[now]) {
+  //       values = list[now];
+  //     }
+
+  //     // 안되면 차선으로 네이버로...
+  //     if (!values || !values?.equity || !values?.roe) {
+  //       values = await getNaverConsensus(code?.replace("A", ""));
+  //       type = INVEST_CRALER_TYPE.NAVER;
+  //     }
+
+  //     if (!values || !values?.equity || !values?.roe)
+  //       reply
+  //         .status(500)
+  //         .send(
+  //           withError({ code: ERROR.ER_NOT_UNKNOW, sqlMessage: "is not rowid!" } as SqlError, { tag: URL.INVEST.ROOT })
+  //         );
+
+  //     // 네이버는 당기순이익만 가져오므로 직전년도 자기자본에서 당기순이익을 더하자
+  //     const prevYear = dayjs().add(-1, "year").format("YYYY");
+  //     const data = await fastify.db.query(
+  //       `SELECT equity FROM investment WHERE code = '${code}' AND sdate = '${prevYear}' `
+  //     );
+
+  //     const EUK = 100000000; // 억원
+  //     const { roe } = values as ConsensusResult;
+  //     const equity = Number(values?.equity) * EUK + (type === INVEST_CRALER_TYPE.NAVER ? Number(data?.[0]?.equity) : 0);
+
+  //     const params = { roe: roe, equity: equity, ctype: type };
+  //     await fastify.db.query(
+  //       `UPDATE investment SET ${makeUpdateSet(
+  //         params as FieldValues
+  //       )} WHERE code ='${code}' and sdate = '${targetYear}';`
+  //     );
+
+  //     reply.status(200).send({ value: code });
+  //   } catch (error) {
+  //     reply.status(500).send(withError(error as SqlError, { tag: URL.INVEST.ROOT }));
+  //   }
+  // });
 
   // 가치투자 종목 항목 삭제
   fastify.delete(URL.INVEST.ROOT, async (req, reply) => {
@@ -329,8 +342,7 @@ const investRoute = (fastify: FastifyInstance) => {
   fastify.get(URL.INVEST.REPORT, async (req, reply) => {
     try {
       const { code, targetYear } = req.query as InvestRefreshParams;
-
-      console.log("[getDartReportByStock]", { code, targetYear });
+      // console.log("[getDartReportByStock]", { code, targetYear });
 
       const value = await getDartReportByStock(code?.replace("A", ""), Number(targetYear));
 

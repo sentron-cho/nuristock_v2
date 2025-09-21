@@ -61,14 +61,14 @@ export const useRefreshInvestment = () => {
 };
 
 // 평가 데이터 네이버로 갱신
-export const useUpdateInvestmentByNaver = () => {
-	return useMutation({
-		mutationKey: ['INVESTMENT-U03'],
-		mutationFn: async (data: InvestmentRefreshType) => {
-			return await api.put(API.INVEST_UPDATE_BY_NAVER, data);
-		},
-	});
-};
+// export const useUpdateInvestmentByNaver = () => {
+// 	return useMutation({
+// 		mutationKey: ['INVESTMENT-U03'],
+// 		mutationFn: async (data: InvestmentRefreshType) => {
+// 			return await api.put(API.INVEST_UPDATE_BY_NAVER, data);
+// 		},
+// 	});
+// };
 
 // 데이터 초기화
 export const useClearInvestment = () => {
@@ -97,6 +97,16 @@ export const useSelectInvestmentReport = () => {
 		mutationKey: ['INVESTMENT-R04'],
 		mutationFn: async (params: InvestmentSearchParam) => {
 			return await api.get(API.INVEST_REPORT, { params });
+		},
+	});
+};
+
+// DART 데이터 조회
+export const useSelectInvestmentByDart = () => {
+	return useMutation({
+		mutationKey: ['INVESTMENT-R05'],
+		mutationFn: async (params: InvestmentSearchParam) => {
+			return await api.get(API.INVEST_DART, { params });
 		},
 	});
 };

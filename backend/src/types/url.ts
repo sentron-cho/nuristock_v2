@@ -58,7 +58,8 @@ export const URL = {
     REPORT: `${ROOT_URL}/invest/report`,
     REFRESH: `${ROOT_URL}/invest/refresh`,
     BOOKMARK: `${ROOT_URL}/invest/bookmark`,
-    UPDATE_BY_NAVER: `${ROOT_URL}/invest/naver`,
+    SEARCH_DART: `${ROOT_URL}/invest/dart`,
+    // UPDATE_BY_NAVER: `${ROOT_URL}/invest/naver`,
     CLEAR: `${ROOT_URL}/invest/clear`,
   },
   APP: {

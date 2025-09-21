@@ -43,7 +43,6 @@ export const InvestmentChart = ({ data }: { data?: InvestmentItemType[] }) => {
 					? Number((filtered?.reduce((c, d) => Number(c) + Number(d), 0) / filtered?.length).toFixed(2))
 					: 1.08;
 				const equityExp = Number(parsed?.[index - 1]?.equity) * equityRate;
-				console.log({ date: a.sdate, filtered, equityRate, equityExp });
 
 				return { ...a, equityExp: equityExp };
 			}

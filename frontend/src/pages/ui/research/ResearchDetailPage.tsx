@@ -105,8 +105,6 @@ const ResearchDetailPage = ({ viewType = 'kospi' }: { viewType?: 'kospi' | 'kosd
 			// 	},
 			// });
 		} else if (eid === EID.EDIT) {
-			console.log({ item });
-
 			if (!item?.sise || !item?.roe || !item?.type) {
 				const values = await getNaverInfo(item?.code);
 

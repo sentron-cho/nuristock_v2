@@ -64,7 +64,6 @@ const BucketlistPage = () => {
 			showConfirm({
 				content: ST.WANT_TO_DELETE,
 				onClose: async (isOk) => {
-					console.log({ delete: item });
 					if (isOk && item?.rowid) {
 						await deleteData({ rowid: item.rowid });
 						navigate(`${URL.BUCKET}/${Number(item?.page) - 1 || 1}`);

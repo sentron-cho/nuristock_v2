@@ -91,6 +91,7 @@ export const fetchDartBasicSnapshot = async (
   };
 
   const res = await axios.get(URL_FS, { params: fsParams, timeout: TIME_OUT });
+  // saveText('data.json', JSON.stringify(res?.data));
   
   if (res?.data?.status === "020" || res?.data?.status === '013') {
     return { year, res: res?.data };
@@ -122,12 +123,12 @@ export const fetchDartBasicSnapshot = async (
     sjDivPrefer: ["BS"],
     fsPrefer: ["CFS", "OFS"],
     accountNames: [
-      "ifrs-full_Equity", // ifrs-full_Equity
-      "자본총계",
-      "지배기업의 소유주에게 귀속되는 자본",
+      "ifrs-full_EquityAttributableToOwnersOfParent", // 1순위 지배주주지분
+      "지배기업소유주지분", // 1순위 지배주주지분
+      "ifrs-full_Equity", // 2순위 자본
+      "자본총계", // 2순위 자본
     ],
   });
-
   // console.log({ equityRow });
 
   const equityTotal = toNum(equityRow?.thstrm_amount);

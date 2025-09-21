@@ -7,12 +7,12 @@ import {
   fetchLatestIssuedSharesByStock,
   LatestIssuedShares,
 } from "../dartFinancial.js";
+import { fetchDartBasicSnapshot } from "../dartStockInfo.js";
 
 export const getYearlyStockInfoFromDart = async (opts: {
   code6: string;
   from: number;
   to?: number;
-  useConsolidated?: boolean;
 }): Promise<FactsResult | undefined> => {
   const { code6, from } = opts;
   const to = opts.to ?? from;
@@ -25,26 +25,30 @@ export const getYearlyStockInfoFromDart = async (opts: {
     let prevEquity: number | undefined;
 
     for (const y of years) {
-      // const date = dayjs(`${y}-12-31`).format('YYYYMMDD');
-      // const shares = await fetchListedSharesAtDate(code6, date).catch(() => undefined);
       const shares = (await fetchLatestIssuedSharesByStock(code6, y).catch((err) =>
         console.error(err)
       )) as LatestIssuedShares;
 
-      const equity = corpCode ? await fetchEquity(corpCode, y).catch(() => undefined) : undefined;
+      // const equity = corpCode ? await fetchEquity(corpCode, y).catch(() => undefined) : undefined;
 
+      let equity: number | undefined;
       let roe: number | undefined;
       let ni: number | undefined;
 
       if (corpCode) {
         // 당기순이익
-        ni = await fetchNetIncome(corpCode, y).catch(() => undefined);
+        // ni = await fetchNetIncome(corpCode, y).catch(() => undefined);
+        const basic = await fetchDartBasicSnapshot(corpCode, y).catch(() => undefined);
 
-        if (y >= 2023) {
+        equity = basic?.equity;
+        ni = basic?.netIncome;
+        roe = basic?.roe;
+
+        if (!roe || y >= 2023) {
           roe = await fetchROEIndicator(corpCode, y).catch(() => undefined);
         }
 
-        if (roe == null) {
+        if (!roe) {
           const avgEq =
             prevEquity != null && equity != null ? (prevEquity + equity) / 2 : equity ?? prevEquity ?? undefined;
           if (ni != null && avgEq) {

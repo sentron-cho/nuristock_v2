@@ -123,7 +123,7 @@ export const fetchLatestIssuedSharesByStock = async (
   };
 
   const { data } = await axios.get(URL_SHARES, { params, timeout: TIME_OUT });
-  console.log({ params, data });
+  // console.log({ params, data });
 
   if (data?.status === "020") {
     // console.log("[사용한도 초과]", { data: { year, ...res?.data } });
