@@ -278,7 +278,7 @@ export const ResearchPageMo = ({
 										onClick={() => onSelect(item)}
 									>
 										{/* 1 Line */}
-										<Flex height={20} justify={'between'}>
+										<Flex height={32} justify={'between'}>
 											{/* 주식명 */}
 											<Text
 												bold
@@ -296,15 +296,15 @@ export const ResearchPageMo = ({
 												text={`${item.valuation}`}
 												flex={1}
 												textAlign={'right'}
-												onClick={(e) => {
-													e.stopPropagation();
-													onClick?.(EID.FIND, item);
-												}}
+												// onClick={(e) => {
+												// 	e.stopPropagation();
+												// 	onClick?.(EID.FIND, item);
+												// }}
 											/>
 										</Flex>
 
 										{/* 2 Line */}
-										<Flex height={20}>
+										<Flex height={28}>
 											{/* 시세 */}
 											<Text
 												size='xs'
@@ -348,7 +348,7 @@ export const ResearchPageMo = ({
 										</Flex>
 
 										{/* 3 Line */}
-										<Flex height={20}>
+										<Flex height={28}>
 											{/* 시세일시 */}
 											<Text size='xs' text={`${dayjs(item.stime).format('MM/DD')}`} flex={2} textAlign={'right'} />
 											{/* 발행주식수 */}

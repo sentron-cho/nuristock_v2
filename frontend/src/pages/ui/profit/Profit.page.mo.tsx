@@ -134,8 +134,8 @@ export const ProfitPageMo = ({ viewType }: { viewType?: 'year' | 'code' }) => {
 					{viewType === 'year' && (
 						<Flex className={clsx(swipeClass)} direction={'column'} justify={'center'}>
 							{/* 컨텐츠 */}
-							<Card className={clsx('card')}>
-								<Flex className={clsx('box')} direction='column' gap={0}>
+							<Card className='full-width'>
+								<Flex className={clsx('box border')} direction='column' gap={0}>
 									{years?.map((item, index) => {
 										const { title, sonic, sonicRate, asset, type } = item;
 										const shortAsset = `${withCommas((asset / 10000).toFixed(0))} ${ST.MAN}`;

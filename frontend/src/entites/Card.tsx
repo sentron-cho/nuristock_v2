@@ -60,6 +60,11 @@ export const StyledCard = styled(MuiCard, {
 			'&.border': {
 				borderColor: '$gray700',
 			},
+
+		},
+
+		'&.full-width': {
+			width: '100% !important',
 		},
 
 		// '&.active': {

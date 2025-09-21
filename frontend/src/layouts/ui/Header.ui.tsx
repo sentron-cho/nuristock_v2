@@ -29,7 +29,7 @@ export const StyledHeader = styled('div', {
 			display: 'flex',
 			gap: '$20',
 
-			'@sm': {
+			'@lg': {
 				display: 'none',
 			},
 		},
@@ -63,7 +63,7 @@ export const StyledHeader = styled('div', {
 		},
 	},
 
-	'@md': {
+	'@lg': {
 		'.title-bar': {
 			position: 'unset',
 			justifyContent: 'center',

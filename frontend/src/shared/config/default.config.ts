@@ -1,5 +1,5 @@
 export const SCREEN = {
-	MOBILE: 640,
+	MOBILE: 1024,
 	// TABLET: 800,
 	PC: 1280,
 };

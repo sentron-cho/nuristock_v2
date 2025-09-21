@@ -66,7 +66,7 @@ export const ProfitCard = ({
 	};
 
 	return (
-		<Card className={clsx('card')}>
+		<Card className='full-width'>
 			<Flex className={clsx('box border')} direction='column' gap={10}>
 				{/* 종목별 */}
 				{first && <ProfitCardRows title={first.title} className='names' data={first?.data} onClickItem={onClick} />}
