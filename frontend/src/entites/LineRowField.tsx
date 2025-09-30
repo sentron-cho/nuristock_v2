@@ -96,14 +96,14 @@ export const RowField = ({
 					</Flex>
 				)}
 
-				{text && (
+				{text !== undefined && (
 					<Flex flex={2} fullWidth={false} className={clsx('row-text', type)} gap={2} justify={'end'}>
 						<Text size='xs' text={text} {...textProps} />
 						{suffix?.text && <Text size='xs' className='row-text-suffix' text={suffix?.text} />}
 					</Flex>
 				)}
 
-				{value && (
+				{value !== undefined && (
 					<Flex flex={3} fullWidth={false} className={clsx('row-value', type)} justify={'end'} gap={2}>
 						<Text text={value} {...valueProps} />
 						{suffix?.value && <Text className='row-value-suffix' text={suffix?.value} />}

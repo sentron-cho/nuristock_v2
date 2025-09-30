@@ -108,18 +108,18 @@ export const AssetPageMo = ({ data }: { data?: AssetResponse }) => {
 									<Line
 										type='monotone'
 										dataKey='price'
-										name={ST.ASSET}
-										strokeWidth={2}
-										dot={true}
-										stroke={CHART_COLORS.BLUE}
-									/>
-									<Line
-										type='monotone'
-										dataKey='cprice'
 										name={ST.VALUATION}
 										strokeWidth={2}
 										dot={true}
 										stroke={CHART_COLORS.RED}
+									/>
+									<Line
+										type='monotone'
+										dataKey='cprice'
+										name={ST.ASSET}
+										strokeWidth={2}
+										dot={true}
+										stroke={CHART_COLORS.BLUE}
 									/>
 								</LineChart>
 							</ResponsiveContainer>

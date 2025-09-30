@@ -24,6 +24,7 @@ export const DepositRegisterPopup = ({ item, onClose }: { item?: DataType; onClo
 		return [
 			{ label: ST.BANK_INPUT, value: Deposit.DEPOSIT },
 			{ label: ST.BANK_OUTPUT, value: Deposit.WITHDRAW },
+			{ label: ST.DIVIDEND, value: Deposit.DIVIDEND },
 			{ label: ST.HEND_WRITING, value: Deposit.MANUAL },
 		];
 	}, []);
@@ -50,6 +51,8 @@ export const DepositRegisterPopup = ({ item, onClose }: { item?: DataType; onClo
 
 	const { mutateAsync: createData } = useCreate();
 
+	const selectedType = forms?.watch('stype');
+
 	const onClickClose = (isOk: boolean) => {
 		if (isOk) {
 			forms?.handleSubmit(
@@ -57,12 +60,20 @@ export const DepositRegisterPopup = ({ item, onClose }: { item?: DataType; onClo
 					const price = Number(toNumber(fields.price));
 					const stype = fields?.stype as string;
 
-					const params = {
+					let params = {
 						rowid: item?.rowid,
 						stype: stype,
 						sdate: dayjs(fields?.sdate).format(DATE_TIME_DB_FORMAT),
 						price: stype === Deposit.WITHDRAW && price > 0 ? price * -1 : price,
+						tax: 0,
 					};
+
+					if (selectedType === Deposit.DIVIDEND) {
+						params['price'] = Number(toNumber(fields?.priceAfterTax) || 0);
+						params['tax'] = Number(toNumber(fields?.priceTax) || 0);
+					}
+
+					console.log({ params });
 
 					await createData(params);
 
@@ -97,21 +108,28 @@ export const DepositRegisterPopup = ({ item, onClose }: { item?: DataType; onClo
 					options={typeOptions}
 					formMethod={forms}
 				/>
-				<DatePickerForm
-					id='sdate'
-					label={ST.DATE}
-					placeholder={ST.IN_DATE}
-					formMethod={forms}
-					align='right'
-				/>
+				<DatePickerForm id='sdate' label={ST.DATE} placeholder={ST.IN_DATE} formMethod={forms} align='right' />
 				<NumberInputForm
 					id='price'
 					label={ST.PRICE_BEFORE_TAX}
 					formMethod={forms}
 					maxLength={12}
 					focused
+					autoFocus
 					onChange={onChange}
 				/>
+				{selectedType === Deposit.DIVIDEND && (
+					<>
+						<NumberInputForm
+							id='priceAfterTax'
+							label={ST.PRICE_AFTER_TAX}
+							formMethod={forms}
+							maxLength={12}
+							onChange={onChange}
+						/>
+						<NumberInputForm id='priceTax' label={ST.PRICE_TAX} readOnly formMethod={forms} maxLength={12} />
+					</>
+				)}
 			</StyledForm>
 		</Dialog>
 	);
